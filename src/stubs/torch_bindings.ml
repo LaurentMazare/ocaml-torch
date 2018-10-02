@@ -8,16 +8,12 @@ module C(F: Cstubs.FOREIGN) = struct
 
     let zeros =
       foreign "at_zeros"
-        (int            (* data type *)
-        @-> ptr int64_t (* dims *)
-        @-> int         (* num dims *)
+        (int
         @-> returning t)
 
     let ones =
       foreign "at_ones"
-        (int            (* data type *)
-        @-> ptr int64_t (* dims *)
-        @-> int         (* num dims *)
+        (int
         @-> returning t)
 
     let add =
@@ -25,5 +21,10 @@ module C(F: Cstubs.FOREIGN) = struct
         (t
         @-> t
         @-> returning t)
+
+    let free =
+      foreign "at_free_tensor"
+        (t
+        @-> returning void)
   end
 end
