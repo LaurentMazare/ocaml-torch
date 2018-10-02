@@ -1,0 +1,3 @@
+(executables
+  (names torch_gen)
+  (libraries ctypes.stubs))
