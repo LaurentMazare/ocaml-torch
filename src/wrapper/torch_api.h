@@ -10,6 +10,7 @@ tensor at_zeros();
 tensor at_ones();
 tensor at_add(tensor, tensor);
 void at_free(tensor);
+void at_print(tensor);
 
 #ifdef __cplusplus
 };

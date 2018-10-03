@@ -22,6 +22,11 @@ module C(F: Cstubs.FOREIGN) = struct
         @-> t
         @-> returning t)
 
+    let print =
+      foreign "at_print"
+        (t
+        @-> returning void)
+
     let free =
       foreign "at_free"
         (t

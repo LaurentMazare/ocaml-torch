@@ -8,4 +8,5 @@ module Tensor = struct
   let zeros _dims = zeros 0
   let ones _dims = ones 0
   let add = add
+  let print = print
 end
