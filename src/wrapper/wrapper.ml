@@ -7,20 +7,27 @@ module Tensor = struct
   type nonrec t = t
 
   let zeros dims =
-    let dim_array =
-      CArray.of_list int dims
-      |> CArray.start
-    in
-    zeros dim_array (List.length dims)
+    let dim_array = CArray.of_list int dims |> CArray.start in
+    let tensor = zeros dim_array (List.length dims) in
+    Gc.finalise free tensor;
+    tensor
 
   let ones dims =
-    let dim_array =
-      CArray.of_list int dims
-      |> CArray.start
-    in
-    ones dim_array (List.length dims)
+    let dim_array = CArray.of_list int dims |> CArray.start in
+    let tensor = ones dim_array (List.length dims) in
+    Gc.finalise free tensor;
+    tensor
 
-  let add = add
+  let rand dims =
+    let dim_array = CArray.of_list int dims |> CArray.start in
+    let tensor = rand dim_array (List.length dims) in
+    Gc.finalise free tensor;
+    tensor
+
+  let add x y =
+    let tensor = add x y in
+    Gc.finalise free tensor;
+    tensor
 
   let print = print
 end

@@ -18,6 +18,12 @@ module C(F: Cstubs.FOREIGN) = struct
         @-> int      (* num dims *)
         @-> returning t)
 
+    let rand =
+      foreign "at_rand"
+        (   ptr int  (* dims *)
+        @-> int      (* num dims *)
+        @-> returning t)
+
     let add =
       foreign "at_add"
         (t
