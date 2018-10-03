@@ -10,12 +10,14 @@ module C(F: Cstubs.FOREIGN) = struct
       foreign "at_zeros"
         (   ptr int  (* dims *)
         @-> int      (* num dims *)
+        @-> int      (* kind *)
         @-> returning t)
 
     let ones =
       foreign "at_ones"
         (   ptr int  (* dims *)
         @-> int      (* num dims *)
+        @-> int      (* kind *)
         @-> returning t)
 
     let rand =
@@ -31,8 +33,12 @@ module C(F: Cstubs.FOREIGN) = struct
         @-> int      (* num dims *)
         @-> returning t)
 
-    let add =
-      foreign "at_add" (t @-> t @-> returning t)
+    let add = foreign "at_add" (t @-> t @-> returning t)
+    let mul = foreign "at_mul" (t @-> t @-> returning t)
+    let sub = foreign "at_sub" (t @-> t @-> returning t)
+    let div = foreign "at_div" (t @-> t @-> returning t)
+    let pow = foreign "at_pow" (t @-> t @-> returning t)
+    let matmul = foreign "at_matmul" (t @-> t @-> returning t)
 
     let print =
       foreign "at_print"

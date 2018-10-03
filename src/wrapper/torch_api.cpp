@@ -3,6 +3,13 @@
 #include<caml/fail.h>
 #include "torch_api.h"
 
+#define PROTECT(x) \
+  try { \
+    x \
+  } catch (const exception& e) { \
+    caml_failwith(strdup(e.what())); \
+  }
+
 using namespace std;
 
 vector<long int> of_carray(int *vs, int len) {
@@ -11,53 +18,71 @@ vector<long int> of_carray(int *vs, int len) {
   return result;
 }
 
-tensor at_zeros(int *dim_list, int dim_len) {
-  try {
-    return new at::Tensor(at::zeros(of_carray(dim_list, dim_len)));
-  } catch (const exception& e) {
-    caml_failwith(strdup(e.what()));
-  }
+tensor at_zeros(int *dim_list, int dim_len, int type) {
+  PROTECT(
+    return new at::Tensor(at::zeros(of_carray(dim_list, dim_len), at::ScalarType(type)));
+  )
 }
 
-tensor at_ones(int *dim_list, int dim_len) {
-  try {
-    return new at::Tensor(at::ones(of_carray(dim_list, dim_len)));
-  } catch (const exception& e) {
-    caml_failwith(strdup(e.what()));
-  }
+tensor at_ones(int *dim_list, int dim_len, int type) {
+  PROTECT(
+    return new at::Tensor(at::ones(of_carray(dim_list, dim_len), at::ScalarType(type)));
+  )
 }
 
 tensor at_rand(int *dim_list, int dim_len) {
-  try {
+  PROTECT(
     return new at::Tensor(at::rand(of_carray(dim_list, dim_len)));
-  } catch (const exception& e) {
-    caml_failwith(strdup(e.what()));
-  }
+  )
 }
 
 tensor at_reshape(tensor t, int *dim_list, int dim_len) {
-  try {
+  PROTECT(
     return new at::Tensor(at::reshape(*t, of_carray(dim_list, dim_len)));
-  } catch (const exception& e) {
-    caml_failwith(strdup(e.what()));
-  }
+  )
 }
 
 tensor at_add(tensor t1, tensor t2) {
-  try {
+  PROTECT(
     return new at::Tensor(add(*t1, *t2));
-  } catch (const exception& e) {
-    caml_failwith(strdup(e.what()));
-  }
+  )
+}
+
+tensor at_sub(tensor t1, tensor t2) {
+  PROTECT(
+    return new at::Tensor(sub(*t1, *t2));
+  )
+}
+
+tensor at_mul(tensor t1, tensor t2) {
+  PROTECT(
+    return new at::Tensor(mul(*t1, *t2));
+  )
+}
+
+tensor at_div(tensor t1, tensor t2) {
+  PROTECT(
+    return new at::Tensor(div(*t1, *t2));
+  )
+}
+
+tensor at_pow(tensor t1, tensor t2) {
+  PROTECT(
+    return new at::Tensor(pow(*t1, *t2));
+  )
+}
+
+tensor at_matmul(tensor t1, tensor t2) {
+  PROTECT(
+    return new at::Tensor(matmul(*t1, *t2));
+  )
 }
 
 void at_print(tensor t) {
-  try {
+  PROTECT(
     at::Tensor *tensor = (at::Tensor*)t;
     cout << *tensor << endl;
-  } catch (const exception& e) {
-    caml_failwith(strdup(e.what()));
-  }
+  )
 }
 
 void at_free(tensor t) {
