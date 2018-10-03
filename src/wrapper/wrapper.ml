@@ -24,6 +24,12 @@ module Tensor = struct
     Gc.finalise free tensor;
     tensor
 
+  let reshape t dims =
+    let dim_array = CArray.of_list int dims |> CArray.start in
+    let tensor = reshape t dim_array (List.length dims) in
+    Gc.finalise free tensor;
+    tensor
+
   let add x y =
     let tensor = add x y in
     Gc.finalise free tensor;

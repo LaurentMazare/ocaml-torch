@@ -24,11 +24,15 @@ module C(F: Cstubs.FOREIGN) = struct
         @-> int      (* num dims *)
         @-> returning t)
 
-    let add =
-      foreign "at_add"
-        (t
-        @-> t
+    let reshape =
+      foreign "at_reshape"
+        (   t
+        @-> ptr int  (* dims *)
+        @-> int      (* num dims *)
         @-> returning t)
+
+    let add =
+      foreign "at_add" (t @-> t @-> returning t)
 
     let print =
       foreign "at_print"

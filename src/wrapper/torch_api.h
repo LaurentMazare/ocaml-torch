@@ -11,6 +11,7 @@ typedef void *tensor;
 tensor at_zeros(int *, int);
 tensor at_ones(int *, int);
 tensor at_rand(int *, int);
+tensor at_reshape(tensor, int *, int);
 
 tensor at_add(tensor, tensor);
 
