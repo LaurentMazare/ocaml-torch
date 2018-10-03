@@ -23,7 +23,7 @@ module C(F: Cstubs.FOREIGN) = struct
         @-> returning t)
 
     let free =
-      foreign "at_free_tensor"
+      foreign "at_free"
         (t
         @-> returning void)
   end

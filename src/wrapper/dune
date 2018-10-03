@@ -1,7 +1,8 @@
 (library
   (name torch_core)
   (c_names torch_stubs)
-  (c_library_flags (-ltorch))
+  (cxx_names torch_api)
+  (c_library_flags :standard -lstdc++ -lpthread -lcaffe2 -ltorch)
   (no_dynlink)
   (modes native)
   (libraries bigarray ctypes.foreign ctypes.stubs ctypes))
