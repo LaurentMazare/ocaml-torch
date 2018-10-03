@@ -8,8 +8,8 @@ typedef at::Tensor *tensor;
 typedef void *tensor;
 #endif
 
-tensor at_zeros();
-tensor at_ones();
+tensor at_zeros(int *, int);
+tensor at_ones(int *, int);
 tensor at_add(tensor, tensor);
 void at_free(tensor);
 void at_print(tensor);
