@@ -26,6 +26,16 @@ module C(F: Cstubs.FOREIGN) = struct
         @-> int      (* num dims *)
         @-> returning t)
 
+    let num_dims = foreign "at_dim" (t @-> returning int)
+
+    let shape =
+      foreign "at_shape"
+        (   t
+        @-> ptr int  (* dims *)
+        @-> returning void)
+
+    let scalar_type = foreign "at_scalar_type" (t @-> returning int)
+
     let reshape =
       foreign "at_reshape"
         (   t

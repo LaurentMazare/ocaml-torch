@@ -19,6 +19,8 @@ module Tensor : sig
   val ones : ?kind:Kind.t -> int list -> t
   val rand : int list -> t
 
+  val shape : t -> int list
+  val kind : t -> Kind.t
   val reshape : t -> int list -> t
 
   val add : t -> t -> t

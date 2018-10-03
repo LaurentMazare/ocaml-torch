@@ -13,6 +13,10 @@ tensor at_ones(int *, int, int);
 tensor at_rand(int *, int);
 tensor at_reshape(tensor, int *, int);
 
+int at_dim(tensor);
+void at_shape(tensor, int *);
+int at_scalar_type(tensor);
+
 tensor at_add(tensor, tensor);
 tensor at_sub(tensor, tensor);
 tensor at_mul(tensor, tensor);

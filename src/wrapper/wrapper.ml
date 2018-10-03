@@ -16,6 +16,7 @@ module Kind = struct
     | ComplexFloat
     | ComplexDouble
 
+  (* Hardcoded, should match ScalarType.h *)
   let to_int = function
     | Uint8 -> 0
     | Int8 -> 1
@@ -28,6 +29,20 @@ module Kind = struct
     | ComplexHalf -> 8
     | ComplexFloat -> 9
     | ComplexDouble -> 10
+
+  let of_int_exn = function
+    | 0 -> Uint8
+    | 1 -> Int8
+    | 2 -> Int16
+    | 3 -> Int
+    | 4 -> Int64
+    | 5 -> Half
+    | 6 -> Float
+    | 7 -> Double
+    | 8 -> ComplexHalf
+    | 9 -> ComplexFloat
+    | 10 -> ComplexDouble
+    | d -> failwith (Printf.sprintf "unexpected kind %d" d)
 end
 
 module Tensor = struct
@@ -57,6 +72,14 @@ module Tensor = struct
     let tensor = reshape t dim_array (List.length dims) in
     Gc.finalise free tensor;
     tensor
+
+  let shape t =
+    let num_dims = num_dims t in
+    let carray = CArray.make int num_dims in
+    shape t (CArray.start carray);
+    CArray.to_list carray
+
+  let kind t = scalar_type t |> Kind.of_int_exn
 
   let add x y =
     let tensor = add x y in

@@ -42,6 +42,23 @@ tensor at_reshape(tensor t, int *dim_list, int dim_len) {
   )
 }
 
+int at_dim(tensor t) {
+  PROTECT(return t->dim();)
+}
+
+void at_shape(tensor t, int *dims) {
+  PROTECT(
+    int i = 0;
+    for (int dim : t->sizes()) dims[i++] = dim;
+  )
+}
+
+int at_scalar_type(tensor t) {
+  PROTECT(
+    return static_cast<int>(t->scalar_type());
+  )
+}
+
 tensor at_add(tensor t1, tensor t2) {
   PROTECT(
     return new at::Tensor(add(*t1, *t2));
