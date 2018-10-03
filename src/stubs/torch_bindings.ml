@@ -8,12 +8,14 @@ module C(F: Cstubs.FOREIGN) = struct
 
     let zeros =
       foreign "at_zeros"
-        (int
+        (   ptr int  (* dims *)
+        @-> int      (* num dims *)
         @-> returning t)
 
     let ones =
       foreign "at_ones"
-        (int
+        (   ptr int  (* dims *)
+        @-> int      (* num dims *)
         @-> returning t)
 
     let add =

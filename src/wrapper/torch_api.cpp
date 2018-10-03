@@ -1,20 +1,25 @@
 #include <ATen/ATen.h>
+#include<vector>
 #include "torch_api.h"
 
-tensor at_zeros() {
-  at::Tensor *t = new at::Tensor(at::zeros({4, 2}));
-  return t;
+using namespace std;
+
+tensor at_zeros(int *dim_list, int dim_len) {
+  vector<long int> dims;
+  for (int i = 0; i < dim_len; ++i)
+    dims.push_back(dim_list[i]);
+  return new at::Tensor(at::zeros(at::IntList(dims)));
 }
 
-tensor at_ones() {
-  at::Tensor *t = new at::Tensor(at::ones({4, 2}));
-  return t;
+tensor at_ones(int *dim_list, int dim_len) {
+  vector<long int> dims;
+  for (int i = 0; i < dim_len; ++i)
+    dims.push_back(dim_list[i]);
+  return new at::Tensor(at::ones(at::IntList(dims)));
 }
 
 tensor at_add(tensor t1, tensor t2) {
-  at::Tensor *tensor1 = (at::Tensor*)t1;
-  at::Tensor *tensor2 = (at::Tensor*)t2;
-  return new at::Tensor(at::add(*tensor1, *tensor2));
+  return new at::Tensor(t1->add(*t2));
 }
 
 void at_print(tensor t) {

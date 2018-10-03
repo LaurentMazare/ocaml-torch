@@ -1,10 +1,12 @@
 #ifndef __TORCH_API_H__
 #define __TORCH_API_H__
+
 #ifdef __cplusplus
 extern "C" {
-#endif
-
+typedef at::Tensor *tensor;
+#else
 typedef void *tensor;
+#endif
 
 tensor at_zeros();
 tensor at_ones();
@@ -15,4 +17,5 @@ void at_print(tensor);
 #ifdef __cplusplus
 };
 #endif
+
 #endif
