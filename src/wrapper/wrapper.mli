@@ -15,6 +15,11 @@ end
 
 module Tensor : sig
   type t
+
+  (* TODO: maybe use a GADT for these subtypes of Kind ? *)
+  val float_vec : ?kind:[ `half | `float | `double ] -> float list -> t
+  val int_vec : ?kind:[ `uint8 | `int8 | `int16 | `int | `int64 ] -> int list -> t
+
   val zeros : ?kind:Kind.t -> int list -> t
   val ones : ?kind:Kind.t -> int list -> t
   val rand : int list -> t
@@ -32,6 +37,9 @@ module Tensor : sig
 
   val backward : t -> unit
   val grad : t -> t
+
+  (* [set_requires_grad t ~b] modifies t and returns it back. *)
+  val set_requires_grad : t -> b:bool -> t
 
   val get : t -> int -> t
   val select : t -> dim:int -> index:int -> t

@@ -6,6 +6,20 @@ module C(F: Cstubs.FOREIGN) = struct
     type t = unit ptr
     let t : t typ = ptr void
 
+    let float_vec =
+      foreign "at_float_vec"
+        (   ptr double (* values *)
+        @-> int        (* num values *)
+        @-> int        (* kind *)
+        @-> returning t)
+
+    let int_vec =
+      foreign "at_int_vec"
+        (   ptr int64_t (* values *)
+        @-> int         (* num values *)
+        @-> int         (* kind *)
+        @-> returning t)
+
     let zeros =
       foreign "at_zeros"
         (   ptr int  (* dims *)
@@ -52,6 +66,8 @@ module C(F: Cstubs.FOREIGN) = struct
 
     let backward = foreign "at_backward" (t @-> returning void)
     let grad = foreign "at_grad" (t @-> returning t)
+    let set_requires_grad =
+      foreign "at_set_requires_grad" (t @-> int @-> returning t)
 
     let get = foreign "at_get" (t @-> int @-> returning t)
     let select = foreign "at_select" (t @-> int @-> int @-> returning t)

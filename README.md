@@ -2,15 +2,13 @@
 Experimental [PyTorch](https://pytorch.org) bindings in ocaml using [C++ API](https://pytorch.org/cppdocs/).
 The libtorch library can be downloaded from the [PyTorch website](https://pytorch.org/resources) ([latest cpu version](https://download.pytorch.org/libtorch/nightly/cpu/libtorch-shared-with-deps-latest.zip)).
 
-This currently only wraps the ATen and autodiff parts of PyTorch, maybe this will be extended to the rest of Torch later.
-
 ## Usage
 Extract the libtorch library in a `pytorch directory` then to build examples run:
 
 ```bash
 LD_LIBRARY_PATH=libtorch/lib:$LD_LIBRARY_PATH \
 LIBRARY_PATH=libtorch/lib:$LIBRARY_PATH \
-CPATH=libtorch/include:$CPATH \
+CPATH=libtorch/include:libtorch/include/torch/csrc/api/include:$CPATH \
 make all
 ```
 

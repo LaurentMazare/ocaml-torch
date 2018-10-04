@@ -1,4 +1,4 @@
-#include <ATen/ATen.h>
+#include <torch/torch.h>
 #include<vector>
 #include<caml/fail.h>
 #include "torch_api.h"
@@ -18,27 +18,43 @@ vector<long int> of_carray(int *vs, int len) {
   return result;
 }
 
+tensor at_float_vec(double *vs, int len, int type) {
+  PROTECT(
+    torch::Tensor tensor = torch::empty({len}, torch::ScalarType(type)); 
+    for (int i = 0; i < len; ++i) tensor[i] = vs[i];
+    return new torch::Tensor(tensor);
+  )
+}
+
+tensor at_int_vec(int64_t *vs, int len, int type) {
+  PROTECT(
+    torch::Tensor tensor = torch::empty({len}, torch::ScalarType(type)); 
+    for (int i = 0; i < len; ++i) tensor[i] = vs[i];
+    return new torch::Tensor(tensor);
+  )
+}
+
 tensor at_zeros(int *dim_list, int dim_len, int type) {
   PROTECT(
-    return new at::Tensor(at::zeros(of_carray(dim_list, dim_len), at::ScalarType(type)));
+    return new torch::Tensor(torch::zeros(of_carray(dim_list, dim_len), torch::ScalarType(type)));
   )
 }
 
 tensor at_ones(int *dim_list, int dim_len, int type) {
   PROTECT(
-    return new at::Tensor(at::ones(of_carray(dim_list, dim_len), at::ScalarType(type)));
+    return new torch::Tensor(torch::ones(of_carray(dim_list, dim_len), torch::ScalarType(type)));
   )
 }
 
 tensor at_rand(int *dim_list, int dim_len) {
   PROTECT(
-    return new at::Tensor(at::rand(of_carray(dim_list, dim_len)));
+    return new torch::Tensor(torch::rand(of_carray(dim_list, dim_len)));
   )
 }
 
 tensor at_reshape(tensor t, int *dim_list, int dim_len) {
   PROTECT(
-    return new at::Tensor(at::reshape(*t, of_carray(dim_list, dim_len)));
+    return new torch::Tensor(torch::reshape(*t, of_carray(dim_list, dim_len)));
   )
 }
 
@@ -61,37 +77,37 @@ int at_scalar_type(tensor t) {
 
 tensor at_add(tensor t1, tensor t2) {
   PROTECT(
-    return new at::Tensor(add(*t1, *t2));
+    return new torch::Tensor(add(*t1, *t2));
   )
 }
 
 tensor at_sub(tensor t1, tensor t2) {
   PROTECT(
-    return new at::Tensor(sub(*t1, *t2));
+    return new torch::Tensor(sub(*t1, *t2));
   )
 }
 
 tensor at_mul(tensor t1, tensor t2) {
   PROTECT(
-    return new at::Tensor(mul(*t1, *t2));
+    return new torch::Tensor(mul(*t1, *t2));
   )
 }
 
 tensor at_div(tensor t1, tensor t2) {
   PROTECT(
-    return new at::Tensor(div(*t1, *t2));
+    return new torch::Tensor(div(*t1, *t2));
   )
 }
 
 tensor at_pow(tensor t1, tensor t2) {
   PROTECT(
-    return new at::Tensor(pow(*t1, *t2));
+    return new torch::Tensor(pow(*t1, *t2));
   )
 }
 
 tensor at_matmul(tensor t1, tensor t2) {
   PROTECT(
-    return new at::Tensor(matmul(*t1, *t2));
+    return new torch::Tensor(matmul(*t1, *t2));
   )
 }
 
@@ -100,15 +116,19 @@ void at_backward(tensor t) {
 }
 
 tensor at_grad(tensor t) {
-  PROTECT(return new at::Tensor(t->grad());)
+  PROTECT(return new torch::Tensor(t->grad());)
+}
+
+tensor at_set_requires_grad(tensor t, int b) {
+  PROTECT(return new torch::Tensor(t->set_requires_grad(b));)
 }
 
 tensor at_get(tensor t, int index) {
-  PROTECT(return new at::Tensor((*t)[index]);)
+  PROTECT(return new torch::Tensor((*t)[index]);)
 }
 
 tensor at_select(tensor t, int dim, int index) {
-  PROTECT(return new at::Tensor(select(*t, dim, index));)
+  PROTECT(return new torch::Tensor(select(*t, dim, index));)
 }
 
 double at_double_value(tensor t) {
@@ -121,11 +141,11 @@ int64_t at_int64_value(tensor t) {
 
 void at_print(tensor t) {
   PROTECT(
-    at::Tensor *tensor = (at::Tensor*)t;
+    torch::Tensor *tensor = (torch::Tensor*)t;
     cout << *tensor << endl;
   )
 }
 
 void at_free(tensor t) {
-  free((at::Tensor *)t);
+  free(t);
 }

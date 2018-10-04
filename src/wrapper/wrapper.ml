@@ -49,29 +49,61 @@ module Tensor = struct
   open! C.Tensor
   type nonrec t = t
 
+  let float_vec ?(kind = `float) values =
+    let values_len = List.length values in
+    let values = CArray.of_list double values |> CArray.start in
+    let kind =
+      match kind with
+      | `float -> Kind.Float
+      | `double -> Double
+      | `half -> Half
+    in
+    let t = float_vec values values_len (Kind.to_int kind) in
+    Gc.finalise free t;
+    t
+
+  let int_vec ?(kind = `int) values =
+    let values_len = List.length values in
+    let values =
+      List.map Int64.of_int values
+      |> CArray.of_list int64_t
+      |> CArray.start
+    in
+    let kind =
+      match kind with
+      | `uint8 -> Kind.Uint8
+      | `int8 -> Int8
+      | `int16 -> Int16
+      | `int -> Int
+      | `int64 -> Int64
+    in
+    let t = int_vec values values_len (Kind.to_int kind) in
+    Gc.finalise free t;
+    t
+
   let zeros ?(kind=Kind.Float) dims =
     let dim_array = CArray.of_list int dims |> CArray.start in
-    let tensor = zeros dim_array (List.length dims) (Kind.to_int kind) in
-    Gc.finalise free tensor;
-    tensor
+    let t = zeros dim_array (List.length dims) (Kind.to_int kind) in
+    Gc.finalise free t;
+    t
 
   let ones ?(kind=Kind.Float) dims =
     let dim_array = CArray.of_list int dims |> CArray.start in
-    let tensor = ones dim_array (List.length dims) (Kind.to_int kind) in
-    Gc.finalise free tensor;
-    tensor
+    let t = ones dim_array (List.length dims) (Kind.to_int kind) in
+    Gc.finalise free t;
+    t
 
   let rand dims =
     let dim_array = CArray.of_list int dims |> CArray.start in
-    let tensor = rand dim_array (List.length dims) in
-    Gc.finalise free tensor;
-    tensor
+    let t = rand dim_array (List.length dims) in
+    Gc.finalise free t;
+    t
 
   let reshape t dims =
     let dim_array = CArray.of_list int dims |> CArray.start in
-    let tensor = reshape t dim_array (List.length dims) in
-    Gc.finalise free tensor;
-    tensor
+    let t = reshape t dim_array (List.length dims) in
+    Gc.finalise free t;
+    t
 
   let shape t =
     let num_dims = num_dims t in
@@ -82,39 +114,44 @@ module Tensor = struct
   let kind t = scalar_type t |> Kind.of_int_exn
 
   let add x y =
-    let tensor = add x y in
-    Gc.finalise free tensor;
-    tensor
+    let t = add x y in
+    Gc.finalise free t;
+    t
 
   let sub x y =
-    let tensor = sub x y in
-    Gc.finalise free tensor;
-    tensor
+    let t = sub x y in
+    Gc.finalise free t;
+    t
 
   let mul x y =
-    let tensor = mul x y in
-    Gc.finalise free tensor;
-    tensor
+    let t = mul x y in
+    Gc.finalise free t;
+    t
 
   let div x y =
-    let tensor = div x y in
-    Gc.finalise free tensor;
-    tensor
+    let t = div x y in
+    Gc.finalise free t;
+    t
 
   let pow x y =
-    let tensor = pow x y in
-    Gc.finalise free tensor;
-    tensor
+    let t = pow x y in
+    Gc.finalise free t;
+    t
 
   let matmul x y =
-    let tensor = matmul x y in
-    Gc.finalise free tensor;
-    tensor
+    let t = matmul x y in
+    Gc.finalise free t;
+    t
 
   let grad t =
     let grad = grad t in
     Gc.finalise free grad;
     grad
+
+  let set_requires_grad t ~b =
+    let t = set_requires_grad t (if b then 1 else 0) in
+    Gc.finalise free t;
+    t
 
   let get t index =
     let t = get t index in

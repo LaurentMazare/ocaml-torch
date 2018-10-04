@@ -4,15 +4,17 @@
 
 #ifdef __cplusplus
 extern "C" {
-typedef at::Tensor *tensor;
+typedef torch::Tensor *tensor;
 #else
 typedef void *tensor;
 #endif
 
-tensor at_zeros(int *, int, int);
-tensor at_ones(int *, int, int);
-tensor at_rand(int *, int);
-tensor at_reshape(tensor, int *, int);
+tensor at_float_vec(double *values, int value_len, int type);
+tensor at_int_vec(int64_t *values, int value_len, int type);
+tensor at_zeros(int *dims, int dim_len, int type);
+tensor at_ones(int *dims, int dim_len, int type);
+tensor at_rand(int *dims, int dim_len);
+tensor at_reshape(tensor, int *dims, int dim_len);
 
 int at_dim(tensor);
 void at_shape(tensor, int *);
@@ -27,6 +29,7 @@ tensor at_matmul(tensor, tensor);
 
 void at_backward(tensor);
 tensor at_grad(tensor);
+tensor at_set_requires_grad(tensor, int);
 
 tensor at_get(tensor, int index);
 tensor at_select(tensor, int dim, int index);
