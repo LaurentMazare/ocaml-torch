@@ -158,6 +158,14 @@ void at_print(tensor t) {
   )
 }
 
+void at_save(tensor t, char *filename) {
+  PROTECT(torch::save(*t, filename);)
+}
+
+tensor at_load(char *filename) {
+  PROTECT(return new torch::Tensor(torch::load(filename));)
+}
+
 void at_free(tensor t) {
   free(t);
 }

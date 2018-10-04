@@ -172,4 +172,9 @@ module Tensor = struct
 
   let backward = backward
   let print = print
+  let save t filename = save t filename
+  let load filename =
+    let t = load filename in
+    Gc.finalise free t;
+    t
 end

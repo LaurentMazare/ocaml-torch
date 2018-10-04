@@ -80,6 +80,8 @@ module C(F: Cstubs.FOREIGN) = struct
       foreign "at_set_double2" (t @-> int @-> int @-> float @-> returning void)
 
     let print = foreign "at_print" (t @-> returning void)
+    let save = foreign "at_save" (t @-> string @-> returning void)
+    let load = foreign "at_load" (string @-> returning t)
 
     let free = foreign "at_free" (t @-> returning void)
   end

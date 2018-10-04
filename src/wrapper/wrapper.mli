@@ -52,4 +52,6 @@ module Tensor : sig
   val fill_int : t -> int -> unit
 
   val print : t -> unit
+  val save : t -> string -> unit
+  val load : string -> t
 end
