@@ -165,6 +165,8 @@ module Tensor = struct
 
   let float_value t = double_value t
   let int_value t = int64_value t |> Int64.to_int
+  let fill_float t v = fill_double t v
+  let fill_int t i = fill_int64 t (Int64.of_int i)
 
   let backward = backward
   let print = print

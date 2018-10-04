@@ -4,6 +4,7 @@ let tensor_ops () =
   let tensor1 = Tensor.rand [4; 2] in
   let tensor2 = Tensor.ones [4; 2] in
   let sum = Tensor.add tensor1 tensor2 in
+  Tensor.fill_float (Tensor.get tensor1 1) 42.0;
   Tensor.print tensor1;
   Tensor.print tensor2;
   Tensor.print sum;

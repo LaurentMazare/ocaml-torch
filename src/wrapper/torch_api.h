@@ -35,6 +35,8 @@ tensor at_get(tensor, int index);
 tensor at_select(tensor, int dim, int index);
 double at_double_value(tensor);
 int64_t at_int64_value(tensor);
+void at_fill_double(tensor, double);
+void at_fill_int64(tensor, int64_t);
 
 void at_print(tensor);
 

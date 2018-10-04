@@ -139,6 +139,14 @@ int64_t at_int64_value(tensor t) {
   PROTECT(return t->item<int64_t>();)
 }
 
+void at_fill_double(tensor t, double v) {
+  PROTECT(t->fill_(v);)
+}
+
+void at_fill_int64(tensor t, int64_t v) {
+  PROTECT(t->fill_(v);)
+}
+
 void at_print(tensor t) {
   PROTECT(
     torch::Tensor *tensor = (torch::Tensor*)t;
