@@ -147,6 +147,10 @@ void at_fill_int64(tensor t, int64_t v) {
   PROTECT(t->fill_(v);)
 }
 
+void at_set_double2(tensor t, int dim1, int dim2, double v) {
+  PROTECT((*t)[dim1][dim2] = v;)
+}
+
 void at_print(tensor t) {
   PROTECT(
     torch::Tensor *tensor = (torch::Tensor*)t;

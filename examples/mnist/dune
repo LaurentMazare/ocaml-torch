@@ -1,0 +1,3 @@
+(executables
+  (names linear)
+  (libraries torch_core torch_tensor))

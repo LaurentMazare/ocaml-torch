@@ -12,6 +12,9 @@
 # ocamlbuild working directory
 _build/
 
+# dataset directory
+data/
+
 # ocamlbuild targets
 *.byte
 *.native

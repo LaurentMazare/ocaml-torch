@@ -1,4 +1,3 @@
 (executables
   (names torch_tensor)
   (libraries torch_core))
-

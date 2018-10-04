@@ -38,6 +38,8 @@ int64_t at_int64_value(tensor);
 void at_fill_double(tensor, double);
 void at_fill_int64(tensor, int64_t);
 
+void at_set_double2(tensor, int dim1, int dim2, double value);
+
 void at_print(tensor);
 
 void at_free(tensor);

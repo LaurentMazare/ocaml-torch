@@ -1,0 +1,3 @@
+(library
+  (name torch_tensor)
+  (libraries base stdio torch_core))
