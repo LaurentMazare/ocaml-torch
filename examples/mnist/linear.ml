@@ -25,8 +25,10 @@ let () =
     Tensor.backward loss;
 
     (* Apply gradient descent. *)
-    Tensor.sub_assign ws (Tensor.grad ws);
-    Tensor.sub_assign bs (Tensor.grad ws);
+    let wws = Tensor.set_requires_grad ~b:false ws in
+    let bbs = Tensor.set_requires_grad ~b:false bs in
+    Tensor.sub_assign wws (Tensor.grad ws);
+    Tensor.sub_assign bbs (Tensor.grad bs);
 
     (* Compute validation errors. *)
     let predicted_test_labels = model test_images in
@@ -38,5 +40,5 @@ let () =
       |> Tensor.float_value
       |> fun v -> v /. (Tensor.shape test_labels |> List.hd_exn |> Float.of_int)
     in
-    Stdio.printf "%d %.2f\n%!" index (100. *. validation_accuracy);
+    Stdio.printf "%d %f %.2f%%\n%!" index (Tensor.float_value loss) (100. *. validation_accuracy);
   done
