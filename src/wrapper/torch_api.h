@@ -1,5 +1,6 @@
 #ifndef __TORCH_API_H__
 #define __TORCH_API_H__
+#include<stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,6 +24,14 @@ tensor at_mul(tensor, tensor);
 tensor at_div(tensor, tensor);
 tensor at_pow(tensor, tensor);
 tensor at_matmul(tensor, tensor);
+
+void at_backward(tensor);
+tensor at_grad(tensor);
+
+tensor at_get(tensor, int index);
+tensor at_select(tensor, int dim, int index);
+double at_double_value(tensor);
+int64_t at_int64_value(tensor);
 
 void at_print(tensor);
 

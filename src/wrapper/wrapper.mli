@@ -30,5 +30,13 @@ module Tensor : sig
   val pow : t -> t -> t
   val matmul : t -> t -> t
 
+  val backward : t -> unit
+  val grad : t -> t
+
+  val get : t -> int -> t
+  val select : t -> dim:int -> index:int -> t
+  val float_value : t -> float
+  val int_value : t -> int
+
   val print : t -> unit
 end

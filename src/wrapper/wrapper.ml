@@ -111,5 +111,24 @@ module Tensor = struct
     Gc.finalise free tensor;
     tensor
 
+  let grad t =
+    let grad = grad t in
+    Gc.finalise free grad;
+    grad
+
+  let get t index =
+    let t = get t index in
+    Gc.finalise free t;
+    t
+
+  let select t ~dim ~index =
+    let t = select t dim index in
+    Gc.finalise free t;
+    t
+
+  let float_value t = double_value t
+  let int_value t = int64_value t |> Int64.to_int
+
+  let backward = backward
   let print = print
 end

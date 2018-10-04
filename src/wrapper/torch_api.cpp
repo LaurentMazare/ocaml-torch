@@ -95,6 +95,30 @@ tensor at_matmul(tensor t1, tensor t2) {
   )
 }
 
+void at_backward(tensor t) {
+  PROTECT(t->backward();)
+}
+
+tensor at_grad(tensor t) {
+  PROTECT(return new at::Tensor(t->grad());)
+}
+
+tensor at_get(tensor t, int index) {
+  PROTECT(return new at::Tensor((*t)[index]);)
+}
+
+tensor at_select(tensor t, int dim, int index) {
+  PROTECT(return new at::Tensor(select(*t, dim, index));)
+}
+
+double at_double_value(tensor t) {
+  PROTECT(return t->item<double>();)
+}
+
+int64_t at_int64_value(tensor t) {
+  PROTECT(return t->item<int64_t>();)
+}
+
 void at_print(tensor t) {
   PROTECT(
     at::Tensor *tensor = (at::Tensor*)t;

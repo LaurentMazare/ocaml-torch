@@ -50,14 +50,16 @@ module C(F: Cstubs.FOREIGN) = struct
     let pow = foreign "at_pow" (t @-> t @-> returning t)
     let matmul = foreign "at_matmul" (t @-> t @-> returning t)
 
-    let print =
-      foreign "at_print"
-        (t
-        @-> returning void)
+    let backward = foreign "at_backward" (t @-> returning void)
+    let grad = foreign "at_grad" (t @-> returning t)
 
-    let free =
-      foreign "at_free"
-        (t
-        @-> returning void)
+    let get = foreign "at_get" (t @-> int @-> returning t)
+    let select = foreign "at_select" (t @-> int @-> int @-> returning t)
+    let double_value = foreign "at_double_value" (t @-> returning float)
+    let int64_value = foreign "at_int64_value" (t @-> returning int64_t)
+
+    let print = foreign "at_print" (t @-> returning void)
+
+    let free = foreign "at_free" (t @-> returning void)
   end
 end
