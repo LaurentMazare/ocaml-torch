@@ -57,12 +57,22 @@ module C(F: Cstubs.FOREIGN) = struct
         @-> int      (* num dims *)
         @-> returning t)
 
+    let sum = foreign "at_sum" (t @-> returning t)
+    let mean = foreign "at_mean" (t @-> returning t)
+    let argmax = foreign "at_argmax" (t @-> returning t)
+    let softmax = foreign "at_softmax" (t @-> returning t)
+    let neg = foreign "at_neg" (t @-> returning t)
+    let log = foreign "at_log" (t @-> returning t)
+
     let add = foreign "at_add" (t @-> t @-> returning t)
     let mul = foreign "at_mul" (t @-> t @-> returning t)
     let sub = foreign "at_sub" (t @-> t @-> returning t)
     let div = foreign "at_div" (t @-> t @-> returning t)
     let pow = foreign "at_pow" (t @-> t @-> returning t)
     let matmul = foreign "at_matmul" (t @-> t @-> returning t)
+    let eq = foreign "at_eq" (t @-> t @-> returning t)
+
+    let sub_assign = foreign "at_sub_assign" (t @-> t @-> returning void)
 
     let backward = foreign "at_backward" (t @-> returning void)
     let grad = foreign "at_grad" (t @-> returning t)

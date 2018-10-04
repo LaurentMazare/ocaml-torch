@@ -28,12 +28,22 @@ module Tensor : sig
   val kind : t -> Kind.t
   val reshape : t -> int list -> t
 
+  val sum : t -> t
+  val mean : t -> t
+  val neg : t -> t
+  val log : t -> t
+  val argmax : t -> t
+  val softmax : t -> t
+
   val add : t -> t -> t
   val sub : t -> t -> t
   val mul : t -> t -> t
   val div : t -> t -> t
   val pow : t -> t -> t
   val matmul : t -> t -> t
+  val eq : t -> t -> t
+
+  val sub_assign : t -> t -> unit
 
   val backward : t -> unit
   val grad : t -> t

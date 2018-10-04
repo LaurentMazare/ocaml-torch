@@ -75,6 +75,48 @@ int at_scalar_type(tensor t) {
   )
 }
 
+tensor at_sum(tensor t) {
+  PROTECT(
+    return new torch::Tensor(sum(*t));
+  )
+}
+
+tensor at_mean(tensor t) {
+  PROTECT(
+    return new torch::Tensor(mean(*t));
+  )
+}
+
+tensor at_softmax(tensor t) {
+  PROTECT(
+    return new torch::Tensor(softmax(*t, -1));
+  )
+}
+
+tensor at_neg(tensor t) {
+  PROTECT(
+    return new torch::Tensor(neg(*t));
+  )
+}
+
+tensor at_log(tensor t) {
+  PROTECT(
+    return new torch::Tensor(log(*t));
+  )
+}
+
+tensor at_argmax(tensor t) {
+  PROTECT(
+    return new torch::Tensor(argmax(*t, -1, false));
+  )
+}
+
+void at_sub_assign(tensor t1, tensor t2) {
+  PROTECT(
+    *t1 -= *t2;
+  )
+}
+
 tensor at_add(tensor t1, tensor t2) {
   PROTECT(
     return new torch::Tensor(add(*t1, *t2));
@@ -108,6 +150,12 @@ tensor at_pow(tensor t1, tensor t2) {
 tensor at_matmul(tensor t1, tensor t2) {
   PROTECT(
     return new torch::Tensor(matmul(*t1, *t2));
+  )
+}
+
+tensor at_eq(tensor t1, tensor t2) {
+  PROTECT(
+    return new torch::Tensor(eq(*t1, *t2));
   )
 }
 

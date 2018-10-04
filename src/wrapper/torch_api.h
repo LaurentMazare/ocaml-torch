@@ -20,12 +20,21 @@ int at_dim(tensor);
 void at_shape(tensor, int *);
 int at_scalar_type(tensor);
 
+tensor at_sum(tensor);
+tensor at_mean(tensor);
+tensor at_argmax(tensor);
+tensor at_softmax(tensor);
+tensor at_neg(tensor);
+tensor at_log(tensor);
 tensor at_add(tensor, tensor);
 tensor at_sub(tensor, tensor);
 tensor at_mul(tensor, tensor);
 tensor at_div(tensor, tensor);
 tensor at_pow(tensor, tensor);
 tensor at_matmul(tensor, tensor);
+tensor at_eq(tensor, tensor);
+
+void at_sub_assign(tensor, tensor);
 
 void at_backward(tensor);
 tensor at_grad(tensor);

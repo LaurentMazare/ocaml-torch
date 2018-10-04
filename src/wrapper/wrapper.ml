@@ -177,4 +177,41 @@ module Tensor = struct
     let t = load filename in
     Gc.finalise free t;
     t
+
+  let sum t =
+    let t = sum t in
+    Gc.finalise free t;
+    t
+
+  let mean t =
+    let t = sum t in
+    Gc.finalise free t;
+    t
+
+  let argmax t =
+    let t = argmax t in
+    Gc.finalise free t;
+    t
+
+  let softmax t =
+    let t = softmax t in
+    Gc.finalise free t;
+    t
+
+  let neg t =
+    let t = neg t in
+    Gc.finalise free t;
+    t
+
+  let log t =
+    let t = log t in
+    Gc.finalise free t;
+    t
+
+  let eq t1 t2 =
+    let t = eq t1 t2 in
+    Gc.finalise free t;
+    t
+
+  let sub_assign = sub_assign
 end
