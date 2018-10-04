@@ -24,7 +24,7 @@ let read_images filename =
   for sample = 0 to samples - 1 do
     for idx = 0 to rows * columns - 1 do
       let v = Option.value_exn (In_channel.input_byte in_channel) in
-      Tensor.set_float2 data sample idx Float.(of_int v / 255.);
+      Tensor.set_float2 data sample idx Float.(of_int v / 255.)
     done;
   done;
   In_channel.close in_channel;
