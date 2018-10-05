@@ -99,7 +99,7 @@ module Tensor = struct
     Gc.finalise free t;
     t
 
-  let reshape t dims =
+  let reshape t ~dims =
     let dim_array = CArray.of_list int dims |> CArray.start in
     let t = reshape t dim_array (List.length dims) in
     Gc.finalise free t;
@@ -184,7 +184,7 @@ module Tensor = struct
     t
 
   let mean t =
-    let t = sum t in
+    let t = mean t in
     Gc.finalise free t;
     t
 

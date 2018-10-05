@@ -8,7 +8,7 @@ let tensor_ops () =
   Tensor.print tensor1;
   Tensor.print tensor2;
   Tensor.print sum;
-  Tensor.print (Tensor.reshape sum [8]);
+  Tensor.print (Tensor.reshape sum ~dims:[8]);
   let v = Tensor.get sum 3 |> fun t -> Tensor.get t 0 |> Tensor.float_value in
   Printf.printf "sum[3] = %f\n%!" v
 

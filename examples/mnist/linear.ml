@@ -14,12 +14,16 @@ let () =
     |> Tensor.set_requires_grad ~b:true
   in
   let model xs = Tensor.matmul xs ws |> Tensor.add bs |> Tensor.softmax in
-  for index = 1 to 1000 do
+  let epsilon = Tensor.float_vec [1e-6] |> Tensor.reshape ~dims:[] in
+  let learning_rate = Tensor.float_vec [1e-2] |> Tensor.reshape ~dims:[] in
+  for index = 1 to 50 do
     let predicted_train_labels = model train_images in
 
     (* Compute the cross-entropy loss. *)
     let loss =
-      Tensor.mul (Tensor.neg train_labels) (Tensor.log predicted_train_labels)
+      Tensor.mul
+        (Tensor.neg train_labels)
+        (Tensor.log (Tensor.add epsilon predicted_train_labels))
       |> Tensor.mean
     in
     Tensor.backward loss;
@@ -27,8 +31,8 @@ let () =
     (* Apply gradient descent. *)
     let wws = Tensor.set_requires_grad ~b:false ws in
     let bbs = Tensor.set_requires_grad ~b:false bs in
-    Tensor.sub_assign wws (Tensor.grad ws);
-    Tensor.sub_assign bbs (Tensor.grad bs);
+    Tensor.sub_assign wws (Tensor.mul learning_rate (Tensor.grad ws));
+    Tensor.sub_assign bbs (Tensor.mul learning_rate (Tensor.grad bs));
 
     (* Compute validation errors. *)
     let predicted_test_labels = model test_images in

@@ -26,7 +26,7 @@ module Tensor : sig
 
   val shape : t -> int list
   val kind : t -> Kind.t
-  val reshape : t -> int list -> t
+  val reshape : t -> dims:int list -> t
 
   val sum : t -> t
   val mean : t -> t
