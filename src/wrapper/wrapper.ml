@@ -148,6 +148,11 @@ module Tensor = struct
     Gc.finalise free grad;
     grad
 
+  let requires_grad t =
+    if requires_grad t <> 0
+    then true
+    else false
+
   let set_requires_grad t ~b =
     let t = set_requires_grad t (if b then 1 else 0) in
     Gc.finalise free t;

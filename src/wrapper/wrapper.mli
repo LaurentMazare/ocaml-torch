@@ -50,6 +50,7 @@ module Tensor : sig
 
   (* [set_requires_grad t ~b] modifies t and returns it back. *)
   val set_requires_grad : t -> b:bool -> t
+  val requires_grad : t -> bool
 
   val get : t -> int -> t
   val select : t -> dim:int -> index:int -> t

@@ -78,6 +78,8 @@ module C(F: Cstubs.FOREIGN) = struct
     let grad = foreign "at_grad" (t @-> returning t)
     let set_requires_grad =
       foreign "at_set_requires_grad" (t @-> int @-> returning t)
+    let requires_grad =
+      foreign "at_requires_grad" (t @-> returning int)
 
     let get = foreign "at_get" (t @-> int @-> returning t)
     let select = foreign "at_select" (t @-> int @-> int @-> returning t)

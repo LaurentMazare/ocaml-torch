@@ -39,6 +39,7 @@ void at_sub_assign(tensor, tensor);
 void at_backward(tensor);
 tensor at_grad(tensor);
 tensor at_set_requires_grad(tensor, int);
+int at_requires_grad(tensor);
 
 tensor at_get(tensor, int index);
 tensor at_select(tensor, int dim, int index);

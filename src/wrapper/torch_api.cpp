@@ -171,6 +171,10 @@ tensor at_set_requires_grad(tensor t, int b) {
   PROTECT(return new torch::Tensor(t->set_requires_grad(b));)
 }
 
+int at_requires_grad(tensor t) {
+  PROTECT(return t->requires_grad();)
+}
+
 tensor at_get(tensor t, int index) {
   PROTECT(return new torch::Tensor((*t)[index]);)
 }
