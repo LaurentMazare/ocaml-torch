@@ -21,21 +21,18 @@ let () =
   let bs = Tensor.zeros [Mnist_helper.label_count] ~requires_grad:true in
   let model xs = Tensor.(softmax (mm xs ws + bs)) in
   for index = 1 to 100 do
-    let train_ys = model train_images in
-
     (* Compute the cross-entropy loss. *)
-    let loss = Tensor.(mean (- train_labels * log (train_ys +f 1e-6))) in
+    let loss = Tensor.(mean (- train_labels * log (model train_images +f 1e-6))) in
 
     Tensor.backward loss;
 
-    (* Apply gradient descent. *)
-    Tensor.(no_grad ws ~f:(fun ws -> sub_assign ws (grad ws *f learning_rate)));
-    Tensor.(no_grad bs ~f:(fun bs -> sub_assign bs (grad bs *f learning_rate)));
+    (* Apply gradient descent, disable gradient tracking for these. *)
+    Tensor.(no_grad ws ~f:(fun ws -> ws -= grad ws *f learning_rate));
+    Tensor.(no_grad bs ~f:(fun bs -> bs -= grad bs *f learning_rate));
 
     (* Compute the validation error. *)
-    let test_ys = model test_images in
     let test_accuracy =
-      Tensor.(sum (argmax test_ys = argmax test_labels) |> float_value)
+      Tensor.(sum (argmax (model test_images) = argmax test_labels) |> float_value)
       |> fun sum -> sum /. Float.of_int (Tensor.shape test_images |> List.hd_exn)
     in
     Stdio.printf "%d %f %.2f%%\n%!" index (Tensor.float_value loss) (100. *. test_accuracy);
