@@ -227,5 +227,5 @@ tensor at_load(char *filename) {
 }
 
 void at_free(tensor t) {
-  free(t);
+  delete(t);
 }
