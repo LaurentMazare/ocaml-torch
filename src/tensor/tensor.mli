@@ -25,3 +25,4 @@ val (=) : t -> t -> t
 
 val mm : t -> t -> t
 val f : float -> t
+val zeros : ?requires_grad:bool -> ?kind:Torch_core.Wrapper.Kind.t -> int list -> t

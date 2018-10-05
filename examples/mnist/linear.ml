@@ -17,14 +17,8 @@ let () =
   let { Mnist_helper.train_images; train_labels; test_images; test_labels } =
     Mnist_helper.read_files ()
   in
-  let ws =
-    Tensor.zeros [Mnist_helper.image_dim; Mnist_helper.label_count]
-    |> Tensor.set_requires_grad ~b:true
-  in
-  let bs =
-    Tensor.zeros [Mnist_helper.label_count]
-    |> Tensor.set_requires_grad ~b:true
-  in
+  let ws = Tensor.zeros Mnist_helper. [image_dim; label_count] ~requires_grad:true in
+  let bs = Tensor.zeros [Mnist_helper.label_count] ~requires_grad:true in
   let model xs = Tensor.(softmax (mm xs ws + bs)) in
   for index = 1 to 100 do
     let train_ys = model train_images in

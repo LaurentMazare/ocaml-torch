@@ -20,6 +20,12 @@ let no_grad t ~f =
     result
   else f t
 
+let zeros ?(requires_grad = false) ?kind dims =
+  let t = zeros ?kind dims in
+  if requires_grad
+  then set_requires_grad t ~b:true
+  else t
+
 let f v = float_vec [ v ] |> reshape ~dims:[]
 let mm = matmul
 
