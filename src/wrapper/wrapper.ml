@@ -1,6 +1,4 @@
-open! Ctypes
-
-module C = Torch_bindings.C(Torch_generated)
+open Ctypes
 
 module Kind = struct
   type t =
@@ -46,6 +44,7 @@ module Kind = struct
 end
 
 module Tensor = struct
+  include Wrapper_generated
   open! C.Tensor
   type nonrec t = t
 
@@ -93,17 +92,7 @@ module Tensor = struct
     Gc.finalise free t;
     t
 
-  let rand dims =
-    let dim_array = CArray.of_list int dims |> CArray.start in
-    let t = rand dim_array (List.length dims) in
-    Gc.finalise free t;
-    t
-
-  let reshape t ~dims =
-    let dim_array = CArray.of_list int dims |> CArray.start in
-    let t = reshape t dim_array (List.length dims) in
-    Gc.finalise free t;
-    t
+  let reshape t ~dims = reshape t dims
 
   let shape t =
     let num_dims = num_dims t in
@@ -113,33 +102,8 @@ module Tensor = struct
 
   let kind t = scalar_type t |> Kind.of_int_exn
 
-  let add x y =
-    let t = add x y in
-    Gc.finalise free t;
-    t
-
-  let sub x y =
-    let t = sub x y in
-    Gc.finalise free t;
-    t
-
-  let mul x y =
-    let t = mul x y in
-    Gc.finalise free t;
-    t
-
-  let div x y =
-    let t = div x y in
-    Gc.finalise free t;
-    t
-
   let pow x y =
     let t = pow x y in
-    Gc.finalise free t;
-    t
-
-  let matmul x y =
-    let t = matmul x y in
     Gc.finalise free t;
     t
 

@@ -97,6 +97,30 @@ module Func = struct
     )
     |> String.concat ~sep:" @-> "
     |> Printf.sprintf "%s @-> returning t"
+
+  let replace_map =
+    Map.of_alist_exn (module String)
+      [ "end", "end_"
+      ]
+
+  let caml_name arg =
+    Map.find replace_map arg.arg_name |> Option.value ~default:arg.arg_name
+    |> String.lowercase
+
+  let caml_args t =
+    List.map t.args ~f:caml_name
+    |> String.concat ~sep:" "
+
+  let caml_binding_args t =
+    List.map t.args ~f:(fun arg ->
+      let name = caml_name arg in
+      match arg.arg_type with
+      | IntList ->
+        Printf.sprintf
+          "(CArray.of_list int %s |> CArray.start) (List.length %s)"
+          name name
+      | _ -> name)
+    |> String.concat ~sep:" "
 end
 
 exception Not_a_simple_arg
@@ -211,19 +235,34 @@ let write_stubs funcs filename =
     p "";
     p "module C(F: Cstubs.FOREIGN) = struct";
     p "  open F";
-    p "  module TensorG = struct";
-    p "    type t = unit ptr";
-    p "    let t : t typ = ptr void";
+    p "  type t = unit ptr";
+    p "  let t : t typ = ptr void";
     Map.iteri funcs ~f:(fun ~key:exported_name ~data:func ->
-      p "    let %s =" exported_name;
-      p "      foreign \"atg_%s\"" exported_name;
-      p "      (%s)" (Func.stubs_signature func);
+      p "  let %s =" exported_name;
+      p "    foreign \"atg_%s\"" exported_name;
+      p "    (%s)" (Func.stubs_signature func);
       p "";
     );
-    p "  end";
     p "end")
 
-let run ~yaml_filename ~cpp_filename ~stubs_filename =
+let write_wrapper funcs filename =
+  Out_channel.with_file filename ~f:(fun out_channel ->
+    let p s = p out_channel s in
+    p "open Ctypes";
+    p "";
+    p "module C = Torch_bindings.C(Torch_generated)";
+    p "open C.TensorG";
+    p "";
+    Map.iteri funcs ~f:(fun ~key:exported_name ~data:func ->
+      p "let %s %s =" exported_name (Func.caml_args func);
+      p "  let t = %s %s in" exported_name (Func.caml_binding_args func);
+      p "  Gc.finalise C.Tensor.free t;";
+      p "  t";
+      p "";
+    )
+  )
+
+let run ~yaml_filename ~cpp_filename ~stubs_filename ~wrapper_filename =
   let funcs = read_yaml yaml_filename in
   printf "Generating code for %d functions.\n%!" (List.length funcs);
   (* Generate some unique names for overloaded functions. *)
@@ -242,10 +281,12 @@ let run ~yaml_filename ~cpp_filename ~stubs_filename =
     |> Map.of_alist_exn (module String)
   in
   write_cpp funcs cpp_filename;
-  write_stubs funcs stubs_filename
+  write_stubs funcs stubs_filename;
+  write_wrapper funcs wrapper_filename
 
 let () =
   run
     ~yaml_filename:"data/native_functions.yaml"
     ~cpp_filename:"src/wrapper/torch_api_generated"
     ~stubs_filename:"src/stubs/torch_bindings_generated.ml"
+    ~wrapper_filename:"src/wrapper/wrapper_generated.ml"

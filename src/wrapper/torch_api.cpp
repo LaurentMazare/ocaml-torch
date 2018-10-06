@@ -45,12 +45,6 @@ tensor at_rand(int *dim_list, int dim_len) {
   )
 }
 
-tensor at_reshape(tensor t, int *dim_list, int dim_len) {
-  PROTECT(
-    return new torch::Tensor(torch::reshape(*t, of_carray(dim_list, dim_len)));
-  )
-}
-
 int at_dim(tensor t) {
   PROTECT(return t->dim();)
 }
@@ -107,30 +101,6 @@ tensor at_argmax(tensor t) {
 void at_sub_assign(tensor t1, tensor t2) {
   PROTECT(
     *t1 -= *t2;
-  )
-}
-
-tensor at_add(tensor t1, tensor t2) {
-  PROTECT(
-    return new torch::Tensor(add(*t1, *t2));
-  )
-}
-
-tensor at_sub(tensor t1, tensor t2) {
-  PROTECT(
-    return new torch::Tensor(sub(*t1, *t2));
-  )
-}
-
-tensor at_mul(tensor t1, tensor t2) {
-  PROTECT(
-    return new torch::Tensor(mul(*t1, *t2));
-  )
-}
-
-tensor at_div(tensor t1, tensor t2) {
-  PROTECT(
-    return new torch::Tensor(div(*t1, *t2));
   )
 }
 
