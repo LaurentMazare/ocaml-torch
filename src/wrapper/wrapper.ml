@@ -97,16 +97,4 @@ module Tensor = struct
   let argmax t = argmax1 t (Int64.of_int (-1)) false
 
   let softmax t = softmax t (Int64.of_int (-1))
-
-  let neg t =
-    let t = neg t in
-    Gc.finalise free t;
-    t
-
-  let eq t1 t2 =
-    let t = eq t1 t2 in
-    Gc.finalise free t;
-    t
-
-  let sub_assign = sub_assign
 end

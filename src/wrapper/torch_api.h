@@ -22,11 +22,6 @@ int at_dim(tensor);
 void at_shape(tensor, int *);
 int at_scalar_type(tensor);
 
-tensor at_neg(tensor);
-tensor at_eq(tensor, tensor);
-
-void at_sub_assign(tensor, tensor);
-
 void at_backward(tensor);
 tensor at_grad(tensor);
 tensor at_set_requires_grad(tensor, int);

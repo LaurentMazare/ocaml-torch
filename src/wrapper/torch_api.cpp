@@ -44,24 +44,6 @@ int at_scalar_type(tensor t) {
   )
 }
 
-tensor at_neg(tensor t) {
-  PROTECT(
-    return new torch::Tensor(neg(*t));
-  )
-}
-
-void at_sub_assign(tensor t1, tensor t2) {
-  PROTECT(
-    *t1 -= *t2;
-  )
-}
-
-tensor at_eq(tensor t1, tensor t2) {
-  PROTECT(
-    return new torch::Tensor(eq(*t1, *t2));
-  )
-}
-
 void at_backward(tensor t) {
   PROTECT(t->backward();)
 }

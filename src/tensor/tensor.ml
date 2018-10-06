@@ -40,5 +40,8 @@ let ( * ) = mul
 let (/) = div
 
 let (~-) = neg
-let (-=) = sub_assign
+let (-=) t other = ignore (sub_ t other : t)
+let (+=) t other = ignore (add_ t other : t)
+let (/=) t other = ignore (div_ t other : t)
+let ( *=) t other = ignore (mul_ t other : t)
 let (=) = eq

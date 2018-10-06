@@ -49,6 +49,12 @@ tensor atg_add(tensor self, tensor other) {
   )
 }
 
+tensor atg_add_(tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(self->add_(*other));
+  )
+}
+
 tensor atg_add_out(tensor result, tensor self, tensor other) {
   PROTECT(
     return new torch::Tensor(torch::add_out(*result, *self, *other));
@@ -529,6 +535,12 @@ tensor atg_div(tensor self, tensor other) {
   )
 }
 
+tensor atg_div_(tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(self->div_(*other));
+  )
+}
+
 tensor atg_div_out(tensor result, tensor self, tensor other) {
   PROTECT(
     return new torch::Tensor(torch::div_out(*result, *self, *other));
@@ -586,6 +598,12 @@ tensor atg_empty_out(tensor result, int *size_data, int size_len) {
 tensor atg_empty_strided(int *size_data, int size_len, int *stride_data, int stride_len, int options) {
   PROTECT(
     return new torch::Tensor(torch::empty_strided(of_carray(size_data, size_len), of_carray(stride_data, stride_len), torch::ScalarType(options)));
+  )
+}
+
+tensor atg_eq(tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(self->eq(*other));
   )
 }
 
@@ -1153,6 +1171,12 @@ tensor atg_mul(tensor self, tensor other) {
   )
 }
 
+tensor atg_mul_(tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(self->mul_(*other));
+  )
+}
+
 tensor atg_mul_out(tensor result, tensor self, tensor other) {
   PROTECT(
     return new torch::Tensor(torch::mul_out(*result, *self, *other));
@@ -1204,6 +1228,12 @@ tensor atg_native_resize_as_(tensor self, tensor the_template) {
 tensor atg_native_zero_(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::native_zero_(*self));
+  )
+}
+
+tensor atg_neg(tensor self) {
+  PROTECT(
+    return new torch::Tensor(self->neg());
   )
 }
 
@@ -1702,6 +1732,12 @@ tensor atg_std_out(tensor result, tensor self, int64_t dim, int unbiased, int ke
 tensor atg_sub(tensor self, tensor other) {
   PROTECT(
     return new torch::Tensor(torch::sub(*self, *other));
+  )
+}
+
+tensor atg_sub_(tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(self->sub_(*other));
   )
 }
 

@@ -36,6 +36,10 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_add"
     (t @-> t @-> returning t)
 
+  let add_ =
+    foreign "atg_add_"
+    (t @-> t @-> returning t)
+
   let add_out =
     foreign "atg_add_out"
     (t @-> t @-> t @-> returning t)
@@ -356,6 +360,10 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_div"
     (t @-> t @-> returning t)
 
+  let div_ =
+    foreign "atg_div_"
+    (t @-> t @-> returning t)
+
   let div_out =
     foreign "atg_div_out"
     (t @-> t @-> t @-> returning t)
@@ -395,6 +403,10 @@ module C(F: Cstubs.FOREIGN) = struct
   let empty_strided =
     foreign "atg_empty_strided"
     (ptr int @-> int @-> ptr int @-> int @-> int @-> returning t)
+
+  let eq =
+    foreign "atg_eq"
+    (t @-> t @-> returning t)
 
   let erf =
     foreign "atg_erf"
@@ -772,6 +784,10 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_mul"
     (t @-> t @-> returning t)
 
+  let mul_ =
+    foreign "atg_mul_"
+    (t @-> t @-> returning t)
+
   let mul_out =
     foreign "atg_mul_out"
     (t @-> t @-> t @-> returning t)
@@ -806,6 +822,10 @@ module C(F: Cstubs.FOREIGN) = struct
 
   let native_zero_ =
     foreign "atg_native_zero_"
+    (t @-> returning t)
+
+  let neg =
+    foreign "atg_neg"
     (t @-> returning t)
 
   let norm =
@@ -1138,6 +1158,10 @@ module C(F: Cstubs.FOREIGN) = struct
 
   let sub =
     foreign "atg_sub"
+    (t @-> t @-> returning t)
+
+  let sub_ =
+    foreign "atg_sub_"
     (t @-> t @-> returning t)
 
   let sub_out =

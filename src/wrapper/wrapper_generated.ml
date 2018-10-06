@@ -43,6 +43,11 @@ let add self other =
   Gc.finalise C.Tensor.free t;
   t
 
+let add_ self other =
+  let t = add_ self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let add_out result self other =
   let t = add_out result self other in
   Gc.finalise C.Tensor.free t;
@@ -443,6 +448,11 @@ let div self other =
   Gc.finalise C.Tensor.free t;
   t
 
+let div_ self other =
+  let t = div_ self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let div_out result self other =
   let t = div_out result self other in
   Gc.finalise C.Tensor.free t;
@@ -490,6 +500,11 @@ let empty_out result size =
 
 let empty_strided size stride options =
   let t = empty_strided (CArray.of_list int size |> CArray.start) (List.length size) (CArray.of_list int stride |> CArray.start) (List.length stride) (Kind.to_int options) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let eq self other =
+  let t = eq self other in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -963,6 +978,11 @@ let mul self other =
   Gc.finalise C.Tensor.free t;
   t
 
+let mul_ self other =
+  let t = mul_ self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let mul_out result self other =
   let t = mul_out result self other in
   Gc.finalise C.Tensor.free t;
@@ -1005,6 +1025,11 @@ let native_resize_as_ self the_template =
 
 let native_zero_ self =
   let t = native_zero_ self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let neg self =
+  let t = neg self in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1420,6 +1445,11 @@ let std_out result self dim unbiased keepdim =
 
 let sub self other =
   let t = sub self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let sub_ self other =
+  let t = sub_ self other in
   Gc.finalise C.Tensor.free t;
   t
 

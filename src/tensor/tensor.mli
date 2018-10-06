@@ -20,7 +20,10 @@ val (+) : t -> t -> t
 val (-) : t -> t -> t
 val ( * ) : t -> t -> t
 val (/) : t -> t -> t
+val (+=) : t -> t -> unit
 val (-=) : t -> t -> unit
+val ( *=) : t -> t -> unit
+val (/=) : t -> t -> unit
 val (~-) : t -> t
 val (=) : t -> t -> t
 
