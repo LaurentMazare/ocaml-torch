@@ -1,6 +1,6 @@
 (* TODO: proper types for Tensor1D, Tensor2D, Tensor3D, ... ? *)
 (* TODO: GADT for array element types ? *)
-include module type of Torch_core.Wrapper.Tensor
+type t
 
 val set_float2 : t -> int -> int -> float -> unit
 val set_float1 : t -> int -> float -> unit
@@ -14,6 +14,7 @@ val get_int1 : t -> int -> int
 
 (* [no_grad t ~f] runs [f] on [t] without tracking gradients for t. *)
 val no_grad : t -> f:(t -> 'a) -> 'a
+val zero_grad : t -> unit
 
 val (+) : t -> t -> t
 val (-) : t -> t -> t
@@ -26,3 +27,16 @@ val (=) : t -> t -> t
 val mm : t -> t -> t
 val f : float -> t
 val zeros : ?requires_grad:bool -> ?kind:Torch_core.Kind.t -> int list -> t
+
+val shape : t -> int list
+val load : string -> t
+val save : t -> string -> unit
+
+val backward : t -> unit
+val log : t -> t
+val softmax : t -> t
+val mean : t -> t
+val grad : t -> t
+val sum : t -> t
+val argmax : t -> t
+val float_value : t -> float

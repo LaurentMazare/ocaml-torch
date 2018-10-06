@@ -20,6 +20,10 @@ let no_grad t ~f =
     result
   else f t
 
+let zero_grad t =
+  ignore (detach_ t : t);
+  ignore (zero_ t : t)
+
 let zeros ?(requires_grad = false) ?kind dims =
   let t = zeros ?kind dims in
   if requires_grad
