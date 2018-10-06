@@ -43,6 +43,12 @@ tensor atg_acos_out(tensor result, tensor self) {
   )
 }
 
+tensor atg_adaptive_avg_pool1d(tensor self, int *output_size_data, int output_size_len) {
+  PROTECT(
+    return new torch::Tensor(torch::adaptive_avg_pool1d(*self, of_carray(output_size_data, output_size_len)));
+  )
+}
+
 tensor atg_add(tensor self, tensor other) {
   PROTECT(
     return new torch::Tensor(torch::add(*self, *other));
@@ -157,6 +163,30 @@ tensor atg_argmin2(tensor self) {
   )
 }
 
+tensor atg_as_strided1(tensor self, int *size_data, int size_len, int *stride_data, int stride_len) {
+  PROTECT(
+    return new torch::Tensor(torch::as_strided(*self, of_carray(size_data, size_len), of_carray(stride_data, stride_len)));
+  )
+}
+
+tensor atg_as_strided2(tensor self, int *size_data, int size_len, int *stride_data, int stride_len, int64_t storage_offset) {
+  PROTECT(
+    return new torch::Tensor(torch::as_strided(*self, of_carray(size_data, size_len), of_carray(stride_data, stride_len), storage_offset));
+  )
+}
+
+tensor atg_as_strided_1(tensor self, int *size_data, int size_len, int *stride_data, int stride_len) {
+  PROTECT(
+    return new torch::Tensor(torch::as_strided_(*self, of_carray(size_data, size_len), of_carray(stride_data, stride_len)));
+  )
+}
+
+tensor atg_as_strided_2(tensor self, int *size_data, int size_len, int *stride_data, int stride_len, int64_t storage_offset) {
+  PROTECT(
+    return new torch::Tensor(torch::as_strided_(*self, of_carray(size_data, size_len), of_carray(stride_data, stride_len), storage_offset));
+  )
+}
+
 tensor atg_asin(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::asin(*self));
@@ -190,6 +220,12 @@ tensor atg_atan_(tensor self) {
 tensor atg_atan_out(tensor result, tensor self) {
   PROTECT(
     return new torch::Tensor(torch::atan_out(*result, *self));
+  )
+}
+
+tensor atg_avg_pool1d(tensor self, int *kernel_size_data, int kernel_size_len, int *stride_data, int stride_len, int *padding_data, int padding_len, int ceil_mode, int count_include_pad) {
+  PROTECT(
+    return new torch::Tensor(torch::avg_pool1d(*self, of_carray(kernel_size_data, kernel_size_len), of_carray(stride_data, stride_len), of_carray(padding_data, padding_len), (bool)ceil_mode, (bool)count_include_pad));
   )
 }
 
@@ -295,21 +331,21 @@ tensor atg_clone(tensor self) {
   )
 }
 
-tensor atg_conv1d(tensor input, tensor weight, tensor bias, int64_t groups) {
+tensor atg_conv1d(tensor input, tensor weight, tensor bias, int *stride_data, int stride_len, int *padding_data, int padding_len, int *dilation_data, int dilation_len, int64_t groups) {
   PROTECT(
-    return new torch::Tensor(torch::conv1d(*input, *weight, *bias, groups));
+    return new torch::Tensor(torch::conv1d(*input, *weight, *bias, of_carray(stride_data, stride_len), of_carray(padding_data, padding_len), of_carray(dilation_data, dilation_len), groups));
   )
 }
 
-tensor atg_conv2d(tensor input, tensor weight, tensor bias, int64_t groups) {
+tensor atg_conv2d(tensor input, tensor weight, tensor bias, int *stride_data, int stride_len, int *padding_data, int padding_len, int *dilation_data, int dilation_len, int64_t groups) {
   PROTECT(
-    return new torch::Tensor(torch::conv2d(*input, *weight, *bias, groups));
+    return new torch::Tensor(torch::conv2d(*input, *weight, *bias, of_carray(stride_data, stride_len), of_carray(padding_data, padding_len), of_carray(dilation_data, dilation_len), groups));
   )
 }
 
-tensor atg_conv3d(tensor input, tensor weight, tensor bias, int64_t groups) {
+tensor atg_conv3d(tensor input, tensor weight, tensor bias, int *stride_data, int stride_len, int *padding_data, int padding_len, int *dilation_data, int dilation_len, int64_t groups) {
   PROTECT(
-    return new torch::Tensor(torch::conv3d(*input, *weight, *bias, groups));
+    return new torch::Tensor(torch::conv3d(*input, *weight, *bias, of_carray(stride_data, stride_len), of_carray(padding_data, padding_len), of_carray(dilation_data, dilation_len), groups));
   )
 }
 
@@ -319,21 +355,21 @@ tensor atg_conv_tbc(tensor self, tensor weight, tensor bias, int64_t pad) {
   )
 }
 
-tensor atg_conv_transpose1d(tensor input, tensor weight, tensor bias, int64_t groups) {
+tensor atg_conv_transpose1d(tensor input, tensor weight, tensor bias, int *stride_data, int stride_len, int *padding_data, int padding_len, int *output_padding_data, int output_padding_len, int64_t groups, int *dilation_data, int dilation_len) {
   PROTECT(
-    return new torch::Tensor(torch::conv_transpose1d(*input, *weight, *bias, groups));
+    return new torch::Tensor(torch::conv_transpose1d(*input, *weight, *bias, of_carray(stride_data, stride_len), of_carray(padding_data, padding_len), of_carray(output_padding_data, output_padding_len), groups, of_carray(dilation_data, dilation_len)));
   )
 }
 
-tensor atg_conv_transpose2d(tensor input, tensor weight, tensor bias, int64_t groups) {
+tensor atg_conv_transpose2d(tensor input, tensor weight, tensor bias, int *stride_data, int stride_len, int *padding_data, int padding_len, int *output_padding_data, int output_padding_len, int64_t groups, int *dilation_data, int dilation_len) {
   PROTECT(
-    return new torch::Tensor(torch::conv_transpose2d(*input, *weight, *bias, groups));
+    return new torch::Tensor(torch::conv_transpose2d(*input, *weight, *bias, of_carray(stride_data, stride_len), of_carray(padding_data, padding_len), of_carray(output_padding_data, output_padding_len), groups, of_carray(dilation_data, dilation_len)));
   )
 }
 
-tensor atg_conv_transpose3d(tensor input, tensor weight, tensor bias, int64_t groups) {
+tensor atg_conv_transpose3d(tensor input, tensor weight, tensor bias, int *stride_data, int stride_len, int *padding_data, int padding_len, int *output_padding_data, int output_padding_len, int64_t groups, int *dilation_data, int dilation_len) {
   PROTECT(
-    return new torch::Tensor(torch::conv_transpose3d(*input, *weight, *bias, groups));
+    return new torch::Tensor(torch::conv_transpose3d(*input, *weight, *bias, of_carray(stride_data, stride_len), of_carray(padding_data, padding_len), of_carray(output_padding_data, output_padding_len), groups, of_carray(dilation_data, dilation_len)));
   )
 }
 
@@ -385,7 +421,13 @@ tensor atg_cosine_embedding_loss(tensor input1, tensor input2, tensor target, do
   )
 }
 
-tensor atg_ctc_loss(tensor log_probs, tensor targets, tensor input_lengths, tensor target_lengths, int64_t blank, int64_t reduction) {
+tensor atg_ctc_loss1(tensor log_probs, tensor targets, int *input_lengths_data, int input_lengths_len, int *target_lengths_data, int target_lengths_len, int64_t blank, int64_t reduction) {
+  PROTECT(
+    return new torch::Tensor(torch::ctc_loss(*log_probs, *targets, of_carray(input_lengths_data, input_lengths_len), of_carray(target_lengths_data, target_lengths_len), blank, reduction));
+  )
+}
+
+tensor atg_ctc_loss2(tensor log_probs, tensor targets, tensor input_lengths, tensor target_lengths, int64_t blank, int64_t reduction) {
   PROTECT(
     return new torch::Tensor(torch::ctc_loss(*log_probs, *targets, *input_lengths, *target_lengths, blank, reduction));
   )
@@ -403,9 +445,33 @@ tensor atg_cudnn_convolution_backward_bias(tensor grad_output) {
   )
 }
 
+tensor atg_cudnn_convolution_backward_input(int *self_size_data, int self_size_len, tensor grad_output, tensor weight, int *padding_data, int padding_len, int *stride_data, int stride_len, int *dilation_data, int dilation_len, int64_t groups, int benchmark, int deterministic) {
+  PROTECT(
+    return new torch::Tensor(torch::cudnn_convolution_backward_input(of_carray(self_size_data, self_size_len), *grad_output, *weight, of_carray(padding_data, padding_len), of_carray(stride_data, stride_len), of_carray(dilation_data, dilation_len), groups, (bool)benchmark, (bool)deterministic));
+  )
+}
+
+tensor atg_cudnn_convolution_backward_weight(int *weight_size_data, int weight_size_len, tensor grad_output, tensor self, int *padding_data, int padding_len, int *stride_data, int stride_len, int *dilation_data, int dilation_len, int64_t groups, int benchmark, int deterministic) {
+  PROTECT(
+    return new torch::Tensor(torch::cudnn_convolution_backward_weight(of_carray(weight_size_data, weight_size_len), *grad_output, *self, of_carray(padding_data, padding_len), of_carray(stride_data, stride_len), of_carray(dilation_data, dilation_len), groups, (bool)benchmark, (bool)deterministic));
+  )
+}
+
 tensor atg_cudnn_convolution_transpose_backward_bias(tensor grad_output) {
   PROTECT(
     return new torch::Tensor(torch::cudnn_convolution_transpose_backward_bias(*grad_output));
+  )
+}
+
+tensor atg_cudnn_convolution_transpose_backward_input(tensor grad_output, tensor weight, int *padding_data, int padding_len, int *stride_data, int stride_len, int *dilation_data, int dilation_len, int64_t groups, int benchmark, int deterministic) {
+  PROTECT(
+    return new torch::Tensor(torch::cudnn_convolution_transpose_backward_input(*grad_output, *weight, of_carray(padding_data, padding_len), of_carray(stride_data, stride_len), of_carray(dilation_data, dilation_len), groups, (bool)benchmark, (bool)deterministic));
+  )
+}
+
+tensor atg_cudnn_convolution_transpose_backward_weight(int *weight_size_data, int weight_size_len, tensor grad_output, tensor self, int *padding_data, int padding_len, int *stride_data, int stride_len, int *dilation_data, int dilation_len, int64_t groups, int benchmark, int deterministic) {
+  PROTECT(
+    return new torch::Tensor(torch::cudnn_convolution_transpose_backward_weight(of_carray(weight_size_data, weight_size_len), *grad_output, *self, of_carray(padding_data, padding_len), of_carray(stride_data, stride_len), of_carray(dilation_data, dilation_len), groups, (bool)benchmark, (bool)deterministic));
   )
 }
 
@@ -499,9 +565,27 @@ tensor atg_dropout_(tensor self, double p, int train) {
   )
 }
 
+tensor atg_empty(int *size_data, int size_len) {
+  PROTECT(
+    return new torch::Tensor(torch::empty(of_carray(size_data, size_len)));
+  )
+}
+
 tensor atg_empty_like(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::empty_like(*self));
+  )
+}
+
+tensor atg_empty_out(tensor result, int *size_data, int size_len) {
+  PROTECT(
+    return new torch::Tensor(torch::empty_out(*result, of_carray(size_data, size_len)));
+  )
+}
+
+tensor atg_empty_strided(int *size_data, int size_len, int *stride_data, int stride_len) {
+  PROTECT(
+    return new torch::Tensor(torch::empty_strided(of_carray(size_data, size_len), of_carray(stride_data, stride_len)));
   )
 }
 
@@ -643,6 +727,12 @@ tensor atg_flatten(tensor self, int64_t start_dim, int64_t end_dim) {
   )
 }
 
+tensor atg_flip(tensor self, int *dims_data, int dims_len) {
+  PROTECT(
+    return new torch::Tensor(torch::flip(*self, of_carray(dims_data, dims_len)));
+  )
+}
+
 tensor atg_floor(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::floor(*self));
@@ -661,9 +751,21 @@ tensor atg_floor_out(tensor result, tensor self) {
   )
 }
 
-tensor atg_frobenius_norm(tensor self) {
+tensor atg_frobenius_norm1(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::frobenius_norm(*self));
+  )
+}
+
+tensor atg_frobenius_norm2(tensor self, int *dim_data, int dim_len, int keepdim) {
+  PROTECT(
+    return new torch::Tensor(torch::frobenius_norm(*self, of_carray(dim_data, dim_len), (bool)keepdim));
+  )
+}
+
+tensor atg_frobenius_norm_out(tensor result, tensor self, int *dim_data, int dim_len, int keepdim) {
+  PROTECT(
+    return new torch::Tensor(torch::frobenius_norm_out(*result, *self, of_carray(dim_data, dim_len), (bool)keepdim));
   )
 }
 
@@ -781,9 +883,9 @@ tensor atg_inverse_out(tensor result, tensor self) {
   )
 }
 
-tensor atg_irfft(tensor self, int64_t signal_ndim, int normalized, int onesided) {
+tensor atg_irfft(tensor self, int64_t signal_ndim, int normalized, int onesided, int *signal_sizes_data, int signal_sizes_len) {
   PROTECT(
-    return new torch::Tensor(torch::irfft(*self, signal_ndim, (bool)normalized, (bool)onesided));
+    return new torch::Tensor(torch::irfft(*self, signal_ndim, (bool)normalized, (bool)onesided, of_carray(signal_sizes_data, signal_sizes_len)));
   )
 }
 
@@ -949,6 +1051,24 @@ tensor atg_matrix_rank2(tensor self, int symmetric) {
   )
 }
 
+tensor atg_max_pool1d(tensor self, int *kernel_size_data, int kernel_size_len, int *stride_data, int stride_len, int *padding_data, int padding_len, int *dilation_data, int dilation_len, int ceil_mode) {
+  PROTECT(
+    return new torch::Tensor(torch::max_pool1d(*self, of_carray(kernel_size_data, kernel_size_len), of_carray(stride_data, stride_len), of_carray(padding_data, padding_len), of_carray(dilation_data, dilation_len), (bool)ceil_mode));
+  )
+}
+
+tensor atg_max_pool2d(tensor self, int *kernel_size_data, int kernel_size_len, int *stride_data, int stride_len, int *padding_data, int padding_len, int *dilation_data, int dilation_len, int ceil_mode) {
+  PROTECT(
+    return new torch::Tensor(torch::max_pool2d(*self, of_carray(kernel_size_data, kernel_size_len), of_carray(stride_data, stride_len), of_carray(padding_data, padding_len), of_carray(dilation_data, dilation_len), (bool)ceil_mode));
+  )
+}
+
+tensor atg_max_pool3d(tensor self, int *kernel_size_data, int kernel_size_len, int *stride_data, int stride_len, int *padding_data, int padding_len, int *dilation_data, int dilation_len, int ceil_mode) {
+  PROTECT(
+    return new torch::Tensor(torch::max_pool3d(*self, of_carray(kernel_size_data, kernel_size_len), of_carray(stride_data, stride_len), of_carray(padding_data, padding_len), of_carray(dilation_data, dilation_len), (bool)ceil_mode));
+  )
+}
+
 tensor atg_max_values(tensor self, int64_t dim, int keepdim) {
   PROTECT(
     return new torch::Tensor(torch::max_values(*self, dim, (bool)keepdim));
@@ -982,6 +1102,36 @@ tensor atg_min_values(tensor self, int64_t dim, int keepdim) {
 tensor atg_miopen_convolution_backward_bias(tensor grad_output) {
   PROTECT(
     return new torch::Tensor(torch::miopen_convolution_backward_bias(*grad_output));
+  )
+}
+
+tensor atg_miopen_convolution_backward_input(int *self_size_data, int self_size_len, tensor grad_output, tensor weight, int *padding_data, int padding_len, int *stride_data, int stride_len, int *dilation_data, int dilation_len, int64_t groups, int benchmark, int deterministic) {
+  PROTECT(
+    return new torch::Tensor(torch::miopen_convolution_backward_input(of_carray(self_size_data, self_size_len), *grad_output, *weight, of_carray(padding_data, padding_len), of_carray(stride_data, stride_len), of_carray(dilation_data, dilation_len), groups, (bool)benchmark, (bool)deterministic));
+  )
+}
+
+tensor atg_miopen_convolution_backward_weight(int *weight_size_data, int weight_size_len, tensor grad_output, tensor self, int *padding_data, int padding_len, int *stride_data, int stride_len, int *dilation_data, int dilation_len, int64_t groups, int benchmark, int deterministic) {
+  PROTECT(
+    return new torch::Tensor(torch::miopen_convolution_backward_weight(of_carray(weight_size_data, weight_size_len), *grad_output, *self, of_carray(padding_data, padding_len), of_carray(stride_data, stride_len), of_carray(dilation_data, dilation_len), groups, (bool)benchmark, (bool)deterministic));
+  )
+}
+
+tensor atg_miopen_convolution_transpose_backward_input(tensor grad_output, tensor weight, int *padding_data, int padding_len, int *stride_data, int stride_len, int *dilation_data, int dilation_len, int64_t groups, int benchmark, int deterministic) {
+  PROTECT(
+    return new torch::Tensor(torch::miopen_convolution_transpose_backward_input(*grad_output, *weight, of_carray(padding_data, padding_len), of_carray(stride_data, stride_len), of_carray(dilation_data, dilation_len), groups, (bool)benchmark, (bool)deterministic));
+  )
+}
+
+tensor atg_miopen_convolution_transpose_backward_weight(int *weight_size_data, int weight_size_len, tensor grad_output, tensor self, int *padding_data, int padding_len, int *stride_data, int stride_len, int *dilation_data, int dilation_len, int64_t groups, int benchmark, int deterministic) {
+  PROTECT(
+    return new torch::Tensor(torch::miopen_convolution_transpose_backward_weight(of_carray(weight_size_data, weight_size_len), *grad_output, *self, of_carray(padding_data, padding_len), of_carray(stride_data, stride_len), of_carray(dilation_data, dilation_len), groups, (bool)benchmark, (bool)deterministic));
+  )
+}
+
+tensor atg_mkldnn_convolution_backward_input(int *self_size_data, int self_size_len, tensor grad_output, tensor weight, int *padding_data, int padding_len, int *stride_data, int stride_len, int *dilation_data, int dilation_len, int64_t groups, int bias_defined) {
+  PROTECT(
+    return new torch::Tensor(torch::mkldnn_convolution_backward_input(of_carray(self_size_data, self_size_len), *grad_output, *weight, of_carray(padding_data, padding_len), of_carray(stride_data, stride_len), of_carray(dilation_data, dilation_len), groups, (bool)bias_defined));
   )
 }
 
@@ -1081,9 +1231,21 @@ tensor atg_nuclear_norm_out(tensor result, tensor self, int keepdim) {
   )
 }
 
+tensor atg_ones(int *size_data, int size_len) {
+  PROTECT(
+    return new torch::Tensor(torch::ones(of_carray(size_data, size_len)));
+  )
+}
+
 tensor atg_ones_like(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::ones_like(*self));
+  )
+}
+
+tensor atg_ones_out(tensor result, int *size_data, int size_len) {
+  PROTECT(
+    return new torch::Tensor(torch::ones_out(*result, of_carray(size_data, size_len)));
   )
 }
 
@@ -1147,9 +1309,33 @@ tensor atg_prod_out(tensor result, tensor self, int64_t dim, int keepdim) {
   )
 }
 
+tensor atg_rand(int *size_data, int size_len) {
+  PROTECT(
+    return new torch::Tensor(torch::rand(of_carray(size_data, size_len)));
+  )
+}
+
 tensor atg_rand_like(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::rand_like(*self));
+  )
+}
+
+tensor atg_rand_out(tensor result, int *size_data, int size_len) {
+  PROTECT(
+    return new torch::Tensor(torch::rand_out(*result, of_carray(size_data, size_len)));
+  )
+}
+
+tensor atg_randint1(int64_t high, int *size_data, int size_len) {
+  PROTECT(
+    return new torch::Tensor(torch::randint(high, of_carray(size_data, size_len)));
+  )
+}
+
+tensor atg_randint2(int64_t low, int64_t high, int *size_data, int size_len) {
+  PROTECT(
+    return new torch::Tensor(torch::randint(low, high, of_carray(size_data, size_len)));
   )
 }
 
@@ -1165,9 +1351,33 @@ tensor atg_randint_like2(tensor self, int64_t low, int64_t high) {
   )
 }
 
+tensor atg_randint_out1(tensor result, int64_t high, int *size_data, int size_len) {
+  PROTECT(
+    return new torch::Tensor(torch::randint_out(*result, high, of_carray(size_data, size_len)));
+  )
+}
+
+tensor atg_randint_out2(tensor result, int64_t low, int64_t high, int *size_data, int size_len) {
+  PROTECT(
+    return new torch::Tensor(torch::randint_out(*result, low, high, of_carray(size_data, size_len)));
+  )
+}
+
+tensor atg_randn(int *size_data, int size_len) {
+  PROTECT(
+    return new torch::Tensor(torch::randn(of_carray(size_data, size_len)));
+  )
+}
+
 tensor atg_randn_like(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::randn_like(*self));
+  )
+}
+
+tensor atg_randn_out(tensor result, int *size_data, int size_len) {
+  PROTECT(
+    return new torch::Tensor(torch::randn_out(*result, of_carray(size_data, size_len)));
   )
 }
 
@@ -1195,6 +1405,12 @@ tensor atg_relu_(tensor self) {
   )
 }
 
+tensor atg_reshape(tensor self, int *shape_data, int shape_len) {
+  PROTECT(
+    return new torch::Tensor(torch::reshape(*self, of_carray(shape_data, shape_len)));
+  )
+}
+
 tensor atg_resize_as_(tensor self, tensor the_template) {
   PROTECT(
     return new torch::Tensor(torch::resize_as_(*self, *the_template));
@@ -1219,9 +1435,9 @@ tensor atg_rnn_tanh_cell(tensor input, tensor hx, tensor w_ih, tensor w_hh) {
   )
 }
 
-tensor atg_rot90(tensor self, int64_t k) {
+tensor atg_rot90(tensor self, int64_t k, int *dims_data, int dims_len) {
   PROTECT(
-    return new torch::Tensor(torch::rot90(*self, k));
+    return new torch::Tensor(torch::rot90(*self, k, of_carray(dims_data, dims_len)));
   )
 }
 
@@ -1459,9 +1675,21 @@ tensor atg_sub_out(tensor result, tensor self, tensor other) {
   )
 }
 
-tensor atg_sum(tensor self) {
+tensor atg_sum1(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::sum(*self));
+  )
+}
+
+tensor atg_sum2(tensor self, int *dim_data, int dim_len, int keepdim) {
+  PROTECT(
+    return new torch::Tensor(torch::sum(*self, of_carray(dim_data, dim_len), (bool)keepdim));
+  )
+}
+
+tensor atg_sum_out(tensor result, tensor self, int *dim_data, int dim_len, int keepdim) {
+  PROTECT(
+    return new torch::Tensor(torch::sum_out(*result, *self, of_carray(dim_data, dim_len), (bool)keepdim));
   )
 }
 
@@ -1504,6 +1732,12 @@ tensor atg_tanh_(tensor self) {
 tensor atg_tanh_out(tensor result, tensor self) {
   PROTECT(
     return new torch::Tensor(torch::tanh_out(*result, *self));
+  )
+}
+
+tensor atg_tensordot(tensor self, tensor other, int *dims_self_data, int dims_self_len, int *dims_other_data, int dims_other_len) {
+  PROTECT(
+    return new torch::Tensor(torch::tensordot(*self, *other, of_carray(dims_self_data, dims_self_len), of_carray(dims_other_data, dims_other_len)));
   )
 }
 
@@ -1567,9 +1801,21 @@ tensor atg_zero_(tensor self) {
   )
 }
 
+tensor atg_zeros(int *size_data, int size_len) {
+  PROTECT(
+    return new torch::Tensor(torch::zeros(of_carray(size_data, size_len)));
+  )
+}
+
 tensor atg_zeros_like(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::zeros_like(*self));
+  )
+}
+
+tensor atg_zeros_out(tensor result, int *size_data, int size_len) {
+  PROTECT(
+    return new torch::Tensor(torch::zeros_out(*result, of_carray(size_data, size_len)));
   )
 }
 

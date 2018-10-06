@@ -2,7 +2,7 @@ open Base
 open Stdio
 
 let unsupported_functions =
-  Set.of_list (module String) [ "bincount"; "stft"; "group_norm" ]
+  Set.of_list (module String) [ "bincount"; "stft"; "group_norm"; "layer_norm" ]
 
 let yaml_error yaml ~msg =
   Printf.sprintf "%s, %s" msg (Yaml.to_string_exn yaml)
@@ -50,8 +50,10 @@ module Function = struct
           | "int64_t" -> Some `int64_t
           | "double" -> Some `double
           | "tensor" -> Some `tensor
-          | _ ->
-            if Option.is_some default_value then None
+          | arg_type ->
+            if String.is_prefix arg_type ~prefix:"intlist"
+            then Some `intlist
+            else if Option.is_some default_value then None
             else raise Not_a_simple_arg
         in
         Option.map simple_type ~f:(fun simple_type -> arg_name, simple_type)
@@ -60,11 +62,22 @@ module Function = struct
     with
     | Not_a_simple_arg -> None
 
-  let simple_type_cstring = function
-    | `bool -> "int"
-    | `int64_t -> "int64_t"
-    | `double -> "double"
-    | `tensor -> "tensor"
+  let c_arg_string args =
+    List.map args ~f:(fun (arg_name, arg_type) ->
+      match arg_type with
+      | `intlist ->
+        Printf.sprintf "int *%s_data, int %s_len" arg_name arg_name
+      | otherwise ->
+        let simple_type_cstring =
+          match otherwise with
+          | `bool -> "int"
+          | `int64_t -> "int64_t"
+          | `double -> "double"
+          | `tensor -> "tensor"
+          | `intlist -> assert false
+        in
+        Printf.sprintf "%s %s" simple_type_cstring arg_name)
+    |> String.concat ~sep:", "
 end
 
 let read_yaml filename =
@@ -148,26 +161,23 @@ let write_cpp funcs filename =
         | Some args ->
           if String.(=) returns "Tensor" && Char.(<>) name.[0] '_' && not (Set.mem unsupported_functions name)
           then begin
-            let arg_string =
-              List.map args ~f:(fun (arg_name, arg_type) ->
-                Printf.sprintf "%s %s" (Function.simple_type_cstring arg_type) arg_name)
-              |> String.concat ~sep:", "
-            in
+            let c_arg_string = Function.c_arg_string args in
             let arg_names =
               List.map args ~f:(fun (arg_name, arg_type) ->
                 match arg_type with
                 | `tensor -> "*" ^ arg_name
                 | `bool -> "(bool)" ^ arg_name
+                | `intlist -> Printf.sprintf "of_carray(%s_data, %s_len)" arg_name arg_name
                 | _ -> arg_name)
               |> String.concat ~sep:", "
             in
-            pc "tensor atg_%s(%s) {" exported_name arg_string;
+            pc "tensor atg_%s(%s) {" exported_name c_arg_string;
             pc "  PROTECT(";
             pc "    return new torch::Tensor(torch::%s(%s));" name arg_names;
             pc "  )";
             pc "}";
             pc "";
-            ph "tensor atg_%s(%s);" exported_name arg_string;
+            ph "tensor atg_%s(%s);" exported_name c_arg_string;
           end;
       )
     )
