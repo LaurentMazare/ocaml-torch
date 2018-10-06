@@ -1,9 +1,9 @@
-open Torch_core.Wrapper
+open Torch_tensor
 
 let tensor_ops () =
   let tensor1 = Tensor.rand [4; 2] in
   let tensor2 = Tensor.ones [4; 2] in
-  let sum = Tensor.add tensor1 tensor2 in
+  let sum = Tensor.(+) tensor1 tensor2 in
   Tensor.fill_float (Tensor.get tensor1 1) 42.0;
   Tensor.print tensor1;
   Tensor.print tensor2;
@@ -14,7 +14,7 @@ let tensor_ops () =
 
 let backward_pass () =
   let x = Tensor.float_vec [-1.0; 0.0; 1.0; 2.0] |> Tensor.set_requires_grad ~b:true in
-  let square = Tensor.mul x x in
+  let square = Tensor.(x * x) in
   Tensor.backward square;
   Tensor.print square;
   Tensor.print (Tensor.grad x)

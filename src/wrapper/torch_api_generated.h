@@ -134,6 +134,7 @@ tensor atg_frobenius_norm2(tensor self, int *dim_data, int dim_len, int keepdim)
 tensor atg_frobenius_norm_out(tensor result, tensor self, int *dim_data, int dim_len, int keepdim);
 tensor atg_ger(tensor self, tensor vec2);
 tensor atg_ger_out(tensor result, tensor self, tensor vec2);
+tensor atg_grad(tensor self);
 tensor atg_grid_sampler(tensor input, tensor grid, int64_t interpolation_mode, int64_t padding_mode);
 tensor atg_grid_sampler_2d(tensor input, tensor grid, int64_t interpolation_mode, int64_t padding_mode);
 tensor atg_grid_sampler_3d(tensor input, tensor grid, int64_t interpolation_mode, int64_t padding_mode);
@@ -265,6 +266,7 @@ tensor atg_s_native_addmm_out(tensor result, tensor self, tensor mat1, tensor ma
 tensor atg_select(tensor self, int64_t dim, int64_t index);
 tensor atg_selu(tensor self);
 tensor atg_selu_(tensor self);
+tensor atg_set_requires_grad(tensor self, int r);
 tensor atg_sigmoid(tensor self);
 tensor atg_sigmoid_(tensor self);
 tensor atg_sigmoid_out(tensor result, tensor self);

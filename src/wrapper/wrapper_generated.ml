@@ -668,6 +668,11 @@ let ger_out result self vec2 =
   Gc.finalise C.Tensor.free t;
   t
 
+let grad self =
+  let t = grad self in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let grid_sampler input grid interpolation_mode padding_mode =
   let t = grid_sampler input grid interpolation_mode padding_mode in
   Gc.finalise C.Tensor.free t;
@@ -1320,6 +1325,11 @@ let selu self =
 
 let selu_ self =
   let t = selu_ self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let set_requires_grad self r =
+  let t = set_requires_grad self (if r then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 

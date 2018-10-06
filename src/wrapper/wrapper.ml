@@ -51,20 +51,10 @@ module Tensor = struct
 
   let kind t = scalar_type t |> Kind.of_int_exn
 
-  let grad t =
-    let grad = grad t in
-    Gc.finalise free grad;
-    grad
-
   let requires_grad t =
     if requires_grad t <> 0
     then true
     else false
-
-  let set_requires_grad t ~b =
-    let t = set_requires_grad t (if b then 1 else 0) in
-    Gc.finalise free t;
-    t
 
   let get t index =
     let t = get t index in

@@ -287,6 +287,8 @@ let methods =
   ; c "div_" [ ca "self" Tensor; ca "other" Tensor ]
   ; c "eq" [ ca "self" Tensor; ca "other" Tensor ]
   ; c "neg" [ ca "self" Tensor ]
+  ; c "grad" [ ca "self" Tensor ]
+  ; c "set_requires_grad" [ ca "self" Tensor; ca "r" Bool ]
   ]
 
 let run ~yaml_filename ~cpp_filename ~stubs_filename ~wrapper_filename =

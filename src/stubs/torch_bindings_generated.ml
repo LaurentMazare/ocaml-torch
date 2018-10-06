@@ -536,6 +536,10 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_ger_out"
     (t @-> t @-> t @-> returning t)
 
+  let grad =
+    foreign "atg_grad"
+    (t @-> returning t)
+
   let grid_sampler =
     foreign "atg_grid_sampler"
     (t @-> t @-> int64_t @-> int64_t @-> returning t)
@@ -1059,6 +1063,10 @@ module C(F: Cstubs.FOREIGN) = struct
   let selu_ =
     foreign "atg_selu_"
     (t @-> returning t)
+
+  let set_requires_grad =
+    foreign "atg_set_requires_grad"
+    (t @-> int @-> returning t)
 
   let sigmoid =
     foreign "atg_sigmoid"

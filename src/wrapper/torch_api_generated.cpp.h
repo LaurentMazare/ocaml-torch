@@ -799,6 +799,12 @@ tensor atg_ger_out(tensor result, tensor self, tensor vec2) {
   )
 }
 
+tensor atg_grad(tensor self) {
+  PROTECT(
+    return new torch::Tensor(self->grad());
+  )
+}
+
 tensor atg_grid_sampler(tensor input, tensor grid, int64_t interpolation_mode, int64_t padding_mode) {
   PROTECT(
     return new torch::Tensor(torch::grid_sampler(*input, *grid, interpolation_mode, padding_mode));
@@ -1582,6 +1588,12 @@ tensor atg_selu(tensor self) {
 tensor atg_selu_(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::selu_(*self));
+  )
+}
+
+tensor atg_set_requires_grad(tensor self, int r) {
+  PROTECT(
+    return new torch::Tensor(self->set_requires_grad((bool)r));
   )
 }
 

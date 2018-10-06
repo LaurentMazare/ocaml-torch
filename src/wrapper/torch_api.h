@@ -23,8 +23,6 @@ void at_shape(tensor, int *);
 int at_scalar_type(tensor);
 
 void at_backward(tensor);
-tensor at_grad(tensor);
-tensor at_set_requires_grad(tensor, int);
 int at_requires_grad(tensor);
 
 tensor at_get(tensor, int index);
