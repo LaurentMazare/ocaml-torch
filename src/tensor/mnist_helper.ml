@@ -69,10 +69,35 @@ let read_files
       ?(train_label_file = "data/train-labels-idx1-ubyte")
       ?(test_image_file = "data/t10k-images-idx3-ubyte")
       ?(test_label_file = "data/t10k-labels-idx1-ubyte")
+      ?(with_caching = false)
       ()
   =
-  { train_images = read_images train_image_file
-  ; train_labels = read_labels train_label_file |> one_hot
-  ; test_images = read_images test_image_file
-  ; test_labels = read_labels test_label_file |> one_hot
+  let with_caching ~read_f ~filename =
+    if with_caching
+    then
+      let cached_file = filename ^ ".tensor" in
+      try
+        Tensor.load cached_file
+      with
+      | _ ->
+        Stdio.eprintf
+          "Cannot read from cached file %s, regenerating...\n%!"
+          cached_file;
+        let tensor = read_f filename in
+        begin
+          try
+            Tensor.save tensor cached_file;
+          with
+          | _ ->
+            Stdio.eprintf "Unable to saved cached file %s.\n%!" cached_file
+        end;
+        tensor
+    else
+      read_f filename
+  in
+  let read_onehot filename = read_labels filename |> one_hot in
+  { train_images = with_caching ~read_f:read_images ~filename:train_image_file
+  ; train_labels = with_caching ~read_f:read_onehot ~filename:train_label_file
+  ; test_images = with_caching ~read_f:read_images ~filename:test_image_file
+  ; test_labels = with_caching ~read_f:read_onehot ~filename:test_label_file
   }

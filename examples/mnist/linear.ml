@@ -15,7 +15,7 @@ let learning_rate = 8.
 
 let () =
   let { Mnist_helper.train_images; train_labels; test_images; test_labels } =
-    Mnist_helper.read_files ()
+    Mnist_helper.read_files ~with_caching:true ()
   in
   let ws = Tensor.zeros Mnist_helper. [image_dim; label_count] ~requires_grad:true in
   let bs = Tensor.zeros [Mnist_helper.label_count] ~requires_grad:true in
