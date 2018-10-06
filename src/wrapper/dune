@@ -14,6 +14,11 @@
   (action  (copy ../stubs/torch_bindings.ml torch_bindings.ml)))
 
 (rule
+  (targets torch_bindings_generated.ml)
+  (deps    ../stubs/torch_bindings_generated.ml)
+  (action  (copy ../stubs/torch_bindings_generated.ml torch_bindings_generated.ml)))
+
+(rule
   (targets torch_stubs.c torch_generated.ml)
   (deps    (:torch_gen ../stubs/torch_gen.exe))
   (action  (run %{torch_gen})))

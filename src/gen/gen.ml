@@ -2,7 +2,7 @@ open Base
 open Stdio
 
 let unsupported_functions =
-  Set.of_list (module String) [ "bincount"; "stft"; "group_norm"; "layer_norm"; "rot90" ]
+  Set.of_list (module String) [ "bincount"; "stft"; "group_norm"; "layer_norm"; "rot90"; "t" ]
 
 let yaml_error yaml ~msg =
   Printf.sprintf "%s, %s" msg (Yaml.to_string_exn yaml)
@@ -85,6 +85,18 @@ module Func = struct
       | IntList -> Printf.sprintf "of_carray(%s_data, %s_len)" arg_name arg_name
       | _ -> arg_name)
     |> String.concat ~sep:", "
+
+  let stubs_signature t =
+    List.concat_map t.args ~f:(fun arg ->
+      match arg.arg_type with
+      | Bool -> ["int"]
+      | Int64 -> ["int64_t"]
+      | Double -> ["double"]
+      | Tensor -> ["t"]
+      | IntList -> ["ptr int"; "int"]
+    )
+    |> String.concat ~sep:" @-> "
+    |> Printf.sprintf "%s @-> returning t"
 end
 
 exception Not_a_simple_arg
@@ -192,12 +204,31 @@ let write_cpp funcs filename =
     )
   )
 
-let run ~yaml_filename ~cpp_filename =
+let write_stubs funcs filename =
+  Out_channel.with_file filename ~f:(fun out_channel ->
+    let p s = p out_channel s in
+    p "open Ctypes";
+    p "";
+    p "module C(F: Cstubs.FOREIGN) = struct";
+    p "  open F";
+    p "  module TensorG = struct";
+    p "    type t = unit ptr";
+    p "    let t : t typ = ptr void";
+    Map.iteri funcs ~f:(fun ~key:exported_name ~data:func ->
+      p "    let %s =" exported_name;
+      p "      foreign \"atg_%s\"" exported_name;
+      p "      (%s)" (Func.stubs_signature func);
+      p "";
+    );
+    p "  end";
+    p "end")
+
+let run ~yaml_filename ~cpp_filename ~stubs_filename =
   let funcs = read_yaml yaml_filename in
   printf "Generating code for %d functions.\n%!" (List.length funcs);
   (* Generate some unique names for overloaded functions. *)
   let funcs =
-    List.map funcs ~f:(fun func -> func.name, func)
+    List.map funcs ~f:(fun func -> String.lowercase func.name, func)
     |> Map.of_alist_multi (module String)
     |> Map.to_alist
     |> List.concat_map ~f:(fun (name, funcs) ->
@@ -210,9 +241,11 @@ let run ~yaml_filename ~cpp_filename =
       )
     |> Map.of_alist_exn (module String)
   in
-  write_cpp funcs cpp_filename
+  write_cpp funcs cpp_filename;
+  write_stubs funcs stubs_filename
 
 let () =
   run
     ~yaml_filename:"data/native_functions.yaml"
     ~cpp_filename:"src/wrapper/torch_api_generated"
+    ~stubs_filename:"src/stubs/torch_bindings_generated.ml"

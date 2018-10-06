@@ -96,5 +96,7 @@ module C(F: Cstubs.FOREIGN) = struct
     let load = foreign "at_load" (string @-> returning t)
 
     let free = foreign "at_free" (t @-> returning void)
+
   end
+  module TensorG = Torch_bindings_generated.C(F)
 end
