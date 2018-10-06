@@ -2,7 +2,7 @@ open Base
 open Stdio
 
 let unsupported_functions =
-  Set.of_list (module String) [ "bincount"; "stft"; "group_norm"; "layer_norm" ]
+  Set.of_list (module String) [ "bincount"; "stft"; "group_norm"; "layer_norm"; "rot90" ]
 
 let yaml_error yaml ~msg =
   Printf.sprintf "%s, %s" msg (Yaml.to_string_exn yaml)
@@ -20,16 +20,26 @@ let extract_string = function
   | `String s -> s
   | yaml -> yaml_error yaml ~msg:"expected string"
 
-let rec contains_string ~str = function
-  | `A l -> List.exists l ~f:(contains_string ~str)
-  | `O l -> List.exists l ~f:(fun (_, y) -> contains_string y ~str)
-  | `String s when String.is_substring s ~substring:str -> true
+let contains_substring yaml ~substring =
+  let rec walk = function
+  | `A l -> List.exists l ~f:walk
+  | `O l -> List.exists l ~f:(fun (_, y) -> walk y)
+  | `String s when String.is_substring s ~substring -> true
   | _ -> false
+  in
+  walk yaml
 
-module Function = struct
+module Func = struct
+  type arg_type =
+    | Bool
+    | Int64
+    | Double
+    | Tensor
+    | IntList
+
   type arg =
     { arg_name : string
-    ; arg_type : string
+    ; arg_type : arg_type
     ; default_value : string option
     }
 
@@ -39,46 +49,45 @@ module Function = struct
     ; returns : string
     }
 
-  exception Not_a_simple_arg
+  let arg_type_of_string str =
+    match String.lowercase str with
+    | "bool" -> Some Bool
+    | "int64_t" -> Some Int64
+    | "double" -> Some Double
+    | "tensor" -> Some Tensor
+    | _ ->
+      if String.is_prefix str ~prefix:"IntList"
+      then Some IntList
+      else None
 
-  let simple_args t =
-    try
-      List.filter_map t.args ~f:(fun { arg_name; arg_type; default_value } ->
-        let simple_type =
-          match String.lowercase arg_type with
-          | "bool" -> Some `bool
-          | "int64_t" -> Some `int64_t
-          | "double" -> Some `double
-          | "tensor" -> Some `tensor
-          | arg_type ->
-            if String.is_prefix arg_type ~prefix:"intlist"
-            then Some `intlist
-            else if Option.is_some default_value then None
-            else raise Not_a_simple_arg
-        in
-        Option.map simple_type ~f:(fun simple_type -> arg_name, simple_type)
-      )
-      |> Option.some
-    with
-    | Not_a_simple_arg -> None
-
-  let c_arg_string args =
-    List.map args ~f:(fun (arg_name, arg_type) ->
+  let c_typed_args_list t =
+    List.map t.args ~f:(fun { arg_name; arg_type; _ } ->
       match arg_type with
-      | `intlist ->
+      | IntList ->
         Printf.sprintf "int *%s_data, int %s_len" arg_name arg_name
       | otherwise ->
         let simple_type_cstring =
           match otherwise with
-          | `bool -> "int"
-          | `int64_t -> "int64_t"
-          | `double -> "double"
-          | `tensor -> "tensor"
-          | `intlist -> assert false
+          | Bool -> "int"
+          | Int64 -> "int64_t"
+          | Double -> "double"
+          | Tensor -> "tensor"
+          | IntList -> assert false
         in
         Printf.sprintf "%s %s" simple_type_cstring arg_name)
     |> String.concat ~sep:", "
+
+  let c_args_list t =
+    List.map t.args ~f:(fun { arg_name; arg_type; _ } ->
+      match arg_type with
+      | Tensor -> "*" ^ arg_name
+      | Bool -> "(bool)" ^ arg_name
+      | IntList -> Printf.sprintf "of_carray(%s_data, %s_len)" arg_name arg_name
+      | _ -> arg_name)
+    |> String.concat ~sep:", "
 end
+
+exception Not_a_simple_arg
 
 let read_yaml filename =
   let funcs =
@@ -100,7 +109,7 @@ let read_yaml filename =
     let has_function =
       match variants with
       | [] -> true
-      | variants -> List.exists variants ~f:(contains_string ~str:"function")
+      | variants -> List.exists variants ~f:(contains_substring ~substring:"function")
     in
     if has_function
     then
@@ -111,30 +120,44 @@ let read_yaml filename =
         assert (Char.(=) args.[String.length args - 1] ')');
         let args = String.drop_suffix args 1 in
         (* Remove args that contain a std::array<> because of the extra commas... *)
-        if String.is_substring args ~substring:"std::" || String.is_empty args
+        if String.is_substring args ~substring:"std::"
+        || String.is_empty args
+        || String.(<>) returns "Tensor"
+        || Char.(=) func_name.[0] '_'
+        || Set.mem unsupported_functions func_name
         then None
         else
-          let args =
-            String.split args ~on:','
-            |> List.filter_map ~f:(fun arg ->
-              let arg = String.strip arg in
-              if String.(=) arg "*"
-              then None
-              else
-                let arg, default_value =
-                  match String.split arg ~on:'=' with
-                  | [arg] -> String.strip arg, None
-                  | [arg; default_value] -> String.strip arg, Some (String.strip default_value)
-                  | _ -> Printf.sprintf "unexpected arg format %s" arg |> failwith
-                in
-                match String.rsplit2 arg ~on:' ' with
-                | Some (arg_type, arg_name) -> Some { Function.arg_name; arg_type; default_value }
-                | None ->
-                  printf "Unhandled argument format for %s: <%s>.\n%!" func_name arg;
-                  None
-            )
-          in
-          Some { Function.name = func_name; args; returns })
+          try
+            let args =
+              String.split args ~on:','
+              |> List.filter_map ~f:(fun arg ->
+                let arg = String.strip arg in
+                if String.(=) arg "*"
+                then None
+                else
+                  let arg, default_value =
+                    match String.split arg ~on:'=' with
+                    | [arg] -> String.strip arg, None
+                    | [arg; default_value] -> String.strip arg, Some (String.strip default_value)
+                    | _ -> Printf.sprintf "unexpected arg format %s" arg |> failwith
+                  in
+                  match String.rsplit2 arg ~on:' ' with
+                  | None ->
+                    Printf.sprintf "Unhandled argument format for %s: <%s>.\n%!" func_name arg
+                    |> failwith
+                  | Some (arg_type, arg_name) ->
+                    match Func.arg_type_of_string arg_type with
+                    | Some arg_type ->
+                      Some { Func.arg_name; arg_type; default_value }
+                    | None ->
+                      if Option.is_some default_value
+                      then None
+                      else raise Not_a_simple_arg
+              )
+            in
+            Some { Func.name = func_name; args; returns }
+          with
+          | Not_a_simple_arg -> None)
     else None
   )
 
@@ -155,30 +178,16 @@ let write_cpp funcs filename =
       ph "// THIS FILE IS AUTOMATICALLY GENERATED, DO NOT EDIT BY HAND!";
       ph "";
       Map.iteri funcs ~f:(fun ~key:exported_name ~data:func ->
-        let { Function.name; returns; _ } = func in
-        match Function.simple_args func with
-        | None -> ()
-        | Some args ->
-          if String.(=) returns "Tensor" && Char.(<>) name.[0] '_' && not (Set.mem unsupported_functions name)
-          then begin
-            let c_arg_string = Function.c_arg_string args in
-            let arg_names =
-              List.map args ~f:(fun (arg_name, arg_type) ->
-                match arg_type with
-                | `tensor -> "*" ^ arg_name
-                | `bool -> "(bool)" ^ arg_name
-                | `intlist -> Printf.sprintf "of_carray(%s_data, %s_len)" arg_name arg_name
-                | _ -> arg_name)
-              |> String.concat ~sep:", "
-            in
-            pc "tensor atg_%s(%s) {" exported_name c_arg_string;
-            pc "  PROTECT(";
-            pc "    return new torch::Tensor(torch::%s(%s));" name arg_names;
-            pc "  )";
-            pc "}";
-            pc "";
-            ph "tensor atg_%s(%s);" exported_name c_arg_string;
-          end;
+        let { Func.name; _ } = func in
+        let c_typed_args_list = Func.c_typed_args_list func in
+        let c_args_list = Func.c_args_list func in
+        pc "tensor atg_%s(%s) {" exported_name c_typed_args_list;
+        pc "  PROTECT(";
+        pc "    return new torch::Tensor(torch::%s(%s));" name c_args_list;
+        pc "  )";
+        pc "}";
+        pc "";
+        ph "tensor atg_%s(%s);" exported_name c_typed_args_list;
       )
     )
   )
@@ -188,10 +197,7 @@ let run ~yaml_filename ~cpp_filename =
   printf "Generating code for %d functions.\n%!" (List.length funcs);
   (* Generate some unique names for overloaded functions. *)
   let funcs =
-    List.filter_map funcs ~f:(fun func ->
-      if Function.simple_args func |> Option.is_some
-      then Some (func.name, func)
-      else None)
+    List.map funcs ~f:(fun func -> func.name, func)
     |> Map.of_alist_multi (module String)
     |> Map.to_alist
     |> List.concat_map ~f:(fun (name, funcs) ->

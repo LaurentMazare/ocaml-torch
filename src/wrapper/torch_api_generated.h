@@ -240,7 +240,6 @@ tensor atg_resize_as_(tensor self, tensor the_template);
 tensor atg_rfft(tensor self, int64_t signal_ndim, int normalized, int onesided);
 tensor atg_rnn_relu_cell(tensor input, tensor hx, tensor w_ih, tensor w_hh);
 tensor atg_rnn_tanh_cell(tensor input, tensor hx, tensor w_ih, tensor w_hh);
-tensor atg_rot90(tensor self, int64_t k, int *dims_data, int dims_len);
 tensor atg_round(tensor self);
 tensor atg_round_(tensor self);
 tensor atg_round_out(tensor result, tensor self);

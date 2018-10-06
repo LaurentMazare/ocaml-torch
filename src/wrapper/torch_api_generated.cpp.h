@@ -1435,12 +1435,6 @@ tensor atg_rnn_tanh_cell(tensor input, tensor hx, tensor w_ih, tensor w_hh) {
   )
 }
 
-tensor atg_rot90(tensor self, int64_t k, int *dims_data, int dims_len) {
-  PROTECT(
-    return new torch::Tensor(torch::rot90(*self, k, of_carray(dims_data, dims_len)));
-  )
-}
-
 tensor atg_round(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::round(*self));
