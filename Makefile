@@ -6,6 +6,10 @@ ALL = examples/basics/torch_tensor.exe examples/mnist/linear.exe
 all: .FORCE
 	dune build $(ALL)
 
+gen: .FORCE
+	dune build src/gen/gen.exe
+	./_build/default/src/gen/gen.exe
+
 clean:
 	rm -Rf _build/ *.exe
 
