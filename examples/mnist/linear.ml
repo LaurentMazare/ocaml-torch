@@ -11,7 +11,7 @@
 open Base
 open Torch_tensor
 
-let learning_rate = Tensor.f 8.
+let learning_rate = Tensor.f 10.
 
 let () =
   let { Mnist_helper.train_images; train_labels; test_images; test_labels } =
@@ -20,7 +20,7 @@ let () =
   let ws = Tensor.zeros Mnist_helper. [image_dim; label_count] ~requires_grad:true in
   let bs = Tensor.zeros [Mnist_helper.label_count] ~requires_grad:true in
   let model xs = Tensor.(softmax (mm xs ws + bs)) in
-  for index = 1 to 100 do
+  for index = 1 to 200 do
     (* Compute the cross-entropy loss. *)
     let loss = Tensor.(mean (- train_labels * log (model train_images +f 1e-6))) in
 
@@ -29,6 +29,8 @@ let () =
     (* Apply gradient descent, [no_grad w ~f] runs [f] on [w] with gradient tracking disabled. *)
     Tensor.(no_grad ws ~f:(fun ws -> ws -= grad ws * learning_rate));
     Tensor.(no_grad bs ~f:(fun bs -> bs -= grad bs * learning_rate));
+    Tensor.zero_grad ws;
+    Tensor.zero_grad bs;
 
     (* Compute the validation error. *)
     let test_accuracy =
