@@ -2,7 +2,7 @@ open Base
 open Stdio
 
 let unsupported_functions =
-  Set.of_list (module String) [ "matrix_rank"; "group_norm" ]
+  Set.of_list (module String) [ "bincount"; "stft"; "group_norm" ]
 
 let yaml_error yaml ~msg =
   Printf.sprintf "%s, %s" msg (Yaml.to_string_exn yaml)
@@ -23,7 +23,7 @@ let extract_string = function
 let rec contains_string ~str = function
   | `A l -> List.exists l ~f:(contains_string ~str)
   | `O l -> List.exists l ~f:(fun (_, y) -> contains_string y ~str)
-  | `String s when String.(=) s str -> true
+  | `String s when String.is_substring s ~substring:str -> true
   | _ -> false
 
 module Function = struct
@@ -157,6 +157,7 @@ let write_cpp funcs filename =
               List.map args ~f:(fun (arg_name, arg_type) ->
                 match arg_type with
                 | `tensor -> "*" ^ arg_name
+                | `bool -> "(bool)" ^ arg_name
                 | _ -> arg_name)
               |> String.concat ~sep:", "
             in

@@ -7,9 +7,33 @@ tensor atg_RoiPooling2d_backward(tensor input, tensor rois, int64_t pooledHeight
   )
 }
 
+tensor atg_abs(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::abs(*self));
+  )
+}
+
+tensor atg_abs_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::abs_(*self));
+  )
+}
+
 tensor atg_abs_out(tensor result, tensor self) {
   PROTECT(
     return new torch::Tensor(torch::abs_out(*result, *self));
+  )
+}
+
+tensor atg_acos(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::acos(*self));
+  )
+}
+
+tensor atg_acos_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::acos_(*self));
   )
 }
 
@@ -19,9 +43,21 @@ tensor atg_acos_out(tensor result, tensor self) {
   )
 }
 
+tensor atg_add1(tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(torch::add(*self, *other));
+  )
+}
+
 tensor atg_add_out(tensor result, tensor self, tensor other) {
   PROTECT(
     return new torch::Tensor(torch::add_out(*result, *self, *other));
+  )
+}
+
+tensor atg_addmm(tensor self, tensor mat1, tensor mat2) {
+  PROTECT(
+    return new torch::Tensor(torch::addmm(*self, *mat1, *mat2));
   )
 }
 
@@ -31,9 +67,27 @@ tensor atg_addmm_out(tensor result, tensor self, tensor mat1, tensor mat2) {
   )
 }
 
+tensor atg_addmv(tensor self, tensor mat, tensor vec) {
+  PROTECT(
+    return new torch::Tensor(torch::addmv(*self, *mat, *vec));
+  )
+}
+
+tensor atg_addmv_(tensor self, tensor mat, tensor vec) {
+  PROTECT(
+    return new torch::Tensor(torch::addmv_(*self, *mat, *vec));
+  )
+}
+
 tensor atg_addmv_out(tensor result, tensor self, tensor mat, tensor vec) {
   PROTECT(
     return new torch::Tensor(torch::addmv_out(*result, *self, *mat, *vec));
+  )
+}
+
+tensor atg_addr(tensor self, tensor vec1, tensor vec2) {
+  PROTECT(
+    return new torch::Tensor(torch::addr(*self, *vec1, *vec2));
   )
 }
 
@@ -43,27 +97,75 @@ tensor atg_addr_out(tensor result, tensor self, tensor vec1, tensor vec2) {
   )
 }
 
+tensor atg_all(tensor self, int64_t dim, int keepdim) {
+  PROTECT(
+    return new torch::Tensor(torch::all(*self, dim, (bool)keepdim));
+  )
+}
+
 tensor atg_all_out(tensor result, tensor self, int64_t dim, int keepdim) {
   PROTECT(
-    return new torch::Tensor(torch::all_out(*result, *self, dim, keepdim));
+    return new torch::Tensor(torch::all_out(*result, *self, dim, (bool)keepdim));
   )
 }
 
 tensor atg_alpha_dropout(tensor input, double p, int train) {
   PROTECT(
-    return new torch::Tensor(torch::alpha_dropout(*input, p, train));
+    return new torch::Tensor(torch::alpha_dropout(*input, p, (bool)train));
   )
 }
 
 tensor atg_alpha_dropout_(tensor self, double p, int train) {
   PROTECT(
-    return new torch::Tensor(torch::alpha_dropout_(*self, p, train));
+    return new torch::Tensor(torch::alpha_dropout_(*self, p, (bool)train));
+  )
+}
+
+tensor atg_any(tensor self, int64_t dim, int keepdim) {
+  PROTECT(
+    return new torch::Tensor(torch::any(*self, dim, (bool)keepdim));
   )
 }
 
 tensor atg_any_out(tensor result, tensor self, int64_t dim, int keepdim) {
   PROTECT(
-    return new torch::Tensor(torch::any_out(*result, *self, dim, keepdim));
+    return new torch::Tensor(torch::any_out(*result, *self, dim, (bool)keepdim));
+  )
+}
+
+tensor atg_argmax1(tensor self, int64_t dim, int keepdim) {
+  PROTECT(
+    return new torch::Tensor(torch::argmax(*self, dim, (bool)keepdim));
+  )
+}
+
+tensor atg_argmax2(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::argmax(*self));
+  )
+}
+
+tensor atg_argmin1(tensor self, int64_t dim, int keepdim) {
+  PROTECT(
+    return new torch::Tensor(torch::argmin(*self, dim, (bool)keepdim));
+  )
+}
+
+tensor atg_argmin2(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::argmin(*self));
+  )
+}
+
+tensor atg_asin(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::asin(*self));
+  )
+}
+
+tensor atg_asin_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::asin_(*self));
   )
 }
 
@@ -73,9 +175,27 @@ tensor atg_asin_out(tensor result, tensor self) {
   )
 }
 
+tensor atg_atan(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::atan(*self));
+  )
+}
+
+tensor atg_atan_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::atan_(*self));
+  )
+}
+
 tensor atg_atan_out(tensor result, tensor self) {
   PROTECT(
     return new torch::Tensor(torch::atan_out(*result, *self));
+  )
+}
+
+tensor atg_baddbmm(tensor self, tensor batch1, tensor batch2) {
+  PROTECT(
+    return new torch::Tensor(torch::baddbmm(*self, *batch1, *batch2));
   )
 }
 
@@ -93,7 +213,19 @@ tensor atg_bartlett_window1(int64_t window_length) {
 
 tensor atg_bartlett_window2(int64_t window_length, int periodic) {
   PROTECT(
-    return new torch::Tensor(torch::bartlett_window(window_length, periodic));
+    return new torch::Tensor(torch::bartlett_window(window_length, (bool)periodic));
+  )
+}
+
+tensor atg_bernoulli1(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::bernoulli(*self));
+  )
+}
+
+tensor atg_bernoulli2(tensor self, double p) {
+  PROTECT(
+    return new torch::Tensor(torch::bernoulli(*self, p));
   )
 }
 
@@ -111,13 +243,31 @@ tensor atg_blackman_window1(int64_t window_length) {
 
 tensor atg_blackman_window2(int64_t window_length, int periodic) {
   PROTECT(
-    return new torch::Tensor(torch::blackman_window(window_length, periodic));
+    return new torch::Tensor(torch::blackman_window(window_length, (bool)periodic));
+  )
+}
+
+tensor atg_bmm(tensor self, tensor mat2) {
+  PROTECT(
+    return new torch::Tensor(torch::bmm(*self, *mat2));
   )
 }
 
 tensor atg_bmm_out(tensor result, tensor self, tensor mat2) {
   PROTECT(
     return new torch::Tensor(torch::bmm_out(*result, *self, *mat2));
+  )
+}
+
+tensor atg_ceil(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::ceil(*self));
+  )
+}
+
+tensor atg_ceil_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::ceil_(*self));
   )
 }
 
@@ -136,6 +286,12 @@ tensor atg_celu(tensor self) {
 tensor atg_celu_(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::celu_(*self));
+  )
+}
+
+tensor atg_clone(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::clone(*self));
   )
 }
 
@@ -183,13 +339,37 @@ tensor atg_conv_transpose3d(tensor input, tensor weight, tensor bias, int64_t gr
 
 tensor atg_copy_sparse_to_sparse_(tensor self, tensor src, int non_blocking) {
   PROTECT(
-    return new torch::Tensor(torch::copy_sparse_to_sparse_(*self, *src, non_blocking));
+    return new torch::Tensor(torch::copy_sparse_to_sparse_(*self, *src, (bool)non_blocking));
+  )
+}
+
+tensor atg_cos(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::cos(*self));
+  )
+}
+
+tensor atg_cos_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::cos_(*self));
   )
 }
 
 tensor atg_cos_out(tensor result, tensor self) {
   PROTECT(
     return new torch::Tensor(torch::cos_out(*result, *self));
+  )
+}
+
+tensor atg_cosh(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::cosh(*self));
+  )
+}
+
+tensor atg_cosh_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::cosh_(*self));
   )
 }
 
@@ -229,9 +409,21 @@ tensor atg_cudnn_convolution_transpose_backward_bias(tensor grad_output) {
   )
 }
 
+tensor atg_cumprod2(tensor self, int64_t dim) {
+  PROTECT(
+    return new torch::Tensor(torch::cumprod(*self, dim));
+  )
+}
+
 tensor atg_cumprod_out2(tensor result, tensor self, int64_t dim) {
   PROTECT(
     return new torch::Tensor(torch::cumprod_out(*result, *self, dim));
+  )
+}
+
+tensor atg_cumsum2(tensor self, int64_t dim) {
+  PROTECT(
+    return new torch::Tensor(torch::cumsum(*self, dim));
   )
 }
 
@@ -241,9 +433,51 @@ tensor atg_cumsum_out2(tensor result, tensor self, int64_t dim) {
   )
 }
 
+tensor atg_det(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::det(*self));
+  )
+}
+
+tensor atg_detach(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::detach(*self));
+  )
+}
+
+tensor atg_detach_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::detach_(*self));
+  )
+}
+
+tensor atg_diagflat(tensor self, int64_t offset) {
+  PROTECT(
+    return new torch::Tensor(torch::diagflat(*self, offset));
+  )
+}
+
+tensor atg_diagonal(tensor self, int64_t offset, int64_t dim1, int64_t dim2) {
+  PROTECT(
+    return new torch::Tensor(torch::diagonal(*self, offset, dim1, dim2));
+  )
+}
+
+tensor atg_div1(tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(torch::div(*self, *other));
+  )
+}
+
 tensor atg_div_out(tensor result, tensor self, tensor other) {
   PROTECT(
     return new torch::Tensor(torch::div_out(*result, *self, *other));
+  )
+}
+
+tensor atg_dot(tensor self, tensor tensor) {
+  PROTECT(
+    return new torch::Tensor(torch::dot(*self, *tensor));
   )
 }
 
@@ -255,13 +489,13 @@ tensor atg_dot_out(tensor result, tensor self, tensor tensor) {
 
 tensor atg_dropout(tensor input, double p, int train) {
   PROTECT(
-    return new torch::Tensor(torch::dropout(*input, p, train));
+    return new torch::Tensor(torch::dropout(*input, p, (bool)train));
   )
 }
 
 tensor atg_dropout_(tensor self, double p, int train) {
   PROTECT(
-    return new torch::Tensor(torch::dropout_(*self, p, train));
+    return new torch::Tensor(torch::dropout_(*self, p, (bool)train));
   )
 }
 
@@ -271,9 +505,33 @@ tensor atg_empty_like1(tensor self) {
   )
 }
 
+tensor atg_erf(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::erf(*self));
+  )
+}
+
+tensor atg_erf_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::erf_(*self));
+  )
+}
+
 tensor atg_erf_out(tensor result, tensor self) {
   PROTECT(
     return new torch::Tensor(torch::erf_out(*result, *self));
+  )
+}
+
+tensor atg_erfc(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::erfc(*self));
+  )
+}
+
+tensor atg_erfc_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::erfc_(*self));
   )
 }
 
@@ -283,9 +541,33 @@ tensor atg_erfc_out(tensor result, tensor self) {
   )
 }
 
+tensor atg_exp(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::exp(*self));
+  )
+}
+
+tensor atg_exp_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::exp_(*self));
+  )
+}
+
 tensor atg_exp_out(tensor result, tensor self) {
   PROTECT(
     return new torch::Tensor(torch::exp_out(*result, *self));
+  )
+}
+
+tensor atg_expm1(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::expm1(*self));
+  )
+}
+
+tensor atg_expm1_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::expm1_(*self));
   )
 }
 
@@ -321,25 +603,55 @@ tensor atg_eye_out2(tensor result, int64_t n, int64_t m) {
 
 tensor atg_feature_alpha_dropout(tensor input, double p, int train) {
   PROTECT(
-    return new torch::Tensor(torch::feature_alpha_dropout(*input, p, train));
+    return new torch::Tensor(torch::feature_alpha_dropout(*input, p, (bool)train));
   )
 }
 
 tensor atg_feature_alpha_dropout_(tensor self, double p, int train) {
   PROTECT(
-    return new torch::Tensor(torch::feature_alpha_dropout_(*self, p, train));
+    return new torch::Tensor(torch::feature_alpha_dropout_(*self, p, (bool)train));
   )
 }
 
 tensor atg_feature_dropout(tensor input, double p, int train) {
   PROTECT(
-    return new torch::Tensor(torch::feature_dropout(*input, p, train));
+    return new torch::Tensor(torch::feature_dropout(*input, p, (bool)train));
   )
 }
 
 tensor atg_feature_dropout_(tensor self, double p, int train) {
   PROTECT(
-    return new torch::Tensor(torch::feature_dropout_(*self, p, train));
+    return new torch::Tensor(torch::feature_dropout_(*self, p, (bool)train));
+  )
+}
+
+tensor atg_fft(tensor self, int64_t signal_ndim, int normalized) {
+  PROTECT(
+    return new torch::Tensor(torch::fft(*self, signal_ndim, (bool)normalized));
+  )
+}
+
+tensor atg_fill_2(tensor self, tensor value) {
+  PROTECT(
+    return new torch::Tensor(torch::fill_(*self, *value));
+  )
+}
+
+tensor atg_flatten(tensor self, int64_t start_dim, int64_t end_dim) {
+  PROTECT(
+    return new torch::Tensor(torch::flatten(*self, start_dim, end_dim));
+  )
+}
+
+tensor atg_floor(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::floor(*self));
+  )
+}
+
+tensor atg_floor_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::floor_(*self));
   )
 }
 
@@ -352,6 +664,12 @@ tensor atg_floor_out(tensor result, tensor self) {
 tensor atg_frobenius_norm1(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::frobenius_norm(*self));
+  )
+}
+
+tensor atg_ger(tensor self, tensor vec2) {
+  PROTECT(
+    return new torch::Tensor(torch::ger(*self, *vec2));
   )
 }
 
@@ -393,19 +711,19 @@ tensor atg_hamming_window1(int64_t window_length) {
 
 tensor atg_hamming_window2(int64_t window_length, int periodic) {
   PROTECT(
-    return new torch::Tensor(torch::hamming_window(window_length, periodic));
+    return new torch::Tensor(torch::hamming_window(window_length, (bool)periodic));
   )
 }
 
 tensor atg_hamming_window3(int64_t window_length, int periodic, double alpha) {
   PROTECT(
-    return new torch::Tensor(torch::hamming_window(window_length, periodic, alpha));
+    return new torch::Tensor(torch::hamming_window(window_length, (bool)periodic, alpha));
   )
 }
 
 tensor atg_hamming_window4(int64_t window_length, int periodic, double alpha, double beta) {
   PROTECT(
-    return new torch::Tensor(torch::hamming_window(window_length, periodic, alpha, beta));
+    return new torch::Tensor(torch::hamming_window(window_length, (bool)periodic, alpha, beta));
   )
 }
 
@@ -417,7 +735,13 @@ tensor atg_hann_window1(int64_t window_length) {
 
 tensor atg_hann_window2(int64_t window_length, int periodic) {
   PROTECT(
-    return new torch::Tensor(torch::hann_window(window_length, periodic));
+    return new torch::Tensor(torch::hann_window(window_length, (bool)periodic));
+  )
+}
+
+tensor atg_hardshrink(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::hardshrink(*self));
   )
 }
 
@@ -439,9 +763,33 @@ tensor atg_hspmm_out(tensor result, tensor mat1, tensor mat2) {
   )
 }
 
+tensor atg_ifft(tensor self, int64_t signal_ndim, int normalized) {
+  PROTECT(
+    return new torch::Tensor(torch::ifft(*self, signal_ndim, (bool)normalized));
+  )
+}
+
+tensor atg_inverse(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::inverse(*self));
+  )
+}
+
 tensor atg_inverse_out(tensor result, tensor self) {
   PROTECT(
     return new torch::Tensor(torch::inverse_out(*result, *self));
+  )
+}
+
+tensor atg_irfft(tensor self, int64_t signal_ndim, int normalized, int onesided) {
+  PROTECT(
+    return new torch::Tensor(torch::irfft(*self, signal_ndim, (bool)normalized, (bool)onesided));
+  )
+}
+
+tensor atg_isclose(tensor self, tensor other, double rtol, double atol, int equal_nan) {
+  PROTECT(
+    return new torch::Tensor(torch::isclose(*self, *other, rtol, atol, (bool)equal_nan));
   )
 }
 
@@ -463,9 +811,39 @@ tensor atg_linear(tensor input, tensor weight, tensor bias) {
   )
 }
 
+tensor atg_log(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::log(*self));
+  )
+}
+
+tensor atg_log10(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::log10(*self));
+  )
+}
+
+tensor atg_log10_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::log10_(*self));
+  )
+}
+
 tensor atg_log10_out(tensor result, tensor self) {
   PROTECT(
     return new torch::Tensor(torch::log10_out(*result, *self));
+  )
+}
+
+tensor atg_log1p(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::log1p(*self));
+  )
+}
+
+tensor atg_log1p_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::log1p_(*self));
   )
 }
 
@@ -475,9 +853,27 @@ tensor atg_log1p_out(tensor result, tensor self) {
   )
 }
 
+tensor atg_log2(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::log2(*self));
+  )
+}
+
+tensor atg_log2_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::log2_(*self));
+  )
+}
+
 tensor atg_log2_out(tensor result, tensor self) {
   PROTECT(
     return new torch::Tensor(torch::log2_out(*result, *self));
+  )
+}
+
+tensor atg_log_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::log_(*self));
   )
 }
 
@@ -487,15 +883,33 @@ tensor atg_log_out(tensor result, tensor self) {
   )
 }
 
+tensor atg_log_softmax(tensor self, int64_t dim) {
+  PROTECT(
+    return new torch::Tensor(torch::log_softmax(*self, dim));
+  )
+}
+
 tensor atg_log_softmax_backward_data(tensor grad_output, tensor output, int64_t dim, tensor self) {
   PROTECT(
     return new torch::Tensor(torch::log_softmax_backward_data(*grad_output, *output, dim, *self));
   )
 }
 
+tensor atg_logdet(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::logdet(*self));
+  )
+}
+
+tensor atg_logsumexp(tensor self, int64_t dim, int keepdim) {
+  PROTECT(
+    return new torch::Tensor(torch::logsumexp(*self, dim, (bool)keepdim));
+  )
+}
+
 tensor atg_logsumexp_out(tensor result, tensor self, int64_t dim, int keepdim) {
   PROTECT(
-    return new torch::Tensor(torch::logsumexp_out(*result, *self, dim, keepdim));
+    return new torch::Tensor(torch::logsumexp_out(*result, *self, dim, (bool)keepdim));
   )
 }
 
@@ -505,15 +919,63 @@ tensor atg_margin_ranking_loss(tensor input1, tensor input2, tensor target, doub
   )
 }
 
+tensor atg_matmul(tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(torch::matmul(*self, *other));
+  )
+}
+
 tensor atg_matmul_out(tensor result, tensor self, tensor other) {
   PROTECT(
     return new torch::Tensor(torch::matmul_out(*result, *self, *other));
   )
 }
 
+tensor atg_matrix_power(tensor self, int64_t n) {
+  PROTECT(
+    return new torch::Tensor(torch::matrix_power(*self, n));
+  )
+}
+
+tensor atg_matrix_rank1(tensor self, double tol, int symmetric) {
+  PROTECT(
+    return new torch::Tensor(torch::matrix_rank(*self, tol, (bool)symmetric));
+  )
+}
+
+tensor atg_matrix_rank2(tensor self, int symmetric) {
+  PROTECT(
+    return new torch::Tensor(torch::matrix_rank(*self, (bool)symmetric));
+  )
+}
+
+tensor atg_max_values(tensor self, int64_t dim, int keepdim) {
+  PROTECT(
+    return new torch::Tensor(torch::max_values(*self, dim, (bool)keepdim));
+  )
+}
+
+tensor atg_mean2(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::mean(*self));
+  )
+}
+
+tensor atg_mean4(tensor self, int64_t dim, int keepdim) {
+  PROTECT(
+    return new torch::Tensor(torch::mean(*self, dim, (bool)keepdim));
+  )
+}
+
 tensor atg_mean_out2(tensor result, tensor self, int64_t dim, int keepdim) {
   PROTECT(
-    return new torch::Tensor(torch::mean_out(*result, *self, dim, keepdim));
+    return new torch::Tensor(torch::mean_out(*result, *self, dim, (bool)keepdim));
+  )
+}
+
+tensor atg_min_values(tensor self, int64_t dim, int keepdim) {
+  PROTECT(
+    return new torch::Tensor(torch::min_values(*self, dim, (bool)keepdim));
   )
 }
 
@@ -523,9 +985,21 @@ tensor atg_miopen_convolution_backward_bias(tensor grad_output) {
   )
 }
 
+tensor atg_mm(tensor self, tensor mat2) {
+  PROTECT(
+    return new torch::Tensor(torch::mm(*self, *mat2));
+  )
+}
+
 tensor atg_mm_out(tensor result, tensor self, tensor mat2) {
   PROTECT(
     return new torch::Tensor(torch::mm_out(*result, *self, *mat2));
+  )
+}
+
+tensor atg_mul1(tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(torch::mul(*self, *other));
   )
 }
 
@@ -535,9 +1009,27 @@ tensor atg_mul_out(tensor result, tensor self, tensor other) {
   )
 }
 
+tensor atg_mv(tensor self, tensor vec) {
+  PROTECT(
+    return new torch::Tensor(torch::mv(*self, *vec));
+  )
+}
+
 tensor atg_mv_out(tensor result, tensor self, tensor vec) {
   PROTECT(
     return new torch::Tensor(torch::mv_out(*result, *self, *vec));
+  )
+}
+
+tensor atg_mvlgamma(tensor self, int64_t p) {
+  PROTECT(
+    return new torch::Tensor(torch::mvlgamma(*self, p));
+  )
+}
+
+tensor atg_narrow(tensor self, int64_t dim, int64_t start, int64_t length) {
+  PROTECT(
+    return new torch::Tensor(torch::narrow(*self, dim, start, length));
   )
 }
 
@@ -565,6 +1057,12 @@ tensor atg_native_zero_(tensor self) {
   )
 }
 
+tensor atg_norm1(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::norm(*self));
+  )
+}
+
 tensor atg_norm_except_dim(tensor v, int64_t pow, int64_t dim) {
   PROTECT(
     return new torch::Tensor(torch::norm_except_dim(*v, pow, dim));
@@ -573,13 +1071,13 @@ tensor atg_norm_except_dim(tensor v, int64_t pow, int64_t dim) {
 
 tensor atg_nuclear_norm(tensor self, int keepdim) {
   PROTECT(
-    return new torch::Tensor(torch::nuclear_norm(*self, keepdim));
+    return new torch::Tensor(torch::nuclear_norm(*self, (bool)keepdim));
   )
 }
 
 tensor atg_nuclear_norm_out(tensor result, tensor self, int keepdim) {
   PROTECT(
-    return new torch::Tensor(torch::nuclear_norm_out(*result, *self, keepdim));
+    return new torch::Tensor(torch::nuclear_norm_out(*result, *self, (bool)keepdim));
   )
 }
 
@@ -591,13 +1089,25 @@ tensor atg_ones_like1(tensor self) {
 
 tensor atg_pairwise_distance(tensor x1, tensor x2, double p, double eps, int keepdim) {
   PROTECT(
-    return new torch::Tensor(torch::pairwise_distance(*x1, *x2, p, eps, keepdim));
+    return new torch::Tensor(torch::pairwise_distance(*x1, *x2, p, eps, (bool)keepdim));
   )
 }
 
 tensor atg_pdist(tensor self, double p) {
   PROTECT(
     return new torch::Tensor(torch::pdist(*self, p));
+  )
+}
+
+tensor atg_pin_memory(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::pin_memory(*self));
+  )
+}
+
+tensor atg_pinverse(tensor self, double rcond) {
+  PROTECT(
+    return new torch::Tensor(torch::pinverse(*self, rcond));
   )
 }
 
@@ -613,9 +1123,27 @@ tensor atg_poisson(tensor self) {
   )
 }
 
+tensor atg_prelu(tensor self, tensor weight) {
+  PROTECT(
+    return new torch::Tensor(torch::prelu(*self, *weight));
+  )
+}
+
+tensor atg_prod2(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::prod(*self));
+  )
+}
+
+tensor atg_prod4(tensor self, int64_t dim, int keepdim) {
+  PROTECT(
+    return new torch::Tensor(torch::prod(*self, dim, (bool)keepdim));
+  )
+}
+
 tensor atg_prod_out2(tensor result, tensor self, int64_t dim, int keepdim) {
   PROTECT(
-    return new torch::Tensor(torch::prod_out(*result, *self, dim, keepdim));
+    return new torch::Tensor(torch::prod_out(*result, *self, dim, (bool)keepdim));
   )
 }
 
@@ -655,6 +1183,30 @@ tensor atg_randperm_out1(tensor result, int64_t n) {
   )
 }
 
+tensor atg_relu(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::relu(*self));
+  )
+}
+
+tensor atg_relu_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::relu_(*self));
+  )
+}
+
+tensor atg_resize_as_(tensor self, tensor the_template) {
+  PROTECT(
+    return new torch::Tensor(torch::resize_as_(*self, *the_template));
+  )
+}
+
+tensor atg_rfft(tensor self, int64_t signal_ndim, int normalized, int onesided) {
+  PROTECT(
+    return new torch::Tensor(torch::rfft(*self, signal_ndim, (bool)normalized, (bool)onesided));
+  )
+}
+
 tensor atg_rnn_relu_cell(tensor input, tensor hx, tensor w_ih, tensor w_hh) {
   PROTECT(
     return new torch::Tensor(torch::rnn_relu_cell(*input, *hx, *w_ih, *w_hh));
@@ -667,6 +1219,24 @@ tensor atg_rnn_tanh_cell(tensor input, tensor hx, tensor w_ih, tensor w_hh) {
   )
 }
 
+tensor atg_rot90(tensor self, int64_t k) {
+  PROTECT(
+    return new torch::Tensor(torch::rot90(*self, k));
+  )
+}
+
+tensor atg_round(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::round(*self));
+  )
+}
+
+tensor atg_round_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::round_(*self));
+  )
+}
+
 tensor atg_round_out(tensor result, tensor self) {
   PROTECT(
     return new torch::Tensor(torch::round_out(*result, *self));
@@ -675,13 +1245,25 @@ tensor atg_round_out(tensor result, tensor self) {
 
 tensor atg_rrelu(tensor self, int training) {
   PROTECT(
-    return new torch::Tensor(torch::rrelu(*self, training));
+    return new torch::Tensor(torch::rrelu(*self, (bool)training));
   )
 }
 
 tensor atg_rrelu_(tensor self, int training) {
   PROTECT(
-    return new torch::Tensor(torch::rrelu_(*self, training));
+    return new torch::Tensor(torch::rrelu_(*self, (bool)training));
+  )
+}
+
+tensor atg_rsqrt(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::rsqrt(*self));
+  )
+}
+
+tensor atg_rsqrt_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::rsqrt_(*self));
   )
 }
 
@@ -709,6 +1291,12 @@ tensor atg_s_native_addmm_out(tensor result, tensor self, tensor mat1, tensor ma
   )
 }
 
+tensor atg_select(tensor self, int64_t dim, int64_t index) {
+  PROTECT(
+    return new torch::Tensor(torch::select(*self, dim, index));
+  )
+}
+
 tensor atg_selu(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::selu(*self));
@@ -721,9 +1309,33 @@ tensor atg_selu_(tensor self) {
   )
 }
 
+tensor atg_sigmoid(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::sigmoid(*self));
+  )
+}
+
+tensor atg_sigmoid_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::sigmoid_(*self));
+  )
+}
+
 tensor atg_sigmoid_out(tensor result, tensor self) {
   PROTECT(
     return new torch::Tensor(torch::sigmoid_out(*result, *self));
+  )
+}
+
+tensor atg_sin(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::sin(*self));
+  )
+}
+
+tensor atg_sin_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::sin_(*self));
   )
 }
 
@@ -733,9 +1345,39 @@ tensor atg_sin_out(tensor result, tensor self) {
   )
 }
 
+tensor atg_sinh(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::sinh(*self));
+  )
+}
+
+tensor atg_sinh_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::sinh_(*self));
+  )
+}
+
 tensor atg_sinh_out(tensor result, tensor self) {
   PROTECT(
     return new torch::Tensor(torch::sinh_out(*result, *self));
+  )
+}
+
+tensor atg_slice(tensor self, int64_t dim, int64_t start, int64_t end, int64_t step) {
+  PROTECT(
+    return new torch::Tensor(torch::slice(*self, dim, start, end, step));
+  )
+}
+
+tensor atg_smm(tensor self, tensor mat2) {
+  PROTECT(
+    return new torch::Tensor(torch::smm(*self, *mat2));
+  )
+}
+
+tensor atg_softmax(tensor self, int64_t dim) {
+  PROTECT(
+    return new torch::Tensor(torch::softmax(*self, dim));
   )
 }
 
@@ -745,9 +1387,39 @@ tensor atg_softmax_backward_data(tensor grad_output, tensor output, int64_t dim,
   )
 }
 
+tensor atg_sqrt(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::sqrt(*self));
+  )
+}
+
+tensor atg_sqrt_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::sqrt_(*self));
+  )
+}
+
 tensor atg_sqrt_out(tensor result, tensor self) {
   PROTECT(
     return new torch::Tensor(torch::sqrt_out(*result, *self));
+  )
+}
+
+tensor atg_squeeze1(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::squeeze(*self));
+  )
+}
+
+tensor atg_squeeze2(tensor self, int64_t dim) {
+  PROTECT(
+    return new torch::Tensor(torch::squeeze(*self, dim));
+  )
+}
+
+tensor atg_sspaddmm(tensor self, tensor mat1, tensor mat2) {
+  PROTECT(
+    return new torch::Tensor(torch::sspaddmm(*self, *mat1, *mat2));
   )
 }
 
@@ -757,9 +1429,27 @@ tensor atg_sspaddmm_out(tensor result, tensor self, tensor mat1, tensor mat2) {
   )
 }
 
+tensor atg_std1(tensor self, int unbiased) {
+  PROTECT(
+    return new torch::Tensor(torch::std(*self, (bool)unbiased));
+  )
+}
+
+tensor atg_std2(tensor self, int64_t dim, int unbiased, int keepdim) {
+  PROTECT(
+    return new torch::Tensor(torch::std(*self, dim, (bool)unbiased, (bool)keepdim));
+  )
+}
+
 tensor atg_std_out(tensor result, tensor self, int64_t dim, int unbiased, int keepdim) {
   PROTECT(
-    return new torch::Tensor(torch::std_out(*result, *self, dim, unbiased, keepdim));
+    return new torch::Tensor(torch::std_out(*result, *self, dim, (bool)unbiased, (bool)keepdim));
+  )
+}
+
+tensor atg_sub1(tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(torch::sub(*self, *other));
   )
 }
 
@@ -769,9 +1459,45 @@ tensor atg_sub_out(tensor result, tensor self, tensor other) {
   )
 }
 
+tensor atg_sum2(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::sum(*self));
+  )
+}
+
+tensor atg_t(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::t(*self));
+  )
+}
+
+tensor atg_tan(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::tan(*self));
+  )
+}
+
+tensor atg_tan_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::tan_(*self));
+  )
+}
+
 tensor atg_tan_out(tensor result, tensor self) {
   PROTECT(
     return new torch::Tensor(torch::tan_out(*result, *self));
+  )
+}
+
+tensor atg_tanh(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::tanh(*self));
+  )
+}
+
+tensor atg_tanh_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::tanh_(*self));
   )
 }
 
@@ -781,9 +1507,27 @@ tensor atg_tanh_out(tensor result, tensor self) {
   )
 }
 
+tensor atg_transpose(tensor self, int64_t dim0, int64_t dim1) {
+  PROTECT(
+    return new torch::Tensor(torch::transpose(*self, dim0, dim1));
+  )
+}
+
 tensor atg_triplet_margin_loss(tensor anchor, tensor positive, tensor negative, double margin, double p, double eps, int swap, int64_t reduction) {
   PROTECT(
-    return new torch::Tensor(torch::triplet_margin_loss(*anchor, *positive, *negative, margin, p, eps, swap, reduction));
+    return new torch::Tensor(torch::triplet_margin_loss(*anchor, *positive, *negative, margin, p, eps, (bool)swap, reduction));
+  )
+}
+
+tensor atg_trunc(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::trunc(*self));
+  )
+}
+
+tensor atg_trunc_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::trunc_(*self));
   )
 }
 
@@ -793,9 +1537,33 @@ tensor atg_trunc_out(tensor result, tensor self) {
   )
 }
 
+tensor atg_unsqueeze(tensor self, int64_t dim) {
+  PROTECT(
+    return new torch::Tensor(torch::unsqueeze(*self, dim));
+  )
+}
+
+tensor atg_var1(tensor self, int unbiased) {
+  PROTECT(
+    return new torch::Tensor(torch::var(*self, (bool)unbiased));
+  )
+}
+
+tensor atg_var2(tensor self, int64_t dim, int unbiased, int keepdim) {
+  PROTECT(
+    return new torch::Tensor(torch::var(*self, dim, (bool)unbiased, (bool)keepdim));
+  )
+}
+
 tensor atg_var_out(tensor result, tensor self, int64_t dim, int unbiased, int keepdim) {
   PROTECT(
-    return new torch::Tensor(torch::var_out(*result, *self, dim, unbiased, keepdim));
+    return new torch::Tensor(torch::var_out(*result, *self, dim, (bool)unbiased, (bool)keepdim));
+  )
+}
+
+tensor atg_zero_(tensor self) {
+  PROTECT(
+    return new torch::Tensor(torch::zero_(*self));
   )
 }
 
