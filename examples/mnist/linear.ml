@@ -11,7 +11,7 @@
 open Base
 open Torch_tensor
 
-let learning_rate = 8.
+let learning_rate = Tensor.f 8.
 
 let () =
   let { Mnist_helper.train_images; train_labels; test_images; test_labels } =
@@ -26,9 +26,9 @@ let () =
 
     Tensor.backward loss;
 
-    (* Apply gradient descent, disable gradient tracking for these. *)
-    Tensor.(no_grad ws ~f:(fun ws -> ws -= grad ws *f learning_rate));
-    Tensor.(no_grad bs ~f:(fun bs -> bs -= grad bs *f learning_rate));
+    (* Apply gradient descent, [no_grad w ~f] runs [f] on [w] with gradient tracking disabled. *)
+    Tensor.(no_grad ws ~f:(fun ws -> ws -= grad ws * learning_rate));
+    Tensor.(no_grad bs ~f:(fun bs -> bs -= grad bs * learning_rate));
 
     (* Compute the validation error. *)
     let test_accuracy =

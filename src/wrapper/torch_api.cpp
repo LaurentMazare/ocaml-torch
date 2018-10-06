@@ -3,13 +3,6 @@
 #include<caml/fail.h>
 #include "torch_api.h"
 
-#define PROTECT(x) \
-  try { \
-    x \
-  } catch (const exception& e) { \
-    caml_failwith(strdup(e.what())); \
-  }
-
 using namespace std;
 
 vector<long int> of_carray(int *vs, int len) {
@@ -233,3 +226,5 @@ tensor at_load(char *filename) {
 void at_free(tensor t) {
   delete(t);
 }
+
+#include "torch_api_generated.cpp.h"

@@ -5,6 +5,12 @@
 #ifdef __cplusplus
 extern "C" {
 typedef torch::Tensor *tensor;
+#define PROTECT(x) \
+  try { \
+    x \
+  } catch (const exception& e) { \
+    caml_failwith(strdup(e.what())); \
+  }
 #else
 typedef void *tensor;
 #endif
@@ -55,6 +61,8 @@ void at_save(tensor, char *filename);
 tensor at_load(char *filename);
 
 void at_free(tensor);
+
+#include "torch_api_generated.h"
 
 #ifdef __cplusplus
 };
