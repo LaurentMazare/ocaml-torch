@@ -27,18 +27,6 @@ tensor at_int_vec(int64_t *vs, int len, int type) {
   )
 }
 
-tensor at_zeros(int *dim_list, int dim_len, int type) {
-  PROTECT(
-    return new torch::Tensor(torch::zeros(of_carray(dim_list, dim_len), torch::ScalarType(type)));
-  )
-}
-
-tensor at_ones(int *dim_list, int dim_len, int type) {
-  PROTECT(
-    return new torch::Tensor(torch::ones(of_carray(dim_list, dim_len), torch::ScalarType(type)));
-  )
-}
-
 int at_dim(tensor t) {
   PROTECT(return t->dim();)
 }
@@ -53,24 +41,6 @@ void at_shape(tensor t, int *dims) {
 int at_scalar_type(tensor t) {
   PROTECT(
     return static_cast<int>(t->scalar_type());
-  )
-}
-
-tensor at_sum(tensor t) {
-  PROTECT(
-    return new torch::Tensor(sum(*t));
-  )
-}
-
-tensor at_mean(tensor t) {
-  PROTECT(
-    return new torch::Tensor(mean(*t));
-  )
-}
-
-tensor at_softmax(tensor t) {
-  PROTECT(
-    return new torch::Tensor(softmax(*t, -1));
   )
 }
 

@@ -162,11 +162,11 @@ module C(F: Cstubs.FOREIGN) = struct
 
   let bartlett_window1 =
     foreign "atg_bartlett_window1"
-    (int64_t @-> returning t)
+    (int64_t @-> int @-> returning t)
 
   let bartlett_window2 =
     foreign "atg_bartlett_window2"
-    (int64_t @-> int @-> returning t)
+    (int64_t @-> int @-> int @-> returning t)
 
   let bernoulli1 =
     foreign "atg_bernoulli1"
@@ -182,11 +182,11 @@ module C(F: Cstubs.FOREIGN) = struct
 
   let blackman_window1 =
     foreign "atg_blackman_window1"
-    (int64_t @-> returning t)
+    (int64_t @-> int @-> returning t)
 
   let blackman_window2 =
     foreign "atg_blackman_window2"
-    (int64_t @-> int @-> returning t)
+    (int64_t @-> int @-> int @-> returning t)
 
   let bmm =
     foreign "atg_bmm"
@@ -378,11 +378,15 @@ module C(F: Cstubs.FOREIGN) = struct
 
   let empty =
     foreign "atg_empty"
-    (ptr int @-> int @-> returning t)
+    (ptr int @-> int @-> int @-> returning t)
 
-  let empty_like =
-    foreign "atg_empty_like"
+  let empty_like1 =
+    foreign "atg_empty_like1"
     (t @-> returning t)
+
+  let empty_like2 =
+    foreign "atg_empty_like2"
+    (t @-> int @-> returning t)
 
   let empty_out =
     foreign "atg_empty_out"
@@ -390,7 +394,7 @@ module C(F: Cstubs.FOREIGN) = struct
 
   let empty_strided =
     foreign "atg_empty_strided"
-    (ptr int @-> int @-> ptr int @-> int @-> returning t)
+    (ptr int @-> int @-> ptr int @-> int @-> int @-> returning t)
 
   let erf =
     foreign "atg_erf"
@@ -442,11 +446,11 @@ module C(F: Cstubs.FOREIGN) = struct
 
   let eye1 =
     foreign "atg_eye1"
-    (int64_t @-> returning t)
+    (int64_t @-> int @-> returning t)
 
   let eye2 =
     foreign "atg_eye2"
-    (int64_t @-> int64_t @-> returning t)
+    (int64_t @-> int64_t @-> int @-> returning t)
 
   let eye_out1 =
     foreign "atg_eye_out1"
@@ -538,27 +542,27 @@ module C(F: Cstubs.FOREIGN) = struct
 
   let hamming_window1 =
     foreign "atg_hamming_window1"
-    (int64_t @-> returning t)
+    (int64_t @-> int @-> returning t)
 
   let hamming_window2 =
     foreign "atg_hamming_window2"
-    (int64_t @-> int @-> returning t)
+    (int64_t @-> int @-> int @-> returning t)
 
   let hamming_window3 =
     foreign "atg_hamming_window3"
-    (int64_t @-> int @-> double @-> returning t)
+    (int64_t @-> int @-> double @-> int @-> returning t)
 
   let hamming_window4 =
     foreign "atg_hamming_window4"
-    (int64_t @-> int @-> double @-> double @-> returning t)
+    (int64_t @-> int @-> double @-> double @-> int @-> returning t)
 
   let hann_window1 =
     foreign "atg_hann_window1"
-    (int64_t @-> returning t)
+    (int64_t @-> int @-> returning t)
 
   let hann_window2 =
     foreign "atg_hann_window2"
-    (int64_t @-> int @-> returning t)
+    (int64_t @-> int @-> int @-> returning t)
 
   let hardshrink =
     foreign "atg_hardshrink"
@@ -822,11 +826,15 @@ module C(F: Cstubs.FOREIGN) = struct
 
   let ones =
     foreign "atg_ones"
-    (ptr int @-> int @-> returning t)
+    (ptr int @-> int @-> int @-> returning t)
 
-  let ones_like =
-    foreign "atg_ones_like"
+  let ones_like1 =
+    foreign "atg_ones_like1"
     (t @-> returning t)
+
+  let ones_like2 =
+    foreign "atg_ones_like2"
+    (t @-> int @-> returning t)
 
   let ones_out =
     foreign "atg_ones_out"
@@ -874,11 +882,15 @@ module C(F: Cstubs.FOREIGN) = struct
 
   let rand =
     foreign "atg_rand"
-    (ptr int @-> int @-> returning t)
+    (ptr int @-> int @-> int @-> returning t)
 
-  let rand_like =
-    foreign "atg_rand_like"
+  let rand_like1 =
+    foreign "atg_rand_like1"
     (t @-> returning t)
+
+  let rand_like2 =
+    foreign "atg_rand_like2"
+    (t @-> int @-> returning t)
 
   let rand_out =
     foreign "atg_rand_out"
@@ -886,11 +898,11 @@ module C(F: Cstubs.FOREIGN) = struct
 
   let randint1 =
     foreign "atg_randint1"
-    (int64_t @-> ptr int @-> int @-> returning t)
+    (int64_t @-> ptr int @-> int @-> int @-> returning t)
 
   let randint2 =
     foreign "atg_randint2"
-    (int64_t @-> int64_t @-> ptr int @-> int @-> returning t)
+    (int64_t @-> int64_t @-> ptr int @-> int @-> int @-> returning t)
 
   let randint_like1 =
     foreign "atg_randint_like1"
@@ -899,6 +911,14 @@ module C(F: Cstubs.FOREIGN) = struct
   let randint_like2 =
     foreign "atg_randint_like2"
     (t @-> int64_t @-> int64_t @-> returning t)
+
+  let randint_like3 =
+    foreign "atg_randint_like3"
+    (t @-> int64_t @-> int @-> returning t)
+
+  let randint_like4 =
+    foreign "atg_randint_like4"
+    (t @-> int64_t @-> int64_t @-> int @-> returning t)
 
   let randint_out1 =
     foreign "atg_randint_out1"
@@ -910,11 +930,15 @@ module C(F: Cstubs.FOREIGN) = struct
 
   let randn =
     foreign "atg_randn"
-    (ptr int @-> int @-> returning t)
+    (ptr int @-> int @-> int @-> returning t)
 
-  let randn_like =
-    foreign "atg_randn_like"
+  let randn_like1 =
+    foreign "atg_randn_like1"
     (t @-> returning t)
+
+  let randn_like2 =
+    foreign "atg_randn_like2"
+    (t @-> int @-> returning t)
 
   let randn_out =
     foreign "atg_randn_out"
@@ -922,7 +946,7 @@ module C(F: Cstubs.FOREIGN) = struct
 
   let randperm =
     foreign "atg_randperm"
-    (int64_t @-> returning t)
+    (int64_t @-> int @-> returning t)
 
   let randperm_out =
     foreign "atg_randperm_out"
@@ -1068,6 +1092,10 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_softmax_backward_data"
     (t @-> t @-> int64_t @-> t @-> returning t)
 
+  let sparse_coo_tensor =
+    foreign "atg_sparse_coo_tensor"
+    (ptr int @-> int @-> int @-> returning t)
+
   let sqrt =
     foreign "atg_sqrt"
     (t @-> returning t)
@@ -1198,11 +1226,15 @@ module C(F: Cstubs.FOREIGN) = struct
 
   let zeros =
     foreign "atg_zeros"
-    (ptr int @-> int @-> returning t)
+    (ptr int @-> int @-> int @-> returning t)
 
-  let zeros_like =
-    foreign "atg_zeros_like"
+  let zeros_like1 =
+    foreign "atg_zeros_like1"
     (t @-> returning t)
+
+  let zeros_like2 =
+    foreign "atg_zeros_like2"
+    (t @-> int @-> returning t)
 
   let zeros_out =
     foreign "atg_zeros_out"

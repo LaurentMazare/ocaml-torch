@@ -36,6 +36,7 @@ module Func = struct
     | Double
     | Tensor
     | IntList
+    | TensorOptions
 
   type arg =
     { arg_name : string
@@ -55,6 +56,7 @@ module Func = struct
     | "int64_t" -> Some Int64
     | "double" -> Some Double
     | "tensor" -> Some Tensor
+    | "tensoroptions" -> Some TensorOptions
     | _ ->
       if String.is_prefix str ~prefix:"IntList"
       then Some IntList
@@ -72,6 +74,7 @@ module Func = struct
           | Int64 -> "int64_t"
           | Double -> "double"
           | Tensor -> "tensor"
+          | TensorOptions -> "int" (* only Kind for now. *)
           | IntList -> assert false
         in
         Printf.sprintf "%s %s" simple_type_cstring arg_name)
@@ -83,6 +86,7 @@ module Func = struct
       | Tensor -> "*" ^ arg_name
       | Bool -> "(bool)" ^ arg_name
       | IntList -> Printf.sprintf "of_carray(%s_data, %s_len)" arg_name arg_name
+      | TensorOptions -> Printf.sprintf "torch::ScalarType(%s)" arg_name
       | _ -> arg_name)
     |> String.concat ~sep:", "
 
@@ -93,6 +97,7 @@ module Func = struct
       | Int64 -> ["int64_t"]
       | Double -> ["double"]
       | Tensor -> ["t"]
+      | TensorOptions -> ["int"]
       | IntList -> ["ptr int"; "int"]
     )
     |> String.concat ~sep:" @-> "
@@ -120,6 +125,7 @@ module Func = struct
           "(CArray.of_list int %s |> CArray.start) (List.length %s)"
           name name
       | Bool -> Printf.sprintf "(if %s then 1 else 0)" name
+      | TensorOptions -> Printf.sprintf "(Kind.to_int %s)" name
       | _ -> name)
     |> String.concat ~sep:" "
 end

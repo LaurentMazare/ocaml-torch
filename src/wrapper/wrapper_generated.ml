@@ -198,13 +198,13 @@ let baddbmm_out result self batch1 batch2 =
   Gc.finalise C.Tensor.free t;
   t
 
-let bartlett_window1 window_length =
-  let t = bartlett_window1 window_length in
+let bartlett_window1 window_length options =
+  let t = bartlett_window1 window_length (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
-let bartlett_window2 window_length periodic =
-  let t = bartlett_window2 window_length (if periodic then 1 else 0) in
+let bartlett_window2 window_length periodic options =
+  let t = bartlett_window2 window_length (if periodic then 1 else 0) (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -223,13 +223,13 @@ let bernoulli_out result self =
   Gc.finalise C.Tensor.free t;
   t
 
-let blackman_window1 window_length =
-  let t = blackman_window1 window_length in
+let blackman_window1 window_length options =
+  let t = blackman_window1 window_length (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
-let blackman_window2 window_length periodic =
-  let t = blackman_window2 window_length (if periodic then 1 else 0) in
+let blackman_window2 window_length periodic options =
+  let t = blackman_window2 window_length (if periodic then 1 else 0) (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -468,13 +468,18 @@ let dropout_ self p train =
   Gc.finalise C.Tensor.free t;
   t
 
-let empty size =
-  let t = empty (CArray.of_list int size |> CArray.start) (List.length size) in
+let empty size options =
+  let t = empty (CArray.of_list int size |> CArray.start) (List.length size) (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
-let empty_like self =
-  let t = empty_like self in
+let empty_like1 self =
+  let t = empty_like1 self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let empty_like2 self options =
+  let t = empty_like2 self (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -483,8 +488,8 @@ let empty_out result size =
   Gc.finalise C.Tensor.free t;
   t
 
-let empty_strided size stride =
-  let t = empty_strided (CArray.of_list int size |> CArray.start) (List.length size) (CArray.of_list int stride |> CArray.start) (List.length stride) in
+let empty_strided size stride options =
+  let t = empty_strided (CArray.of_list int size |> CArray.start) (List.length size) (CArray.of_list int stride |> CArray.start) (List.length stride) (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -548,13 +553,13 @@ let expm1_out result self =
   Gc.finalise C.Tensor.free t;
   t
 
-let eye1 n =
-  let t = eye1 n in
+let eye1 n options =
+  let t = eye1 n (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
-let eye2 n m =
-  let t = eye2 n m in
+let eye2 n m options =
+  let t = eye2 n m (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -668,33 +673,33 @@ let gru_cell input hx w_ih w_hh =
   Gc.finalise C.Tensor.free t;
   t
 
-let hamming_window1 window_length =
-  let t = hamming_window1 window_length in
+let hamming_window1 window_length options =
+  let t = hamming_window1 window_length (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
-let hamming_window2 window_length periodic =
-  let t = hamming_window2 window_length (if periodic then 1 else 0) in
+let hamming_window2 window_length periodic options =
+  let t = hamming_window2 window_length (if periodic then 1 else 0) (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
-let hamming_window3 window_length periodic alpha =
-  let t = hamming_window3 window_length (if periodic then 1 else 0) alpha in
+let hamming_window3 window_length periodic alpha options =
+  let t = hamming_window3 window_length (if periodic then 1 else 0) alpha (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
-let hamming_window4 window_length periodic alpha beta =
-  let t = hamming_window4 window_length (if periodic then 1 else 0) alpha beta in
+let hamming_window4 window_length periodic alpha beta options =
+  let t = hamming_window4 window_length (if periodic then 1 else 0) alpha beta (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
-let hann_window1 window_length =
-  let t = hann_window1 window_length in
+let hann_window1 window_length options =
+  let t = hann_window1 window_length (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
-let hann_window2 window_length periodic =
-  let t = hann_window2 window_length (if periodic then 1 else 0) in
+let hann_window2 window_length periodic options =
+  let t = hann_window2 window_length (if periodic then 1 else 0) (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1023,13 +1028,18 @@ let nuclear_norm_out result self keepdim =
   Gc.finalise C.Tensor.free t;
   t
 
-let ones size =
-  let t = ones (CArray.of_list int size |> CArray.start) (List.length size) in
+let ones size options =
+  let t = ones (CArray.of_list int size |> CArray.start) (List.length size) (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
-let ones_like self =
-  let t = ones_like self in
+let ones_like1 self =
+  let t = ones_like1 self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let ones_like2 self options =
+  let t = ones_like2 self (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1088,13 +1098,18 @@ let prod_out result self dim keepdim =
   Gc.finalise C.Tensor.free t;
   t
 
-let rand size =
-  let t = rand (CArray.of_list int size |> CArray.start) (List.length size) in
+let rand size options =
+  let t = rand (CArray.of_list int size |> CArray.start) (List.length size) (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
-let rand_like self =
-  let t = rand_like self in
+let rand_like1 self =
+  let t = rand_like1 self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let rand_like2 self options =
+  let t = rand_like2 self (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1103,13 +1118,13 @@ let rand_out result size =
   Gc.finalise C.Tensor.free t;
   t
 
-let randint1 high size =
-  let t = randint1 high (CArray.of_list int size |> CArray.start) (List.length size) in
+let randint1 high size options =
+  let t = randint1 high (CArray.of_list int size |> CArray.start) (List.length size) (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
-let randint2 low high size =
-  let t = randint2 low high (CArray.of_list int size |> CArray.start) (List.length size) in
+let randint2 low high size options =
+  let t = randint2 low high (CArray.of_list int size |> CArray.start) (List.length size) (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1123,6 +1138,16 @@ let randint_like2 self low high =
   Gc.finalise C.Tensor.free t;
   t
 
+let randint_like3 self high options =
+  let t = randint_like3 self high (Kind.to_int options) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let randint_like4 self low high options =
+  let t = randint_like4 self low high (Kind.to_int options) in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let randint_out1 result high size =
   let t = randint_out1 result high (CArray.of_list int size |> CArray.start) (List.length size) in
   Gc.finalise C.Tensor.free t;
@@ -1133,13 +1158,18 @@ let randint_out2 result low high size =
   Gc.finalise C.Tensor.free t;
   t
 
-let randn size =
-  let t = randn (CArray.of_list int size |> CArray.start) (List.length size) in
+let randn size options =
+  let t = randn (CArray.of_list int size |> CArray.start) (List.length size) (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
-let randn_like self =
-  let t = randn_like self in
+let randn_like1 self =
+  let t = randn_like1 self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let randn_like2 self options =
+  let t = randn_like2 self (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1148,8 +1178,8 @@ let randn_out result size =
   Gc.finalise C.Tensor.free t;
   t
 
-let randperm n =
-  let t = randperm n in
+let randperm n options =
+  let t = randperm n (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1333,6 +1363,11 @@ let softmax_backward_data grad_output output dim self =
   Gc.finalise C.Tensor.free t;
   t
 
+let sparse_coo_tensor size options =
+  let t = sparse_coo_tensor (CArray.of_list int size |> CArray.start) (List.length size) (Kind.to_int options) in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let sqrt self =
   let t = sqrt self in
   Gc.finalise C.Tensor.free t;
@@ -1493,13 +1528,18 @@ let zero_ self =
   Gc.finalise C.Tensor.free t;
   t
 
-let zeros size =
-  let t = zeros (CArray.of_list int size |> CArray.start) (List.length size) in
+let zeros size options =
+  let t = zeros (CArray.of_list int size |> CArray.start) (List.length size) (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 
-let zeros_like self =
-  let t = zeros_like self in
+let zeros_like1 self =
+  let t = zeros_like1 self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let zeros_like2 self options =
+  let t = zeros_like2 self (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
   t
 

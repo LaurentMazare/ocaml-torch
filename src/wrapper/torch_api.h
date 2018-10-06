@@ -17,15 +17,11 @@ typedef void *tensor;
 
 tensor at_float_vec(double *values, int value_len, int type);
 tensor at_int_vec(int64_t *values, int value_len, int type);
-tensor at_zeros(int *dims, int dim_len, int type);
-tensor at_ones(int *dims, int dim_len, int type);
 
 int at_dim(tensor);
 void at_shape(tensor, int *);
 int at_scalar_type(tensor);
 
-tensor at_sum(tensor);
-tensor at_mean(tensor);
 tensor at_neg(tensor);
 tensor at_eq(tensor, tensor);
 

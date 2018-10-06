@@ -235,15 +235,15 @@ tensor atg_baddbmm_out(tensor result, tensor self, tensor batch1, tensor batch2)
   )
 }
 
-tensor atg_bartlett_window1(int64_t window_length) {
+tensor atg_bartlett_window1(int64_t window_length, int options) {
   PROTECT(
-    return new torch::Tensor(torch::bartlett_window(window_length));
+    return new torch::Tensor(torch::bartlett_window(window_length, torch::ScalarType(options)));
   )
 }
 
-tensor atg_bartlett_window2(int64_t window_length, int periodic) {
+tensor atg_bartlett_window2(int64_t window_length, int periodic, int options) {
   PROTECT(
-    return new torch::Tensor(torch::bartlett_window(window_length, (bool)periodic));
+    return new torch::Tensor(torch::bartlett_window(window_length, (bool)periodic, torch::ScalarType(options)));
   )
 }
 
@@ -265,15 +265,15 @@ tensor atg_bernoulli_out(tensor result, tensor self) {
   )
 }
 
-tensor atg_blackman_window1(int64_t window_length) {
+tensor atg_blackman_window1(int64_t window_length, int options) {
   PROTECT(
-    return new torch::Tensor(torch::blackman_window(window_length));
+    return new torch::Tensor(torch::blackman_window(window_length, torch::ScalarType(options)));
   )
 }
 
-tensor atg_blackman_window2(int64_t window_length, int periodic) {
+tensor atg_blackman_window2(int64_t window_length, int periodic, int options) {
   PROTECT(
-    return new torch::Tensor(torch::blackman_window(window_length, (bool)periodic));
+    return new torch::Tensor(torch::blackman_window(window_length, (bool)periodic, torch::ScalarType(options)));
   )
 }
 
@@ -559,15 +559,21 @@ tensor atg_dropout_(tensor self, double p, int train) {
   )
 }
 
-tensor atg_empty(int *size_data, int size_len) {
+tensor atg_empty(int *size_data, int size_len, int options) {
   PROTECT(
-    return new torch::Tensor(torch::empty(of_carray(size_data, size_len)));
+    return new torch::Tensor(torch::empty(of_carray(size_data, size_len), torch::ScalarType(options)));
   )
 }
 
-tensor atg_empty_like(tensor self) {
+tensor atg_empty_like1(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::empty_like(*self));
+  )
+}
+
+tensor atg_empty_like2(tensor self, int options) {
+  PROTECT(
+    return new torch::Tensor(torch::empty_like(*self, torch::ScalarType(options)));
   )
 }
 
@@ -577,9 +583,9 @@ tensor atg_empty_out(tensor result, int *size_data, int size_len) {
   )
 }
 
-tensor atg_empty_strided(int *size_data, int size_len, int *stride_data, int stride_len) {
+tensor atg_empty_strided(int *size_data, int size_len, int *stride_data, int stride_len, int options) {
   PROTECT(
-    return new torch::Tensor(torch::empty_strided(of_carray(size_data, size_len), of_carray(stride_data, stride_len)));
+    return new torch::Tensor(torch::empty_strided(of_carray(size_data, size_len), of_carray(stride_data, stride_len), torch::ScalarType(options)));
   )
 }
 
@@ -655,15 +661,15 @@ tensor atg_expm1_out(tensor result, tensor self) {
   )
 }
 
-tensor atg_eye1(int64_t n) {
+tensor atg_eye1(int64_t n, int options) {
   PROTECT(
-    return new torch::Tensor(torch::eye(n));
+    return new torch::Tensor(torch::eye(n, torch::ScalarType(options)));
   )
 }
 
-tensor atg_eye2(int64_t n, int64_t m) {
+tensor atg_eye2(int64_t n, int64_t m, int options) {
   PROTECT(
-    return new torch::Tensor(torch::eye(n, m));
+    return new torch::Tensor(torch::eye(n, m, torch::ScalarType(options)));
   )
 }
 
@@ -799,39 +805,39 @@ tensor atg_gru_cell(tensor input, tensor hx, tensor w_ih, tensor w_hh) {
   )
 }
 
-tensor atg_hamming_window1(int64_t window_length) {
+tensor atg_hamming_window1(int64_t window_length, int options) {
   PROTECT(
-    return new torch::Tensor(torch::hamming_window(window_length));
+    return new torch::Tensor(torch::hamming_window(window_length, torch::ScalarType(options)));
   )
 }
 
-tensor atg_hamming_window2(int64_t window_length, int periodic) {
+tensor atg_hamming_window2(int64_t window_length, int periodic, int options) {
   PROTECT(
-    return new torch::Tensor(torch::hamming_window(window_length, (bool)periodic));
+    return new torch::Tensor(torch::hamming_window(window_length, (bool)periodic, torch::ScalarType(options)));
   )
 }
 
-tensor atg_hamming_window3(int64_t window_length, int periodic, double alpha) {
+tensor atg_hamming_window3(int64_t window_length, int periodic, double alpha, int options) {
   PROTECT(
-    return new torch::Tensor(torch::hamming_window(window_length, (bool)periodic, alpha));
+    return new torch::Tensor(torch::hamming_window(window_length, (bool)periodic, alpha, torch::ScalarType(options)));
   )
 }
 
-tensor atg_hamming_window4(int64_t window_length, int periodic, double alpha, double beta) {
+tensor atg_hamming_window4(int64_t window_length, int periodic, double alpha, double beta, int options) {
   PROTECT(
-    return new torch::Tensor(torch::hamming_window(window_length, (bool)periodic, alpha, beta));
+    return new torch::Tensor(torch::hamming_window(window_length, (bool)periodic, alpha, beta, torch::ScalarType(options)));
   )
 }
 
-tensor atg_hann_window1(int64_t window_length) {
+tensor atg_hann_window1(int64_t window_length, int options) {
   PROTECT(
-    return new torch::Tensor(torch::hann_window(window_length));
+    return new torch::Tensor(torch::hann_window(window_length, torch::ScalarType(options)));
   )
 }
 
-tensor atg_hann_window2(int64_t window_length, int periodic) {
+tensor atg_hann_window2(int64_t window_length, int periodic, int options) {
   PROTECT(
-    return new torch::Tensor(torch::hann_window(window_length, (bool)periodic));
+    return new torch::Tensor(torch::hann_window(window_length, (bool)periodic, torch::ScalarType(options)));
   )
 }
 
@@ -1225,15 +1231,21 @@ tensor atg_nuclear_norm_out(tensor result, tensor self, int keepdim) {
   )
 }
 
-tensor atg_ones(int *size_data, int size_len) {
+tensor atg_ones(int *size_data, int size_len, int options) {
   PROTECT(
-    return new torch::Tensor(torch::ones(of_carray(size_data, size_len)));
+    return new torch::Tensor(torch::ones(of_carray(size_data, size_len), torch::ScalarType(options)));
   )
 }
 
-tensor atg_ones_like(tensor self) {
+tensor atg_ones_like1(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::ones_like(*self));
+  )
+}
+
+tensor atg_ones_like2(tensor self, int options) {
+  PROTECT(
+    return new torch::Tensor(torch::ones_like(*self, torch::ScalarType(options)));
   )
 }
 
@@ -1303,15 +1315,21 @@ tensor atg_prod_out(tensor result, tensor self, int64_t dim, int keepdim) {
   )
 }
 
-tensor atg_rand(int *size_data, int size_len) {
+tensor atg_rand(int *size_data, int size_len, int options) {
   PROTECT(
-    return new torch::Tensor(torch::rand(of_carray(size_data, size_len)));
+    return new torch::Tensor(torch::rand(of_carray(size_data, size_len), torch::ScalarType(options)));
   )
 }
 
-tensor atg_rand_like(tensor self) {
+tensor atg_rand_like1(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::rand_like(*self));
+  )
+}
+
+tensor atg_rand_like2(tensor self, int options) {
+  PROTECT(
+    return new torch::Tensor(torch::rand_like(*self, torch::ScalarType(options)));
   )
 }
 
@@ -1321,15 +1339,15 @@ tensor atg_rand_out(tensor result, int *size_data, int size_len) {
   )
 }
 
-tensor atg_randint1(int64_t high, int *size_data, int size_len) {
+tensor atg_randint1(int64_t high, int *size_data, int size_len, int options) {
   PROTECT(
-    return new torch::Tensor(torch::randint(high, of_carray(size_data, size_len)));
+    return new torch::Tensor(torch::randint(high, of_carray(size_data, size_len), torch::ScalarType(options)));
   )
 }
 
-tensor atg_randint2(int64_t low, int64_t high, int *size_data, int size_len) {
+tensor atg_randint2(int64_t low, int64_t high, int *size_data, int size_len, int options) {
   PROTECT(
-    return new torch::Tensor(torch::randint(low, high, of_carray(size_data, size_len)));
+    return new torch::Tensor(torch::randint(low, high, of_carray(size_data, size_len), torch::ScalarType(options)));
   )
 }
 
@@ -1345,6 +1363,18 @@ tensor atg_randint_like2(tensor self, int64_t low, int64_t high) {
   )
 }
 
+tensor atg_randint_like3(tensor self, int64_t high, int options) {
+  PROTECT(
+    return new torch::Tensor(torch::randint_like(*self, high, torch::ScalarType(options)));
+  )
+}
+
+tensor atg_randint_like4(tensor self, int64_t low, int64_t high, int options) {
+  PROTECT(
+    return new torch::Tensor(torch::randint_like(*self, low, high, torch::ScalarType(options)));
+  )
+}
+
 tensor atg_randint_out1(tensor result, int64_t high, int *size_data, int size_len) {
   PROTECT(
     return new torch::Tensor(torch::randint_out(*result, high, of_carray(size_data, size_len)));
@@ -1357,15 +1387,21 @@ tensor atg_randint_out2(tensor result, int64_t low, int64_t high, int *size_data
   )
 }
 
-tensor atg_randn(int *size_data, int size_len) {
+tensor atg_randn(int *size_data, int size_len, int options) {
   PROTECT(
-    return new torch::Tensor(torch::randn(of_carray(size_data, size_len)));
+    return new torch::Tensor(torch::randn(of_carray(size_data, size_len), torch::ScalarType(options)));
   )
 }
 
-tensor atg_randn_like(tensor self) {
+tensor atg_randn_like1(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::randn_like(*self));
+  )
+}
+
+tensor atg_randn_like2(tensor self, int options) {
+  PROTECT(
+    return new torch::Tensor(torch::randn_like(*self, torch::ScalarType(options)));
   )
 }
 
@@ -1375,9 +1411,9 @@ tensor atg_randn_out(tensor result, int *size_data, int size_len) {
   )
 }
 
-tensor atg_randperm(int64_t n) {
+tensor atg_randperm(int64_t n, int options) {
   PROTECT(
-    return new torch::Tensor(torch::randperm(n));
+    return new torch::Tensor(torch::randperm(n, torch::ScalarType(options)));
   )
 }
 
@@ -1597,6 +1633,12 @@ tensor atg_softmax_backward_data(tensor grad_output, tensor output, int64_t dim,
   )
 }
 
+tensor atg_sparse_coo_tensor(int *size_data, int size_len, int options) {
+  PROTECT(
+    return new torch::Tensor(torch::sparse_coo_tensor(of_carray(size_data, size_len), torch::ScalarType(options)));
+  )
+}
+
 tensor atg_sqrt(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::sqrt(*self));
@@ -1789,15 +1831,21 @@ tensor atg_zero_(tensor self) {
   )
 }
 
-tensor atg_zeros(int *size_data, int size_len) {
+tensor atg_zeros(int *size_data, int size_len, int options) {
   PROTECT(
-    return new torch::Tensor(torch::zeros(of_carray(size_data, size_len)));
+    return new torch::Tensor(torch::zeros(of_carray(size_data, size_len), torch::ScalarType(options)));
   )
 }
 
-tensor atg_zeros_like(tensor self) {
+tensor atg_zeros_like1(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::zeros_like(*self));
+  )
+}
+
+tensor atg_zeros_like2(tensor self, int options) {
+  PROTECT(
+    return new torch::Tensor(torch::zeros_like(*self, torch::ScalarType(options)));
   )
 }
 

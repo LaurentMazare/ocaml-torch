@@ -1,0 +1,15 @@
+type t =
+  | Uint8
+  | Int8
+  | Int16
+  | Int
+  | Int64
+  | Half
+  | Float
+  | Double
+  | ComplexHalf
+  | ComplexFloat
+  | ComplexDouble
+
+val to_int : t -> int
+val of_int_exn : int -> t

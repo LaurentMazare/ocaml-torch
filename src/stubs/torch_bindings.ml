@@ -20,20 +20,6 @@ module C(F: Cstubs.FOREIGN) = struct
         @-> int         (* kind *)
         @-> returning t)
 
-    let zeros =
-      foreign "at_zeros"
-        (   ptr int  (* dims *)
-        @-> int      (* num dims *)
-        @-> int      (* kind *)
-        @-> returning t)
-
-    let ones =
-      foreign "at_ones"
-        (   ptr int  (* dims *)
-        @-> int      (* num dims *)
-        @-> int      (* kind *)
-        @-> returning t)
-
     let num_dims = foreign "at_dim" (t @-> returning int)
 
     let shape =
@@ -44,8 +30,6 @@ module C(F: Cstubs.FOREIGN) = struct
 
     let scalar_type = foreign "at_scalar_type" (t @-> returning int)
 
-    let sum = foreign "at_sum" (t @-> returning t)
-    let mean = foreign "at_mean" (t @-> returning t)
     let neg = foreign "at_neg" (t @-> returning t)
 
     let eq = foreign "at_eq" (t @-> t @-> returning t)
