@@ -84,37 +84,37 @@ let addr_out result self vec1 vec2 =
   t
 
 let all self dim keepdim =
-  let t = all self dim keepdim in
+  let t = all self dim (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let all_out result self dim keepdim =
-  let t = all_out result self dim keepdim in
+  let t = all_out result self dim (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let alpha_dropout input p train =
-  let t = alpha_dropout input p train in
+  let t = alpha_dropout input p (if train then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let alpha_dropout_ self p train =
-  let t = alpha_dropout_ self p train in
+  let t = alpha_dropout_ self p (if train then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let any self dim keepdim =
-  let t = any self dim keepdim in
+  let t = any self dim (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let any_out result self dim keepdim =
-  let t = any_out result self dim keepdim in
+  let t = any_out result self dim (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let argmax1 self dim keepdim =
-  let t = argmax1 self dim keepdim in
+  let t = argmax1 self dim (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -124,7 +124,7 @@ let argmax2 self =
   t
 
 let argmin1 self dim keepdim =
-  let t = argmin1 self dim keepdim in
+  let t = argmin1 self dim (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -184,7 +184,7 @@ let atan_out result self =
   t
 
 let avg_pool1d self kernel_size stride padding ceil_mode count_include_pad =
-  let t = avg_pool1d self (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) ceil_mode count_include_pad in
+  let t = avg_pool1d self (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (if ceil_mode then 1 else 0) (if count_include_pad then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -204,7 +204,7 @@ let bartlett_window1 window_length =
   t
 
 let bartlett_window2 window_length periodic =
-  let t = bartlett_window2 window_length periodic in
+  let t = bartlett_window2 window_length (if periodic then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -229,7 +229,7 @@ let blackman_window1 window_length =
   t
 
 let blackman_window2 window_length periodic =
-  let t = blackman_window2 window_length periodic in
+  let t = blackman_window2 window_length (if periodic then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -309,7 +309,7 @@ let conv_transpose3d input weight bias stride padding output_padding groups dila
   t
 
 let copy_sparse_to_sparse_ self src non_blocking =
-  let t = copy_sparse_to_sparse_ self src non_blocking in
+  let t = copy_sparse_to_sparse_ self src (if non_blocking then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -369,12 +369,12 @@ let cudnn_convolution_backward_bias grad_output =
   t
 
 let cudnn_convolution_backward_input self_size grad_output weight padding stride dilation groups benchmark deterministic =
-  let t = cudnn_convolution_backward_input (CArray.of_list int self_size |> CArray.start) (List.length self_size) grad_output weight (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) groups benchmark deterministic in
+  let t = cudnn_convolution_backward_input (CArray.of_list int self_size |> CArray.start) (List.length self_size) grad_output weight (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) groups (if benchmark then 1 else 0) (if deterministic then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let cudnn_convolution_backward_weight weight_size grad_output self padding stride dilation groups benchmark deterministic =
-  let t = cudnn_convolution_backward_weight (CArray.of_list int weight_size |> CArray.start) (List.length weight_size) grad_output self (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) groups benchmark deterministic in
+  let t = cudnn_convolution_backward_weight (CArray.of_list int weight_size |> CArray.start) (List.length weight_size) grad_output self (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) groups (if benchmark then 1 else 0) (if deterministic then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -384,12 +384,12 @@ let cudnn_convolution_transpose_backward_bias grad_output =
   t
 
 let cudnn_convolution_transpose_backward_input grad_output weight padding stride dilation groups benchmark deterministic =
-  let t = cudnn_convolution_transpose_backward_input grad_output weight (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) groups benchmark deterministic in
+  let t = cudnn_convolution_transpose_backward_input grad_output weight (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) groups (if benchmark then 1 else 0) (if deterministic then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let cudnn_convolution_transpose_backward_weight weight_size grad_output self padding stride dilation groups benchmark deterministic =
-  let t = cudnn_convolution_transpose_backward_weight (CArray.of_list int weight_size |> CArray.start) (List.length weight_size) grad_output self (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) groups benchmark deterministic in
+  let t = cudnn_convolution_transpose_backward_weight (CArray.of_list int weight_size |> CArray.start) (List.length weight_size) grad_output self (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) groups (if benchmark then 1 else 0) (if deterministic then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -459,12 +459,12 @@ let dot_out result self tensor =
   t
 
 let dropout input p train =
-  let t = dropout input p train in
+  let t = dropout input p (if train then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let dropout_ self p train =
-  let t = dropout_ self p train in
+  let t = dropout_ self p (if train then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -569,27 +569,27 @@ let eye_out2 result n m =
   t
 
 let feature_alpha_dropout input p train =
-  let t = feature_alpha_dropout input p train in
+  let t = feature_alpha_dropout input p (if train then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let feature_alpha_dropout_ self p train =
-  let t = feature_alpha_dropout_ self p train in
+  let t = feature_alpha_dropout_ self p (if train then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let feature_dropout input p train =
-  let t = feature_dropout input p train in
+  let t = feature_dropout input p (if train then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let feature_dropout_ self p train =
-  let t = feature_dropout_ self p train in
+  let t = feature_dropout_ self p (if train then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let fft self signal_ndim normalized =
-  let t = fft self signal_ndim normalized in
+  let t = fft self signal_ndim (if normalized then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -629,12 +629,12 @@ let frobenius_norm1 self =
   t
 
 let frobenius_norm2 self dim keepdim =
-  let t = frobenius_norm2 self (CArray.of_list int dim |> CArray.start) (List.length dim) keepdim in
+  let t = frobenius_norm2 self (CArray.of_list int dim |> CArray.start) (List.length dim) (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let frobenius_norm_out result self dim keepdim =
-  let t = frobenius_norm_out result self (CArray.of_list int dim |> CArray.start) (List.length dim) keepdim in
+  let t = frobenius_norm_out result self (CArray.of_list int dim |> CArray.start) (List.length dim) (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -674,17 +674,17 @@ let hamming_window1 window_length =
   t
 
 let hamming_window2 window_length periodic =
-  let t = hamming_window2 window_length periodic in
+  let t = hamming_window2 window_length (if periodic then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let hamming_window3 window_length periodic alpha =
-  let t = hamming_window3 window_length periodic alpha in
+  let t = hamming_window3 window_length (if periodic then 1 else 0) alpha in
   Gc.finalise C.Tensor.free t;
   t
 
 let hamming_window4 window_length periodic alpha beta =
-  let t = hamming_window4 window_length periodic alpha beta in
+  let t = hamming_window4 window_length (if periodic then 1 else 0) alpha beta in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -694,7 +694,7 @@ let hann_window1 window_length =
   t
 
 let hann_window2 window_length periodic =
-  let t = hann_window2 window_length periodic in
+  let t = hann_window2 window_length (if periodic then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -719,7 +719,7 @@ let hspmm_out result mat1 mat2 =
   t
 
 let ifft self signal_ndim normalized =
-  let t = ifft self signal_ndim normalized in
+  let t = ifft self signal_ndim (if normalized then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -734,12 +734,12 @@ let inverse_out result self =
   t
 
 let irfft self signal_ndim normalized onesided signal_sizes =
-  let t = irfft self signal_ndim normalized onesided (CArray.of_list int signal_sizes |> CArray.start) (List.length signal_sizes) in
+  let t = irfft self signal_ndim (if normalized then 1 else 0) (if onesided then 1 else 0) (CArray.of_list int signal_sizes |> CArray.start) (List.length signal_sizes) in
   Gc.finalise C.Tensor.free t;
   t
 
 let isclose self other rtol atol equal_nan =
-  let t = isclose self other rtol atol equal_nan in
+  let t = isclose self other rtol atol (if equal_nan then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -834,12 +834,12 @@ let logdet self =
   t
 
 let logsumexp self dim keepdim =
-  let t = logsumexp self dim keepdim in
+  let t = logsumexp self dim (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let logsumexp_out result self dim keepdim =
-  let t = logsumexp_out result self dim keepdim in
+  let t = logsumexp_out result self dim (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -864,32 +864,32 @@ let matrix_power self n =
   t
 
 let matrix_rank1 self tol symmetric =
-  let t = matrix_rank1 self tol symmetric in
+  let t = matrix_rank1 self tol (if symmetric then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let matrix_rank2 self symmetric =
-  let t = matrix_rank2 self symmetric in
+  let t = matrix_rank2 self (if symmetric then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let max_pool1d self kernel_size stride padding dilation ceil_mode =
-  let t = max_pool1d self (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int dilation |> CArray.start) (List.length dilation) ceil_mode in
+  let t = max_pool1d self (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int dilation |> CArray.start) (List.length dilation) (if ceil_mode then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let max_pool2d self kernel_size stride padding dilation ceil_mode =
-  let t = max_pool2d self (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int dilation |> CArray.start) (List.length dilation) ceil_mode in
+  let t = max_pool2d self (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int dilation |> CArray.start) (List.length dilation) (if ceil_mode then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let max_pool3d self kernel_size stride padding dilation ceil_mode =
-  let t = max_pool3d self (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int dilation |> CArray.start) (List.length dilation) ceil_mode in
+  let t = max_pool3d self (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int dilation |> CArray.start) (List.length dilation) (if ceil_mode then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let max_values self dim keepdim =
-  let t = max_values self dim keepdim in
+  let t = max_values self dim (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -899,17 +899,17 @@ let mean1 self =
   t
 
 let mean2 self dim keepdim =
-  let t = mean2 self dim keepdim in
+  let t = mean2 self dim (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let mean_out result self dim keepdim =
-  let t = mean_out result self dim keepdim in
+  let t = mean_out result self dim (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let min_values self dim keepdim =
-  let t = min_values self dim keepdim in
+  let t = min_values self dim (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -919,27 +919,27 @@ let miopen_convolution_backward_bias grad_output =
   t
 
 let miopen_convolution_backward_input self_size grad_output weight padding stride dilation groups benchmark deterministic =
-  let t = miopen_convolution_backward_input (CArray.of_list int self_size |> CArray.start) (List.length self_size) grad_output weight (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) groups benchmark deterministic in
+  let t = miopen_convolution_backward_input (CArray.of_list int self_size |> CArray.start) (List.length self_size) grad_output weight (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) groups (if benchmark then 1 else 0) (if deterministic then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let miopen_convolution_backward_weight weight_size grad_output self padding stride dilation groups benchmark deterministic =
-  let t = miopen_convolution_backward_weight (CArray.of_list int weight_size |> CArray.start) (List.length weight_size) grad_output self (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) groups benchmark deterministic in
+  let t = miopen_convolution_backward_weight (CArray.of_list int weight_size |> CArray.start) (List.length weight_size) grad_output self (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) groups (if benchmark then 1 else 0) (if deterministic then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let miopen_convolution_transpose_backward_input grad_output weight padding stride dilation groups benchmark deterministic =
-  let t = miopen_convolution_transpose_backward_input grad_output weight (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) groups benchmark deterministic in
+  let t = miopen_convolution_transpose_backward_input grad_output weight (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) groups (if benchmark then 1 else 0) (if deterministic then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let miopen_convolution_transpose_backward_weight weight_size grad_output self padding stride dilation groups benchmark deterministic =
-  let t = miopen_convolution_transpose_backward_weight (CArray.of_list int weight_size |> CArray.start) (List.length weight_size) grad_output self (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) groups benchmark deterministic in
+  let t = miopen_convolution_transpose_backward_weight (CArray.of_list int weight_size |> CArray.start) (List.length weight_size) grad_output self (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) groups (if benchmark then 1 else 0) (if deterministic then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let mkldnn_convolution_backward_input self_size grad_output weight padding stride dilation groups bias_defined =
-  let t = mkldnn_convolution_backward_input (CArray.of_list int self_size |> CArray.start) (List.length self_size) grad_output weight (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) groups bias_defined in
+  let t = mkldnn_convolution_backward_input (CArray.of_list int self_size |> CArray.start) (List.length self_size) grad_output weight (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) groups (if bias_defined then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1014,12 +1014,12 @@ let norm_except_dim v pow dim =
   t
 
 let nuclear_norm self keepdim =
-  let t = nuclear_norm self keepdim in
+  let t = nuclear_norm self (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let nuclear_norm_out result self keepdim =
-  let t = nuclear_norm_out result self keepdim in
+  let t = nuclear_norm_out result self (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1039,7 +1039,7 @@ let ones_out result size =
   t
 
 let pairwise_distance x1 x2 p eps keepdim =
-  let t = pairwise_distance x1 x2 p eps keepdim in
+  let t = pairwise_distance x1 x2 p eps (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1079,12 +1079,12 @@ let prod1 self =
   t
 
 let prod2 self dim keepdim =
-  let t = prod2 self dim keepdim in
+  let t = prod2 self dim (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let prod_out result self dim keepdim =
-  let t = prod_out result self dim keepdim in
+  let t = prod_out result self dim (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1179,7 +1179,7 @@ let resize_as_ self the_template =
   t
 
 let rfft self signal_ndim normalized onesided =
-  let t = rfft self signal_ndim normalized onesided in
+  let t = rfft self signal_ndim (if normalized then 1 else 0) (if onesided then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1214,12 +1214,12 @@ let round_out result self =
   t
 
 let rrelu self training =
-  let t = rrelu self training in
+  let t = rrelu self (if training then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let rrelu_ self training =
-  let t = rrelu_ self training in
+  let t = rrelu_ self (if training then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1369,17 +1369,17 @@ let sspaddmm_out result self mat1 mat2 =
   t
 
 let std1 self unbiased =
-  let t = std1 self unbiased in
+  let t = std1 self (if unbiased then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let std2 self dim unbiased keepdim =
-  let t = std2 self dim unbiased keepdim in
+  let t = std2 self dim (if unbiased then 1 else 0) (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let std_out result self dim unbiased keepdim =
-  let t = std_out result self dim unbiased keepdim in
+  let t = std_out result self dim (if unbiased then 1 else 0) (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1399,12 +1399,12 @@ let sum1 self =
   t
 
 let sum2 self dim keepdim =
-  let t = sum2 self (CArray.of_list int dim |> CArray.start) (List.length dim) keepdim in
+  let t = sum2 self (CArray.of_list int dim |> CArray.start) (List.length dim) (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let sum_out result self dim keepdim =
-  let t = sum_out result self (CArray.of_list int dim |> CArray.start) (List.length dim) keepdim in
+  let t = sum_out result self (CArray.of_list int dim |> CArray.start) (List.length dim) (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1449,7 +1449,7 @@ let transpose self dim0 dim1 =
   t
 
 let triplet_margin_loss anchor positive negative margin p eps swap reduction =
-  let t = triplet_margin_loss anchor positive negative margin p eps swap reduction in
+  let t = triplet_margin_loss anchor positive negative margin p eps (if swap then 1 else 0) reduction in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1474,17 +1474,17 @@ let unsqueeze self dim =
   t
 
 let var1 self unbiased =
-  let t = var1 self unbiased in
+  let t = var1 self (if unbiased then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let var2 self dim unbiased keepdim =
-  let t = var2 self dim unbiased keepdim in
+  let t = var2 self dim (if unbiased then 1 else 0) (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let var_out result self dim unbiased keepdim =
-  let t = var_out result self dim unbiased keepdim in
+  let t = var_out result self dim (if unbiased then 1 else 0) (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 

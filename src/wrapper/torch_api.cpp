@@ -39,12 +39,6 @@ tensor at_ones(int *dim_list, int dim_len, int type) {
   )
 }
 
-tensor at_rand(int *dim_list, int dim_len) {
-  PROTECT(
-    return new torch::Tensor(torch::rand(of_carray(dim_list, dim_len)));
-  )
-}
-
 int at_dim(tensor t) {
   PROTECT(return t->dim();)
 }
@@ -86,33 +80,9 @@ tensor at_neg(tensor t) {
   )
 }
 
-tensor at_log(tensor t) {
-  PROTECT(
-    return new torch::Tensor(log(*t));
-  )
-}
-
-tensor at_argmax(tensor t) {
-  PROTECT(
-    return new torch::Tensor(argmax(*t, -1, false));
-  )
-}
-
 void at_sub_assign(tensor t1, tensor t2) {
   PROTECT(
     *t1 -= *t2;
-  )
-}
-
-tensor at_pow(tensor t1, tensor t2) {
-  PROTECT(
-    return new torch::Tensor(pow(*t1, *t2));
-  )
-}
-
-tensor at_matmul(tensor t1, tensor t2) {
-  PROTECT(
-    return new torch::Tensor(matmul(*t1, *t2));
   )
 }
 

@@ -102,11 +102,6 @@ module Tensor = struct
 
   let kind t = scalar_type t |> Kind.of_int_exn
 
-  let pow x y =
-    let t = pow x y in
-    Gc.finalise free t;
-    t
-
   let grad t =
     let grad = grad t in
     Gc.finalise free grad;
@@ -157,23 +152,12 @@ module Tensor = struct
     Gc.finalise free t;
     t
 
-  let argmax t =
-    let t = argmax t in
-    Gc.finalise free t;
-    t
+  let argmax t = argmax1 t (Int64.of_int (-1)) false
 
-  let softmax t =
-    let t = softmax t in
-    Gc.finalise free t;
-    t
+  let softmax t = softmax t (Int64.of_int (-1))
 
   let neg t =
     let t = neg t in
-    Gc.finalise free t;
-    t
-
-  let log t =
-    let t = log t in
     Gc.finalise free t;
     t
 

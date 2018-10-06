@@ -34,12 +34,6 @@ module C(F: Cstubs.FOREIGN) = struct
         @-> int      (* kind *)
         @-> returning t)
 
-    let rand =
-      foreign "at_rand"
-        (   ptr int  (* dims *)
-        @-> int      (* num dims *)
-        @-> returning t)
-
     let num_dims = foreign "at_dim" (t @-> returning int)
 
     let shape =
@@ -52,12 +46,8 @@ module C(F: Cstubs.FOREIGN) = struct
 
     let sum = foreign "at_sum" (t @-> returning t)
     let mean = foreign "at_mean" (t @-> returning t)
-    let argmax = foreign "at_argmax" (t @-> returning t)
-    let softmax = foreign "at_softmax" (t @-> returning t)
     let neg = foreign "at_neg" (t @-> returning t)
-    let log = foreign "at_log" (t @-> returning t)
 
-    let pow = foreign "at_pow" (t @-> t @-> returning t)
     let eq = foreign "at_eq" (t @-> t @-> returning t)
 
     let sub_assign = foreign "at_sub_assign" (t @-> t @-> returning void)

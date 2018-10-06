@@ -39,7 +39,6 @@ module Tensor : sig
   val sub : t -> t -> t
   val mul : t -> t -> t
   val div : t -> t -> t
-  val pow : t -> t -> t
   val matmul : t -> t -> t
   val eq : t -> t -> t
 

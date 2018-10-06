@@ -119,6 +119,7 @@ module Func = struct
         Printf.sprintf
           "(CArray.of_list int %s |> CArray.start) (List.length %s)"
           name name
+      | Bool -> Printf.sprintf "(if %s then 1 else 0)" name
       | _ -> name)
     |> String.concat ~sep:" "
 end
