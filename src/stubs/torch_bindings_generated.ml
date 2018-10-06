@@ -172,6 +172,10 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_bartlett_window2"
     (int64_t @-> int @-> int @-> returning t)
 
+  let batch_norm =
+    foreign "atg_batch_norm"
+    (t @-> t @-> t @-> t @-> t @-> int @-> double @-> double @-> int @-> returning t)
+
   let bernoulli1 =
     foreign "atg_bernoulli1"
     (t @-> returning t)
@@ -183,6 +187,10 @@ module C(F: Cstubs.FOREIGN) = struct
   let bernoulli_out =
     foreign "atg_bernoulli_out"
     (t @-> t @-> returning t)
+
+  let bilinear =
+    foreign "atg_bilinear"
+    (t @-> t @-> t @-> t @-> returning t)
 
   let blackman_window1 =
     foreign "atg_blackman_window1"
@@ -252,6 +260,10 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_conv_transpose3d"
     (t @-> t @-> t @-> ptr int @-> int @-> ptr int @-> int @-> ptr int @-> int @-> int64_t @-> ptr int @-> int @-> returning t)
 
+  let convolution =
+    foreign "atg_convolution"
+    (t @-> t @-> t @-> ptr int @-> int @-> ptr int @-> int @-> ptr int @-> int @-> int @-> ptr int @-> int @-> int64_t @-> returning t)
+
   let copy_sparse_to_sparse_ =
     foreign "atg_copy_sparse_to_sparse_"
     (t @-> t @-> int @-> returning t)
@@ -296,6 +308,10 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_cudnn_affine_grid_generator"
     (t @-> int64_t @-> int64_t @-> int64_t @-> int64_t @-> returning t)
 
+  let cudnn_convolution =
+    foreign "atg_cudnn_convolution"
+    (t @-> t @-> t @-> ptr int @-> int @-> ptr int @-> int @-> ptr int @-> int @-> int64_t @-> int @-> int @-> returning t)
+
   let cudnn_convolution_backward_bias =
     foreign "atg_cudnn_convolution_backward_bias"
     (t @-> returning t)
@@ -307,6 +323,10 @@ module C(F: Cstubs.FOREIGN) = struct
   let cudnn_convolution_backward_weight =
     foreign "atg_cudnn_convolution_backward_weight"
     (ptr int @-> int @-> t @-> t @-> ptr int @-> int @-> ptr int @-> int @-> ptr int @-> int @-> int64_t @-> int @-> int @-> returning t)
+
+  let cudnn_convolution_transpose =
+    foreign "atg_cudnn_convolution_transpose"
+    (t @-> t @-> t @-> ptr int @-> int @-> ptr int @-> int @-> ptr int @-> int @-> ptr int @-> int @-> int64_t @-> int @-> int @-> returning t)
 
   let cudnn_convolution_transpose_backward_bias =
     foreign "atg_cudnn_convolution_transpose_backward_bias"
@@ -554,7 +574,7 @@ module C(F: Cstubs.FOREIGN) = struct
 
   let gru_cell =
     foreign "atg_gru_cell"
-    (t @-> t @-> t @-> t @-> returning t)
+    (t @-> t @-> t @-> t @-> t @-> t @-> returning t)
 
   let hamming_window1 =
     foreign "atg_hamming_window1"
@@ -599,6 +619,10 @@ module C(F: Cstubs.FOREIGN) = struct
   let ifft =
     foreign "atg_ifft"
     (t @-> int64_t @-> int @-> returning t)
+
+  let instance_norm =
+    foreign "atg_instance_norm"
+    (t @-> t @-> t @-> t @-> t @-> int @-> double @-> double @-> int @-> returning t)
 
   let inverse =
     foreign "atg_inverse"
@@ -752,6 +776,10 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_min_values"
     (t @-> int64_t @-> int @-> returning t)
 
+  let miopen_convolution =
+    foreign "atg_miopen_convolution"
+    (t @-> t @-> t @-> ptr int @-> int @-> ptr int @-> int @-> ptr int @-> int @-> int64_t @-> int @-> int @-> returning t)
+
   let miopen_convolution_backward_bias =
     foreign "atg_miopen_convolution_backward_bias"
     (t @-> returning t)
@@ -764,6 +792,10 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_miopen_convolution_backward_weight"
     (ptr int @-> int @-> t @-> t @-> ptr int @-> int @-> ptr int @-> int @-> ptr int @-> int @-> int64_t @-> int @-> int @-> returning t)
 
+  let miopen_convolution_transpose =
+    foreign "atg_miopen_convolution_transpose"
+    (t @-> t @-> t @-> ptr int @-> int @-> ptr int @-> int @-> ptr int @-> int @-> ptr int @-> int @-> int64_t @-> int @-> int @-> returning t)
+
   let miopen_convolution_transpose_backward_input =
     foreign "atg_miopen_convolution_transpose_backward_input"
     (t @-> t @-> ptr int @-> int @-> ptr int @-> int @-> ptr int @-> int @-> int64_t @-> int @-> int @-> returning t)
@@ -771,6 +803,10 @@ module C(F: Cstubs.FOREIGN) = struct
   let miopen_convolution_transpose_backward_weight =
     foreign "atg_miopen_convolution_transpose_backward_weight"
     (ptr int @-> int @-> t @-> t @-> ptr int @-> int @-> ptr int @-> int @-> ptr int @-> int @-> int64_t @-> int @-> int @-> returning t)
+
+  let mkldnn_convolution =
+    foreign "atg_mkldnn_convolution"
+    (t @-> t @-> t @-> ptr int @-> int @-> ptr int @-> int @-> ptr int @-> int @-> int64_t @-> returning t)
 
   let mkldnn_convolution_backward_input =
     foreign "atg_mkldnn_convolution_backward_input"
@@ -998,11 +1034,11 @@ module C(F: Cstubs.FOREIGN) = struct
 
   let rnn_relu_cell =
     foreign "atg_rnn_relu_cell"
-    (t @-> t @-> t @-> t @-> returning t)
+    (t @-> t @-> t @-> t @-> t @-> t @-> returning t)
 
   let rnn_tanh_cell =
     foreign "atg_rnn_tanh_cell"
-    (t @-> t @-> t @-> t @-> returning t)
+    (t @-> t @-> t @-> t @-> t @-> t @-> returning t)
 
   let roipooling2d_backward =
     foreign "atg_roipooling2d_backward"

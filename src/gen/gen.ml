@@ -35,6 +35,7 @@ module Func = struct
     | Int64
     | Double
     | Tensor
+    | TensorOption
     | IntList
     | TensorOptions
     | ScalarType
@@ -59,6 +60,7 @@ module Func = struct
     | "int64_t" -> Some Int64
     | "double" -> Some Double
     | "tensor" -> Some Tensor
+    | "tensor?" -> Some TensorOption
     | "tensoroptions" -> Some TensorOptions
     | _ ->
       if String.is_prefix str ~prefix:"IntList"
@@ -77,6 +79,7 @@ module Func = struct
           | Int64 -> "int64_t"
           | Double -> "double"
           | Tensor -> "tensor"
+          | TensorOption -> "tensor"
           | TensorOptions -> "int" (* only Kind for now. *)
           | ScalarType -> "int"
           | Device -> "int"
@@ -89,6 +92,7 @@ module Func = struct
     List.map args ~f:(fun { arg_name; arg_type; _ } ->
       match arg_type with
       | Tensor -> "*" ^ arg_name
+      | TensorOption -> Printf.sprintf "(%s ? *%s : torch::Tensor())" arg_name arg_name
       | Bool -> "(bool)" ^ arg_name
       | IntList -> Printf.sprintf "of_carray(%s_data, %s_len)" arg_name arg_name
       | ScalarType | TensorOptions -> Printf.sprintf "torch::ScalarType(%s)" arg_name
@@ -113,6 +117,7 @@ module Func = struct
       | Int64 -> ["int64_t"]
       | Double -> ["double"]
       | Tensor -> ["t"]
+      | TensorOption -> ["t"]
       | TensorOptions -> ["int"]
       | ScalarType -> ["int"]
       | Device -> ["int"]
@@ -147,6 +152,7 @@ module Func = struct
       | ScalarType | TensorOptions -> Printf.sprintf "(Kind.to_int %s)" name
       | Device -> Printf.sprintf "(Device.to_int %s)" name
       | Int64 -> Printf.sprintf "(Int64.of_int %s)" name
+      | TensorOption -> Printf.sprintf "(match %s with | Some v -> v | None -> null)" name
       | _ -> name)
     |> String.concat ~sep:" "
 end

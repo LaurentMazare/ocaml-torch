@@ -213,6 +213,11 @@ let bartlett_window2 window_length periodic options =
   Gc.finalise C.Tensor.free t;
   t
 
+let batch_norm input weight bias running_mean running_var training momentum eps cudnn_enabled =
+  let t = batch_norm input (match weight with | Some v -> v | None -> null) (match bias with | Some v -> v | None -> null) (match running_mean with | Some v -> v | None -> null) (match running_var with | Some v -> v | None -> null) (if training then 1 else 0) momentum eps (if cudnn_enabled then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let bernoulli1 self =
   let t = bernoulli1 self in
   Gc.finalise C.Tensor.free t;
@@ -225,6 +230,11 @@ let bernoulli2 self p =
 
 let bernoulli_out result self =
   let t = bernoulli_out result self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let bilinear input1 input2 weight bias =
+  let t = bilinear input1 input2 weight (match bias with | Some v -> v | None -> null) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -313,6 +323,11 @@ let conv_transpose3d input weight bias stride padding output_padding groups dila
   Gc.finalise C.Tensor.free t;
   t
 
+let convolution input weight bias stride padding dilation transposed output_padding groups =
+  let t = convolution input weight (match bias with | Some v -> v | None -> null) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int dilation |> CArray.start) (List.length dilation) (if transposed then 1 else 0) (CArray.of_list int output_padding |> CArray.start) (List.length output_padding) (Int64.of_int groups) in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let copy_sparse_to_sparse_ self src non_blocking =
   let t = copy_sparse_to_sparse_ self src (if non_blocking then 1 else 0) in
   Gc.finalise C.Tensor.free t;
@@ -368,6 +383,11 @@ let cudnn_affine_grid_generator theta n c h w =
   Gc.finalise C.Tensor.free t;
   t
 
+let cudnn_convolution self weight bias padding stride dilation groups benchmark deterministic =
+  let t = cudnn_convolution self weight (match bias with | Some v -> v | None -> null) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) (Int64.of_int groups) (if benchmark then 1 else 0) (if deterministic then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let cudnn_convolution_backward_bias grad_output =
   let t = cudnn_convolution_backward_bias grad_output in
   Gc.finalise C.Tensor.free t;
@@ -380,6 +400,11 @@ let cudnn_convolution_backward_input self_size grad_output weight padding stride
 
 let cudnn_convolution_backward_weight weight_size grad_output self padding stride dilation groups benchmark deterministic =
   let t = cudnn_convolution_backward_weight (CArray.of_list int weight_size |> CArray.start) (List.length weight_size) grad_output self (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) (Int64.of_int groups) (if benchmark then 1 else 0) (if deterministic then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let cudnn_convolution_transpose self weight bias padding output_padding stride dilation groups benchmark deterministic =
+  let t = cudnn_convolution_transpose self weight (match bias with | Some v -> v | None -> null) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int output_padding |> CArray.start) (List.length output_padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) (Int64.of_int groups) (if benchmark then 1 else 0) (if deterministic then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -688,8 +713,8 @@ let grid_sampler_3d input grid interpolation_mode padding_mode =
   Gc.finalise C.Tensor.free t;
   t
 
-let gru_cell input hx w_ih w_hh =
-  let t = gru_cell input hx w_ih w_hh in
+let gru_cell input hx w_ih w_hh b_ih b_hh =
+  let t = gru_cell input hx w_ih w_hh (match b_ih with | Some v -> v | None -> null) (match b_hh with | Some v -> v | None -> null) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -745,6 +770,11 @@ let hspmm_out result mat1 mat2 =
 
 let ifft self signal_ndim normalized =
   let t = ifft self (Int64.of_int signal_ndim) (if normalized then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let instance_norm input weight bias running_mean running_var use_input_stats momentum eps cudnn_enabled =
+  let t = instance_norm input (match weight with | Some v -> v | None -> null) (match bias with | Some v -> v | None -> null) (match running_mean with | Some v -> v | None -> null) (match running_var with | Some v -> v | None -> null) (if use_input_stats then 1 else 0) momentum eps (if cudnn_enabled then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -938,6 +968,11 @@ let min_values self dim keepdim =
   Gc.finalise C.Tensor.free t;
   t
 
+let miopen_convolution self weight bias padding stride dilation groups benchmark deterministic =
+  let t = miopen_convolution self weight (match bias with | Some v -> v | None -> null) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) (Int64.of_int groups) (if benchmark then 1 else 0) (if deterministic then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let miopen_convolution_backward_bias grad_output =
   let t = miopen_convolution_backward_bias grad_output in
   Gc.finalise C.Tensor.free t;
@@ -953,6 +988,11 @@ let miopen_convolution_backward_weight weight_size grad_output self padding stri
   Gc.finalise C.Tensor.free t;
   t
 
+let miopen_convolution_transpose self weight bias padding output_padding stride dilation groups benchmark deterministic =
+  let t = miopen_convolution_transpose self weight (match bias with | Some v -> v | None -> null) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int output_padding |> CArray.start) (List.length output_padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) (Int64.of_int groups) (if benchmark then 1 else 0) (if deterministic then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let miopen_convolution_transpose_backward_input grad_output weight padding stride dilation groups benchmark deterministic =
   let t = miopen_convolution_transpose_backward_input grad_output weight (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) (Int64.of_int groups) (if benchmark then 1 else 0) (if deterministic then 1 else 0) in
   Gc.finalise C.Tensor.free t;
@@ -960,6 +1000,11 @@ let miopen_convolution_transpose_backward_input grad_output weight padding strid
 
 let miopen_convolution_transpose_backward_weight weight_size grad_output self padding stride dilation groups benchmark deterministic =
   let t = miopen_convolution_transpose_backward_weight (CArray.of_list int weight_size |> CArray.start) (List.length weight_size) grad_output self (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) (Int64.of_int groups) (if benchmark then 1 else 0) (if deterministic then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let mkldnn_convolution self weight bias padding stride dilation groups =
+  let t = mkldnn_convolution self weight (match bias with | Some v -> v | None -> null) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int dilation |> CArray.start) (List.length dilation) (Int64.of_int groups) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1243,13 +1288,13 @@ let rfft self signal_ndim normalized onesided =
   Gc.finalise C.Tensor.free t;
   t
 
-let rnn_relu_cell input hx w_ih w_hh =
-  let t = rnn_relu_cell input hx w_ih w_hh in
+let rnn_relu_cell input hx w_ih w_hh b_ih b_hh =
+  let t = rnn_relu_cell input hx w_ih w_hh (match b_ih with | Some v -> v | None -> null) (match b_hh with | Some v -> v | None -> null) in
   Gc.finalise C.Tensor.free t;
   t
 
-let rnn_tanh_cell input hx w_ih w_hh =
-  let t = rnn_tanh_cell input hx w_ih w_hh in
+let rnn_tanh_cell input hx w_ih w_hh b_ih b_hh =
+  let t = rnn_tanh_cell input hx w_ih w_hh (match b_ih with | Some v -> v | None -> null) (match b_hh with | Some v -> v | None -> null) in
   Gc.finalise C.Tensor.free t;
   t
 
