@@ -18,3 +18,9 @@ val read_files
 
 val image_dim : int
 val label_count : int
+
+val train_batch
+  :  t
+  -> batch_size:int
+  -> batch_idx:int
+  -> Tensor.t * Tensor.t

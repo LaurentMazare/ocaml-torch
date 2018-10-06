@@ -101,3 +101,10 @@ let read_files
   ; test_images = with_caching ~read_f:read_images ~filename:test_image_file
   ; test_labels = with_caching ~read_f:read_onehot ~filename:test_label_file
   }
+
+let train_batch { train_images; train_labels; _ } ~batch_size ~batch_idx =
+  let train_size = Tensor.shape train_images |> List.hd_exn in
+  let start = Int.(%) (batch_size * batch_idx) (train_size - batch_size) in
+  let batch_images = Tensor.narrow train_images ~dim:0 ~start ~len:batch_size in
+  let batch_labels = Tensor.narrow train_labels ~dim:0 ~start ~len:batch_size in
+  batch_images, batch_labels

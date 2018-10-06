@@ -84,7 +84,7 @@ module Tensor = struct
   let sum = sum1
   let mean = mean1
 
-  let argmax t = argmax1 t (Int64.of_int (-1)) false
+  let argmax t = argmax1 t (-1) false
 
-  let softmax t = softmax t (Int64.of_int (-1))
+  let softmax t = softmax t (-1)
 end

@@ -56,3 +56,5 @@ val float_vec : ?kind:[< `double | `float | `half > `float ] -> float list -> t
 val set_requires_grad : t -> b:bool -> t
 val to_type : t -> type_:Kind.t -> t
 val to_device : t -> device:Device.t -> t
+
+val narrow : t -> dim:int -> start:int -> len:int -> t

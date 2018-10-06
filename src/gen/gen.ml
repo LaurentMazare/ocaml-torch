@@ -146,6 +146,7 @@ module Func = struct
       | Bool -> Printf.sprintf "(if %s then 1 else 0)" name
       | ScalarType | TensorOptions -> Printf.sprintf "(Kind.to_int %s)" name
       | Device -> Printf.sprintf "(Device.to_int %s)" name
+      | Int64 -> Printf.sprintf "(Int64.of_int %s)" name
       | _ -> name)
     |> String.concat ~sep:" "
 end

@@ -54,3 +54,5 @@ let (=) = eq
 
 let to_type t ~type_ = totype t type_
 let to_device t ~device = to_ t device
+
+let narrow t ~dim ~start ~len = narrow t dim start len
