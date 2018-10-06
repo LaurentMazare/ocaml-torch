@@ -43,7 +43,7 @@ tensor atg_acos_out(tensor result, tensor self) {
   )
 }
 
-tensor atg_add1(tensor self, tensor other) {
+tensor atg_add(tensor self, tensor other) {
   PROTECT(
     return new torch::Tensor(torch::add(*self, *other));
   )
@@ -385,7 +385,7 @@ tensor atg_cosine_embedding_loss(tensor input1, tensor input2, tensor target, do
   )
 }
 
-tensor atg_ctc_loss2(tensor log_probs, tensor targets, tensor input_lengths, tensor target_lengths, int64_t blank, int64_t reduction) {
+tensor atg_ctc_loss(tensor log_probs, tensor targets, tensor input_lengths, tensor target_lengths, int64_t blank, int64_t reduction) {
   PROTECT(
     return new torch::Tensor(torch::ctc_loss(*log_probs, *targets, *input_lengths, *target_lengths, blank, reduction));
   )
@@ -409,25 +409,25 @@ tensor atg_cudnn_convolution_transpose_backward_bias(tensor grad_output) {
   )
 }
 
-tensor atg_cumprod2(tensor self, int64_t dim) {
+tensor atg_cumprod(tensor self, int64_t dim) {
   PROTECT(
     return new torch::Tensor(torch::cumprod(*self, dim));
   )
 }
 
-tensor atg_cumprod_out2(tensor result, tensor self, int64_t dim) {
+tensor atg_cumprod_out(tensor result, tensor self, int64_t dim) {
   PROTECT(
     return new torch::Tensor(torch::cumprod_out(*result, *self, dim));
   )
 }
 
-tensor atg_cumsum2(tensor self, int64_t dim) {
+tensor atg_cumsum(tensor self, int64_t dim) {
   PROTECT(
     return new torch::Tensor(torch::cumsum(*self, dim));
   )
 }
 
-tensor atg_cumsum_out2(tensor result, tensor self, int64_t dim) {
+tensor atg_cumsum_out(tensor result, tensor self, int64_t dim) {
   PROTECT(
     return new torch::Tensor(torch::cumsum_out(*result, *self, dim));
   )
@@ -463,7 +463,7 @@ tensor atg_diagonal(tensor self, int64_t offset, int64_t dim1, int64_t dim2) {
   )
 }
 
-tensor atg_div1(tensor self, tensor other) {
+tensor atg_div(tensor self, tensor other) {
   PROTECT(
     return new torch::Tensor(torch::div(*self, *other));
   )
@@ -499,7 +499,7 @@ tensor atg_dropout_(tensor self, double p, int train) {
   )
 }
 
-tensor atg_empty_like1(tensor self) {
+tensor atg_empty_like(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::empty_like(*self));
   )
@@ -631,7 +631,7 @@ tensor atg_fft(tensor self, int64_t signal_ndim, int normalized) {
   )
 }
 
-tensor atg_fill_2(tensor self, tensor value) {
+tensor atg_fill_(tensor self, tensor value) {
   PROTECT(
     return new torch::Tensor(torch::fill_(*self, *value));
   )
@@ -661,7 +661,7 @@ tensor atg_floor_out(tensor result, tensor self) {
   )
 }
 
-tensor atg_frobenius_norm1(tensor self) {
+tensor atg_frobenius_norm(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::frobenius_norm(*self));
   )
@@ -955,19 +955,19 @@ tensor atg_max_values(tensor self, int64_t dim, int keepdim) {
   )
 }
 
-tensor atg_mean2(tensor self) {
+tensor atg_mean1(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::mean(*self));
   )
 }
 
-tensor atg_mean4(tensor self, int64_t dim, int keepdim) {
+tensor atg_mean2(tensor self, int64_t dim, int keepdim) {
   PROTECT(
     return new torch::Tensor(torch::mean(*self, dim, (bool)keepdim));
   )
 }
 
-tensor atg_mean_out2(tensor result, tensor self, int64_t dim, int keepdim) {
+tensor atg_mean_out(tensor result, tensor self, int64_t dim, int keepdim) {
   PROTECT(
     return new torch::Tensor(torch::mean_out(*result, *self, dim, (bool)keepdim));
   )
@@ -997,7 +997,7 @@ tensor atg_mm_out(tensor result, tensor self, tensor mat2) {
   )
 }
 
-tensor atg_mul1(tensor self, tensor other) {
+tensor atg_mul(tensor self, tensor other) {
   PROTECT(
     return new torch::Tensor(torch::mul(*self, *other));
   )
@@ -1057,7 +1057,7 @@ tensor atg_native_zero_(tensor self) {
   )
 }
 
-tensor atg_norm1(tensor self) {
+tensor atg_norm(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::norm(*self));
   )
@@ -1081,7 +1081,7 @@ tensor atg_nuclear_norm_out(tensor result, tensor self, int keepdim) {
   )
 }
 
-tensor atg_ones_like1(tensor self) {
+tensor atg_ones_like(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::ones_like(*self));
   )
@@ -1129,25 +1129,25 @@ tensor atg_prelu(tensor self, tensor weight) {
   )
 }
 
-tensor atg_prod2(tensor self) {
+tensor atg_prod1(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::prod(*self));
   )
 }
 
-tensor atg_prod4(tensor self, int64_t dim, int keepdim) {
+tensor atg_prod2(tensor self, int64_t dim, int keepdim) {
   PROTECT(
     return new torch::Tensor(torch::prod(*self, dim, (bool)keepdim));
   )
 }
 
-tensor atg_prod_out2(tensor result, tensor self, int64_t dim, int keepdim) {
+tensor atg_prod_out(tensor result, tensor self, int64_t dim, int keepdim) {
   PROTECT(
     return new torch::Tensor(torch::prod_out(*result, *self, dim, (bool)keepdim));
   )
 }
 
-tensor atg_rand_like1(tensor self) {
+tensor atg_rand_like(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::rand_like(*self));
   )
@@ -1165,19 +1165,19 @@ tensor atg_randint_like2(tensor self, int64_t low, int64_t high) {
   )
 }
 
-tensor atg_randn_like1(tensor self) {
+tensor atg_randn_like(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::randn_like(*self));
   )
 }
 
-tensor atg_randperm1(int64_t n) {
+tensor atg_randperm(int64_t n) {
   PROTECT(
     return new torch::Tensor(torch::randperm(n));
   )
 }
 
-tensor atg_randperm_out1(tensor result, int64_t n) {
+tensor atg_randperm_out(tensor result, int64_t n) {
   PROTECT(
     return new torch::Tensor(torch::randperm_out(*result, n));
   )
@@ -1447,7 +1447,7 @@ tensor atg_std_out(tensor result, tensor self, int64_t dim, int unbiased, int ke
   )
 }
 
-tensor atg_sub1(tensor self, tensor other) {
+tensor atg_sub(tensor self, tensor other) {
   PROTECT(
     return new torch::Tensor(torch::sub(*self, *other));
   )
@@ -1459,7 +1459,7 @@ tensor atg_sub_out(tensor result, tensor self, tensor other) {
   )
 }
 
-tensor atg_sum2(tensor self) {
+tensor atg_sum(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::sum(*self));
   )
@@ -1567,7 +1567,7 @@ tensor atg_zero_(tensor self) {
   )
 }
 
-tensor atg_zeros_like1(tensor self) {
+tensor atg_zeros_like(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::zeros_like(*self));
   )

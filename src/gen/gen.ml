@@ -178,7 +178,10 @@ let run ~yaml_filename ~cpp_filename =
   printf "Generating code for %d functions.\n%!" (List.length funcs);
   (* Generate some unique names for overloaded functions. *)
   let funcs =
-    List.map funcs ~f:(fun func -> func.name, func)
+    List.filter_map funcs ~f:(fun func ->
+      if Function.simple_args func |> Option.is_some
+      then Some (func.name, func)
+      else None)
     |> Map.of_alist_multi (module String)
     |> Map.to_alist
     |> List.concat_map ~f:(fun (name, funcs) ->
