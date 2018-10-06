@@ -37,6 +37,8 @@ module Func = struct
     | Tensor
     | IntList
     | TensorOptions
+    | ScalarType
+    | Device
 
   type arg =
     { arg_name : string
@@ -76,6 +78,8 @@ module Func = struct
           | Double -> "double"
           | Tensor -> "tensor"
           | TensorOptions -> "int" (* only Kind for now. *)
+          | ScalarType -> "int"
+          | Device -> "int"
           | IntList -> assert false
         in
         Printf.sprintf "%s %s" simple_type_cstring arg_name)
@@ -87,7 +91,8 @@ module Func = struct
       | Tensor -> "*" ^ arg_name
       | Bool -> "(bool)" ^ arg_name
       | IntList -> Printf.sprintf "of_carray(%s_data, %s_len)" arg_name arg_name
-      | TensorOptions -> Printf.sprintf "torch::ScalarType(%s)" arg_name
+      | ScalarType | TensorOptions -> Printf.sprintf "torch::ScalarType(%s)" arg_name
+      | Device -> Printf.sprintf "torch::Device(torch::DeviceType(%s))" arg_name
       | _ -> arg_name)
     |> String.concat ~sep:", "
 
@@ -109,6 +114,8 @@ module Func = struct
       | Double -> ["double"]
       | Tensor -> ["t"]
       | TensorOptions -> ["int"]
+      | ScalarType -> ["int"]
+      | Device -> ["int"]
       | IntList -> ["ptr int"; "int"]
     )
     |> String.concat ~sep:" @-> "
@@ -117,26 +124,28 @@ module Func = struct
   let replace_map =
     Map.of_alist_exn (module String)
       [ "end", "end_"
+      ; "to", "to_"
       ]
 
-  let caml_name arg =
-    Map.find replace_map arg.arg_name |> Option.value ~default:arg.arg_name
+  let caml_name name =
+    Map.find replace_map name |> Option.value ~default:name
     |> String.lowercase
 
   let caml_args t =
-    List.map t.args ~f:caml_name
+    List.map t.args ~f:(fun arg -> caml_name arg.arg_name)
     |> String.concat ~sep:" "
 
   let caml_binding_args t =
     List.map t.args ~f:(fun arg ->
-      let name = caml_name arg in
+      let name = caml_name arg.arg_name in
       match arg.arg_type with
       | IntList ->
         Printf.sprintf
           "(CArray.of_list int %s |> CArray.start) (List.length %s)"
           name name
       | Bool -> Printf.sprintf "(if %s then 1 else 0)" name
-      | TensorOptions -> Printf.sprintf "(Kind.to_int %s)" name
+      | ScalarType | TensorOptions -> Printf.sprintf "(Kind.to_int %s)" name
+      | Device -> Printf.sprintf "(Device.to_int %s)" name
       | _ -> name)
     |> String.concat ~sep:" "
 end
@@ -254,7 +263,7 @@ let write_stubs funcs filename =
     p "  type t = unit ptr";
     p "  let t : t typ = ptr void";
     Map.iteri funcs ~f:(fun ~key:exported_name ~data:func ->
-      p "  let %s =" exported_name;
+      p "  let %s =" (Func.caml_name exported_name);
       p "    foreign \"atg_%s\"" exported_name;
       p "    (%s)" (Func.stubs_signature func);
       p "";
@@ -270,8 +279,9 @@ let write_wrapper funcs filename =
     p "open C.TensorG";
     p "";
     Map.iteri funcs ~f:(fun ~key:exported_name ~data:func ->
-      p "let %s %s =" exported_name (Func.caml_args func);
-      p "  let t = %s %s in" exported_name (Func.caml_binding_args func);
+      let caml_name = Func.caml_name exported_name in
+      p "let %s %s =" caml_name (Func.caml_args func);
+      p "  let t = %s %s in" caml_name (Func.caml_binding_args func);
       p "  Gc.finalise C.Tensor.free t;";
       p "  t";
       p "";
@@ -289,6 +299,8 @@ let methods =
   ; c "neg" [ ca "self" Tensor ]
   ; c "grad" [ ca "self" Tensor ]
   ; c "set_requires_grad" [ ca "self" Tensor; ca "r" Bool ]
+  ; c "toType" [ ca "self" Tensor; ca "scalar_type" ScalarType ]
+  ; c "to" [ ca "self" Tensor; ca "device" Device ]
   ]
 
 let run ~yaml_filename ~cpp_filename ~stubs_filename ~wrapper_filename =

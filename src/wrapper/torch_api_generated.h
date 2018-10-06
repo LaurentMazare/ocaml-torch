@@ -304,6 +304,8 @@ tensor atg_tanh(tensor self);
 tensor atg_tanh_(tensor self);
 tensor atg_tanh_out(tensor result, tensor self);
 tensor atg_tensordot(tensor self, tensor other, int *dims_self_data, int dims_self_len, int *dims_other_data, int dims_other_len);
+tensor atg_to(tensor self, int device);
+tensor atg_totype(tensor self, int scalar_type);
 tensor atg_transpose(tensor self, int64_t dim0, int64_t dim1);
 tensor atg_triplet_margin_loss(tensor anchor, tensor positive, tensor negative, double margin, double p, double eps, int swap, int64_t reduction);
 tensor atg_trunc(tensor self);

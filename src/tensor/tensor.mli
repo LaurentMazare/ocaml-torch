@@ -1,3 +1,5 @@
+open Torch_core
+
 (* TODO: proper types for Tensor1D, Tensor2D, Tensor3D, ... ? *)
 (* TODO: GADT for array element types ? *)
 type t
@@ -29,9 +31,9 @@ val (=) : t -> t -> t
 
 val mm : t -> t -> t
 val f : float -> t
-val zeros : ?requires_grad:bool -> ?kind:Torch_core.Kind.t -> int list -> t
-val ones : ?requires_grad:bool -> ?kind:Torch_core.Kind.t -> int list -> t
-val rand : ?requires_grad:bool -> ?kind:Torch_core.Kind.t -> int list -> t
+val zeros : ?requires_grad:bool -> ?kind:Kind.t -> int list -> t
+val ones : ?requires_grad:bool -> ?kind:Kind.t -> int list -> t
+val rand : ?requires_grad:bool -> ?kind:Kind.t -> int list -> t
 
 val shape : t -> int list
 val load : string -> t
@@ -52,3 +54,5 @@ val print : t -> unit
 val reshape : t -> dims:int list -> t
 val float_vec : ?kind:[< `double | `float | `half > `float ] -> float list -> t
 val set_requires_grad : t -> b:bool -> t
+val to_type : t -> type_:Kind.t -> t
+val to_device : t -> device:Device.t -> t

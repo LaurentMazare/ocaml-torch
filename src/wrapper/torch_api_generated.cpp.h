@@ -1819,6 +1819,18 @@ tensor atg_tensordot(tensor self, tensor other, int *dims_self_data, int dims_se
   )
 }
 
+tensor atg_to(tensor self, int device) {
+  PROTECT(
+    return new torch::Tensor(self->to(torch::Device(torch::DeviceType(device))));
+  )
+}
+
+tensor atg_totype(tensor self, int scalar_type) {
+  PROTECT(
+    return new torch::Tensor(self->toType(torch::ScalarType(scalar_type)));
+  )
+}
+
 tensor atg_transpose(tensor self, int64_t dim0, int64_t dim1) {
   PROTECT(
     return new torch::Tensor(torch::transpose(*self, dim0, dim1));

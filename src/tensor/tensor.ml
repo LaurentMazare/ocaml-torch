@@ -51,3 +51,6 @@ let (+=) t other = ignore (add_ t other : t)
 let (/=) t other = ignore (div_ t other : t)
 let ( *=) t other = ignore (mul_ t other : t)
 let (=) = eq
+
+let to_type t ~type_ = totype t type_
+let to_device t ~device = to_ t device

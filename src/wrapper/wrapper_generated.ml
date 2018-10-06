@@ -1518,6 +1518,16 @@ let tensordot self other dims_self dims_other =
   Gc.finalise C.Tensor.free t;
   t
 
+let to_ self device =
+  let t = to_ self (Device.to_int device) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let totype self scalar_type =
+  let t = totype self (Kind.to_int scalar_type) in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let transpose self dim0 dim1 =
   let t = transpose self dim0 dim1 in
   Gc.finalise C.Tensor.free t;

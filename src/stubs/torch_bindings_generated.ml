@@ -1216,6 +1216,14 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_tensordot"
     (t @-> t @-> ptr int @-> int @-> ptr int @-> int @-> returning t)
 
+  let to_ =
+    foreign "atg_to"
+    (t @-> int @-> returning t)
+
+  let totype =
+    foreign "atg_totype"
+    (t @-> int @-> returning t)
+
   let transpose =
     foreign "atg_transpose"
     (t @-> int64_t @-> int64_t @-> returning t)
