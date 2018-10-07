@@ -5,6 +5,7 @@
 #ifdef __cplusplus
 extern "C" {
 typedef torch::Tensor *tensor;
+typedef torch::optim::Optimizer *optimizer;
 #define PROTECT(x) \
   try { \
     x \
@@ -13,6 +14,7 @@ typedef torch::Tensor *tensor;
   }
 #else
 typedef void *tensor;
+typedef void *optimizer;
 #endif
 
 tensor at_float_vec(double *values, int value_len, int type);
@@ -39,6 +41,11 @@ void at_save(tensor, char *filename);
 tensor at_load(char *filename);
 
 void at_free(tensor);
+
+optimizer ato_adam(tensor *, int ntensors, double learning_rate);
+void ato_zero_grad(optimizer);
+void ato_step(optimizer);
+void ato_free(optimizer);
 
 #include "torch_api_generated.h"
 

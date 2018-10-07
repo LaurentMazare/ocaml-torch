@@ -111,4 +111,25 @@ void at_free(tensor t) {
   delete(t);
 }
 
+optimizer ato_adam(tensor *tensors, int ntensors, double learning_rate) {
+  PROTECT(
+    vector<torch::Tensor> parameters;
+    for (int i = 0; i < ntensors; ++i)
+      parameters.push_back(*(tensors[i]));
+    return new torch::optim::Adam(parameters, learning_rate);
+  )
+}
+
+void ato_zero_grad(optimizer t) {
+  PROTECT(t->zero_grad();)
+}
+
+void ato_step(optimizer t) {
+  PROTECT(t->step();)
+}
+
+void ato_free(optimizer t) {
+  delete(t);
+}
+
 #include "torch_api_generated.cpp.h"

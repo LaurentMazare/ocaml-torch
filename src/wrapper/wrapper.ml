@@ -88,3 +88,17 @@ module Tensor = struct
 
   let softmax t = softmax t (-1)
 end
+
+module Optimizer = struct
+  include Wrapper_generated.C.Optimizer
+
+  let adam tensors ~learning_rate =
+    let t =
+      adam
+        CArray.(of_list Wrapper_generated.C.Tensor.t tensors |> start)
+        (List.length tensors)
+        learning_rate
+    in
+    Gc.finalise free t;
+    t
+end

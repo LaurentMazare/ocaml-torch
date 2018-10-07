@@ -50,5 +50,17 @@ module C(F: Cstubs.FOREIGN) = struct
 
     let free = foreign "at_free" (t @-> returning void)
   end
+
+  module Optimizer = struct
+    type t = unit ptr
+    let t : t typ = ptr void
+
+    let adam =
+      foreign "ato_adam" (ptr Tensor.t @-> int @-> float @-> returning t)
+    let zero_grad = foreign "ato_zero_grad" (t @-> returning void)
+    let step = foreign "ato_step" (t @-> returning void)
+    let free = foreign "ato_free" (t @-> returning void)
+  end
+
   module TensorG = Torch_bindings_generated.C(F)
 end

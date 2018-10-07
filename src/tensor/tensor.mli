@@ -2,7 +2,7 @@ open Torch_core
 
 (* TODO: proper types for Tensor1D, Tensor2D, Tensor3D, ... ? *)
 (* TODO: GADT for array element types ? *)
-type t
+type t = Wrapper_generated.C.Tensor.t
 
 val set_float2 : t -> int -> int -> float -> unit
 val set_float1 : t -> int -> float -> unit
