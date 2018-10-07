@@ -53,4 +53,4 @@ This is done in the following [example](https://github.com/LaurentMazare/ocaml-t
 ## TODO
 
 * Add more operators and more complex examples.
-* Generate the bindings automatically from the [yaml function descriptions](https://github.com/pytorch/pytorch/blob/master/aten/src/ATen/native/native_functions.yaml) ?
+* Wrap some optimizer, e.g. Adam.
