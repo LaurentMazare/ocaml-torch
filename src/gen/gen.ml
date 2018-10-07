@@ -179,7 +179,8 @@ let read_yaml filename =
       match Map.find_exn map "returns" |> extract_list with
       | [ returns ] ->
         let returns = extract_map returns in
-        String.(=) (Map.find_exn returns "dynamic_type" |> extract_string) "Tensor"
+        let return_type = Map.find_exn returns "dynamic_type" |> extract_string in
+        String.(=) return_type "Tensor" || String.(=) return_type "BoolTensor"
       | _ -> false
     in
     let kind =
@@ -288,8 +289,7 @@ let write_wrapper funcs filename =
 let methods =
   let c name args = { Func.name; args; returns = "Tensor"; kind = `method_ } in
   let ca arg_name arg_type = { Func.arg_name; arg_type; default_value = None } in
-  [ c "eq" [ ca "self" Tensor; ca "other" Tensor ]
-  ; c "grad" [ ca "self" Tensor ]
+  [ c "grad" [ ca "self" Tensor ]
   ; c "set_requires_grad" [ ca "self" Tensor; ca "r" Bool ]
   ; c "toType" [ ca "self" Tensor; ca "scalar_type" ScalarType ]
   ; c "to" [ ca "self" Tensor; ca "device" Device ]

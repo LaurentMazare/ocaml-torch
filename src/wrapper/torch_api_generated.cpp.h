@@ -1035,7 +1035,7 @@ tensor atg_empty_strided(int *size_data, int size_len, int *stride_data, int str
 
 tensor atg_eq(tensor self, tensor other) {
   PROTECT(
-    return new torch::Tensor(self->eq(*other));
+    return new torch::Tensor(torch::eq(*self, *other));
   )
 }
 
@@ -1297,6 +1297,12 @@ tensor atg_frobenius_norm_out(tensor result, tensor self, int *dim_data, int dim
   )
 }
 
+tensor atg_ge(tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(torch::ge(*self, *other));
+  )
+}
+
 tensor atg_ge_(tensor self, tensor other) {
   PROTECT(
     return new torch::Tensor(self->ge_(*other));
@@ -1384,6 +1390,12 @@ tensor atg_grid_sampler_3d(tensor input, tensor grid, int64_t interpolation_mode
 tensor atg_gru_cell(tensor input, tensor hx, tensor w_ih, tensor w_hh, tensor b_ih, tensor b_hh) {
   PROTECT(
     return new torch::Tensor(torch::gru_cell(*input, *hx, *w_ih, *w_hh, (b_ih ? *b_ih : torch::Tensor()), (b_hh ? *b_hh : torch::Tensor())));
+  )
+}
+
+tensor atg_gt(tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(torch::gt(*self, *other));
   )
 }
 
@@ -1567,6 +1579,12 @@ tensor atg_l1_loss_out(tensor output, tensor self, tensor target, int64_t reduct
   )
 }
 
+tensor atg_le(tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(torch::le(*self, *other));
+  )
+}
+
 tensor atg_le_(tensor self, tensor other) {
   PROTECT(
     return new torch::Tensor(self->le_(*other));
@@ -1744,6 +1762,12 @@ tensor atg_logsumexp(tensor self, int64_t dim, int keepdim) {
 tensor atg_logsumexp_out(tensor result, tensor self, int64_t dim, int keepdim) {
   PROTECT(
     return new torch::Tensor(torch::logsumexp_out(*result, *self, dim, (bool)keepdim));
+  )
+}
+
+tensor atg_lt(tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(torch::lt(*self, *other));
   )
 }
 
@@ -2068,6 +2092,12 @@ tensor atg_native_resize_as_(tensor self, tensor the_template) {
 tensor atg_native_zero_(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::native_zero_(*self));
+  )
+}
+
+tensor atg_ne(tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(torch::ne(*self, *other));
   )
 }
 

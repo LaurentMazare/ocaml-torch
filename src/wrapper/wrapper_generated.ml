@@ -1083,6 +1083,11 @@ let frobenius_norm_out result self dim keepdim =
   Gc.finalise C.Tensor.free t;
   t
 
+let ge self other =
+  let t = ge self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let ge_ self other =
   let t = ge_ self other in
   Gc.finalise C.Tensor.free t;
@@ -1155,6 +1160,11 @@ let grid_sampler_3d input grid interpolation_mode padding_mode =
 
 let gru_cell input hx w_ih w_hh b_ih b_hh =
   let t = gru_cell input hx w_ih w_hh (match b_ih with | Some v -> v | None -> null) (match b_hh with | Some v -> v | None -> null) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let gt self other =
+  let t = gt self other in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1308,6 +1318,11 @@ let l1_loss_out output self target reduction =
   Gc.finalise C.Tensor.free t;
   t
 
+let le self other =
+  let t = le self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let le_ self other =
   let t = le_ self other in
   Gc.finalise C.Tensor.free t;
@@ -1455,6 +1470,11 @@ let logsumexp self dim keepdim =
 
 let logsumexp_out result self dim keepdim =
   let t = logsumexp_out result self (Int64.of_int dim) (if keepdim then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let lt self other =
+  let t = lt self other in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1725,6 +1745,11 @@ let native_resize_as_ self the_template =
 
 let native_zero_ self =
   let t = native_zero_ self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let ne self other =
+  let t = ne self other in
   Gc.finalise C.Tensor.free t;
   t
 

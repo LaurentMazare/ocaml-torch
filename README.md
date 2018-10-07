@@ -54,3 +54,4 @@ This is done in the following [example](https://github.com/LaurentMazare/ocaml-t
 
 * Add more operators and more complex examples.
 * Wrap some optimizer, e.g. Adam.
+* Use a GADT to add type constraints to tensor elements.

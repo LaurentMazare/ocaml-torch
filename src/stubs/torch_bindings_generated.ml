@@ -868,6 +868,10 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_frobenius_norm_out"
     (t @-> t @-> ptr int @-> int @-> int @-> returning t)
 
+  let ge =
+    foreign "atg_ge"
+    (t @-> t @-> returning t)
+
   let ge_ =
     foreign "atg_ge_"
     (t @-> t @-> returning t)
@@ -927,6 +931,10 @@ module C(F: Cstubs.FOREIGN) = struct
   let gru_cell =
     foreign "atg_gru_cell"
     (t @-> t @-> t @-> t @-> t @-> t @-> returning t)
+
+  let gt =
+    foreign "atg_gt"
+    (t @-> t @-> returning t)
 
   let gt_ =
     foreign "atg_gt_"
@@ -1048,6 +1056,10 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_l1_loss_out"
     (t @-> t @-> t @-> int64_t @-> returning t)
 
+  let le =
+    foreign "atg_le"
+    (t @-> t @-> returning t)
+
   let le_ =
     foreign "atg_le_"
     (t @-> t @-> returning t)
@@ -1167,6 +1179,10 @@ module C(F: Cstubs.FOREIGN) = struct
   let logsumexp_out =
     foreign "atg_logsumexp_out"
     (t @-> t @-> int64_t @-> int @-> returning t)
+
+  let lt =
+    foreign "atg_lt"
+    (t @-> t @-> returning t)
 
   let lt_ =
     foreign "atg_lt_"
@@ -1383,6 +1399,10 @@ module C(F: Cstubs.FOREIGN) = struct
   let native_zero_ =
     foreign "atg_native_zero_"
     (t @-> returning t)
+
+  let ne =
+    foreign "atg_ne"
+    (t @-> t @-> returning t)
 
   let ne_ =
     foreign "atg_ne_"
