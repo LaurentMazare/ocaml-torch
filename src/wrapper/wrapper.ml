@@ -81,8 +81,8 @@ module Tensor = struct
     Gc.finalise free t;
     t
 
-  let sum = sum1
-  let mean = mean1
+  let sum = sum2
+  let mean = mean2
 
   let argmax t = argmax1 t (-1) false
 

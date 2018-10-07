@@ -38,6 +38,66 @@ let adaptive_avg_pool1d self output_size =
   Gc.finalise C.Tensor.free t;
   t
 
+let adaptive_avg_pool2d self output_size =
+  let t = adaptive_avg_pool2d self (CArray.of_list int output_size |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let adaptive_avg_pool2d_backward grad_output self =
+  let t = adaptive_avg_pool2d_backward grad_output self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let adaptive_avg_pool2d_backward_out grad_input grad_output self =
+  let t = adaptive_avg_pool2d_backward_out grad_input grad_output self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let adaptive_avg_pool2d_forward self output_size =
+  let t = adaptive_avg_pool2d_forward self (CArray.of_list int output_size |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let adaptive_avg_pool2d_forward_out output self output_size =
+  let t = adaptive_avg_pool2d_forward_out output self (CArray.of_list int output_size |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let adaptive_avg_pool2d_out output self output_size =
+  let t = adaptive_avg_pool2d_out output self (CArray.of_list int output_size |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let adaptive_avg_pool3d self output_size =
+  let t = adaptive_avg_pool3d self (CArray.of_list int output_size |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let adaptive_avg_pool3d_backward grad_output self =
+  let t = adaptive_avg_pool3d_backward grad_output self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let adaptive_avg_pool3d_backward_out grad_input grad_output self =
+  let t = adaptive_avg_pool3d_backward_out grad_input grad_output self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let adaptive_avg_pool3d_forward self output_size =
+  let t = adaptive_avg_pool3d_forward self (CArray.of_list int output_size |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let adaptive_avg_pool3d_forward_out output self output_size =
+  let t = adaptive_avg_pool3d_forward_out output self (CArray.of_list int output_size |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let adaptive_avg_pool3d_out output self output_size =
+  let t = adaptive_avg_pool3d_out output self (CArray.of_list int output_size |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let add self other =
   let t = add self other in
   Gc.finalise C.Tensor.free t;
@@ -53,8 +113,58 @@ let add_out result self other =
   Gc.finalise C.Tensor.free t;
   t
 
+let addbmm self batch1 batch2 =
+  let t = addbmm self batch1 batch2 in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let addbmm_ self batch1 batch2 =
+  let t = addbmm_ self batch1 batch2 in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let addbmm_out result self batch1 batch2 =
+  let t = addbmm_out result self batch1 batch2 in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let addcdiv self tensor1 tensor2 =
+  let t = addcdiv self tensor1 tensor2 in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let addcdiv_ self tensor1 tensor2 =
+  let t = addcdiv_ self tensor1 tensor2 in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let addcdiv_out result self tensor1 tensor2 =
+  let t = addcdiv_out result self tensor1 tensor2 in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let addcmul self tensor1 tensor2 =
+  let t = addcmul self tensor1 tensor2 in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let addcmul_ self tensor1 tensor2 =
+  let t = addcmul_ self tensor1 tensor2 in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let addcmul_out result self tensor1 tensor2 =
+  let t = addcmul_out result self tensor1 tensor2 in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let addmm self mat1 mat2 =
   let t = addmm self mat1 mat2 in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let addmm_ self mat1 mat2 =
+  let t = addmm_ self mat1 mat2 in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -83,8 +193,18 @@ let addr self vec1 vec2 =
   Gc.finalise C.Tensor.free t;
   t
 
+let addr_ self vec1 vec2 =
+  let t = addr_ self vec1 vec2 in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let addr_out result self vec1 vec2 =
   let t = addr_out result self vec1 vec2 in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let alias self =
+  let t = alias self in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -178,6 +298,21 @@ let atan self =
   Gc.finalise C.Tensor.free t;
   t
 
+let atan2 self other =
+  let t = atan2 self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let atan2_ self other =
+  let t = atan2_ self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let atan2_out result self other =
+  let t = atan2_out result self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let atan_ self =
   let t = atan_ self in
   Gc.finalise C.Tensor.free t;
@@ -193,8 +328,73 @@ let avg_pool1d self kernel_size stride padding ceil_mode count_include_pad =
   Gc.finalise C.Tensor.free t;
   t
 
+let avg_pool2d self kernel_size stride padding ceil_mode count_include_pad =
+  let t = avg_pool2d self (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (if ceil_mode then 1 else 0) (if count_include_pad then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let avg_pool2d_backward grad_output self kernel_size stride padding ceil_mode count_include_pad =
+  let t = avg_pool2d_backward grad_output self (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (if ceil_mode then 1 else 0) (if count_include_pad then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let avg_pool2d_backward_out grad_input grad_output self kernel_size stride padding ceil_mode count_include_pad =
+  let t = avg_pool2d_backward_out grad_input grad_output self (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (if ceil_mode then 1 else 0) (if count_include_pad then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let avg_pool2d_forward self kernel_size stride padding ceil_mode count_include_pad =
+  let t = avg_pool2d_forward self (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (if ceil_mode then 1 else 0) (if count_include_pad then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let avg_pool2d_forward_out output self kernel_size stride padding ceil_mode count_include_pad =
+  let t = avg_pool2d_forward_out output self (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (if ceil_mode then 1 else 0) (if count_include_pad then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let avg_pool2d_out output self kernel_size stride padding ceil_mode count_include_pad =
+  let t = avg_pool2d_out output self (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (if ceil_mode then 1 else 0) (if count_include_pad then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let avg_pool3d self kernel_size stride padding ceil_mode count_include_pad =
+  let t = avg_pool3d self (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (if ceil_mode then 1 else 0) (if count_include_pad then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let avg_pool3d_backward grad_output self kernel_size stride padding ceil_mode count_include_pad =
+  let t = avg_pool3d_backward grad_output self (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (if ceil_mode then 1 else 0) (if count_include_pad then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let avg_pool3d_backward_out grad_input grad_output self kernel_size stride padding ceil_mode count_include_pad =
+  let t = avg_pool3d_backward_out grad_input grad_output self (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (if ceil_mode then 1 else 0) (if count_include_pad then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let avg_pool3d_forward self kernel_size stride padding ceil_mode count_include_pad =
+  let t = avg_pool3d_forward self (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (if ceil_mode then 1 else 0) (if count_include_pad then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let avg_pool3d_forward_out output self kernel_size stride padding ceil_mode count_include_pad =
+  let t = avg_pool3d_forward_out output self (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (if ceil_mode then 1 else 0) (if count_include_pad then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let avg_pool3d_out output self kernel_size stride padding ceil_mode count_include_pad =
+  let t = avg_pool3d_out output self (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (if ceil_mode then 1 else 0) (if count_include_pad then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let baddbmm self batch1 batch2 =
   let t = baddbmm self batch1 batch2 in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let baddbmm_ self batch1 batch2 =
+  let t = baddbmm_ self batch1 batch2 in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -228,6 +428,16 @@ let bernoulli2 self p =
   Gc.finalise C.Tensor.free t;
   t
 
+let bernoulli_1 self p =
+  let t = bernoulli_1 self p in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let bernoulli_2 self p =
+  let t = bernoulli_2 self p in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let bernoulli_out result self =
   let t = bernoulli_out result self in
   Gc.finalise C.Tensor.free t;
@@ -235,6 +445,36 @@ let bernoulli_out result self =
 
 let bilinear input1 input2 weight bias =
   let t = bilinear input1 input2 weight (match bias with | Some v -> v | None -> null) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let binary_cross_entropy self target weight reduction =
+  let t = binary_cross_entropy self target weight (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let binary_cross_entropy_backward grad_output self target weight reduction =
+  let t = binary_cross_entropy_backward grad_output self target (match weight with | Some v -> v | None -> null) (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let binary_cross_entropy_backward_out grad_input grad_output self target weight reduction =
+  let t = binary_cross_entropy_backward_out grad_input grad_output self target (match weight with | Some v -> v | None -> null) (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let binary_cross_entropy_forward self target weight reduction =
+  let t = binary_cross_entropy_forward self target (match weight with | Some v -> v | None -> null) (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let binary_cross_entropy_forward_out output self target weight reduction =
+  let t = binary_cross_entropy_forward_out output self target (match weight with | Some v -> v | None -> null) (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let binary_cross_entropy_out output self target weight reduction =
+  let t = binary_cross_entropy_out output self target weight (Int64.of_int reduction) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -255,6 +495,11 @@ let bmm self mat2 =
 
 let bmm_out result self mat2 =
   let t = bmm_out result self mat2 in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let cauchy_ self median sigma =
+  let t = cauchy_ self median sigma in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -285,6 +530,16 @@ let celu_ self =
 
 let clone self =
   let t = clone self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let coalesce self =
+  let t = coalesce self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let contiguous self =
+  let t = contiguous self in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -368,6 +623,16 @@ let cosine_embedding_loss input1 input2 target margin reduction =
   Gc.finalise C.Tensor.free t;
   t
 
+let cross self other dim =
+  let t = cross self other (Int64.of_int dim) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let cross_out result self other dim =
+  let t = cross_out result self other (Int64.of_int dim) in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let ctc_loss1 log_probs targets input_lengths target_lengths blank reduction =
   let t = ctc_loss1 log_probs targets (CArray.of_list int input_lengths |> CArray.start) (List.length input_lengths) (CArray.of_list int target_lengths |> CArray.start) (List.length target_lengths) (Int64.of_int blank) (Int64.of_int reduction) in
   Gc.finalise C.Tensor.free t;
@@ -380,6 +645,11 @@ let ctc_loss2 log_probs targets input_lengths target_lengths blank reduction =
 
 let cudnn_affine_grid_generator theta n c h w =
   let t = cudnn_affine_grid_generator theta (Int64.of_int n) (Int64.of_int c) (Int64.of_int h) (Int64.of_int w) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let cudnn_affine_grid_generator_backward grad n c h w =
+  let t = cudnn_affine_grid_generator_backward grad (Int64.of_int n) (Int64.of_int c) (Int64.of_int h) (Int64.of_int w) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -423,23 +693,48 @@ let cudnn_convolution_transpose_backward_weight weight_size grad_output self pad
   Gc.finalise C.Tensor.free t;
   t
 
-let cumprod self dim =
-  let t = cumprod self (Int64.of_int dim) in
+let cudnn_grid_sampler self grid =
+  let t = cudnn_grid_sampler self grid in
   Gc.finalise C.Tensor.free t;
   t
 
-let cumprod_out result self dim =
-  let t = cumprod_out result self (Int64.of_int dim) in
+let cumprod1 self dim dtype =
+  let t = cumprod1 self (Int64.of_int dim) (Kind.to_int dtype) in
   Gc.finalise C.Tensor.free t;
   t
 
-let cumsum self dim =
-  let t = cumsum self (Int64.of_int dim) in
+let cumprod2 self dim =
+  let t = cumprod2 self (Int64.of_int dim) in
   Gc.finalise C.Tensor.free t;
   t
 
-let cumsum_out result self dim =
-  let t = cumsum_out result self (Int64.of_int dim) in
+let cumprod_out1 result self dim dtype =
+  let t = cumprod_out1 result self (Int64.of_int dim) (Kind.to_int dtype) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let cumprod_out2 result self dim =
+  let t = cumprod_out2 result self (Int64.of_int dim) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let cumsum1 self dim dtype =
+  let t = cumsum1 self (Int64.of_int dim) (Kind.to_int dtype) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let cumsum2 self dim =
+  let t = cumsum2 self (Int64.of_int dim) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let cumsum_out1 result self dim dtype =
+  let t = cumsum_out1 result self (Int64.of_int dim) (Kind.to_int dtype) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let cumsum_out2 result self dim =
+  let t = cumsum_out2 result self (Int64.of_int dim) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -458,6 +753,16 @@ let detach_ self =
   Gc.finalise C.Tensor.free t;
   t
 
+let diag self diagonal =
+  let t = diag self (Int64.of_int diagonal) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let diag_out result self diagonal =
+  let t = diag_out result self (Int64.of_int diagonal) in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let diagflat self offset =
   let t = diagflat self (Int64.of_int offset) in
   Gc.finalise C.Tensor.free t;
@@ -465,6 +770,21 @@ let diagflat self offset =
 
 let diagonal self offset dim1 dim2 =
   let t = diagonal self (Int64.of_int offset) (Int64.of_int dim1) (Int64.of_int dim2) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let digamma self =
+  let t = digamma self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let digamma_ self =
+  let t = digamma_ self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let digamma_out result self =
+  let t = digamma_out result self in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -503,6 +823,21 @@ let dropout_ self p train =
   Gc.finalise C.Tensor.free t;
   t
 
+let elu self =
+  let t = elu self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let elu_ self =
+  let t = elu_ self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let elu_out output self =
+  let t = elu_out output self in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let empty size options =
   let t = empty (CArray.of_list int size |> CArray.start) (List.length size) (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
@@ -530,6 +865,11 @@ let empty_strided size stride options =
 
 let eq self other =
   let t = eq self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let eq_ self other =
+  let t = eq_ self other in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -563,6 +903,21 @@ let erfc_out result self =
   Gc.finalise C.Tensor.free t;
   t
 
+let erfinv self =
+  let t = erfinv self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let erfinv_ self =
+  let t = erfinv_ self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let erfinv_out result self =
+  let t = erfinv_out result self in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let exp self =
   let t = exp self in
   Gc.finalise C.Tensor.free t;
@@ -578,6 +933,16 @@ let exp_out result self =
   Gc.finalise C.Tensor.free t;
   t
 
+let expand self size implicit =
+  let t = expand self (CArray.of_list int size |> CArray.start) (List.length size) (if implicit then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let expand_as self other =
+  let t = expand_as self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let expm1 self =
   let t = expm1 self in
   Gc.finalise C.Tensor.free t;
@@ -590,6 +955,11 @@ let expm1_ self =
 
 let expm1_out result self =
   let t = expm1_out result self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let exponential_ self lambd =
+  let t = exponential_ self lambd in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -668,6 +1038,36 @@ let floor_out result self =
   Gc.finalise C.Tensor.free t;
   t
 
+let fmod self other =
+  let t = fmod self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let fmod_ self other =
+  let t = fmod_ self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let fmod_out result self other =
+  let t = fmod_out result self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let frac self =
+  let t = frac self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let frac_ self =
+  let t = frac_ self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let frac_out result self =
+  let t = frac_out result self in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let frobenius_norm1 self =
   let t = frobenius_norm1 self in
   Gc.finalise C.Tensor.free t;
@@ -683,6 +1083,16 @@ let frobenius_norm_out result self dim keepdim =
   Gc.finalise C.Tensor.free t;
   t
 
+let ge_ self other =
+  let t = ge_ self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let geometric_ self p =
+  let t = geometric_ self p in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let ger self vec2 =
   let t = ger self vec2 in
   Gc.finalise C.Tensor.free t;
@@ -690,6 +1100,36 @@ let ger self vec2 =
 
 let ger_out result self vec2 =
   let t = ger_out result self vec2 in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let glu self dim =
+  let t = glu self (Int64.of_int dim) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let glu_backward grad_output self dim =
+  let t = glu_backward grad_output self (Int64.of_int dim) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let glu_backward_out grad_input grad_output self dim =
+  let t = glu_backward_out grad_input grad_output self (Int64.of_int dim) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let glu_forward self dim =
+  let t = glu_forward self (Int64.of_int dim) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let glu_forward_out output self dim =
+  let t = glu_forward_out output self (Int64.of_int dim) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let glu_out output self dim =
+  let t = glu_out output self (Int64.of_int dim) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -715,6 +1155,11 @@ let grid_sampler_3d input grid interpolation_mode padding_mode =
 
 let gru_cell input hx w_ih w_hh b_ih b_hh =
   let t = gru_cell input hx w_ih w_hh (match b_ih with | Some v -> v | None -> null) (match b_hh with | Some v -> v | None -> null) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let gt_ self other =
+  let t = gt_ self other in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -753,8 +1198,33 @@ let hardshrink self =
   Gc.finalise C.Tensor.free t;
   t
 
+let hardtanh self =
+  let t = hardtanh self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let hardtanh_ self =
+  let t = hardtanh_ self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let hardtanh_out output self =
+  let t = hardtanh_out output self in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let hinge_embedding_loss self target margin reduction =
   let t = hinge_embedding_loss self target margin (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let histc self bins =
+  let t = histc self (Int64.of_int bins) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let histc_out result self bins =
+  let t = histc_out result self (Int64.of_int bins) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -805,6 +1275,71 @@ let kl_div self target reduction =
 
 let kl_div_backward grad_output self target reduction =
   let t = kl_div_backward grad_output self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let l1_loss self target reduction =
+  let t = l1_loss self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let l1_loss_backward grad_output self target reduction =
+  let t = l1_loss_backward grad_output self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let l1_loss_backward_out grad_input grad_output self target reduction =
+  let t = l1_loss_backward_out grad_input grad_output self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let l1_loss_forward self target reduction =
+  let t = l1_loss_forward self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let l1_loss_forward_out output self target reduction =
+  let t = l1_loss_forward_out output self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let l1_loss_out output self target reduction =
+  let t = l1_loss_out output self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let le_ self other =
+  let t = le_ self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let leaky_relu self =
+  let t = leaky_relu self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let leaky_relu_ self =
+  let t = leaky_relu_ self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let leaky_relu_out output self =
+  let t = leaky_relu_out output self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let lgamma self =
+  let t = lgamma self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let lgamma_ self =
+  let t = lgamma_ self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let lgamma_out result self =
+  let t = lgamma_out result self in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -868,8 +1403,33 @@ let log_ self =
   Gc.finalise C.Tensor.free t;
   t
 
+let log_normal_ self mean std =
+  let t = log_normal_ self mean std in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let log_out result self =
   let t = log_out result self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let log_sigmoid self =
+  let t = log_sigmoid self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let log_sigmoid_backward grad_output self buffer =
+  let t = log_sigmoid_backward grad_output self buffer in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let log_sigmoid_backward_out grad_input grad_output self buffer =
+  let t = log_sigmoid_backward_out grad_input grad_output self buffer in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let log_sigmoid_out output self =
+  let t = log_sigmoid_out output self in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -895,6 +1455,11 @@ let logsumexp self dim keepdim =
 
 let logsumexp_out result self dim keepdim =
   let t = logsumexp_out result self (Int64.of_int dim) (if keepdim then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let lt_ self other =
+  let t = lt_ self other in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -928,6 +1493,16 @@ let matrix_rank2 self symmetric =
   Gc.finalise C.Tensor.free t;
   t
 
+let max self other =
+  let t = max self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let max_out result self other =
+  let t = max_out result self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let max_pool1d self kernel_size stride padding dilation ceil_mode =
   let t = max_pool1d self (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int dilation |> CArray.start) (List.length dilation) (if ceil_mode then 1 else 0) in
   Gc.finalise C.Tensor.free t;
@@ -948,18 +1523,53 @@ let max_values self dim keepdim =
   Gc.finalise C.Tensor.free t;
   t
 
-let mean1 self =
-  let t = mean1 self in
+let mean1 self dtype =
+  let t = mean1 self (Kind.to_int dtype) in
   Gc.finalise C.Tensor.free t;
   t
 
-let mean2 self dim keepdim =
-  let t = mean2 self (Int64.of_int dim) (if keepdim then 1 else 0) in
+let mean2 self =
+  let t = mean2 self in
   Gc.finalise C.Tensor.free t;
   t
 
-let mean_out result self dim keepdim =
-  let t = mean_out result self (Int64.of_int dim) (if keepdim then 1 else 0) in
+let mean3 self dim keepdim dtype =
+  let t = mean3 self (Int64.of_int dim) (if keepdim then 1 else 0) (Kind.to_int dtype) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let mean4 self dim keepdim =
+  let t = mean4 self (Int64.of_int dim) (if keepdim then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let mean5 self dim dtype =
+  let t = mean5 self (Int64.of_int dim) (Kind.to_int dtype) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let mean_out1 result self dim keepdim dtype =
+  let t = mean_out1 result self (Int64.of_int dim) (if keepdim then 1 else 0) (Kind.to_int dtype) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let mean_out2 result self dim keepdim =
+  let t = mean_out2 result self (Int64.of_int dim) (if keepdim then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let mean_out3 result self dim dtype =
+  let t = mean_out3 result self (Int64.of_int dim) (Kind.to_int dtype) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let min self other =
+  let t = min self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let min_out result self other =
+  let t = min_out result self other in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1023,6 +1633,36 @@ let mm_out result self mat2 =
   Gc.finalise C.Tensor.free t;
   t
 
+let mse_loss self target reduction =
+  let t = mse_loss self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let mse_loss_backward grad_output self target reduction =
+  let t = mse_loss_backward grad_output self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let mse_loss_backward_out grad_input grad_output self target reduction =
+  let t = mse_loss_backward_out grad_input grad_output self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let mse_loss_forward self target reduction =
+  let t = mse_loss_forward self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let mse_loss_forward_out output self target reduction =
+  let t = mse_loss_forward_out output self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let mse_loss_out output self target reduction =
+  let t = mse_loss_out output self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let mul self other =
   let t = mul self other in
   Gc.finalise C.Tensor.free t;
@@ -1053,8 +1693,18 @@ let mvlgamma self p =
   Gc.finalise C.Tensor.free t;
   t
 
+let mvlgamma_ self p =
+  let t = mvlgamma_ self (Int64.of_int p) in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let narrow self dim start length =
   let t = narrow self (Int64.of_int dim) (Int64.of_int start) (Int64.of_int length) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let narrow_copy self dim start length =
+  let t = narrow_copy self (Int64.of_int dim) (Int64.of_int start) (Int64.of_int length) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1078,8 +1728,23 @@ let native_zero_ self =
   Gc.finalise C.Tensor.free t;
   t
 
+let ne_ self other =
+  let t = ne_ self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let neg self =
   let t = neg self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let neg_ self =
+  let t = neg_ self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let neg_out result self =
+  let t = neg_out result self in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1090,6 +1755,41 @@ let norm self =
 
 let norm_except_dim v pow dim =
   let t = norm_except_dim v (Int64.of_int pow) (Int64.of_int dim) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let normal1 mean std =
+  let t = normal1 mean std in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let normal2 mean std =
+  let t = normal2 mean std in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let normal3 mean std =
+  let t = normal3 mean std in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let normal_ self mean std =
+  let t = normal_ self mean std in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let normal_out1 output mean std =
+  let t = normal_out1 output mean std in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let normal_out2 output mean std =
+  let t = normal_out2 output mean std in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let normal_out3 output mean std =
+  let t = normal_out3 output mean std in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1123,6 +1823,26 @@ let ones_out result size =
   Gc.finalise C.Tensor.free t;
   t
 
+let orgqr self input2 =
+  let t = orgqr self input2 in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let orgqr_out result self input2 =
+  let t = orgqr_out result self input2 in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let ormqr self input2 input3 left transpose =
+  let t = ormqr self input2 input3 (if left then 1 else 0) (if transpose then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let ormqr_out result self input2 input3 left transpose =
+  let t = ormqr_out result self input2 input3 (if left then 1 else 0) (if transpose then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let pairwise_distance x1 x2 p eps keepdim =
   let t = pairwise_distance x1 x2 p eps (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
@@ -1130,6 +1850,11 @@ let pairwise_distance x1 x2 p eps keepdim =
 
 let pdist self p =
   let t = pdist self p in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let permute self dims =
+  let t = permute self (CArray.of_list int dims |> CArray.start) (List.length dims) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1153,23 +1878,108 @@ let poisson self =
   Gc.finalise C.Tensor.free t;
   t
 
+let polygamma n self =
+  let t = polygamma (Int64.of_int n) self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let polygamma_ self n =
+  let t = polygamma_ self (Int64.of_int n) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let polygamma_out result n self =
+  let t = polygamma_out result (Int64.of_int n) self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let potrf self upper =
+  let t = potrf self (if upper then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let potrf_out output self upper =
+  let t = potrf_out output self (if upper then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let potri self upper =
+  let t = potri self (if upper then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let potri_out output self upper =
+  let t = potri_out output self (if upper then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let potrs self input2 upper =
+  let t = potrs self input2 (if upper then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let potrs_out result self input2 upper =
+  let t = potrs_out result self input2 (if upper then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let pow self exponent =
+  let t = pow self exponent in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let pow_ self exponent =
+  let t = pow_ self exponent in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let pow_out result self exponent =
+  let t = pow_out result self exponent in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let prelu self weight =
   let t = prelu self weight in
   Gc.finalise C.Tensor.free t;
   t
 
-let prod1 self =
-  let t = prod1 self in
+let prod1 self dtype =
+  let t = prod1 self (Kind.to_int dtype) in
   Gc.finalise C.Tensor.free t;
   t
 
-let prod2 self dim keepdim =
-  let t = prod2 self (Int64.of_int dim) (if keepdim then 1 else 0) in
+let prod2 self =
+  let t = prod2 self in
   Gc.finalise C.Tensor.free t;
   t
 
-let prod_out result self dim keepdim =
-  let t = prod_out result self (Int64.of_int dim) (if keepdim then 1 else 0) in
+let prod3 self dim keepdim dtype =
+  let t = prod3 self (Int64.of_int dim) (if keepdim then 1 else 0) (Kind.to_int dtype) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let prod4 self dim keepdim =
+  let t = prod4 self (Int64.of_int dim) (if keepdim then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let prod5 self dim dtype =
+  let t = prod5 self (Int64.of_int dim) (Kind.to_int dtype) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let prod_out1 result self dim keepdim dtype =
+  let t = prod_out1 result self (Int64.of_int dim) (if keepdim then 1 else 0) (Kind.to_int dtype) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let prod_out2 result self dim keepdim =
+  let t = prod_out2 result self (Int64.of_int dim) (if keepdim then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let prod_out3 result self dim dtype =
+  let t = prod_out3 result self (Int64.of_int dim) (Kind.to_int dtype) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1253,6 +2063,21 @@ let randn_out result size =
   Gc.finalise C.Tensor.free t;
   t
 
+let random_1 self from to_ =
+  let t = random_1 self (Int64.of_int from) (Int64.of_int to_) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let random_2 self to_ =
+  let t = random_2 self (Int64.of_int to_) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let random_3 self =
+  let t = random_3 self in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let randperm n options =
   let t = randperm (Int64.of_int n) (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
@@ -1260,6 +2085,81 @@ let randperm n options =
 
 let randperm_out result n =
   let t = randperm_out result (Int64.of_int n) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let reciprocal self =
+  let t = reciprocal self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let reciprocal_ self =
+  let t = reciprocal_ self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let reciprocal_out result self =
+  let t = reciprocal_out result self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let reflection_pad1d self padding =
+  let t = reflection_pad1d self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let reflection_pad1d_backward grad_output self padding =
+  let t = reflection_pad1d_backward grad_output self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let reflection_pad1d_backward_out grad_input grad_output self padding =
+  let t = reflection_pad1d_backward_out grad_input grad_output self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let reflection_pad1d_forward self padding =
+  let t = reflection_pad1d_forward self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let reflection_pad1d_forward_out output self padding =
+  let t = reflection_pad1d_forward_out output self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let reflection_pad1d_out output self padding =
+  let t = reflection_pad1d_out output self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let reflection_pad2d self padding =
+  let t = reflection_pad2d self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let reflection_pad2d_backward grad_output self padding =
+  let t = reflection_pad2d_backward grad_output self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let reflection_pad2d_backward_out grad_input grad_output self padding =
+  let t = reflection_pad2d_backward_out grad_input grad_output self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let reflection_pad2d_forward self padding =
+  let t = reflection_pad2d_forward self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let reflection_pad2d_forward_out output self padding =
+  let t = reflection_pad2d_forward_out output self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let reflection_pad2d_out output self padding =
+  let t = reflection_pad2d_out output self (CArray.of_list int padding |> CArray.start) (List.length padding) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1273,8 +2173,128 @@ let relu_ self =
   Gc.finalise C.Tensor.free t;
   t
 
+let remainder self other =
+  let t = remainder self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let remainder_ self other =
+  let t = remainder_ self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let remainder_out result self other =
+  let t = remainder_out result self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let repeat self repeats =
+  let t = repeat self (CArray.of_list int repeats |> CArray.start) (List.length repeats) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let replication_pad1d self padding =
+  let t = replication_pad1d self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let replication_pad1d_backward grad_output self padding =
+  let t = replication_pad1d_backward grad_output self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let replication_pad1d_backward_out grad_input grad_output self padding =
+  let t = replication_pad1d_backward_out grad_input grad_output self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let replication_pad1d_forward self padding =
+  let t = replication_pad1d_forward self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let replication_pad1d_forward_out output self padding =
+  let t = replication_pad1d_forward_out output self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let replication_pad1d_out output self padding =
+  let t = replication_pad1d_out output self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let replication_pad2d self padding =
+  let t = replication_pad2d self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let replication_pad2d_backward grad_output self padding =
+  let t = replication_pad2d_backward grad_output self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let replication_pad2d_backward_out grad_input grad_output self padding =
+  let t = replication_pad2d_backward_out grad_input grad_output self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let replication_pad2d_forward self padding =
+  let t = replication_pad2d_forward self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let replication_pad2d_forward_out output self padding =
+  let t = replication_pad2d_forward_out output self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let replication_pad2d_out output self padding =
+  let t = replication_pad2d_out output self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let replication_pad3d self padding =
+  let t = replication_pad3d self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let replication_pad3d_backward grad_output self padding =
+  let t = replication_pad3d_backward grad_output self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let replication_pad3d_backward_out grad_input grad_output self padding =
+  let t = replication_pad3d_backward_out grad_input grad_output self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let replication_pad3d_forward self padding =
+  let t = replication_pad3d_forward self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let replication_pad3d_forward_out output self padding =
+  let t = replication_pad3d_forward_out output self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let replication_pad3d_out output self padding =
+  let t = replication_pad3d_out output self (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let reshape self shape =
   let t = reshape self (CArray.of_list int shape |> CArray.start) (List.length shape) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let reshape_as self other =
+  let t = reshape_as self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let resize_ self size =
+  let t = resize_ self (CArray.of_list int size |> CArray.start) (List.length size) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1328,6 +2348,21 @@ let rrelu_ self training =
   Gc.finalise C.Tensor.free t;
   t
 
+let rrelu_with_noise self noise training =
+  let t = rrelu_with_noise self noise (if training then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let rrelu_with_noise_ self noise training =
+  let t = rrelu_with_noise_ self noise (if training then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let rrelu_with_noise_out output self noise training =
+  let t = rrelu_with_noise_out output self noise (if training then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let rsqrt self =
   let t = rsqrt self in
   Gc.finalise C.Tensor.free t;
@@ -1373,6 +2408,16 @@ let selu_ self =
   Gc.finalise C.Tensor.free t;
   t
 
+let set_1 self source =
+  let t = set_1 self source in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let set_2 self =
+  let t = set_2 self in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let set_requires_grad self r =
   let t = set_requires_grad self (if r then 1 else 0) in
   Gc.finalise C.Tensor.free t;
@@ -1390,6 +2435,21 @@ let sigmoid_ self =
 
 let sigmoid_out result self =
   let t = sigmoid_out result self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let sign self =
+  let t = sign self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let sign_ self =
+  let t = sign_ self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let sign_out result self =
+  let t = sign_out result self in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1433,6 +2493,66 @@ let smm self mat2 =
   Gc.finalise C.Tensor.free t;
   t
 
+let smooth_l1_loss self target reduction =
+  let t = smooth_l1_loss self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let smooth_l1_loss_backward grad_output self target reduction =
+  let t = smooth_l1_loss_backward grad_output self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let smooth_l1_loss_backward_out grad_input grad_output self target reduction =
+  let t = smooth_l1_loss_backward_out grad_input grad_output self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let smooth_l1_loss_forward self target reduction =
+  let t = smooth_l1_loss_forward self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let smooth_l1_loss_forward_out output self target reduction =
+  let t = smooth_l1_loss_forward_out output self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let smooth_l1_loss_out output self target reduction =
+  let t = smooth_l1_loss_out output self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let soft_margin_loss self target reduction =
+  let t = soft_margin_loss self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let soft_margin_loss_backward grad_output self target reduction =
+  let t = soft_margin_loss_backward grad_output self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let soft_margin_loss_backward_out grad_input grad_output self target reduction =
+  let t = soft_margin_loss_backward_out grad_input grad_output self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let soft_margin_loss_forward self target reduction =
+  let t = soft_margin_loss_forward self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let soft_margin_loss_forward_out output self target reduction =
+  let t = soft_margin_loss_forward_out output self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let soft_margin_loss_out output self target reduction =
+  let t = soft_margin_loss_out output self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let softmax self dim =
   let t = softmax self (Int64.of_int dim) in
   Gc.finalise C.Tensor.free t;
@@ -1443,8 +2563,38 @@ let softmax_backward_data grad_output output dim self =
   Gc.finalise C.Tensor.free t;
   t
 
+let softplus self =
+  let t = softplus self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let softplus_out output self =
+  let t = softplus_out output self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let softshrink self =
+  let t = softshrink self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let softshrink_out output self =
+  let t = softshrink_out output self in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let sparse_coo_tensor size options =
   let t = sparse_coo_tensor (CArray.of_list int size |> CArray.start) (List.length size) (Kind.to_int options) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let sparse_resize_ self size sparsedims densedims =
+  let t = sparse_resize_ self (CArray.of_list int size |> CArray.start) (List.length size) (Int64.of_int sparsedims) (Int64.of_int densedims) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let sparse_resize_and_clear_ self size sparsedims densedims =
+  let t = sparse_resize_and_clear_ self (CArray.of_list int size |> CArray.start) (List.length size) (Int64.of_int sparsedims) (Int64.of_int densedims) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1470,6 +2620,16 @@ let squeeze1 self =
 
 let squeeze2 self dim =
   let t = squeeze2 self (Int64.of_int dim) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let squeeze_1 self =
+  let t = squeeze_1 self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let squeeze_2 self dim =
+  let t = squeeze_2 self (Int64.of_int dim) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1513,18 +2673,48 @@ let sub_out result self other =
   Gc.finalise C.Tensor.free t;
   t
 
-let sum1 self =
-  let t = sum1 self in
+let sum1 self dtype =
+  let t = sum1 self (Kind.to_int dtype) in
   Gc.finalise C.Tensor.free t;
   t
 
-let sum2 self dim keepdim =
-  let t = sum2 self (CArray.of_list int dim |> CArray.start) (List.length dim) (if keepdim then 1 else 0) in
+let sum2 self =
+  let t = sum2 self in
   Gc.finalise C.Tensor.free t;
   t
 
-let sum_out result self dim keepdim =
-  let t = sum_out result self (CArray.of_list int dim |> CArray.start) (List.length dim) (if keepdim then 1 else 0) in
+let sum3 self dim keepdim dtype =
+  let t = sum3 self (CArray.of_list int dim |> CArray.start) (List.length dim) (if keepdim then 1 else 0) (Kind.to_int dtype) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let sum4 self dim keepdim =
+  let t = sum4 self (CArray.of_list int dim |> CArray.start) (List.length dim) (if keepdim then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let sum5 self dim dtype =
+  let t = sum5 self (CArray.of_list int dim |> CArray.start) (List.length dim) (Kind.to_int dtype) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let sum_out1 result self dim keepdim dtype =
+  let t = sum_out1 result self (CArray.of_list int dim |> CArray.start) (List.length dim) (if keepdim then 1 else 0) (Kind.to_int dtype) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let sum_out2 result self dim keepdim =
+  let t = sum_out2 result self (CArray.of_list int dim |> CArray.start) (List.length dim) (if keepdim then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let sum_out3 result self dim dtype =
+  let t = sum_out3 result self (CArray.of_list int dim |> CArray.start) (List.length dim) (Kind.to_int dtype) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let t_ self =
+  let t = t_ self in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1563,8 +2753,153 @@ let tensordot self other dims_self dims_other =
   Gc.finalise C.Tensor.free t;
   t
 
-let to_ self device =
-  let t = to_ self (Device.to_int device) in
+let th_addmm self mat1 mat2 =
+  let t = th_addmm self mat1 mat2 in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let th_addmm_ self mat1 mat2 =
+  let t = th_addmm_ self mat1 mat2 in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let th_addmm_out result self mat1 mat2 =
+  let t = th_addmm_out result self mat1 mat2 in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let th_clone self =
+  let t = th_clone self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let th_resize_as_ self the_template =
+  let t = th_resize_as_ self the_template in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let th_zero_ self =
+  let t = th_zero_ self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let thnn_batch_norm self weight bias running_mean running_var training momentum eps =
+  let t = thnn_batch_norm self weight bias running_mean running_var (if training then 1 else 0) momentum eps in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let thnn_batch_norm_out output self weight bias running_mean running_var training momentum eps =
+  let t = thnn_batch_norm_out output self weight bias running_mean running_var (if training then 1 else 0) momentum eps in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let thnn_conv2d self weight kernel_size bias stride padding =
+  let t = thnn_conv2d self weight (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) bias (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let thnn_conv2d_out output self weight kernel_size bias stride padding =
+  let t = thnn_conv2d_out output self weight (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) bias (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let thnn_conv3d self weight kernel_size bias stride padding =
+  let t = thnn_conv3d self weight (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) bias (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let thnn_conv3d_out output self weight kernel_size bias stride padding =
+  let t = thnn_conv3d_out output self weight (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) bias (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let thnn_conv_depthwise2d self weight kernel_size bias stride padding dilation =
+  let t = thnn_conv_depthwise2d self weight (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) bias (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int dilation |> CArray.start) (List.length dilation) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let thnn_conv_depthwise2d_forward self weight kernel_size bias stride padding dilation =
+  let t = thnn_conv_depthwise2d_forward self weight (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) (match bias with | Some v -> v | None -> null) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int dilation |> CArray.start) (List.length dilation) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let thnn_conv_depthwise2d_forward_out output self weight kernel_size bias stride padding dilation =
+  let t = thnn_conv_depthwise2d_forward_out output self weight (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) (match bias with | Some v -> v | None -> null) (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int dilation |> CArray.start) (List.length dilation) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let thnn_conv_depthwise2d_out output self weight kernel_size bias stride padding dilation =
+  let t = thnn_conv_depthwise2d_out output self weight (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) bias (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int dilation |> CArray.start) (List.length dilation) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let thnn_conv_dilated2d self weight kernel_size bias stride padding dilation =
+  let t = thnn_conv_dilated2d self weight (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) bias (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int dilation |> CArray.start) (List.length dilation) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let thnn_conv_dilated2d_out output self weight kernel_size bias stride padding dilation =
+  let t = thnn_conv_dilated2d_out output self weight (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) bias (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int dilation |> CArray.start) (List.length dilation) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let thnn_conv_dilated3d self weight kernel_size bias stride padding dilation =
+  let t = thnn_conv_dilated3d self weight (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) bias (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int dilation |> CArray.start) (List.length dilation) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let thnn_conv_dilated3d_out output self weight kernel_size bias stride padding dilation =
+  let t = thnn_conv_dilated3d_out output self weight (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) bias (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int dilation |> CArray.start) (List.length dilation) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let thnn_conv_transpose2d self weight kernel_size bias stride padding output_padding dilation =
+  let t = thnn_conv_transpose2d self weight (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) bias (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int output_padding |> CArray.start) (List.length output_padding) (CArray.of_list int dilation |> CArray.start) (List.length dilation) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let thnn_conv_transpose2d_out output self weight kernel_size bias stride padding output_padding dilation =
+  let t = thnn_conv_transpose2d_out output self weight (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) bias (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int output_padding |> CArray.start) (List.length output_padding) (CArray.of_list int dilation |> CArray.start) (List.length dilation) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let thnn_conv_transpose3d self weight kernel_size bias stride padding output_padding dilation =
+  let t = thnn_conv_transpose3d self weight (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) bias (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int output_padding |> CArray.start) (List.length output_padding) (CArray.of_list int dilation |> CArray.start) (List.length dilation) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let thnn_conv_transpose3d_out output self weight kernel_size bias stride padding output_padding dilation =
+  let t = thnn_conv_transpose3d_out output self weight (CArray.of_list int kernel_size |> CArray.start) (List.length kernel_size) bias (CArray.of_list int stride |> CArray.start) (List.length stride) (CArray.of_list int padding |> CArray.start) (List.length padding) (CArray.of_list int output_padding |> CArray.start) (List.length output_padding) (CArray.of_list int dilation |> CArray.start) (List.length dilation) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let to1 self device =
+  let t = to1 self (Device.to_int device) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let to2 self device dtype non_blocking =
+  let t = to2 self (Device.to_int device) (Kind.to_int dtype) (if non_blocking then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let to3 self dtype non_blocking =
+  let t = to3 self (Kind.to_int dtype) (if non_blocking then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let to4 self device non_blocking =
+  let t = to4 self (Device.to_int device) (if non_blocking then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let to5 self other non_blocking =
+  let t = to5 self other (if non_blocking then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let to_dense self =
+  let t = to_dense self in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1578,8 +2913,43 @@ let transpose self dim0 dim1 =
   Gc.finalise C.Tensor.free t;
   t
 
+let transpose_ self dim0 dim1 =
+  let t = transpose_ self (Int64.of_int dim0) (Int64.of_int dim1) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let tril self diagonal =
+  let t = tril self (Int64.of_int diagonal) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let tril_ self diagonal =
+  let t = tril_ self (Int64.of_int diagonal) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let tril_out result self diagonal =
+  let t = tril_out result self (Int64.of_int diagonal) in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let triplet_margin_loss anchor positive negative margin p eps swap reduction =
   let t = triplet_margin_loss anchor positive negative margin p eps (if swap then 1 else 0) (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let triu self diagonal =
+  let t = triu self (Int64.of_int diagonal) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let triu_ self diagonal =
+  let t = triu_ self (Int64.of_int diagonal) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let triu_out result self diagonal =
+  let t = triu_out result self (Int64.of_int diagonal) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1598,8 +2968,208 @@ let trunc_out result self =
   Gc.finalise C.Tensor.free t;
   t
 
+let type_as self other =
+  let t = type_as self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let unfold self dimension size step =
+  let t = unfold self (Int64.of_int dimension) (Int64.of_int size) (Int64.of_int step) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let uniform_ self from to_ =
+  let t = uniform_ self from to_ in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let unsqueeze self dim =
   let t = unsqueeze self (Int64.of_int dim) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let unsqueeze_ self dim =
+  let t = unsqueeze_ self (Int64.of_int dim) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_bilinear2d self output_size align_corners =
+  let t = upsample_bilinear2d self (CArray.of_list int output_size |> CArray.start) (List.length output_size) (if align_corners then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_bilinear2d_backward grad_output output_size input_size align_corners =
+  let t = upsample_bilinear2d_backward grad_output (CArray.of_list int output_size |> CArray.start) (List.length output_size) (CArray.of_list int input_size |> CArray.start) (List.length input_size) (if align_corners then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_bilinear2d_backward_out grad_input grad_output output_size input_size align_corners =
+  let t = upsample_bilinear2d_backward_out grad_input grad_output (CArray.of_list int output_size |> CArray.start) (List.length output_size) (CArray.of_list int input_size |> CArray.start) (List.length input_size) (if align_corners then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_bilinear2d_forward self output_size align_corners =
+  let t = upsample_bilinear2d_forward self (CArray.of_list int output_size |> CArray.start) (List.length output_size) (if align_corners then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_bilinear2d_forward_out output self output_size align_corners =
+  let t = upsample_bilinear2d_forward_out output self (CArray.of_list int output_size |> CArray.start) (List.length output_size) (if align_corners then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_bilinear2d_out output self output_size align_corners =
+  let t = upsample_bilinear2d_out output self (CArray.of_list int output_size |> CArray.start) (List.length output_size) (if align_corners then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_linear1d self output_size align_corners =
+  let t = upsample_linear1d self (CArray.of_list int output_size |> CArray.start) (List.length output_size) (if align_corners then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_linear1d_backward grad_output output_size input_size align_corners =
+  let t = upsample_linear1d_backward grad_output (CArray.of_list int output_size |> CArray.start) (List.length output_size) (CArray.of_list int input_size |> CArray.start) (List.length input_size) (if align_corners then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_linear1d_backward_out grad_input grad_output output_size input_size align_corners =
+  let t = upsample_linear1d_backward_out grad_input grad_output (CArray.of_list int output_size |> CArray.start) (List.length output_size) (CArray.of_list int input_size |> CArray.start) (List.length input_size) (if align_corners then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_linear1d_forward self output_size align_corners =
+  let t = upsample_linear1d_forward self (CArray.of_list int output_size |> CArray.start) (List.length output_size) (if align_corners then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_linear1d_forward_out output self output_size align_corners =
+  let t = upsample_linear1d_forward_out output self (CArray.of_list int output_size |> CArray.start) (List.length output_size) (if align_corners then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_linear1d_out output self output_size align_corners =
+  let t = upsample_linear1d_out output self (CArray.of_list int output_size |> CArray.start) (List.length output_size) (if align_corners then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_nearest1d self output_size =
+  let t = upsample_nearest1d self (CArray.of_list int output_size |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_nearest1d_backward grad_output output_size input_size =
+  let t = upsample_nearest1d_backward grad_output (CArray.of_list int output_size |> CArray.start) (List.length output_size) (CArray.of_list int input_size |> CArray.start) (List.length input_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_nearest1d_backward_out grad_input grad_output output_size input_size =
+  let t = upsample_nearest1d_backward_out grad_input grad_output (CArray.of_list int output_size |> CArray.start) (List.length output_size) (CArray.of_list int input_size |> CArray.start) (List.length input_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_nearest1d_forward self output_size =
+  let t = upsample_nearest1d_forward self (CArray.of_list int output_size |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_nearest1d_forward_out output self output_size =
+  let t = upsample_nearest1d_forward_out output self (CArray.of_list int output_size |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_nearest1d_out output self output_size =
+  let t = upsample_nearest1d_out output self (CArray.of_list int output_size |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_nearest2d self output_size =
+  let t = upsample_nearest2d self (CArray.of_list int output_size |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_nearest2d_backward grad_output output_size input_size =
+  let t = upsample_nearest2d_backward grad_output (CArray.of_list int output_size |> CArray.start) (List.length output_size) (CArray.of_list int input_size |> CArray.start) (List.length input_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_nearest2d_backward_out grad_input grad_output output_size input_size =
+  let t = upsample_nearest2d_backward_out grad_input grad_output (CArray.of_list int output_size |> CArray.start) (List.length output_size) (CArray.of_list int input_size |> CArray.start) (List.length input_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_nearest2d_forward self output_size =
+  let t = upsample_nearest2d_forward self (CArray.of_list int output_size |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_nearest2d_forward_out output self output_size =
+  let t = upsample_nearest2d_forward_out output self (CArray.of_list int output_size |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_nearest2d_out output self output_size =
+  let t = upsample_nearest2d_out output self (CArray.of_list int output_size |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_nearest3d self output_size =
+  let t = upsample_nearest3d self (CArray.of_list int output_size |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_nearest3d_backward grad_output output_size input_size =
+  let t = upsample_nearest3d_backward grad_output (CArray.of_list int output_size |> CArray.start) (List.length output_size) (CArray.of_list int input_size |> CArray.start) (List.length input_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_nearest3d_backward_out grad_input grad_output output_size input_size =
+  let t = upsample_nearest3d_backward_out grad_input grad_output (CArray.of_list int output_size |> CArray.start) (List.length output_size) (CArray.of_list int input_size |> CArray.start) (List.length input_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_nearest3d_forward self output_size =
+  let t = upsample_nearest3d_forward self (CArray.of_list int output_size |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_nearest3d_forward_out output self output_size =
+  let t = upsample_nearest3d_forward_out output self (CArray.of_list int output_size |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_nearest3d_out output self output_size =
+  let t = upsample_nearest3d_out output self (CArray.of_list int output_size |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_trilinear3d self output_size align_corners =
+  let t = upsample_trilinear3d self (CArray.of_list int output_size |> CArray.start) (List.length output_size) (if align_corners then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_trilinear3d_backward grad_output output_size input_size align_corners =
+  let t = upsample_trilinear3d_backward grad_output (CArray.of_list int output_size |> CArray.start) (List.length output_size) (CArray.of_list int input_size |> CArray.start) (List.length input_size) (if align_corners then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_trilinear3d_backward_out grad_input grad_output output_size input_size align_corners =
+  let t = upsample_trilinear3d_backward_out grad_input grad_output (CArray.of_list int output_size |> CArray.start) (List.length output_size) (CArray.of_list int input_size |> CArray.start) (List.length input_size) (if align_corners then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_trilinear3d_forward self output_size align_corners =
+  let t = upsample_trilinear3d_forward self (CArray.of_list int output_size |> CArray.start) (List.length output_size) (if align_corners then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_trilinear3d_forward_out output self output_size align_corners =
+  let t = upsample_trilinear3d_forward_out output self (CArray.of_list int output_size |> CArray.start) (List.length output_size) (if align_corners then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let upsample_trilinear3d_out output self output_size align_corners =
+  let t = upsample_trilinear3d_out output self (CArray.of_list int output_size |> CArray.start) (List.length output_size) (if align_corners then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1615,6 +3185,16 @@ let var2 self dim unbiased keepdim =
 
 let var_out result self dim unbiased keepdim =
   let t = var_out result self (Int64.of_int dim) (if unbiased then 1 else 0) (if keepdim then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let view self size =
+  let t = view self (CArray.of_list int size |> CArray.start) (List.length size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let view_as self other =
+  let t = view_as self other in
   Gc.finalise C.Tensor.free t;
   t
 

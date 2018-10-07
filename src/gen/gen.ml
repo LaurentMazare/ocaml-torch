@@ -1,3 +1,7 @@
+(* Automatically generate the C++ -> C -> ocaml bindings.
+   This takes as input the Descriptions.yaml file that gets generated when
+   building PyTorch from source.
+ *)
 open Base
 open Stdio
 
@@ -8,26 +12,23 @@ let yaml_error yaml ~msg =
   Printf.sprintf "%s, %s" msg (Yaml.to_string_exn yaml)
   |> failwith
 
+let extract_bool = function
+  | `Bool b -> b
+  | `String "true" -> true
+  | `String "false" -> false
+  | yaml -> yaml_error yaml ~msg:"expected bool"
+
 let extract_list = function
   | `A l -> l
   | yaml -> yaml_error yaml ~msg:"expected list"
 
 let extract_map = function
-  | `O map -> Map.of_alist_multi (module String) map
+  | `O map -> Map.of_alist_exn (module String) map
   | yaml -> yaml_error yaml ~msg:"expected map"
 
 let extract_string = function
   | `String s -> s
   | yaml -> yaml_error yaml ~msg:"expected string"
-
-let contains_substring yaml ~substring =
-  let rec walk = function
-  | `A l -> List.exists l ~f:walk
-  | `O l -> List.exists l ~f:(fun (_, y) -> walk y)
-  | `String s when String.is_substring s ~substring -> true
-  | _ -> false
-  in
-  walk yaml
 
 module Func = struct
   type arg_type =
@@ -54,18 +55,17 @@ module Func = struct
     ; kind : [ `function_ | `method_ ]
     }
 
-  let arg_type_of_string str =
+  let arg_type_of_string str ~is_nullable =
     match String.lowercase str with
     | "bool" -> Some Bool
     | "int64_t" -> Some Int64
     | "double" -> Some Double
-    | "tensor" -> Some Tensor
-    | "tensor?" -> Some TensorOption
+    | "tensor" -> Some (if is_nullable then TensorOption else Tensor)
     | "tensoroptions" -> Some TensorOptions
-    | _ ->
-      if String.is_prefix str ~prefix:"IntList"
-      then Some IntList
-      else None
+    | "intlist" -> Some IntList
+    | "device" -> Some Device
+    | "scalartype" -> Some ScalarType
+    | _ -> None
 
   let c_typed_args_list t =
     List.map t.args ~f:(fun { arg_name; arg_type; _ } ->
@@ -161,71 +161,61 @@ exception Not_a_simple_arg
 
 let read_yaml filename =
   let funcs =
-    In_channel.with_file filename ~f:In_channel.input_all
-    |> Yaml.of_string_exn
-    |> extract_list
-    |> List.map ~f:(fun yaml ->
-      let map = extract_map yaml in
-      let func =
-        match Map.find_exn map "func" with
-        | [] -> assert false
-        | [func] -> extract_string func
-        | _ :: _ :: _ -> yaml_error yaml ~msg:"multiple func"
-      in
-      func, Map.find map "variants" |> Option.value ~default:[])
+    (* Split the file to avoid Yaml.of_string_exn segfaulting. *)
+    In_channel.with_file filename ~f:In_channel.input_lines
+    |> List.group ~break:(fun _ l -> String.length l > 0 && Char.(=) l.[0] '-')
+    |> List.concat_map ~f:(fun lines ->
+      Yaml.of_string_exn (String.concat lines ~sep:"\n")
+      |> extract_list)
   in
   printf "Read %s, got %d functions.\n%!" filename (List.length funcs);
-  List.filter_map funcs ~f:(fun (func, variants) ->
-    let has_function =
-      match variants with
-      | [] -> true
-      | variants -> List.exists variants ~f:(contains_substring ~substring:"function")
+  List.filter_map funcs ~f:(fun yaml ->
+    let map = extract_map yaml in
+    let name = Map.find_exn map "name" |> extract_string in
+    let deprecated = Map.find_exn map "deprecated" |> extract_bool in
+    let method_of = Map.find_exn map "method_of" |> extract_list |> List.map ~f:extract_string in
+    let arguments = Map.find_exn map "arguments" |> extract_list in
+    let return_ok =
+      match Map.find_exn map "returns" |> extract_list with
+      | [ returns ] ->
+        let returns = extract_map returns in
+        String.(=) (Map.find_exn returns "dynamic_type" |> extract_string) "Tensor"
+      | _ -> false
     in
-    if has_function
+    let kind =
+      if List.exists method_of ~f:(String.(=) "namespace")
+      then Some `function_
+      else if List.exists method_of ~f:(String.(=) "Tensor")
+      then Some `method_
+      else None
+    in
+    if return_ok
+    && not deprecated
+    && Char.(<>) name.[0] '_'
+    && not (Set.mem unsupported_functions name)
     then
-      Option.bind (String.substr_index func ~pattern:"->") ~f:(fun arrow_index ->
-        let lhs = String.prefix func arrow_index |> String.strip in
-        let returns = String.drop_prefix func (arrow_index + 2) |> String.strip in
-        let func_name, args = String.lsplit2_exn lhs ~on:'(' in
-        assert (Char.(=) args.[String.length args - 1] ')');
-        let args = String.drop_suffix args 1 in
-        (* Remove args that contain a std::array<> because of the extra commas... *)
-        if String.is_substring args ~substring:"std::"
-        || String.is_empty args
-        || String.(<>) returns "Tensor"
-        || Char.(=) func_name.[0] '_'
-        || Set.mem unsupported_functions func_name
-        then None
-        else
-          try
-            let args =
-              String.split args ~on:','
-              |> List.filter_map ~f:(fun arg ->
-                let arg = String.strip arg in
-                if String.(=) arg "*"
+      Option.bind kind ~f:(fun kind ->
+        try
+          let args =
+            List.filter_map arguments ~f:(fun arg ->
+              let arg = extract_map arg in
+              let arg_name = Map.find_exn arg "name" |> extract_string in
+              let arg_type = Map.find_exn arg "dynamic_type" |> extract_string in
+              let is_nullable =
+                Map.find arg "is_nullable"
+                |> Option.value_map ~default:false ~f:extract_bool
+              in
+              let default_value = Map.find arg "default" |> Option.map ~f:extract_string in
+              match Func.arg_type_of_string arg_type ~is_nullable with
+              | Some arg_type ->
+                Some { Func.arg_name; arg_type; default_value }
+              | None ->
+                if Option.is_some default_value
                 then None
-                else
-                  let arg, default_value =
-                    match String.split arg ~on:'=' with
-                    | [arg] -> String.strip arg, None
-                    | [arg; default_value] -> String.strip arg, Some (String.strip default_value)
-                    | _ -> Printf.sprintf "unexpected arg format %s" arg |> failwith
-                  in
-                  match String.rsplit2 arg ~on:' ' with
-                  | None ->
-                    Printf.sprintf "Unhandled argument format for %s: <%s>.\n%!" func_name arg
-                    |> failwith
-                  | Some (arg_type, arg_name) ->
-                    match Func.arg_type_of_string arg_type with
-                    | Some arg_type ->
-                      Some { Func.arg_name; arg_type; default_value }
-                    | None ->
-                      if Option.is_some default_value
-                      then None
-                      else raise Not_a_simple_arg
+                else raise Not_a_simple_arg
               )
             in
-            Some { Func.name = func_name; args; returns; kind = `function_ }
+            Some { Func.name; args; returns = "Tensor"; kind }
           with
           | Not_a_simple_arg -> None)
     else None
@@ -298,12 +288,7 @@ let write_wrapper funcs filename =
 let methods =
   let c name args = { Func.name; args; returns = "Tensor"; kind = `method_ } in
   let ca arg_name arg_type = { Func.arg_name; arg_type; default_value = None } in
-  [ c "sub_" [ ca "self" Tensor; ca "other" Tensor ]
-  ; c "add_" [ ca "self" Tensor; ca "other" Tensor ]
-  ; c "mul_" [ ca "self" Tensor; ca "other" Tensor ]
-  ; c "div_" [ ca "self" Tensor; ca "other" Tensor ]
-  ; c "eq" [ ca "self" Tensor; ca "other" Tensor ]
-  ; c "neg" [ ca "self" Tensor ]
+  [ c "eq" [ ca "self" Tensor; ca "other" Tensor ]
   ; c "grad" [ ca "self" Tensor ]
   ; c "set_requires_grad" [ ca "self" Tensor; ca "r" Bool ]
   ; c "toType" [ ca "self" Tensor; ca "scalar_type" ScalarType ]
@@ -335,7 +320,7 @@ let run ~yaml_filename ~cpp_filename ~stubs_filename ~wrapper_filename =
 
 let () =
   run
-    ~yaml_filename:"data/native_functions.yaml"
+    ~yaml_filename:"data/Declarations.yaml"
     ~cpp_filename:"src/wrapper/torch_api_generated"
     ~stubs_filename:"src/stubs/torch_bindings_generated.ml"
     ~wrapper_filename:"src/wrapper/wrapper_generated.ml"

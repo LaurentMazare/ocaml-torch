@@ -53,6 +53,6 @@ let ( *=) t other = ignore (mul_ t other : t)
 let (=) = eq
 
 let to_type t ~type_ = totype t type_
-let to_device t ~device = to_ t device
+let to_device t ~device = to1 t device
 
 let narrow t ~dim ~start ~len = narrow t dim start len
