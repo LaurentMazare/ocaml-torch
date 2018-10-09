@@ -31,9 +31,10 @@ val (=) : t -> t -> t
 
 val mm : t -> t -> t
 val f : float -> t
-val zeros : ?requires_grad:bool -> ?kind:Kind.t -> int list -> t
-val ones : ?requires_grad:bool -> ?kind:Kind.t -> int list -> t
-val rand : ?requires_grad:bool -> ?kind:Kind.t -> int list -> t
+val zeros : ?requires_grad:bool -> ?kind:Kind.t -> ?scale:float -> int list -> t
+val ones : ?requires_grad:bool -> ?kind:Kind.t -> ?scale:float -> int list -> t
+val rand : ?requires_grad:bool -> ?kind:Kind.t -> ?scale:float -> int list -> t
+val randn : ?requires_grad:bool -> ?kind:Kind.t -> ?scale:float -> int list -> t
 
 val shape : t -> int list
 val load : string -> t
@@ -58,3 +59,8 @@ val to_type : t -> type_:Kind.t -> t
 val to_device : t -> device:Device.t -> t
 
 val narrow : t -> dim:int -> start:int -> len:int -> t
+
+val relu : t -> t
+val tanh : t -> t
+val sigmoid : t -> t
+val leaky_relu : t -> t

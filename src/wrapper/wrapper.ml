@@ -18,10 +18,6 @@ module Tensor = struct
     Gc.finalise free t;
     t
 
-  let ones ?(kind = Kind.Float) dims = ones dims kind
-  let zeros ?(kind = Kind.Float) dims = zeros dims kind
-  let rand ?(kind = Kind.Float) dims = rand dims kind
-
   let int_vec ?(kind = `int) values =
     let values_len = List.length values in
     let values =

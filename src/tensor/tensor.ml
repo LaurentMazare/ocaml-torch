@@ -27,8 +27,13 @@ let zero_grad t =
   ignore (detach_ grad : t);
   ignore (zero_ grad : t)
 
-let gen ~f ?(requires_grad = false) ?kind dims =
-  let t = f ?kind dims in
+let gen ~f ?(requires_grad = false) ?(kind = Torch_core.Kind.Float) ?scale dims =
+  let t = f dims kind in
+  let t =
+    Option.value_map scale
+      ~f:(fun scale -> mul t (float_vec [ scale ]))
+      ~default:t
+  in
   if requires_grad
   then set_requires_grad t ~b:true
   else t
@@ -36,6 +41,7 @@ let gen ~f ?(requires_grad = false) ?kind dims =
 let zeros = gen ~f:zeros
 let ones = gen ~f:ones
 let rand = gen ~f:rand
+let randn = gen ~f:randn
 
 let f v = float_vec [ v ] |> reshape ~dims:[]
 let mm = matmul
