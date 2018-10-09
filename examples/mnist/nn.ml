@@ -10,9 +10,10 @@ let () =
   let { Mnist_helper.train_images; train_labels; test_images; test_labels } =
     Mnist_helper.read_files ~with_caching:true ()
   in
-  let linear1 = Layer.Linear.create ~input_dim:Mnist_helper.image_dim hidden_nodes in
-  let linear2 = Layer.Linear.create ~input_dim:hidden_nodes Mnist_helper.label_count in
-  let adam = Optimizer.adam Layer.Linear.(vars linear1 @ vars linear2) ~learning_rate in
+  let vs = Layer.Var_store.create () in
+  let linear1 = Layer.Linear.create vs ~input_dim:Mnist_helper.image_dim hidden_nodes in
+  let linear2 = Layer.Linear.create vs ~input_dim:hidden_nodes Mnist_helper.label_count in
+  let adam = Optimizer.adam (Layer.Var_store.vars vs) ~learning_rate in
   let model xs =
     Layer.Linear.apply linear1 xs ~activation:Relu
     |> Layer.Linear.apply linear2 ~activation:Softmax

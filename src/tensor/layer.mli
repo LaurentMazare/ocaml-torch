@@ -1,3 +1,9 @@
+module Var_store : sig
+  type t
+  val create : unit -> t
+  val vars : t -> Tensor.t list
+end
+
 type activation =
   | Relu
   | Softmax
@@ -8,7 +14,7 @@ type activation =
 module Linear : sig
   type t
 
-  val create : input_dim:int -> int -> t
+  val create : Var_store.t -> input_dim:int -> int -> t
 
   val apply
     :  ?activation:activation (* default: no activation *)
@@ -16,6 +22,23 @@ module Linear : sig
     -> t
     -> Tensor.t
     -> Tensor.t
+end
 
-  val vars : t -> Tensor.t list
+module Conv2D : sig
+  type t
+
+  val create
+    :  Var_store.t
+    -> ksize:int * int
+    -> stride:int * int
+    -> ?padding: int * int
+    -> input_dim:int
+    -> int
+    -> t
+
+  val apply
+    :  ?activation:activation (* default: no activation *)
+    -> t
+    -> Tensor.t
+    -> Tensor.t
 end

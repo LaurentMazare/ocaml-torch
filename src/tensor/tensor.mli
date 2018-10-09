@@ -64,3 +64,21 @@ val relu : t -> t
 val tanh : t -> t
 val sigmoid : t -> t
 val leaky_relu : t -> t
+val conv2d
+  :  ?padding:int*int
+  -> ?dilation:int*int
+  -> ?groups:int
+  -> t (* input *)
+  -> t (* weight *)
+  -> t (* bias *)
+  -> stride:int*int
+  -> t
+
+val max_pool2d
+  :  ?padding:int*int
+  -> ?dilation:int*int
+  -> ?ceil_mode:bool
+  -> ?stride:int*int
+  -> t
+  -> ksize:int*int
+  -> t

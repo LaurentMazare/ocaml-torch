@@ -62,3 +62,24 @@ let to_type t ~type_ = totype t type_
 let to_device t ~device = to1 t device
 
 let narrow t ~dim ~start ~len = narrow t dim start len
+
+let pair_to_list (p1, p2) = [ p1; p2 ]
+let conv2d ?(padding=0, 0) ?(dilation=1, 1) ?(groups=1) input weight bias ~stride =
+  conv2d
+    input
+    weight
+    bias
+    (pair_to_list stride)
+    (pair_to_list padding)
+    (pair_to_list dilation)
+    groups
+
+let max_pool2d ?(padding=0, 0) ?(dilation=1, 1) ?(ceil_mode=false) ?stride self ~ksize =
+  max_pool2d
+    self
+    (pair_to_list ksize)
+    (Option.value stride ~default:ksize |> pair_to_list)
+    (pair_to_list padding)
+    (pair_to_list dilation)
+    ceil_mode
+
