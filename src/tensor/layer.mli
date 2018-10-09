@@ -8,9 +8,7 @@ type activation =
 module Linear : sig
   type t
 
-  (** [create output_dim] creates a linear layer with output size
-      [output_dim]. *)
-  val create : int -> t
+  val create : input_dim:int -> int -> t
 
   val apply
     :  ?activation:activation (* default: no activation *)

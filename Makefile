@@ -1,4 +1,4 @@
-ALL = examples/basics/torch_basics.exe examples/mnist/linear.exe
+ALL = examples/basics/torch_basics.exe examples/mnist/linear.exe examples/mnist/nn.exe
 
 %.exe: .FORCE
 	dune build $@
