@@ -24,3 +24,11 @@ val train_batch
   -> batch_size:int
   -> batch_idx:int
   -> Tensor.t * Tensor.t
+
+val batch_accuracy
+  :  ?samples:int
+  -> t
+  -> [ `test | `train ]
+  -> batch_size:int
+  -> predict:(Tensor.t -> Tensor.t)
+  -> float

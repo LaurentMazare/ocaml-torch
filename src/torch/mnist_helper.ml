@@ -108,3 +108,28 @@ let train_batch { train_images; train_labels; _ } ~batch_size ~batch_idx =
   let batch_images = Tensor.narrow train_images ~dim:0 ~start ~len:batch_size in
   let batch_labels = Tensor.narrow train_labels ~dim:0 ~start ~len:batch_size in
   batch_images, batch_labels
+
+let batch_accuracy ?samples t train_or_test ~batch_size ~predict =
+  let images, labels =
+    match train_or_test with
+    | `train -> t.train_images, t.train_labels
+    | `test -> t.test_images, t.test_labels
+  in
+  let dataset_samples = Tensor.shape labels |> List.hd_exn in
+  let samples =
+    Option.value_map samples ~default:dataset_samples ~f:(Int.min dataset_samples)
+  in
+  let rec loop start_index sum_accuracy =
+    if samples <= start_index
+    then sum_accuracy /. Float.of_int samples
+    else
+      let batch_size = Int.min batch_size (samples - start_index) in
+      let images = Tensor.narrow images ~dim:0 ~start:start_index ~len:batch_size in
+      let predicted_labels = predict images in
+      let labels = Tensor.narrow labels ~dim:0 ~start:start_index ~len:batch_size in
+      let batch_accuracy =
+        Tensor.(sum (argmax predicted_labels = argmax labels) |> float_value)
+      in
+      loop (start_index + batch_size) (sum_accuracy +. batch_accuracy)
+  in
+  loop 0 0.

@@ -37,10 +37,8 @@ let () =
 
     if batch_idx % 50 = 0 then begin
       (* Compute the validation error. *)
-      let { Mnist_helper.test_images; test_labels; _ } = mnist in
       let test_accuracy =
-        Tensor.(sum (argmax (model test_images) = argmax test_labels) |> float_value)
-        |> fun sum -> sum /. Float.of_int (Tensor.shape test_images |> List.hd_exn)
+        Mnist_helper.batch_accuracy mnist `test ~batch_size:1000 ~predict:model
       in
       Stdio.printf "%d %f %.2f%%\n%!" batch_idx (Tensor.float_value loss) (100. *. test_accuracy);
     end;
