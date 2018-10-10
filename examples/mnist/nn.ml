@@ -1,5 +1,5 @@
 open Base
-open Torch_tensor
+open Torch
 
 (* This should reach ~97% accuracy. *)
 let hidden_nodes = 128

@@ -1,5 +1,5 @@
 open Base
-open Torch_tensor
+open Torch
 
 (* This should reach ~99% accuracy. *)
 let batch_size = 512

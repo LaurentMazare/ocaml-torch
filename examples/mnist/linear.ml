@@ -9,7 +9,7 @@
    This should reach ~92% accuracy on the test dataset.
 *)
 open Base
-open Torch_tensor
+open Torch
 
 let learning_rate = Tensor.f 10.
 

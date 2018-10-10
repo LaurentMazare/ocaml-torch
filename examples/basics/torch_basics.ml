@@ -1,4 +1,4 @@
-open Torch_tensor
+open Torch
 
 let tensor_ops () =
   let tensor1 = Tensor.rand [4; 2] in
