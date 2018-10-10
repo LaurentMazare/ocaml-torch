@@ -52,6 +52,13 @@ This is done in the following [example](https://github.com/LaurentMazare/ocaml-t
 
 ## TODO
 
-* Add more operators and more complex examples.
-* Wrap some optimizer, e.g. Adam.
+* Add more complex examples.
 * Use a GADT to add type constraints to tensor elements.
+* Improve the layer API and make it composable, e.g. with:
+```ocaml
+type t = P : (module M : Layer_intf) * M.t
+val linear : ...
+val conv2d : ...
+val simple : apply:(Tensor.t -> Tensor.t) -> vars:Tensor.t list -> t
+val compose : t list -> t
+```
