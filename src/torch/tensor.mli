@@ -82,3 +82,5 @@ val max_pool2d
   -> t
   -> ksize:int*int
   -> t
+
+val dropout : t -> keep_probability:float -> is_training:bool -> t

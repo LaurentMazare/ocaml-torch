@@ -83,3 +83,4 @@ let max_pool2d ?(padding=0, 0) ?(dilation=1, 1) ?(ceil_mode=false) ?stride self 
     (pair_to_list dilation)
     ceil_mode
 
+let dropout t ~keep_probability ~is_training = dropout t keep_probability is_training

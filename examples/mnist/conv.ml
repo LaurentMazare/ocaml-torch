@@ -14,7 +14,7 @@ let () =
   let linear1 = Layer.Linear.create vs ~input_dim:1024 1024 in
   let linear2 = Layer.Linear.create vs ~input_dim:1024 Mnist_helper.label_count in
   let adam = Optimizer.adam (Layer.Var_store.vars vs) ~learning_rate in
-  let model xs =
+  let model xs ~is_training =
     Tensor.reshape xs ~dims:[ -1; 1; 28; 28 ]
     |> Layer.Conv2D.apply conv2d1
     |> Tensor.max_pool2d ~ksize:(2, 2)
@@ -22,14 +22,17 @@ let () =
     |> Tensor.max_pool2d ~ksize:(2, 2)
     |> Tensor.reshape ~dims:[ -1; 1024 ]
     |> Layer.Linear.apply linear1 ~activation:Relu
+    |> Tensor.dropout ~keep_probability:0.5 ~is_training
     |> Layer.Linear.apply linear2 ~activation:Softmax
   in
+  let train_model = model ~is_training:true in
+  let test_model = model ~is_training:false in
   for batch_idx = 1 to epochs do
     let batch_images, batch_labels =
       Mnist_helper.train_batch mnist ~batch_size ~batch_idx
     in
     (* Compute the cross-entropy loss. *)
-    let loss = Tensor.(mean (- batch_labels * log (model batch_images +f 1e-6))) in
+    let loss = Tensor.(mean (- batch_labels * log (train_model batch_images +f 1e-6))) in
 
     Optimizer.zero_grad adam;
     Tensor.backward loss;
@@ -38,7 +41,7 @@ let () =
     if batch_idx % 50 = 0 then begin
       (* Compute the validation error. *)
       let test_accuracy =
-        Mnist_helper.batch_accuracy mnist `test ~batch_size:1000 ~predict:model
+        Mnist_helper.batch_accuracy mnist `test ~batch_size:1000 ~predict:test_model
       in
       Stdio.printf "%d %f %.2f%%\n%!" batch_idx (Tensor.float_value loss) (100. *. test_accuracy);
     end;
