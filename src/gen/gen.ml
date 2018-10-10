@@ -6,7 +6,8 @@ open Base
 open Stdio
 
 let unsupported_functions =
-  Set.of_list (module String) [ "bincount"; "stft"; "group_norm"; "layer_norm"; "rot90"; "t" ]
+  Set.of_list (module String)
+    [ "bincount"; "stft"; "group_norm"; "layer_norm"; "rot90"; "t" ]
 
 let yaml_error yaml ~msg =
   Printf.sprintf "%s, %s" msg (Yaml.to_string_exn yaml)
@@ -38,6 +39,7 @@ module Func = struct
     | Tensor
     | TensorOption
     | IntList
+    | TensorList
     | TensorOptions
     | ScalarType
     | Device
@@ -63,6 +65,7 @@ module Func = struct
     | "tensor" -> Some (if is_nullable then TensorOption else Tensor)
     | "tensoroptions" -> Some TensorOptions
     | "intlist" -> Some IntList
+    | "tensorlist" -> Some TensorList
     | "device" -> Some Device
     | "scalartype" -> Some ScalarType
     | _ -> None
@@ -71,7 +74,9 @@ module Func = struct
     List.map t.args ~f:(fun { arg_name; arg_type; _ } ->
       match arg_type with
       | IntList ->
-        Printf.sprintf "int *%s_data, int %s_len" arg_name arg_name
+        Printf.sprintf "long int *%s_data, int %s_len" arg_name arg_name
+      | TensorList ->
+        Printf.sprintf "tensor *%s_data, int %s_len" arg_name arg_name
       | otherwise ->
         let simple_type_cstring =
           match otherwise with
@@ -83,7 +88,7 @@ module Func = struct
           | TensorOptions -> "int" (* only Kind for now. *)
           | ScalarType -> "int"
           | Device -> "int"
-          | IntList -> assert false
+          | IntList | TensorList -> assert false
         in
         Printf.sprintf "%s %s" simple_type_cstring arg_name)
     |> String.concat ~sep:", "
@@ -94,7 +99,10 @@ module Func = struct
       | Tensor -> "*" ^ arg_name
       | TensorOption -> Printf.sprintf "(%s ? *%s : torch::Tensor())" arg_name arg_name
       | Bool -> "(bool)" ^ arg_name
-      | IntList -> Printf.sprintf "of_carray(%s_data, %s_len)" arg_name arg_name
+      | IntList ->
+        Printf.sprintf "of_carray_long_int(%s_data, %s_len)" arg_name arg_name
+      | TensorList ->
+        Printf.sprintf "of_carray_tensor(%s_data, %s_len)" arg_name arg_name
       | ScalarType | TensorOptions -> Printf.sprintf "torch::ScalarType(%s)" arg_name
       | Device -> Printf.sprintf "torch::Device(torch::DeviceType(%s))" arg_name
       | _ -> arg_name)
@@ -121,7 +129,8 @@ module Func = struct
       | TensorOptions -> ["int"]
       | ScalarType -> ["int"]
       | Device -> ["int"]
-      | IntList -> ["ptr int"; "int"]
+      | IntList -> ["ptr long"; "int"]
+      | TensorList -> ["ptr t"; "int"]
     )
     |> String.concat ~sep:" @-> "
     |> Printf.sprintf "%s @-> returning t"
@@ -146,7 +155,11 @@ module Func = struct
       match arg.arg_type with
       | IntList ->
         Printf.sprintf
-          "(CArray.of_list int %s |> CArray.start) (List.length %s)"
+          "(List.map Signed.Long.of_int %s |> CArray.of_list long |> CArray.start) (List.length %s)"
+          name name
+      | TensorList ->
+        Printf.sprintf
+          "(CArray.of_list t %s |> CArray.start) (List.length %s)"
           name name
       | Bool -> Printf.sprintf "(if %s then 1 else 0)" name
       | ScalarType | TensorOptions -> Printf.sprintf "(Kind.to_int %s)" name
