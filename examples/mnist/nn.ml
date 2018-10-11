@@ -21,9 +21,7 @@ let () =
     (* Compute the cross-entropy loss. *)
     let loss = Tensor.(mean (- train_labels * log (model train_images +f 1e-6))) in
 
-    Optimizer.zero_grad adam;
-    Tensor.backward loss;
-    Optimizer.step adam;
+    Optimizer.backward_step adam ~loss;
 
     if index % 50 = 0 then begin
       (* Compute the validation error. *)
