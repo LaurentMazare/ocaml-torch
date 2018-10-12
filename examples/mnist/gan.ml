@@ -31,7 +31,7 @@ let bce ?(epsilon = 1e-7) ~labels model_values =
     + f (1. -. labels) * log (f (1. +. epsilon) - model_values)))
   |> Tensor.mean
 
-let rand () = Tensor.rand [ batch_size; latent_dim ]
+let rand () = Tensor.(f 2. * rand [ batch_size; latent_dim ] - f 1.)
 
 let write_samples samples ~filename =
   Stdio.Out_channel.with_file filename ~f:(fun channel ->
