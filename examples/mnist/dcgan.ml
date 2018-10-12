@@ -9,12 +9,12 @@ let image_h = Mnist_helper.image_h
 let image_dim = Mnist_helper.image_dim
 let latent_dim = 100
 
-let batch_size = 64
+let batch_size = 128
 let learning_rate = 1e-4
 let batches = 10**8
 
 let create_generator vs =
-  let convt1 = Layer.ConvTranspose2D.create_ vs ~ksize:7 ~stride:1 ~padding:0 ~input_dim:1 64 in
+  let convt1 = Layer.ConvTranspose2D.create_ vs ~ksize:7 ~stride:1 ~padding:0 ~input_dim:100 64 in
   let convt2 = Layer.ConvTranspose2D.create_ vs ~ksize:4 ~stride:2 ~padding:1 ~input_dim:64 32 in
   let convt3 = Layer.ConvTranspose2D.create_ vs ~ksize:4 ~stride:2 ~padding:1 ~input_dim:32 1 in
   fun rand_input ->
@@ -43,7 +43,7 @@ let bce ?(epsilon = 1e-7) ~labels model_values =
     + f (1. -. labels) * log (f (1. +. epsilon) - model_values)))
   |> Tensor.mean
 
-let rand () = Tensor.(f 2. * rand [ batch_size; 1; 1; latent_dim ] - f 1.)
+let rand () = Tensor.(f 2. * rand [ batch_size; latent_dim; 1; 1 ] - f 1.)
 
 let write_samples samples ~filename =
   Stdio.Out_channel.with_file filename ~f:(fun channel ->
@@ -91,7 +91,7 @@ let () =
         (Tensor.float_value discriminator_loss)
         (Tensor.float_value generator_loss);
     Caml.Gc.compact ();
-    if batch_idx % 100000 = 0 || (batch_idx < 100000 && batch_idx % 1000 = 0)
+    if batch_idx % 25000 = 0 || (batch_idx < 100000 && batch_idx % 5000 = 0)
     then
       write_samples (generator fixed_noise |> Tensor.reshape ~dims:[ -1; image_dim ])
         ~filename:(Printf.sprintf "out%d.txt" batch_idx)
