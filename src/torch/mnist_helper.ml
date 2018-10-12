@@ -2,7 +2,9 @@
 open Base
 module In_channel = Stdio.In_channel
 
-let image_dim = 28 * 28
+let image_w = 28
+let image_h = 28
+let image_dim = image_w * image_h
 let label_count = 10
 
 let read_int32_be in_channel =

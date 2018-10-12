@@ -53,9 +53,59 @@ module Conv2D = struct
     Var_store.add_vars vs ~vars:[w; b];
     { w; b; stride; padding }
 
+  let create_ vs ~ksize ~stride ?(padding = 0) ~input_dim output_dim =
+    create vs
+      ~ksize:(ksize, ksize)
+      ~stride:(stride, stride)
+      ~padding:(padding, padding)
+      ~input_dim
+      output_dim
+
   let apply ?activation t xs =
     let ys =
       Tensor.conv2d xs t.w t.b
+        ~padding:t.padding
+        ~stride:t.stride
+    in
+    match activation with
+    | Some Relu -> Tensor.relu ys
+    | Some Softmax -> Tensor.softmax ys
+    | Some Tanh -> Tensor.tanh ys
+    | Some Sigmoid -> Tensor.sigmoid ys
+    | Some Leaky_relu -> Tensor.leaky_relu ys
+    | None -> ys
+end
+
+module ConvTranspose2D = struct
+  type t =
+    { w : Tensor.t
+    ; b : Tensor.t
+    ; stride : int * int
+    ; padding : int * int
+    ; output_padding : int * int
+    }
+
+  let create vs ~ksize:(k1, k2) ~stride ?(padding=0, 0) ?(output_padding=0, 0) ~input_dim output_dim =
+    let w =
+      Tensor.randn [ input_dim; output_dim; k1; k2 ] ~scale:0.1 ~requires_grad:true
+    in
+    let b = Tensor.zeros [ output_dim ] ~requires_grad:true in
+    Var_store.add_vars vs ~vars:[w; b];
+    { w; b; stride; padding; output_padding }
+
+  let create_ vs ~ksize ~stride ?(padding = 0) ?(output_padding = 0) ~input_dim output_dim =
+    create vs
+      ~ksize:(ksize, ksize)
+      ~stride:(stride, stride)
+      ~padding:(padding, padding)
+      ~output_padding:(output_padding, output_padding)
+      ~input_dim
+      output_dim
+
+  let apply ?activation t xs =
+    let ys =
+      Tensor.conv_transpose2d xs t.w t.b
+        ~output_padding:t.output_padding
         ~padding:t.padding
         ~stride:t.stride
     in

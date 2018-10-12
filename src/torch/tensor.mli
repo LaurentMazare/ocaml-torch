@@ -64,8 +64,20 @@ val relu : t -> t
 val tanh : t -> t
 val sigmoid : t -> t
 val leaky_relu : t -> t
+
 val conv2d
   :  ?padding:int*int
+  -> ?dilation:int*int
+  -> ?groups:int
+  -> t (* input *)
+  -> t (* weight *)
+  -> t (* bias *)
+  -> stride:int*int
+  -> t
+
+val conv_transpose2d
+  :  ?output_padding:int*int
+  -> ?padding:int*int
   -> ?dilation:int*int
   -> ?groups:int
   -> t (* input *)
@@ -84,3 +96,5 @@ val max_pool2d
   -> t
 
 val dropout : t -> keep_probability:float -> is_training:bool -> t
+
+val const_batch_norm : ?momentum:float -> ?eps:float -> t -> t

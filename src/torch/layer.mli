@@ -31,7 +31,46 @@ module Conv2D : sig
     :  Var_store.t
     -> ksize:int * int
     -> stride:int * int
-    -> ?padding: int * int
+    -> ?padding:int * int
+    -> input_dim:int
+    -> int
+    -> t
+
+  val create_
+    :  Var_store.t
+    -> ksize:int
+    -> stride:int
+    -> ?padding:int
+    -> input_dim:int
+    -> int
+    -> t
+
+  val apply
+    :  ?activation:activation (* default: no activation *)
+    -> t
+    -> Tensor.t
+    -> Tensor.t
+end
+
+module ConvTranspose2D : sig
+  type t
+
+  val create
+    :  Var_store.t
+    -> ksize:int * int
+    -> stride:int * int
+    -> ?padding:int * int
+    -> ?output_padding:int * int
+    -> input_dim:int
+    -> int
+    -> t
+
+  val create_
+    :  Var_store.t
+    -> ksize:int
+    -> stride:int
+    -> ?padding:int
+    -> ?output_padding:int
     -> input_dim:int
     -> int
     -> t

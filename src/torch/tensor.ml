@@ -74,6 +74,26 @@ let conv2d ?(padding=0, 0) ?(dilation=1, 1) ?(groups=1) input weight bias ~strid
     (pair_to_list dilation)
     groups
 
+let conv_transpose2d
+    ?(output_padding=0, 0)
+    ?(padding=0, 0)
+    ?(dilation=1, 1)
+    ?(groups=1)
+    input
+    weight
+    bias
+    ~stride
+  =
+  conv_transpose2d
+    input
+    weight
+    bias
+    (pair_to_list stride)
+    (pair_to_list padding)
+    (pair_to_list output_padding)
+    groups
+    (pair_to_list dilation)
+
 let max_pool2d ?(padding=0, 0) ?(dilation=1, 1) ?(ceil_mode=false) ?stride self ~ksize =
   max_pool2d
     self
@@ -84,3 +104,6 @@ let max_pool2d ?(padding=0, 0) ?(dilation=1, 1) ?(ceil_mode=false) ?stride self 
     ceil_mode
 
 let dropout t ~keep_probability ~is_training = dropout t keep_probability is_training
+
+let const_batch_norm ?(momentum=0.1) ?(eps=1e-5) input =
+  batch_norm input None None None None true momentum eps false

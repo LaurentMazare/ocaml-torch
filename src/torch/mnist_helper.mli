@@ -16,6 +16,8 @@ val read_files
   -> unit
   -> t
 
+val image_w : int
+val image_h : int
 val image_dim : int
 val label_count : int
 
