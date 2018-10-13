@@ -87,7 +87,7 @@ for batch_idx = 1 to batches do
   Optimizer.backward_step ~loss:generator_loss opt_g;
 ```
 
-We generate some output samples using the generator at various points during
+We generate some output samples using the Generator at various points during
 training.  Note that we use the same random noise for these sampled values
 during training as it makes it easier to see progresses.
 
@@ -103,7 +103,7 @@ during training as it makes it easier to see progresses.
 
 Deep convolutional GANs (DCGAN) were introduced in 2015<sup>[3](#bib3)</sup>.
 
-The main difference with our first version is that the generator and
+The main difference with our first version is that the Generator and
 discriminator now use 2D convolutions.
 
 ```ocaml
@@ -154,13 +154,11 @@ The same architecture is used as in the previous example.
 [mnist_cgan.ml](https://github.com/LaurentMazare/ocaml-torch/tree/master/examples/gan/mnist_cgan.ml)
 uses cGANs to generate MNIST digits.
 
-<!--
 The gif below illustrates the progress made by the Generator in the training
 process. Note that it is now easy to ask the Generator to produce images for
 a given class.
 
 ![cGAN samples](output_mnist_cgan.gif)
--->
 
 # Bibliography
 <a name="bib1">1</a>: 

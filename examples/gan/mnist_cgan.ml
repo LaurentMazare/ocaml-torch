@@ -9,7 +9,7 @@ let latent_dim = 100
 let generator_hidden_nodes = 128
 let discriminator_hidden_nodes = 128
 
-let batch_size = 128
+let batch_size = 256
 let learning_rate = 1e-4
 let batches = 10**8
 
@@ -67,7 +67,7 @@ let () =
   let fixed_noise = rand () in
   let fake_labels = (* Generate some regular one-hot encoded labels. *)
     List.init (batch_size * label_count) ~f:(fun i ->
-      if i / batch_size = i % label_count then 1.0 else 0.0)
+      if i % label_count = (i / label_count) % label_count then 1.0 else 0.0)
     |> Tensor.float_vec |> Tensor.reshape ~dims:[ batch_size; label_count ]
   in
   let generator xs =
