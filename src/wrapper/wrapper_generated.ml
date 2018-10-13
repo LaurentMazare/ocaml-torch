@@ -98,6 +98,26 @@ let adaptive_avg_pool3d_out output self output_size =
   Gc.finalise C.Tensor.free t;
   t
 
+let adaptive_max_pool2d_backward grad_output self indices =
+  let t = adaptive_max_pool2d_backward grad_output self indices in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let adaptive_max_pool2d_backward_out grad_input grad_output self indices =
+  let t = adaptive_max_pool2d_backward_out grad_input grad_output self indices in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let adaptive_max_pool3d_backward grad_output self indices =
+  let t = adaptive_max_pool3d_backward grad_output self indices in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let adaptive_max_pool3d_backward_out grad_input grad_output self indices =
+  let t = adaptive_max_pool3d_backward_out grad_input grad_output self indices in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let add self other =
   let t = add self other in
   Gc.finalise C.Tensor.free t;
@@ -848,6 +868,31 @@ let elu_out output self =
   Gc.finalise C.Tensor.free t;
   t
 
+let embedding weight indices padding_idx scale_grad_by_freq sparse =
+  let t = embedding weight indices (Int64.of_int padding_idx) (if scale_grad_by_freq then 1 else 0) (if sparse then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let embedding_backward grad indices num_weights padding_idx scale_grad_by_freq sparse =
+  let t = embedding_backward grad indices (Int64.of_int num_weights) (Int64.of_int padding_idx) (if scale_grad_by_freq then 1 else 0) (if sparse then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let embedding_dense_backward grad indices num_weights padding_idx scale_grad_by_freq =
+  let t = embedding_dense_backward grad indices (Int64.of_int num_weights) (Int64.of_int padding_idx) (if scale_grad_by_freq then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let embedding_renorm_ self indices max_norm norm_type =
+  let t = embedding_renorm_ self indices max_norm norm_type in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let embedding_sparse_backward grad indices num_weights padding_idx scale_grad_by_freq =
+  let t = embedding_sparse_backward grad indices (Int64.of_int num_weights) (Int64.of_int padding_idx) (if scale_grad_by_freq then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let empty size options =
   let t = empty (List.map Signed.Long.of_int size |> CArray.of_list long |> CArray.start) (List.length size) (Kind.to_int options) in
   Gc.finalise C.Tensor.free t;
@@ -1078,6 +1123,16 @@ let frac_out result self =
   Gc.finalise C.Tensor.free t;
   t
 
+let fractional_max_pool2d_backward grad_output self kernel_size output_size indices =
+  let t = fractional_max_pool2d_backward grad_output self (List.map Signed.Long.of_int kernel_size |> CArray.of_list long |> CArray.start) (List.length kernel_size) (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size) indices in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let fractional_max_pool2d_backward_out grad_input grad_output self kernel_size output_size indices =
+  let t = fractional_max_pool2d_backward_out grad_input grad_output self (List.map Signed.Long.of_int kernel_size |> CArray.of_list long |> CArray.start) (List.length kernel_size) (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size) indices in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let frobenius_norm1 self =
   let t = frobenius_norm1 self in
   Gc.finalise C.Tensor.free t;
@@ -1090,6 +1145,16 @@ let frobenius_norm2 self dim keepdim =
 
 let frobenius_norm_out result self dim keepdim =
   let t = frobenius_norm_out result self (List.map Signed.Long.of_int dim |> CArray.of_list long |> CArray.start) (List.length dim) (if keepdim then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let gather self dim index =
+  let t = gather self (Int64.of_int dim) index in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let gather_out result self dim index =
+  let t = gather_out result self (Int64.of_int dim) index in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1268,6 +1333,21 @@ let index self indices =
   Gc.finalise C.Tensor.free t;
   t
 
+let index_add_ self dim index source =
+  let t = index_add_ self (Int64.of_int dim) index source in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let index_copy_ self dim index source =
+  let t = index_copy_ self (Int64.of_int dim) index source in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let index_fill_ self dim index value =
+  let t = index_fill_ self (Int64.of_int dim) index value in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let index_put self indices values =
   let t = index_put self (CArray.of_list t indices |> CArray.start) (List.length indices) values in
   Gc.finalise C.Tensor.free t;
@@ -1275,6 +1355,16 @@ let index_put self indices values =
 
 let index_put_ self indices values =
   let t = index_put_ self (CArray.of_list t indices |> CArray.start) (List.length indices) values in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let index_select self dim index =
+  let t = index_select self (Int64.of_int dim) index in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let index_select_out result self dim index =
+  let t = index_select_out result self (Int64.of_int dim) index in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1558,8 +1648,88 @@ let max_pool2d self kernel_size stride padding dilation ceil_mode =
   Gc.finalise C.Tensor.free t;
   t
 
+let max_pool2d_with_indices_backward grad_output self kernel_size stride padding dilation ceil_mode indices =
+  let t = max_pool2d_with_indices_backward grad_output self (List.map Signed.Long.of_int kernel_size |> CArray.of_list long |> CArray.start) (List.length kernel_size) (List.map Signed.Long.of_int stride |> CArray.of_list long |> CArray.start) (List.length stride) (List.map Signed.Long.of_int padding |> CArray.of_list long |> CArray.start) (List.length padding) (List.map Signed.Long.of_int dilation |> CArray.of_list long |> CArray.start) (List.length dilation) (if ceil_mode then 1 else 0) indices in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let max_pool2d_with_indices_backward_out grad_input grad_output self kernel_size stride padding dilation ceil_mode indices =
+  let t = max_pool2d_with_indices_backward_out grad_input grad_output self (List.map Signed.Long.of_int kernel_size |> CArray.of_list long |> CArray.start) (List.length kernel_size) (List.map Signed.Long.of_int stride |> CArray.of_list long |> CArray.start) (List.length stride) (List.map Signed.Long.of_int padding |> CArray.of_list long |> CArray.start) (List.length padding) (List.map Signed.Long.of_int dilation |> CArray.of_list long |> CArray.start) (List.length dilation) (if ceil_mode then 1 else 0) indices in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let max_pool3d self kernel_size stride padding dilation ceil_mode =
   let t = max_pool3d self (List.map Signed.Long.of_int kernel_size |> CArray.of_list long |> CArray.start) (List.length kernel_size) (List.map Signed.Long.of_int stride |> CArray.of_list long |> CArray.start) (List.length stride) (List.map Signed.Long.of_int padding |> CArray.of_list long |> CArray.start) (List.length padding) (List.map Signed.Long.of_int dilation |> CArray.of_list long |> CArray.start) (List.length dilation) (if ceil_mode then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let max_pool3d_with_indices_backward grad_output self kernel_size stride padding dilation ceil_mode indices =
+  let t = max_pool3d_with_indices_backward grad_output self (List.map Signed.Long.of_int kernel_size |> CArray.of_list long |> CArray.start) (List.length kernel_size) (List.map Signed.Long.of_int stride |> CArray.of_list long |> CArray.start) (List.length stride) (List.map Signed.Long.of_int padding |> CArray.of_list long |> CArray.start) (List.length padding) (List.map Signed.Long.of_int dilation |> CArray.of_list long |> CArray.start) (List.length dilation) (if ceil_mode then 1 else 0) indices in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let max_pool3d_with_indices_backward_out grad_input grad_output self kernel_size stride padding dilation ceil_mode indices =
+  let t = max_pool3d_with_indices_backward_out grad_input grad_output self (List.map Signed.Long.of_int kernel_size |> CArray.of_list long |> CArray.start) (List.length kernel_size) (List.map Signed.Long.of_int stride |> CArray.of_list long |> CArray.start) (List.length stride) (List.map Signed.Long.of_int padding |> CArray.of_list long |> CArray.start) (List.length padding) (List.map Signed.Long.of_int dilation |> CArray.of_list long |> CArray.start) (List.length dilation) (if ceil_mode then 1 else 0) indices in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let max_unpool2d self indices output_size =
+  let t = max_unpool2d self indices (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let max_unpool2d_backward grad_output self indices output_size =
+  let t = max_unpool2d_backward grad_output self indices (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let max_unpool2d_backward_out grad_input grad_output self indices output_size =
+  let t = max_unpool2d_backward_out grad_input grad_output self indices (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let max_unpool2d_forward self indices output_size =
+  let t = max_unpool2d_forward self indices (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let max_unpool2d_forward_out output self indices output_size =
+  let t = max_unpool2d_forward_out output self indices (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let max_unpool2d_out output self indices output_size =
+  let t = max_unpool2d_out output self indices (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let max_unpool3d self indices output_size stride padding =
+  let t = max_unpool3d self indices (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size) (List.map Signed.Long.of_int stride |> CArray.of_list long |> CArray.start) (List.length stride) (List.map Signed.Long.of_int padding |> CArray.of_list long |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let max_unpool3d_backward grad_output self indices output_size stride padding =
+  let t = max_unpool3d_backward grad_output self indices (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size) (List.map Signed.Long.of_int stride |> CArray.of_list long |> CArray.start) (List.length stride) (List.map Signed.Long.of_int padding |> CArray.of_list long |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let max_unpool3d_backward_out grad_input grad_output self indices output_size stride padding =
+  let t = max_unpool3d_backward_out grad_input grad_output self indices (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size) (List.map Signed.Long.of_int stride |> CArray.of_list long |> CArray.start) (List.length stride) (List.map Signed.Long.of_int padding |> CArray.of_list long |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let max_unpool3d_forward self indices output_size stride padding =
+  let t = max_unpool3d_forward self indices (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size) (List.map Signed.Long.of_int stride |> CArray.of_list long |> CArray.start) (List.length stride) (List.map Signed.Long.of_int padding |> CArray.of_list long |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let max_unpool3d_forward_out output self indices output_size stride padding =
+  let t = max_unpool3d_forward_out output self indices (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size) (List.map Signed.Long.of_int stride |> CArray.of_list long |> CArray.start) (List.length stride) (List.map Signed.Long.of_int padding |> CArray.of_list long |> CArray.start) (List.length padding) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let max_unpool3d_out output self indices output_size stride padding =
+  let t = max_unpool3d_out output self indices (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size) (List.map Signed.Long.of_int stride |> CArray.of_list long |> CArray.start) (List.length stride) (List.map Signed.Long.of_int padding |> CArray.of_list long |> CArray.start) (List.length padding) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1723,6 +1893,26 @@ let mul_out result self other =
   Gc.finalise C.Tensor.free t;
   t
 
+let multilabel_margin_loss self target reduction =
+  let t = multilabel_margin_loss self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let multilabel_margin_loss_backward grad_output self target reduction is_target =
+  let t = multilabel_margin_loss_backward grad_output self target (Int64.of_int reduction) is_target in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let multilabel_margin_loss_backward_out grad_input grad_output self target reduction is_target =
+  let t = multilabel_margin_loss_backward_out grad_input grad_output self target (Int64.of_int reduction) is_target in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let multilabel_margin_loss_out output self target reduction =
+  let t = multilabel_margin_loss_out output self target (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let mv self vec =
   let t = mv self vec in
   Gc.finalise C.Tensor.free t;
@@ -1795,6 +1985,46 @@ let neg_ self =
 
 let neg_out result self =
   let t = neg_out result self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let nll_loss self target weight reduction ignore_index =
+  let t = nll_loss self target weight (Int64.of_int reduction) (Int64.of_int ignore_index) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let nll_loss2d self target weight reduction ignore_index =
+  let t = nll_loss2d self target weight (Int64.of_int reduction) (Int64.of_int ignore_index) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let nll_loss2d_backward grad_output self target weight reduction ignore_index total_weight =
+  let t = nll_loss2d_backward grad_output self target (match weight with | Some v -> v | None -> null) (Int64.of_int reduction) (Int64.of_int ignore_index) total_weight in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let nll_loss2d_backward_out grad_input grad_output self target weight reduction ignore_index total_weight =
+  let t = nll_loss2d_backward_out grad_input grad_output self target (match weight with | Some v -> v | None -> null) (Int64.of_int reduction) (Int64.of_int ignore_index) total_weight in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let nll_loss2d_out output self target weight reduction ignore_index =
+  let t = nll_loss2d_out output self target weight (Int64.of_int reduction) (Int64.of_int ignore_index) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let nll_loss_backward grad_output self target weight reduction ignore_index total_weight =
+  let t = nll_loss_backward grad_output self target (match weight with | Some v -> v | None -> null) (Int64.of_int reduction) (Int64.of_int ignore_index) total_weight in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let nll_loss_backward_out grad_input grad_output self target weight reduction ignore_index total_weight =
+  let t = nll_loss_backward_out grad_input grad_output self target (match weight with | Some v -> v | None -> null) (Int64.of_int reduction) (Int64.of_int ignore_index) total_weight in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let nll_loss_out output self target weight reduction ignore_index =
+  let t = nll_loss_out output self target weight (Int64.of_int reduction) (Int64.of_int ignore_index) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -2030,6 +2260,11 @@ let prod_out2 result self dim keepdim =
 
 let prod_out3 result self dim dtype =
   let t = prod_out3 result self (Int64.of_int dim) (Kind.to_int dtype) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let put_ self index source accumulate =
+  let t = put_ self index source (if accumulate then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -2443,6 +2678,16 @@ let s_native_addmm_out result self mat1 mat2 =
   Gc.finalise C.Tensor.free t;
   t
 
+let scatter_ self dim index src =
+  let t = scatter_ self (Int64.of_int dim) index src in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let scatter_add_ self dim index src =
+  let t = scatter_add_ self (Int64.of_int dim) index src in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let select self dim index =
   let t = select self (Int64.of_int dim) (Int64.of_int index) in
   Gc.finalise C.Tensor.free t;
@@ -2633,11 +2878,6 @@ let softshrink_out output self =
   Gc.finalise C.Tensor.free t;
   t
 
-let sparse_coo_tensor size options =
-  let t = sparse_coo_tensor (List.map Signed.Long.of_int size |> CArray.of_list long |> CArray.start) (List.length size) (Kind.to_int options) in
-  Gc.finalise C.Tensor.free t;
-  t
-
 let sparse_resize_ self size sparsedims densedims =
   let t = sparse_resize_ self (List.map Signed.Long.of_int size |> CArray.of_list long |> CArray.start) (List.length size) (Int64.of_int sparsedims) (Int64.of_int densedims) in
   Gc.finalise C.Tensor.free t;
@@ -2775,6 +3015,16 @@ let sum_out3 result self dim dtype =
 
 let t_ self =
   let t = t_ self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let take self index =
+  let t = take self index in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let take_out result self index =
+  let t = take_out result self index in
   Gc.finalise C.Tensor.free t;
   t
 

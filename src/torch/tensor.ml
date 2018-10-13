@@ -107,3 +107,5 @@ let dropout t ~keep_probability ~is_training = dropout t keep_probability is_tra
 
 let const_batch_norm ?(momentum=0.1) ?(eps=1e-5) input =
   batch_norm input None None None None true momentum eps false
+
+let cat t_list ~dim = cat t_list dim

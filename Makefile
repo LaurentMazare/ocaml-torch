@@ -3,6 +3,7 @@ ALL = examples/basics/torch_basics.exe \
       examples/mnist/nn.exe \
       examples/mnist/conv.exe \
       examples/gan/mnist_gan.exe \
+      examples/gan/mnist_cgan.exe \
       examples/gan/mnist_dcgan.exe
 
 %.exe: .FORCE

@@ -1,3 +1,3 @@
 (executables
-  (names mnist_gan mnist_dcgan)
+  (names mnist_gan mnist_cgan mnist_dcgan)
   (libraries base torch_core torch stdio))

@@ -7,7 +7,8 @@ open Stdio
 
 let unsupported_functions =
   Set.of_list (module String)
-    [ "bincount"; "stft"; "group_norm"; "layer_norm"; "rot90"; "t" ]
+    [ "bincount"; "stft"; "group_norm"; "layer_norm"; "rot90"; "t"
+    ; "multi_margin_loss"; "multi_margin_loss_out"; "sparse_coo_tensor" ]
 
 let yaml_error yaml ~msg =
   Printf.sprintf "%s, %s" msg (Yaml.to_string_exn yaml)
@@ -62,7 +63,7 @@ module Func = struct
     | "bool" -> Some Bool
     | "int64_t" -> Some Int64
     | "double" -> Some Double
-    | "tensor" -> Some (if is_nullable then TensorOption else Tensor)
+    | "indextensor" | "tensor" -> Some (if is_nullable then TensorOption else Tensor)
     | "tensoroptions" -> Some TensorOptions
     | "intlist" -> Some IntList
     | "tensorlist" -> Some TensorList

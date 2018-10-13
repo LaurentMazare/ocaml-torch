@@ -65,6 +65,8 @@ val tanh : t -> t
 val sigmoid : t -> t
 val leaky_relu : t -> t
 
+val cat : t list -> dim:int -> t
+
 val conv2d
   :  ?padding:int*int
   -> ?dilation:int*int
