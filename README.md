@@ -18,11 +18,10 @@ LD_LIBRARY_PATH=$LIBTORCH/lib:$LD_LIBRARY_PATH \
 ./_build/default/examples/basics/torch_tensor.exe
 ```
 
-## Examples
+## Examples and Tutorials
 
-These bindings are very much a work in progress. However it should already
-be possible to train a linear model on the MNIST dataset using them.
-This is done in the following [example](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/mnist/linear.ml).
+Below is an example of a linear model trained on the MNIST dataset ([full
+code](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/mnist/linear.ml)).
 
 ```ocaml
   (* Create two tensors to store model weights. *)
@@ -50,8 +49,8 @@ This is done in the following [example](https://github.com/LaurentMazare/ocaml-t
 
 ```
 
-A more detailed MNIST based tutorial can be found in the [examples
-directory](https://github.com/LaurentMazare/ocaml-torch/tree/master/examples/mnist).
+* A more detailed [MNIST tutorial](https://github.com/LaurentMazare/ocaml-torch/tree/master/examples/mnist).
+* [Generative Adverserial Networks](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/gan).
 
 ## TODO
 
