@@ -65,6 +65,15 @@ let () =
   let opt_d = Optimizer.adam (Layer.Var_store.vars discriminator_vs) ~learning_rate in
 
   let fixed_noise = rand () in
+  let fake_labels = (* Generate some regular one-hot encoded labels. *)
+    List.init (batch_size * label_count) ~f:(fun i ->
+      if i / batch_size = i % label_count then 1.0 else 0.0)
+    |> Tensor.float_vec |> Tensor.reshape ~dims:[ batch_size; label_count ]
+  in
+  let generator xs =
+    let ys = Tensor.cat [ xs; fake_labels ] ~dim:1 |> generator in
+    Tensor.cat [ ys; fake_labels ] ~dim:1
+  in
 
   for batch_idx = 1 to batches do
     let batch_images, batch_labels =
@@ -90,7 +99,7 @@ let () =
         (Tensor.float_value discriminator_loss)
         (Tensor.float_value generator_loss);
     Caml.Gc.compact ();
-    if batch_idx % 100000 = 0 || (batch_idx < 100000 && batch_idx % 25000 = 0)
+    if batch_idx % 25000 = 0 || (batch_idx < 100000 && batch_idx % 5000 = 0)
     then
       write_samples (generator fixed_noise)
         ~filename:(Printf.sprintf "out%d.txt" batch_idx)
