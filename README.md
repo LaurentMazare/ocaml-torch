@@ -26,8 +26,8 @@ This is done in the following [example](https://github.com/LaurentMazare/ocaml-t
 
 ```ocaml
   (* Create two tensors to store model weights. *)
-  let ws = Tensor.zeros Mnist_helper. [image_dim; label_count] ~requires_grad:true in
-  let bs = Tensor.zeros [Mnist_helper.label_count] ~requires_grad:true in
+  let ws = Tensor.zeros [image_dim; label_count] ~requires_grad:true in
+  let bs = Tensor.zeros [label_count] ~requires_grad:true in
 
   let model xs = Tensor.(softmax (mm xs ws + bs)) in
   for index = 1 to 100 do
@@ -49,6 +49,9 @@ This is done in the following [example](https://github.com/LaurentMazare/ocaml-t
   end
 
 ```
+
+A more detailed MNIST based tutorial can be found in the [examples
+directory](https://github.com/LaurentMazare/ocaml-torch/tree/master/examples/mnist).
 
 ## TODO
 
