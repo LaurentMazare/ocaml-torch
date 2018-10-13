@@ -2,8 +2,8 @@ ALL = examples/basics/torch_basics.exe \
       examples/mnist/linear.exe \
       examples/mnist/nn.exe \
       examples/mnist/conv.exe \
-      examples/mnist/gan.exe \
-      examples/mnist/dcgan.exe
+      examples/gan/mnist_gan.exe \
+      examples/gan/mnist_dcgan.exe
 
 %.exe: .FORCE
 	dune build $@
