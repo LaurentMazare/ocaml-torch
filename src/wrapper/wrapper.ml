@@ -121,4 +121,12 @@ module Serialize = struct
     let tensors = CArray.to_list tensors in
     List.iter (Gc.finalise Wrapper_generated.C.Tensor.free) tensors;
     tensors
+
+  let load_multi_ ~named_tensors ~filename =
+    let names, tensors = List.split named_tensors in
+    load_multi_
+      CArray.(of_list Wrapper_generated.C.Tensor.t tensors |> start)
+      CArray.(of_list string names |> start)
+      (List.length named_tensors)
+      filename
 end

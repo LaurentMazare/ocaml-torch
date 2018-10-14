@@ -131,6 +131,14 @@ void at_load_multi(tensor *tensors, char **tensor_names, int ntensors, char *fil
   )
 }
 
+void at_load_multi_(tensor *tensors, char **tensor_names, int ntensors, char *filename) {
+  PROTECT(
+    torch::serialize::InputArchive archive = torch::serialize::load_from_file(filename);
+    for (int i = 0; i < ntensors; ++i)
+      archive.read(std::string(tensor_names[i]), (*tensors)[i]);
+  )
+}
+
 tensor at_load(char *filename) {
   PROTECT(return new torch::Tensor(torch::load(filename));)
 }
