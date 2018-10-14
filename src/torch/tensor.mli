@@ -37,8 +37,6 @@ val rand : ?requires_grad:bool -> ?kind:Kind.t -> ?scale:float -> int list -> t
 val randn : ?requires_grad:bool -> ?kind:Kind.t -> ?scale:float -> int list -> t
 
 val shape : t -> int list
-val load : string -> t
-val save : t -> string -> unit
 
 val backward : t -> unit
 val log : t -> t

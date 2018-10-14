@@ -109,6 +109,28 @@ void at_save(tensor t, char *filename) {
   PROTECT(torch::save(*t, filename);)
 }
 
+void at_save_multi(tensor *tensors, char **tensor_names, int ntensors, char *filename) {
+  PROTECT(
+    torch::serialize::OutputArchive archive;
+    for (int i = 0; i < ntensors; ++i)
+      archive.write(std::string(tensor_names[i]), *(tensors[i]), /* buffer=*/ false);
+    torch::serialize::save_to_file(archive, filename);
+  )
+}
+
+void at_load_multi(tensor *tensors, char **tensor_names, int ntensors, char *filename) {
+  PROTECT(
+    torch::serialize::InputArchive archive = torch::serialize::load_from_file(filename);
+    vector<torch::Tensor> ts(ntensors);
+    for (int i = 0; i < ntensors; ++i)
+      archive.read(std::string(tensor_names[i]), ts[i]);
+    // Only allocate the new tensor now so that if there is an exception raised during 
+    // [read], no memory has to be freed.
+    for (int i = 0; i < ntensors; ++i)
+      tensors[i] = new torch::Tensor(ts[i]);
+  )
+}
+
 tensor at_load(char *filename) {
   PROTECT(return new torch::Tensor(torch::load(filename));)
 }
@@ -119,10 +141,7 @@ void at_free(tensor t) {
 
 optimizer ato_adam(tensor *tensors, int ntensors, double learning_rate) {
   PROTECT(
-    vector<torch::Tensor> parameters;
-    for (int i = 0; i < ntensors; ++i)
-      parameters.push_back(*(tensors[i]));
-    return new torch::optim::Adam(parameters, learning_rate);
+    return new torch::optim::Adam(of_carray_tensor(tensors, ntensors), learning_rate);
   )
 }
 

@@ -74,35 +74,44 @@ let read_files
       ?(with_caching = false)
       ()
   =
-  let with_caching ~read_f ~filename =
-    if with_caching
-    then
-      let cached_file = filename ^ ".tensor" in
-      try
-        Tensor.load cached_file
-      with
-      | _ ->
-        Stdio.eprintf
-          "Cannot read from cached file %s, regenerating...\n%!"
-          cached_file;
-        let tensor = read_f filename in
-        begin
-          try
-            Tensor.save tensor cached_file;
-          with
-          | _ ->
-            Stdio.eprintf "Unable to saved cached file %s.\n%!" cached_file
-        end;
-        tensor
-    else
-      read_f filename
+  let read () =
+    let read_onehot filename = read_labels filename |> one_hot in
+    { train_images = read_images train_image_file
+    ; train_labels = read_onehot train_label_file
+    ; test_images = read_images test_image_file
+    ; test_labels = read_onehot test_label_file
+    }
   in
-  let read_onehot filename = read_labels filename |> one_hot in
-  { train_images = with_caching ~read_f:read_images ~filename:train_image_file
-  ; train_labels = with_caching ~read_f:read_onehot ~filename:train_label_file
-  ; test_images = with_caching ~read_f:read_images ~filename:test_image_file
-  ; test_labels = with_caching ~read_f:read_onehot ~filename:test_label_file
-  }
+  if with_caching
+  then begin
+    let dirname = Caml.Filename.dirname train_image_file in
+    let cached_file = Caml.Filename.concat dirname "mnist-cache.ot" in
+    try
+      Serialize.load_multi
+        ~names:["traini"; "trainl"; "testi"; "testl"] ~filename:cached_file
+      |> function
+      | [ train_images; train_labels; test_images; test_labels ] ->
+        { train_images; train_labels; test_images; test_labels }
+      | _ -> assert false
+    with
+    | _ ->
+      Stdio.eprintf
+        "Cannot read from cached file %s, regenerating...\n%!"
+        cached_file;
+      let t = read () in
+      begin
+        try
+          Serialize.save_multi ~filename:cached_file
+            ~named_tensors:
+              [ "traini", t.train_images; "trainl", t.train_labels
+              ; "testi", t.test_images; "testl", t.test_labels
+              ]
+        with
+        | _ ->
+          Stdio.eprintf "Unable to save cached file %s.\n%!" cached_file
+      end;
+      t
+  end else read ()
 
 let train_batch { train_images; train_labels; _ } ~batch_size ~batch_idx =
   let train_size = Tensor.shape train_images |> List.hd_exn in

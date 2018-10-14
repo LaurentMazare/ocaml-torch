@@ -40,6 +40,10 @@ void at_print(tensor);
 void at_save(tensor, char *filename);
 tensor at_load(char *filename);
 
+void at_save_multi(tensor *tensors, char **tensor_names, int ntensors, char *filename);
+/* [at_load_multi] takes as input an array of nullptr for [tensors]. */
+void at_load_multi(tensor *tensors, char **tensor_names, int ntensors, char *filename);
+
 void at_free(tensor);
 
 optimizer ato_adam(tensor *, int ntensors, double learning_rate);

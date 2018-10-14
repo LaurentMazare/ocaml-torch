@@ -71,12 +71,6 @@ module Tensor = struct
 
   let backward = backward
   let print = print
-  let save t filename = save t filename
-  let load filename =
-    let t = load filename in
-    Gc.finalise free t;
-    t
-
   let sum = sum2
   let mean = mean2
 
@@ -97,4 +91,34 @@ module Optimizer = struct
     in
     Gc.finalise free t;
     t
+end
+
+module Serialize = struct
+  include Wrapper_generated.C.Serialize
+
+  let save t ~filename = save t filename
+  let load ~filename =
+    let t = load filename in
+    Gc.finalise Wrapper_generated.C.Tensor.free t;
+    t
+
+  let save_multi ~named_tensors ~filename =
+    let names, tensors = List.split named_tensors in
+    save_multi
+      CArray.(of_list Wrapper_generated.C.Tensor.t tensors |> start)
+      CArray.(of_list string names |> start)
+      (List.length named_tensors)
+      filename
+
+  let load_multi ~names ~filename =
+    let ntensors = List.length names in
+    let tensors = CArray.make Wrapper_generated.C.Tensor.t ntensors in
+    load_multi
+      (CArray.start tensors)
+      CArray.(of_list string names |> start)
+      ntensors
+      filename;
+    let tensors = CArray.to_list tensors in
+    List.iter (Gc.finalise Wrapper_generated.C.Tensor.free) tensors;
+    tensors
 end
