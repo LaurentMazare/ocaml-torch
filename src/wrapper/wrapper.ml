@@ -79,6 +79,20 @@ module Tensor = struct
   let softmax t = softmax t (-1)
 end
 
+module Scalar = struct
+  include Wrapper_generated.C.Scalar
+
+  let int i =
+    let t = int (Int64.of_int i) in
+    Gc.finalise free t;
+    t
+
+  let float f =
+    let t = float f in
+    Gc.finalise free t;
+    t
+end
+
 module Optimizer = struct
   include Wrapper_generated.C.Optimizer
 

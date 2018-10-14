@@ -165,4 +165,16 @@ void ato_free(optimizer t) {
   delete(t);
 }
 
+scalar ats_int(int64_t v) {
+  PROTECT(return new torch::Scalar(v);)
+}
+
+scalar ats_float(double v) {
+  PROTECT(return new torch::Scalar(v);)
+}
+
+void ats_free(scalar s) {
+  delete(s);
+}
+
 #include "torch_api_generated.cpp.h"

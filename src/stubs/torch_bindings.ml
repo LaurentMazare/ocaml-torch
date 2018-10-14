@@ -48,6 +48,15 @@ module C(F: Cstubs.FOREIGN) = struct
     let free = foreign "at_free" (t @-> returning void)
   end
 
+  module Scalar = struct
+    type t = unit ptr
+    let t : t typ = ptr void
+    let int = foreign "ats_int" (int64_t @-> returning t)
+    let float = foreign "ats_float" (float @-> returning t)
+    let free = foreign "ats_free" (t @-> returning void)
+  end
+
+
   module Serialize = struct
     let t = Tensor.t
     let save = foreign "at_save" (t @-> string @-> returning void)
