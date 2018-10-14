@@ -9,6 +9,15 @@ let image_h = Mnist_helper.image_h
 let image_dim = Mnist_helper.image_dim
 let latent_dim = 100
 
+type loss =
+  | StandardGAN
+  (* Relativistic average LSGAN,
+     see https://ajolicoeur.wordpress.com/RelativisticGAN/ *)
+  | RaLSGAN
+
+let _loss = RaLSGAN
+let loss = StandardGAN
+
 let batch_size = 128
 let learning_rate = 1e-4
 let batches = 10**8
@@ -66,6 +75,8 @@ let write_samples samples ~filename =
     done;
     Stdio.Out_channel.output_string channel "]\n")
 
+let square x = Tensor.(x * x)
+
 let () =
   let mnist = Mnist_helper.read_files ~with_caching:true () in
 
@@ -83,13 +94,28 @@ let () =
     let batch_images, _ = Mnist_helper.train_batch mnist ~batch_size ~batch_idx in
     let batch_images = Tensor.reshape batch_images ~dims:[ batch_size; 1; image_w; image_h ] in
     let discriminator_loss =
-      Tensor.(+)
-        (bce ~labels:0.9 (discriminator Tensor.(f 2. * batch_images - f 1.)))
-        (bce ~labels:0.0 (rand () |> generator |> discriminator))
+      match loss with
+      | StandardGAN ->
+        Tensor.(+)
+          (bce ~labels:0.9 (discriminator Tensor.(f 2. * batch_images - f 1.)))
+          (bce ~labels:0.0 (rand () |> generator |> discriminator))
+      | RaLSGAN ->
+        let y_pred = discriminator Tensor.(f 2. * batch_images - f 1.) in
+        let y_pred_fake = rand () |> generator |> discriminator in
+        Tensor.(+)
+          Tensor.((y_pred - mean y_pred_fake - f 1.) |> square |> mean)
+          Tensor.((y_pred_fake - mean y_pred + f 1.) |> square |> mean)
     in
     Optimizer.backward_step ~loss:discriminator_loss opt_d;
     let generator_loss =
-      bce ~labels:1. (rand () |> generator |> discriminator)
+      match loss with
+      | StandardGAN -> bce ~labels:1. (rand () |> generator |> discriminator)
+      | RaLSGAN ->
+        let y_pred = discriminator Tensor.(f 2. * batch_images - f 1.) in
+        let y_pred_fake = rand () |> generator |> discriminator in
+        Tensor.(+)
+          Tensor.((y_pred - mean y_pred_fake + f 1.) |> square |> mean)
+          Tensor.((y_pred_fake - mean y_pred - f 1.) |> square |> mean)
     in
     Optimizer.backward_step ~loss:generator_loss opt_g;
     if batch_idx % 100 = 0
