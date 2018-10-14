@@ -42,6 +42,7 @@ module Func = struct
     | IntList
     | TensorList
     | TensorOptions
+    | Scalar
     | ScalarType
     | Device
 
@@ -58,6 +59,11 @@ module Func = struct
     ; kind : [ `function_ | `method_ ]
     }
 
+  let is_binary t =
+    match t.args with
+    | [ { arg_type = Tensor; _ }; { arg_type = Tensor; _ } ] -> true
+    | _ -> false
+
   let arg_type_of_string str ~is_nullable =
     match String.lowercase str with
     | "bool" -> Some Bool
@@ -68,6 +74,7 @@ module Func = struct
     | "intlist" -> Some IntList
     | "tensorlist" -> Some TensorList
     | "device" -> Some Device
+    | "scalar" -> Some Scalar
     | "scalartype" -> Some ScalarType
     | _ -> None
 
@@ -89,6 +96,7 @@ module Func = struct
           | TensorOptions -> "int" (* only Kind for now. *)
           | ScalarType -> "int"
           | Device -> "int"
+          | Scalar -> "scalar"
           | IntList | TensorList -> assert false
         in
         Printf.sprintf "%s %s" simple_type_cstring arg_name)
@@ -97,7 +105,7 @@ module Func = struct
   let c_args_list args =
     List.map args ~f:(fun { arg_name; arg_type; _ } ->
       match arg_type with
-      | Tensor -> "*" ^ arg_name
+      | Scalar | Tensor -> "*" ^ arg_name
       | TensorOption -> Printf.sprintf "(%s ? *%s : torch::Tensor())" arg_name arg_name
       | Bool -> "(bool)" ^ arg_name
       | IntList ->
@@ -132,6 +140,7 @@ module Func = struct
       | Device -> ["int"]
       | IntList -> ["ptr long"; "int"]
       | TensorList -> ["ptr t"; "int"]
+      | Scalar -> ["scalar"]
     )
     |> String.concat ~sep:" @-> "
     |> Printf.sprintf "%s @-> returning t"
@@ -222,6 +231,7 @@ let read_yaml filename =
               in
               let default_value = Map.find arg "default" |> Option.map ~f:extract_string in
               match Func.arg_type_of_string arg_type ~is_nullable with
+              | Some Scalar when Option.is_some default_value -> None
               | Some arg_type ->
                 Some { Func.arg_name; arg_type; default_value }
               | None ->
@@ -274,6 +284,8 @@ let write_stubs funcs filename =
     p "  open F";
     p "  type t = unit ptr";
     p "  let t : t typ = ptr void";
+    p "  type scalar = unit ptr";
+    p "  let scalar : scalar typ = ptr void";
     Map.iteri funcs ~f:(fun ~key:exported_name ~data:func ->
       p "  let %s =" (Func.caml_name exported_name);
       p "    foreign \"atg_%s\"" exported_name;
@@ -323,8 +335,13 @@ let run ~yaml_filename ~cpp_filename ~stubs_filename ~wrapper_filename =
       | [] -> assert false
       | [ func ] -> [ name, func ]
       | funcs ->
-        List.mapi funcs ~f:(fun i func ->
-          Printf.sprintf "%s%d" name (i+1), func)
+        (* If there is a binary function, use the short name. *)
+        match List.partition_tf funcs ~f:Func.is_binary with
+        | [ binary_func ], funcs ->
+          (name, binary_func) ::
+          List.mapi funcs ~f:(fun i func -> Printf.sprintf "%s%d" name (i+1), func)
+        | _, _ ->
+          List.mapi funcs ~f:(fun i func -> Printf.sprintf "%s%d" name (i+1), func)
       )
     |> Map.of_alist_exn (module String)
   in

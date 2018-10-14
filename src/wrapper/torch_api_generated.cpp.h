@@ -145,7 +145,19 @@ tensor atg_add(tensor self, tensor other) {
   )
 }
 
+tensor atg_add1(tensor self, scalar other) {
+  PROTECT(
+    return new torch::Tensor(torch::add(*self, *other));
+  )
+}
+
 tensor atg_add_(tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(self->add_(*other));
+  )
+}
+
+tensor atg_add_1(tensor self, scalar other) {
   PROTECT(
     return new torch::Tensor(self->add_(*other));
   )
@@ -304,6 +316,42 @@ tensor atg_any(tensor self, int64_t dim, int keepdim) {
 tensor atg_any_out(tensor result, tensor self, int64_t dim, int keepdim) {
   PROTECT(
     return new torch::Tensor(torch::any_out(*result, *self, dim, (bool)keepdim));
+  )
+}
+
+tensor atg_arange1(scalar start, scalar end, int options) {
+  PROTECT(
+    return new torch::Tensor(torch::arange(*start, *end, torch::ScalarType(options)));
+  )
+}
+
+tensor atg_arange2(scalar start, scalar end, scalar step, int options) {
+  PROTECT(
+    return new torch::Tensor(torch::arange(*start, *end, *step, torch::ScalarType(options)));
+  )
+}
+
+tensor atg_arange3(scalar end, int options) {
+  PROTECT(
+    return new torch::Tensor(torch::arange(*end, torch::ScalarType(options)));
+  )
+}
+
+tensor atg_arange_out1(tensor result, scalar start, scalar end) {
+  PROTECT(
+    return new torch::Tensor(torch::arange_out(*result, *start, *end));
+  )
+}
+
+tensor atg_arange_out2(tensor result, scalar start, scalar end, scalar step) {
+  PROTECT(
+    return new torch::Tensor(torch::arange_out(*result, *start, *end, *step));
+  )
+}
+
+tensor atg_arange_out3(tensor result, scalar end) {
+  PROTECT(
+    return new torch::Tensor(torch::arange_out(*result, *end));
   )
 }
 
@@ -535,13 +583,13 @@ tensor atg_bernoulli2(tensor self, double p) {
   )
 }
 
-tensor atg_bernoulli_1(tensor self, tensor p) {
+tensor atg_bernoulli_(tensor self, tensor p) {
   PROTECT(
     return new torch::Tensor(self->bernoulli_(*p));
   )
 }
 
-tensor atg_bernoulli_2(tensor self, double p) {
+tensor atg_bernoulli_1(tensor self, double p) {
   PROTECT(
     return new torch::Tensor(self->bernoulli_(p));
   )
@@ -664,6 +712,60 @@ tensor atg_celu(tensor self) {
 tensor atg_celu_(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::celu_(*self));
+  )
+}
+
+tensor atg_clamp(tensor self, scalar min, scalar max) {
+  PROTECT(
+    return new torch::Tensor(torch::clamp(*self, *min, *max));
+  )
+}
+
+tensor atg_clamp_(tensor self, scalar min, scalar max) {
+  PROTECT(
+    return new torch::Tensor(torch::clamp_(*self, *min, *max));
+  )
+}
+
+tensor atg_clamp_max(tensor self, scalar max) {
+  PROTECT(
+    return new torch::Tensor(torch::clamp_max(*self, *max));
+  )
+}
+
+tensor atg_clamp_max_(tensor self, scalar max) {
+  PROTECT(
+    return new torch::Tensor(torch::clamp_max_(*self, *max));
+  )
+}
+
+tensor atg_clamp_max_out(tensor result, tensor self, scalar max) {
+  PROTECT(
+    return new torch::Tensor(torch::clamp_max_out(*result, *self, *max));
+  )
+}
+
+tensor atg_clamp_min(tensor self, scalar min) {
+  PROTECT(
+    return new torch::Tensor(torch::clamp_min(*self, *min));
+  )
+}
+
+tensor atg_clamp_min_(tensor self, scalar min) {
+  PROTECT(
+    return new torch::Tensor(torch::clamp_min_(*self, *min));
+  )
+}
+
+tensor atg_clamp_min_out(tensor result, tensor self, scalar min) {
+  PROTECT(
+    return new torch::Tensor(torch::clamp_min_out(*result, *self, *min));
+  )
+}
+
+tensor atg_clamp_out(tensor result, tensor self, scalar min, scalar max) {
+  PROTECT(
+    return new torch::Tensor(torch::clamp_out(*result, *self, *min, *max));
   )
 }
 
@@ -985,7 +1087,19 @@ tensor atg_div(tensor self, tensor other) {
   )
 }
 
+tensor atg_div1(tensor self, scalar other) {
+  PROTECT(
+    return new torch::Tensor(torch::div(*self, *other));
+  )
+}
+
 tensor atg_div_(tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(self->div_(*other));
+  )
+}
+
+tensor atg_div_1(tensor self, scalar other) {
   PROTECT(
     return new torch::Tensor(self->div_(*other));
   )
@@ -1279,6 +1393,12 @@ tensor atg_fill_(tensor self, tensor value) {
   )
 }
 
+tensor atg_fill_1(tensor self, scalar value) {
+  PROTECT(
+    return new torch::Tensor(torch::fill_(*self, *value));
+  )
+}
+
 tensor atg_flatten(tensor self, int64_t start_dim, int64_t end_dim) {
   PROTECT(
     return new torch::Tensor(torch::flatten(*self, start_dim, end_dim));
@@ -1372,6 +1492,30 @@ tensor atg_frobenius_norm2(tensor self, long int *dim_data, int dim_len, int kee
 tensor atg_frobenius_norm_out(tensor result, tensor self, long int *dim_data, int dim_len, int keepdim) {
   PROTECT(
     return new torch::Tensor(torch::frobenius_norm_out(*result, *self, of_carray_long_int(dim_data, dim_len), (bool)keepdim));
+  )
+}
+
+tensor atg_full(long int *size_data, int size_len, scalar fill_value, int options) {
+  PROTECT(
+    return new torch::Tensor(torch::full(of_carray_long_int(size_data, size_len), *fill_value, torch::ScalarType(options)));
+  )
+}
+
+tensor atg_full_like1(tensor self, scalar fill_value) {
+  PROTECT(
+    return new torch::Tensor(torch::full_like(*self, *fill_value));
+  )
+}
+
+tensor atg_full_like2(tensor self, scalar fill_value, int options) {
+  PROTECT(
+    return new torch::Tensor(torch::full_like(*self, *fill_value, torch::ScalarType(options)));
+  )
+}
+
+tensor atg_full_out(tensor result, long int *size_data, int size_len, scalar fill_value) {
+  PROTECT(
+    return new torch::Tensor(torch::full_out(*result, of_carray_long_int(size_data, size_len), *fill_value));
   )
 }
 
@@ -1534,6 +1678,12 @@ tensor atg_hann_window2(int64_t window_length, int periodic, int options) {
 tensor atg_hardshrink(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::hardshrink(*self));
+  )
+}
+
+tensor atg_hardshrink_backward(tensor grad_out, tensor self, scalar lambd) {
+  PROTECT(
+    return new torch::Tensor(torch::hardshrink_backward(*grad_out, *self, *lambd));
   )
 }
 
@@ -1771,6 +1921,30 @@ tensor atg_linear(tensor input, tensor weight, tensor bias) {
   )
 }
 
+tensor atg_linspace1(scalar start, scalar end, int options) {
+  PROTECT(
+    return new torch::Tensor(torch::linspace(*start, *end, torch::ScalarType(options)));
+  )
+}
+
+tensor atg_linspace2(scalar start, scalar end, int64_t steps, int options) {
+  PROTECT(
+    return new torch::Tensor(torch::linspace(*start, *end, steps, torch::ScalarType(options)));
+  )
+}
+
+tensor atg_linspace_out1(tensor result, scalar start, scalar end) {
+  PROTECT(
+    return new torch::Tensor(torch::linspace_out(*result, *start, *end));
+  )
+}
+
+tensor atg_linspace_out2(tensor result, scalar start, scalar end, int64_t steps) {
+  PROTECT(
+    return new torch::Tensor(torch::linspace_out(*result, *start, *end, steps));
+  )
+}
+
 tensor atg_log(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::log(*self));
@@ -1888,6 +2062,30 @@ tensor atg_log_softmax_backward_data(tensor grad_output, tensor output, int64_t 
 tensor atg_logdet(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::logdet(*self));
+  )
+}
+
+tensor atg_logspace1(scalar start, scalar end, int options) {
+  PROTECT(
+    return new torch::Tensor(torch::logspace(*start, *end, torch::ScalarType(options)));
+  )
+}
+
+tensor atg_logspace2(scalar start, scalar end, int64_t steps, int options) {
+  PROTECT(
+    return new torch::Tensor(torch::logspace(*start, *end, steps, torch::ScalarType(options)));
+  )
+}
+
+tensor atg_logspace_out1(tensor result, scalar start, scalar end) {
+  PROTECT(
+    return new torch::Tensor(torch::logspace_out(*result, *start, *end));
+  )
+}
+
+tensor atg_logspace_out2(tensor result, scalar start, scalar end, int64_t steps) {
+  PROTECT(
+    return new torch::Tensor(torch::logspace_out(*result, *start, *end, steps));
   )
 }
 
@@ -2257,7 +2455,19 @@ tensor atg_mul(tensor self, tensor other) {
   )
 }
 
+tensor atg_mul1(tensor self, scalar other) {
+  PROTECT(
+    return new torch::Tensor(torch::mul(*self, *other));
+  )
+}
+
 tensor atg_mul_(tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(self->mul_(*other));
+  )
+}
+
+tensor atg_mul_1(tensor self, scalar other) {
   PROTECT(
     return new torch::Tensor(self->mul_(*other));
   )
@@ -2338,6 +2548,18 @@ tensor atg_native_clone(tensor self) {
 tensor atg_native_norm(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::native_norm(*self));
+  )
+}
+
+tensor atg_native_pow(tensor self, scalar exponent) {
+  PROTECT(
+    return new torch::Tensor(torch::native_pow(*self, *exponent));
+  )
+}
+
+tensor atg_native_pow_out(tensor result, tensor self, scalar exponent) {
+  PROTECT(
+    return new torch::Tensor(torch::native_pow_out(*result, *self, *exponent));
   )
 }
 
@@ -2431,15 +2653,33 @@ tensor atg_nll_loss_out(tensor output, tensor self, tensor target, tensor weight
   )
 }
 
-tensor atg_norm(tensor self) {
+tensor atg_norm1(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::norm(*self));
+  )
+}
+
+tensor atg_norm2(tensor self, scalar p, int64_t dim, int keepdim) {
+  PROTECT(
+    return new torch::Tensor(torch::norm(*self, *p, dim, (bool)keepdim));
   )
 }
 
 tensor atg_norm_except_dim(tensor v, int64_t pow, int64_t dim) {
   PROTECT(
     return new torch::Tensor(torch::norm_except_dim(*v, pow, dim));
+  )
+}
+
+tensor atg_norm_out(tensor result, tensor self, scalar p, int64_t dim, int keepdim) {
+  PROTECT(
+    return new torch::Tensor(torch::norm_out(*result, *self, *p, dim, (bool)keepdim));
+  )
+}
+
+tensor atg_normal(tensor mean, tensor std) {
+  PROTECT(
+    return new torch::Tensor(torch::normal(*mean, *std));
   )
 }
 
@@ -2452,12 +2692,6 @@ tensor atg_normal1(tensor mean, double std) {
 tensor atg_normal2(double mean, tensor std) {
   PROTECT(
     return new torch::Tensor(torch::normal(mean, *std));
-  )
-}
-
-tensor atg_normal3(tensor mean, tensor std) {
-  PROTECT(
-    return new torch::Tensor(torch::normal(*mean, *std));
   )
 }
 
@@ -2647,13 +2881,25 @@ tensor atg_pow(tensor self, tensor exponent) {
   )
 }
 
+tensor atg_pow1(tensor self, scalar exponent) {
+  PROTECT(
+    return new torch::Tensor(torch::pow(*self, *exponent));
+  )
+}
+
 tensor atg_pow_(tensor self, tensor exponent) {
   PROTECT(
     return new torch::Tensor(self->pow_(*exponent));
   )
 }
 
-tensor atg_pow_out(tensor result, tensor self, tensor exponent) {
+tensor atg_pow_out1(tensor result, tensor self, tensor exponent) {
+  PROTECT(
+    return new torch::Tensor(torch::pow_out(*result, *self, *exponent));
+  )
+}
+
+tensor atg_pow_out2(tensor result, tensor self, scalar exponent) {
   PROTECT(
     return new torch::Tensor(torch::pow_out(*result, *self, *exponent));
   )
@@ -2842,6 +3088,30 @@ tensor atg_randperm(int64_t n, int options) {
 tensor atg_randperm_out(tensor result, int64_t n) {
   PROTECT(
     return new torch::Tensor(torch::randperm_out(*result, n));
+  )
+}
+
+tensor atg_range1(scalar start, scalar end, int options) {
+  PROTECT(
+    return new torch::Tensor(torch::range(*start, *end, torch::ScalarType(options)));
+  )
+}
+
+tensor atg_range2(scalar start, scalar end, scalar step, int options) {
+  PROTECT(
+    return new torch::Tensor(torch::range(*start, *end, *step, torch::ScalarType(options)));
+  )
+}
+
+tensor atg_range_out1(tensor result, scalar start, scalar end) {
+  PROTECT(
+    return new torch::Tensor(torch::range_out(*result, *start, *end));
+  )
+}
+
+tensor atg_range_out2(tensor result, scalar start, scalar end, scalar step) {
+  PROTECT(
+    return new torch::Tensor(torch::range_out(*result, *start, *end, *step));
   )
 }
 
@@ -3241,13 +3511,13 @@ tensor atg_selu_(tensor self) {
   )
 }
 
-tensor atg_set_1(tensor self, tensor source) {
+tensor atg_set_(tensor self, tensor source) {
   PROTECT(
     return new torch::Tensor(self->set_(*source));
   )
 }
 
-tensor atg_set_2(tensor self) {
+tensor atg_set_1(tensor self) {
   PROTECT(
     return new torch::Tensor(self->set_());
   )
@@ -3553,7 +3823,19 @@ tensor atg_sub(tensor self, tensor other) {
   )
 }
 
+tensor atg_sub1(tensor self, scalar other) {
+  PROTECT(
+    return new torch::Tensor(torch::sub(*self, *other));
+  )
+}
+
 tensor atg_sub_(tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(self->sub_(*other));
+  )
+}
+
+tensor atg_sub_1(tensor self, scalar other) {
   PROTECT(
     return new torch::Tensor(self->sub_(*other));
   )

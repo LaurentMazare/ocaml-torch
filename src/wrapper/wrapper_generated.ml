@@ -123,8 +123,18 @@ let add self other =
   Gc.finalise C.Tensor.free t;
   t
 
+let add1 self other =
+  let t = add1 self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let add_ self other =
   let t = add_ self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let add_1 self other =
+  let t = add_1 self other in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -255,6 +265,36 @@ let any self dim keepdim =
 
 let any_out result self dim keepdim =
   let t = any_out result self (Int64.of_int dim) (if keepdim then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let arange1 start end_ options =
+  let t = arange1 start end_ (Kind.to_int options) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let arange2 start end_ step options =
+  let t = arange2 start end_ step (Kind.to_int options) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let arange3 end_ options =
+  let t = arange3 end_ (Kind.to_int options) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let arange_out1 result start end_ =
+  let t = arange_out1 result start end_ in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let arange_out2 result start end_ step =
+  let t = arange_out2 result start end_ step in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let arange_out3 result end_ =
+  let t = arange_out3 result end_ in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -448,13 +488,13 @@ let bernoulli2 self p =
   Gc.finalise C.Tensor.free t;
   t
 
-let bernoulli_1 self p =
-  let t = bernoulli_1 self p in
+let bernoulli_ self p =
+  let t = bernoulli_ self p in
   Gc.finalise C.Tensor.free t;
   t
 
-let bernoulli_2 self p =
-  let t = bernoulli_2 self p in
+let bernoulli_1 self p =
+  let t = bernoulli_1 self p in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -555,6 +595,51 @@ let celu self =
 
 let celu_ self =
   let t = celu_ self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let clamp self min max =
+  let t = clamp self min max in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let clamp_ self min max =
+  let t = clamp_ self min max in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let clamp_max self max =
+  let t = clamp_max self max in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let clamp_max_ self max =
+  let t = clamp_max_ self max in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let clamp_max_out result self max =
+  let t = clamp_max_out result self max in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let clamp_min self min =
+  let t = clamp_min self min in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let clamp_min_ self min =
+  let t = clamp_min_ self min in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let clamp_min_out result self min =
+  let t = clamp_min_out result self min in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let clamp_out result self min max =
+  let t = clamp_out result self min max in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -823,8 +908,18 @@ let div self other =
   Gc.finalise C.Tensor.free t;
   t
 
+let div1 self other =
+  let t = div1 self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let div_ self other =
   let t = div_ self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let div_1 self other =
+  let t = div_1 self other in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1068,6 +1163,11 @@ let fill_ self value =
   Gc.finalise C.Tensor.free t;
   t
 
+let fill_1 self value =
+  let t = fill_1 self value in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let flatten self start_dim end_dim =
   let t = flatten self (Int64.of_int start_dim) (Int64.of_int end_dim) in
   Gc.finalise C.Tensor.free t;
@@ -1145,6 +1245,26 @@ let frobenius_norm2 self dim keepdim =
 
 let frobenius_norm_out result self dim keepdim =
   let t = frobenius_norm_out result self (List.map Signed.Long.of_int dim |> CArray.of_list long |> CArray.start) (List.length dim) (if keepdim then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let full size fill_value options =
+  let t = full (List.map Signed.Long.of_int size |> CArray.of_list long |> CArray.start) (List.length size) fill_value (Kind.to_int options) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let full_like1 self fill_value =
+  let t = full_like1 self fill_value in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let full_like2 self fill_value options =
+  let t = full_like2 self fill_value (Kind.to_int options) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let full_out result size fill_value =
+  let t = full_out result (List.map Signed.Long.of_int size |> CArray.of_list long |> CArray.start) (List.length size) fill_value in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1280,6 +1400,11 @@ let hann_window2 window_length periodic options =
 
 let hardshrink self =
   let t = hardshrink self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let hardshrink_backward grad_out self lambd =
+  let t = hardshrink_backward grad_out self lambd in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1478,6 +1603,26 @@ let linear input weight bias =
   Gc.finalise C.Tensor.free t;
   t
 
+let linspace1 start end_ options =
+  let t = linspace1 start end_ (Kind.to_int options) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let linspace2 start end_ steps options =
+  let t = linspace2 start end_ (Int64.of_int steps) (Kind.to_int options) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let linspace_out1 result start end_ =
+  let t = linspace_out1 result start end_ in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let linspace_out2 result start end_ steps =
+  let t = linspace_out2 result start end_ (Int64.of_int steps) in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let log self =
   let t = log self in
   Gc.finalise C.Tensor.free t;
@@ -1575,6 +1720,26 @@ let log_softmax_backward_data grad_output output dim self =
 
 let logdet self =
   let t = logdet self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let logspace1 start end_ options =
+  let t = logspace1 start end_ (Kind.to_int options) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let logspace2 start end_ steps options =
+  let t = logspace2 start end_ (Int64.of_int steps) (Kind.to_int options) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let logspace_out1 result start end_ =
+  let t = logspace_out1 result start end_ in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let logspace_out2 result start end_ steps =
+  let t = logspace_out2 result start end_ (Int64.of_int steps) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1883,8 +2048,18 @@ let mul self other =
   Gc.finalise C.Tensor.free t;
   t
 
+let mul1 self other =
+  let t = mul1 self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let mul_ self other =
   let t = mul_ self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let mul_1 self other =
+  let t = mul_1 self other in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1950,6 +2125,16 @@ let native_clone self =
 
 let native_norm self =
   let t = native_norm self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let native_pow self exponent =
+  let t = native_pow self exponent in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let native_pow_out result self exponent =
+  let t = native_pow_out result self exponent in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -2028,13 +2213,28 @@ let nll_loss_out output self target weight reduction ignore_index =
   Gc.finalise C.Tensor.free t;
   t
 
-let norm self =
-  let t = norm self in
+let norm1 self =
+  let t = norm1 self in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let norm2 self p dim keepdim =
+  let t = norm2 self p (Int64.of_int dim) (if keepdim then 1 else 0) in
   Gc.finalise C.Tensor.free t;
   t
 
 let norm_except_dim v pow dim =
   let t = norm_except_dim v (Int64.of_int pow) (Int64.of_int dim) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let norm_out result self p dim keepdim =
+  let t = norm_out result self p (Int64.of_int dim) (if keepdim then 1 else 0) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let normal mean std =
+  let t = normal mean std in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -2045,11 +2245,6 @@ let normal1 mean std =
 
 let normal2 mean std =
   let t = normal2 mean std in
-  Gc.finalise C.Tensor.free t;
-  t
-
-let normal3 mean std =
-  let t = normal3 mean std in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -2208,13 +2403,23 @@ let pow self exponent =
   Gc.finalise C.Tensor.free t;
   t
 
+let pow1 self exponent =
+  let t = pow1 self exponent in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let pow_ self exponent =
   let t = pow_ self exponent in
   Gc.finalise C.Tensor.free t;
   t
 
-let pow_out result self exponent =
-  let t = pow_out result self exponent in
+let pow_out1 result self exponent =
+  let t = pow_out1 result self exponent in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let pow_out2 result self exponent =
+  let t = pow_out2 result self exponent in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -2370,6 +2575,26 @@ let randperm n options =
 
 let randperm_out result n =
   let t = randperm_out result (Int64.of_int n) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let range1 start end_ options =
+  let t = range1 start end_ (Kind.to_int options) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let range2 start end_ step options =
+  let t = range2 start end_ step (Kind.to_int options) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let range_out1 result start end_ =
+  let t = range_out1 result start end_ in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let range_out2 result start end_ step =
+  let t = range_out2 result start end_ step in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -2703,13 +2928,13 @@ let selu_ self =
   Gc.finalise C.Tensor.free t;
   t
 
-let set_1 self source =
-  let t = set_1 self source in
+let set_ self source =
+  let t = set_ self source in
   Gc.finalise C.Tensor.free t;
   t
 
-let set_2 self =
-  let t = set_2 self in
+let set_1 self =
+  let t = set_1 self in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -2963,8 +3188,18 @@ let sub self other =
   Gc.finalise C.Tensor.free t;
   t
 
+let sub1 self other =
+  let t = sub1 self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let sub_ self other =
   let t = sub_ self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let sub_1 self other =
+  let t = sub_1 self other in
   Gc.finalise C.Tensor.free t;
   t
 
