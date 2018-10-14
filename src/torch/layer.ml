@@ -1,11 +1,20 @@
 open! Base
 
 module Var_store = struct
-  type t = Tensor.t list ref
-  let create () = ref []
-  let add_vars t ~vars = t := vars @ !t
-  let vars t = !t
+  type t =
+    { name : string
+    ; mutable tensors : Tensor.t list
+    }
+
+  let create ~name = { name; tensors = [] }
+  let add_vars t ~vars = t.tensors <- vars @ t.tensors
+  let vars t = t.tensors
+  let name t = t.name
 end
+
+type t =
+  { apply : Tensor.t -> Tensor.t
+  }
 
 type activation =
   | Relu
@@ -14,106 +23,69 @@ type activation =
   | Leaky_relu
   | Sigmoid
 
-module Linear = struct
-  type t =
-    { w : Tensor.t
-    ; b : Tensor.t
-    }
+let apply ?activation ys =
+  match activation with
+  | Some Relu -> Tensor.relu ys
+  | Some Softmax -> Tensor.softmax ys
+  | Some Tanh -> Tensor.tanh ys
+  | Some Sigmoid -> Tensor.sigmoid ys
+  | Some Leaky_relu -> Tensor.leaky_relu ys
+  | None -> ys
 
-  let create vs ~input_dim output_dim =
-    let w = Tensor.randn [ input_dim; output_dim ] ~scale:0.1 ~requires_grad:true in
-    let b = Tensor.zeros [ output_dim ] ~requires_grad:true in
-    Var_store.add_vars vs ~vars:[w; b];
-    { w; b }
+let linear vs ?activation ?(use_bias=true) ~input_dim output_dim =
+  let w = Tensor.randn [ input_dim; output_dim ] ~scale:0.1 ~requires_grad:true in
+  let apply =
+    if use_bias
+    then begin
+      let b = Tensor.zeros [ output_dim ] ~requires_grad:true in
+      Var_store.add_vars vs ~vars:[w; b];
+      fun xs -> Tensor.(mm xs w + b) |> apply ?activation
+    end else begin
+      Var_store.add_vars vs ~vars:[w];
+      fun xs -> Tensor.(mm xs w) |> apply ?activation
+    end
+  in
+  { apply }
 
-  let apply ?activation ?(use_bias=true) t xs =
-    let ys = if use_bias then Tensor.(mm xs t.w + t.b) else Tensor.(mm xs t.w) in
-    match activation with
-    | Some Relu -> Tensor.relu ys
-    | Some Softmax -> Tensor.softmax ys
-    | Some Tanh -> Tensor.tanh ys
-    | Some Sigmoid -> Tensor.sigmoid ys
-    | Some Leaky_relu -> Tensor.leaky_relu ys
-    | None -> ys
-end
+let conv2d vs ~ksize:(k1, k2) ~stride ?activation ?(padding=0, 0) ~input_dim output_dim =
+  let w =
+    Tensor.randn [ output_dim; input_dim; k1; k2 ] ~scale:0.1 ~requires_grad:true
+  in
+  let b = Tensor.zeros [ output_dim ] ~requires_grad:true in
+  Var_store.add_vars vs ~vars:[w; b];
+  let apply xs =
+    Tensor.conv2d xs w b ~padding ~stride |> apply ?activation
+  in
+  { apply }
 
-module Conv2D = struct
-  type t =
-    { w : Tensor.t
-    ; b : Tensor.t
-    ; stride : int * int
-    ; padding : int * int
-    }
+let conv2d_ vs ~ksize ~stride ?activation ?(padding = 0) ~input_dim output_dim =
+  conv2d vs
+    ~ksize:(ksize, ksize)
+    ~stride:(stride, stride)
+    ?activation
+    ~padding:(padding, padding)
+    ~input_dim
+    output_dim
 
-  let create vs ~ksize:(k1, k2) ~stride ?(padding=0, 0) ~input_dim output_dim =
-    let w =
-      Tensor.randn [ output_dim; input_dim; k1; k2 ] ~scale:0.1 ~requires_grad:true
-    in
-    let b = Tensor.zeros [ output_dim ] ~requires_grad:true in
-    Var_store.add_vars vs ~vars:[w; b];
-    { w; b; stride; padding }
+let conv_transpose2d vs ~ksize:(k1, k2) ~stride ?activation ?(padding=0, 0) ?(output_padding=0, 0) ~input_dim output_dim =
+  let w =
+    Tensor.randn [ input_dim; output_dim; k1; k2 ] ~scale:0.1 ~requires_grad:true
+  in
+  let b = Tensor.zeros [ output_dim ] ~requires_grad:true in
+  Var_store.add_vars vs ~vars:[w; b];
+  let apply xs =
+    Tensor.conv_transpose2d xs w b ~output_padding ~padding ~stride |> apply ?activation
+  in
+  { apply }
 
-  let create_ vs ~ksize ~stride ?(padding = 0) ~input_dim output_dim =
-    create vs
-      ~ksize:(ksize, ksize)
-      ~stride:(stride, stride)
-      ~padding:(padding, padding)
-      ~input_dim
-      output_dim
+let conv_transpose2d_ vs ~ksize ~stride ?activation ?(padding = 0) ?(output_padding = 0) ~input_dim output_dim =
+  conv_transpose2d vs
+    ~ksize:(ksize, ksize)
+    ~stride:(stride, stride)
+    ?activation
+    ~padding:(padding, padding)
+    ~output_padding:(output_padding, output_padding)
+    ~input_dim
+    output_dim
 
-  let apply ?activation t xs =
-    let ys =
-      Tensor.conv2d xs t.w t.b
-        ~padding:t.padding
-        ~stride:t.stride
-    in
-    match activation with
-    | Some Relu -> Tensor.relu ys
-    | Some Softmax -> Tensor.softmax ys
-    | Some Tanh -> Tensor.tanh ys
-    | Some Sigmoid -> Tensor.sigmoid ys
-    | Some Leaky_relu -> Tensor.leaky_relu ys
-    | None -> ys
-end
-
-module ConvTranspose2D = struct
-  type t =
-    { w : Tensor.t
-    ; b : Tensor.t
-    ; stride : int * int
-    ; padding : int * int
-    ; output_padding : int * int
-    }
-
-  let create vs ~ksize:(k1, k2) ~stride ?(padding=0, 0) ?(output_padding=0, 0) ~input_dim output_dim =
-    let w =
-      Tensor.randn [ input_dim; output_dim; k1; k2 ] ~scale:0.1 ~requires_grad:true
-    in
-    let b = Tensor.zeros [ output_dim ] ~requires_grad:true in
-    Var_store.add_vars vs ~vars:[w; b];
-    { w; b; stride; padding; output_padding }
-
-  let create_ vs ~ksize ~stride ?(padding = 0) ?(output_padding = 0) ~input_dim output_dim =
-    create vs
-      ~ksize:(ksize, ksize)
-      ~stride:(stride, stride)
-      ~padding:(padding, padding)
-      ~output_padding:(output_padding, output_padding)
-      ~input_dim
-      output_dim
-
-  let apply ?activation t xs =
-    let ys =
-      Tensor.conv_transpose2d xs t.w t.b
-        ~output_padding:t.output_padding
-        ~padding:t.padding
-        ~stride:t.stride
-    in
-    match activation with
-    | Some Relu -> Tensor.relu ys
-    | Some Softmax -> Tensor.softmax ys
-    | Some Tanh -> Tensor.tanh ys
-    | Some Sigmoid -> Tensor.sigmoid ys
-    | Some Leaky_relu -> Tensor.leaky_relu ys
-    | None -> ys
-end
+let apply t xs = t.apply xs

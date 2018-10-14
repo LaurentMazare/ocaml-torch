@@ -8,22 +8,24 @@ let learning_rate = 1e-3
 
 let () =
   let mnist = Mnist_helper.read_files ~with_caching:true () in
-  let vs = Layer.Var_store.create () in
-  let conv2d1 = Layer.Conv2D.create vs ~ksize:(5, 5) ~stride:(1, 1) ~input_dim:1 32 in
-  let conv2d2 = Layer.Conv2D.create vs ~ksize:(5, 5) ~stride:(1, 1) ~input_dim:32 64 in
-  let linear1 = Layer.Linear.create vs ~input_dim:1024 1024 in
-  let linear2 = Layer.Linear.create vs ~input_dim:1024 Mnist_helper.label_count in
+  let vs = Layer.Var_store.create ~name:"cnn" in
+  let conv2d1 = Layer.conv2d vs ~ksize:(5, 5) ~stride:(1, 1) ~input_dim:1 32 in
+  let conv2d2 = Layer.conv2d vs ~ksize:(5, 5) ~stride:(1, 1) ~input_dim:32 64 in
+  let linear1 = Layer.linear vs ~activation:Relu ~input_dim:1024 1024 in
+  let linear2 =
+    Layer.linear vs ~activation:Softmax ~input_dim:1024 Mnist_helper.label_count
+  in
   let adam = Optimizer.adam (Layer.Var_store.vars vs) ~learning_rate in
   let model xs ~is_training =
     Tensor.reshape xs ~dims:[ -1; 1; 28; 28 ]
-    |> Layer.Conv2D.apply conv2d1
+    |> Layer.apply conv2d1
     |> Tensor.max_pool2d ~ksize:(2, 2)
-    |> Layer.Conv2D.apply conv2d2
+    |> Layer.apply conv2d2
     |> Tensor.max_pool2d ~ksize:(2, 2)
     |> Tensor.reshape ~dims:[ -1; 1024 ]
-    |> Layer.Linear.apply linear1 ~activation:Relu
+    |> Layer.apply linear1
     |> Tensor.dropout ~keep_probability:0.5 ~is_training
-    |> Layer.Linear.apply linear2 ~activation:Softmax
+    |> Layer.apply linear2
   in
   let train_model = model ~is_training:true in
   let test_model = model ~is_training:false in

@@ -14,29 +14,37 @@ let learning_rate = 1e-4
 let batches = 10**8
 
 let create_generator vs =
-  let convt1 = Layer.ConvTranspose2D.create_ vs ~ksize:7 ~stride:1 ~padding:0 ~input_dim:100 64 in
-  let convt2 = Layer.ConvTranspose2D.create_ vs ~ksize:4 ~stride:2 ~padding:1 ~input_dim:64 32 in
-  let convt3 = Layer.ConvTranspose2D.create_ vs ~ksize:4 ~stride:2 ~padding:1 ~input_dim:32 1 in
+  let convt1 =
+    Layer.conv_transpose2d_ vs ~ksize:7 ~stride:1 ~padding:0 ~input_dim:100 64
+  in
+  let convt2 =
+    Layer.conv_transpose2d_ vs ~ksize:4 ~stride:2 ~padding:1 ~input_dim:64 32
+  in
+  let convt3 =
+    Layer.conv_transpose2d_ vs ~ksize:4 ~stride:2 ~padding:1 ~input_dim:32 1 ~activation:Tanh
+  in
   fun rand_input ->
-    Layer.ConvTranspose2D.apply convt1 rand_input
+    Layer.apply convt1 rand_input
     |> Tensor.const_batch_norm
     |> Tensor.relu
-    |> Layer.ConvTranspose2D.apply convt2
+    |> Layer.apply convt2
     |> Tensor.const_batch_norm
     |> Tensor.relu
-    |> Layer.ConvTranspose2D.apply convt3 ~activation:Tanh
+    |> Layer.apply convt3
 
 let create_discriminator vs =
-  let conv1 = Layer.Conv2D.create_ vs ~ksize:4 ~stride:2 ~padding:1 ~input_dim:1 32 in
-  let conv2 = Layer.Conv2D.create_ vs ~ksize:4 ~stride:2 ~padding:1 ~input_dim:32 64 in
-  let conv3 = Layer.Conv2D.create_ vs ~ksize:7 ~stride:1 ~padding:0 ~input_dim:64 1 in
+  let conv1 = Layer.conv2d_ vs ~ksize:4 ~stride:2 ~padding:1 ~input_dim:1 32 in
+  let conv2 = Layer.conv2d_ vs ~ksize:4 ~stride:2 ~padding:1 ~input_dim:32 64 in
+  let conv3 =
+    Layer.conv2d_ vs ~ksize:7 ~stride:1 ~padding:0 ~input_dim:64 1 ~activation:Sigmoid
+  in
   fun xs ->
-    Layer.Conv2D.apply conv1 xs
+    Layer.apply conv1 xs
     |> Tensor.leaky_relu
-    |> Layer.Conv2D.apply conv2
+    |> Layer.apply conv2
     |> Tensor.const_batch_norm
     |> Tensor.leaky_relu
-    |> Layer.Conv2D.apply conv3 ~activation:Sigmoid
+    |> Layer.apply conv3
 
 let bce ?(epsilon = 1e-7) ~labels model_values =
   Tensor.(- (f labels * log (model_values + f epsilon)
@@ -61,11 +69,11 @@ let write_samples samples ~filename =
 let () =
   let mnist = Mnist_helper.read_files ~with_caching:true () in
 
-  let generator_vs = Layer.Var_store.create () in
+  let generator_vs = Layer.Var_store.create ~name:"gen" in
   let generator = create_generator generator_vs in
   let opt_g = Optimizer.adam (Layer.Var_store.vars generator_vs) ~learning_rate in
 
-  let discriminator_vs = Layer.Var_store.create () in
+  let discriminator_vs = Layer.Var_store.create ~name:"disc" in
   let discriminator = create_discriminator discriminator_vs in
   let opt_d = Optimizer.adam (Layer.Var_store.vars discriminator_vs) ~learning_rate in
 

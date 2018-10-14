@@ -16,22 +16,24 @@ let batches = 10**8
 (* The generator receives as input both some noise and a one-hot encoding of labels. *)
 let create_generator vs =
   let linear1 =
-    Layer.Linear.create vs ~input_dim:(latent_dim + label_count) generator_hidden_nodes
+    Layer.linear vs generator_hidden_nodes
+      ~input_dim:(latent_dim + label_count) ~activation:Leaky_relu
   in
-  let linear2 = Layer.Linear.create vs ~input_dim:generator_hidden_nodes image_dim in
-  fun rand_input ->
-    Layer.Linear.apply linear1 rand_input ~activation:Leaky_relu
-    |> Layer.Linear.apply linear2 ~activation:Tanh
+  let linear2 =
+    Layer.linear vs ~input_dim:generator_hidden_nodes ~activation:Tanh image_dim
+  in
+  fun rand_input -> Layer.apply linear1 rand_input |> Layer.apply linear2
 
 (* The discriminator receives as input both an image and a one-hot encoding of labels. *)
 let create_discriminator vs =
   let linear1 =
-    Layer.Linear.create vs ~input_dim:(image_dim + label_count) discriminator_hidden_nodes
+    Layer.linear vs discriminator_hidden_nodes
+      ~input_dim:(image_dim + label_count) ~activation:Leaky_relu
   in
-  let linear2 = Layer.Linear.create vs ~input_dim:discriminator_hidden_nodes 1 in
-  fun xs ->
-    Layer.Linear.apply linear1 xs ~activation:Leaky_relu
-    |> Layer.Linear.apply linear2 ~activation:Sigmoid
+  let linear2 =
+    Layer.linear vs ~input_dim:discriminator_hidden_nodes 1 ~activation:Sigmoid
+  in
+  fun xs -> Layer.apply linear1 xs |> Layer.apply linear2
 
 let bce ?(epsilon = 1e-7) ~labels model_values =
   Tensor.(- (f labels * log (model_values + f epsilon)
@@ -56,11 +58,11 @@ let write_samples samples ~filename =
 let () =
   let mnist = Mnist_helper.read_files ~with_caching:true () in
 
-  let generator_vs = Layer.Var_store.create () in
+  let generator_vs = Layer.Var_store.create ~name:"gen" in
   let generator = create_generator generator_vs in
   let opt_g = Optimizer.adam (Layer.Var_store.vars generator_vs) ~learning_rate in
 
-  let discriminator_vs = Layer.Var_store.create () in
+  let discriminator_vs = Layer.Var_store.create ~name:"disc" in
   let discriminator = create_discriminator discriminator_vs in
   let opt_d = Optimizer.adam (Layer.Var_store.vars discriminator_vs) ~learning_rate in
 

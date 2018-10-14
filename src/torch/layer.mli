@@ -1,8 +1,11 @@
 module Var_store : sig
   type t
-  val create : unit -> t
+  val create : name:string -> t
   val vars : t -> Tensor.t list
+  val name : t -> string
 end
+
+type t
 
 type activation =
   | Relu
@@ -11,73 +14,57 @@ type activation =
   | Leaky_relu
   | Sigmoid
 
-module Linear : sig
-  type t
+val linear
+  :  Var_store.t
+  -> ?activation:activation (* default: no activation *)
+  -> ?use_bias:bool (* default: true *)
+  -> input_dim:int
+  -> int
+  -> t
 
-  val create : Var_store.t -> input_dim:int -> int -> t
+val conv2d
+  :  Var_store.t
+  -> ksize:int * int
+  -> stride:int * int
+  -> ?activation:activation (* default: no activation *)
+  -> ?padding:int * int
+  -> input_dim:int
+  -> int
+  -> t
 
-  val apply
-    :  ?activation:activation (* default: no activation *)
-    -> ?use_bias:bool (* default: true *)
-    -> t
-    -> Tensor.t
-    -> Tensor.t
-end
+val conv2d_
+  :  Var_store.t
+  -> ksize:int
+  -> stride:int
+  -> ?activation:activation (* default: no activation *)
+  -> ?padding:int
+  -> input_dim:int
+  -> int
+  -> t
 
-module Conv2D : sig
-  type t
+val conv_transpose2d
+  :  Var_store.t
+  -> ksize:int * int
+  -> stride:int * int
+  -> ?activation:activation (* default: no activation *)
+  -> ?padding:int * int
+  -> ?output_padding:int * int
+  -> input_dim:int
+  -> int
+  -> t
 
-  val create
-    :  Var_store.t
-    -> ksize:int * int
-    -> stride:int * int
-    -> ?padding:int * int
-    -> input_dim:int
-    -> int
-    -> t
+val conv_transpose2d_
+  :  Var_store.t
+  -> ksize:int
+  -> stride:int
+  -> ?activation:activation (* default: no activation *)
+  -> ?padding:int
+  -> ?output_padding:int
+  -> input_dim:int
+  -> int
+  -> t
 
-  val create_
-    :  Var_store.t
-    -> ksize:int
-    -> stride:int
-    -> ?padding:int
-    -> input_dim:int
-    -> int
-    -> t
-
-  val apply
-    :  ?activation:activation (* default: no activation *)
-    -> t
-    -> Tensor.t
-    -> Tensor.t
-end
-
-module ConvTranspose2D : sig
-  type t
-
-  val create
-    :  Var_store.t
-    -> ksize:int * int
-    -> stride:int * int
-    -> ?padding:int * int
-    -> ?output_padding:int * int
-    -> input_dim:int
-    -> int
-    -> t
-
-  val create_
-    :  Var_store.t
-    -> ksize:int
-    -> stride:int
-    -> ?padding:int
-    -> ?output_padding:int
-    -> input_dim:int
-    -> int
-    -> t
-
-  val apply
-    :  ?activation:activation (* default: no activation *)
-    -> t
-    -> Tensor.t
-    -> Tensor.t
-end
+val apply
+  :  t
+  -> Tensor.t
+  -> Tensor.t
