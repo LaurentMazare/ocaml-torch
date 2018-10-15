@@ -1,0 +1,5 @@
+(executable
+ (name utop_torch)
+ (link_flags (-linkall))
+ (modes byte)
+ (libraries torch_core torch utop))

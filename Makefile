@@ -16,6 +16,10 @@ gen: .FORCE
 	dune build src/gen/gen.exe
 	./_build/default/src/gen/gen.exe
 
+utop: .FORCE
+	dune build bin/utop_torch.bc
+	CAML_LD_LIBRARY_PATH=_build/default/src/wrapper:$(CAML_LD_LIBRARY_PATH) dune exec bin/utop_torch.bc
+
 clean:
 	rm -Rf _build/ *.exe
 
