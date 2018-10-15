@@ -54,13 +54,9 @@ code](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/mnist/li
 
 ## TODO
 
-* Add more complex examples.
 * Use a GADT to add type constraints to tensor elements.
-* Improve the layer API and make it composable, e.g. with:
-```ocaml
-type t = P : (module M : Layer_intf) * M.t
-val linear : ...
-val conv2d : ...
-val simple : apply:(Tensor.t -> Tensor.t) -> vars:Tensor.t list -> t
-val compose : t list -> t
-```
+* Make it easier to use/import datasets.
+* Add more complex examples.
+* Add an opam package (this may have to wait until libtorch has stable releases).
+* utop/jupyter integration.
+
