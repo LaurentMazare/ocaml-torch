@@ -1,6 +1,6 @@
 module Var_store : sig
   type t
-  val create : name:string -> t
+  val create : ?device:Torch_core.Device.t -> name:string -> unit -> t
   val vars : t -> Tensor.t list
   val name : t -> string
 end

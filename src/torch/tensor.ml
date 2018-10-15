@@ -27,11 +27,28 @@ let zero_grad t =
   ignore (detach_ grad : t);
   ignore (zero_ grad : t)
 
-let gen ~f ?(requires_grad = false) ?(kind = Torch_core.Kind.Float) ?scale dims =
-  let t = f dims kind in
+type create
+  =  ?requires_grad:bool
+  -> ?kind:Torch_core.Kind.t
+  -> ?device:Torch_core.Device.t
+  -> ?scale:float
+  -> int list
+  -> t
+
+let to_type t ~type_ = totype t type_
+let to_device ?device t =
+  match device with
+  | None -> t
+  | Some device -> to1 t device
+
+let float_vec ?kind ?device dims =
+  float_vec ?kind dims |> to_device ?device
+
+let gen ~f ?(requires_grad = false) ?(kind = Torch_core.Kind.Float) ?(device = Torch_core.Device.Cpu) ?scale dims =
+  let t = f dims (kind, device) in
   let t =
     Option.value_map scale
-      ~f:(fun scale -> mul t (float_vec [ scale ]))
+      ~f:(fun scale -> mul t (float_vec [ scale ] ~device))
       ~default:t
   in
   if requires_grad
@@ -57,9 +74,6 @@ let (+=) t other = ignore (add_ t other : t)
 let (/=) t other = ignore (div_ t other : t)
 let ( *=) t other = ignore (mul_ t other : t)
 let (=) = eq
-
-let to_type t ~type_ = totype t type_
-let to_device t ~device = to1 t device
 
 let narrow t ~dim ~start ~len = narrow t dim start len
 

@@ -269,17 +269,17 @@ let any_out result self dim keepdim =
   t
 
 let arange1 start end_ options =
-  let t = arange1 start end_ (Kind.to_int options) in
+  let t = arange1 start end_ (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
 let arange2 start end_ step options =
-  let t = arange2 start end_ step (Kind.to_int options) in
+  let t = arange2 start end_ step (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
 let arange3 end_ options =
-  let t = arange3 end_ (Kind.to_int options) in
+  let t = arange3 end_ (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -464,12 +464,12 @@ let baddbmm_out result self batch1 batch2 =
   t
 
 let bartlett_window1 window_length options =
-  let t = bartlett_window1 (Int64.of_int window_length) (Kind.to_int options) in
+  let t = bartlett_window1 (Int64.of_int window_length) (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
 let bartlett_window2 window_length periodic options =
-  let t = bartlett_window2 (Int64.of_int window_length) (if periodic then 1 else 0) (Kind.to_int options) in
+  let t = bartlett_window2 (Int64.of_int window_length) (if periodic then 1 else 0) (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -539,12 +539,12 @@ let binary_cross_entropy_out output self target weight reduction =
   t
 
 let blackman_window1 window_length options =
-  let t = blackman_window1 (Int64.of_int window_length) (Kind.to_int options) in
+  let t = blackman_window1 (Int64.of_int window_length) (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
 let blackman_window2 window_length periodic options =
-  let t = blackman_window2 (Int64.of_int window_length) (if periodic then 1 else 0) (Kind.to_int options) in
+  let t = blackman_window2 (Int64.of_int window_length) (if periodic then 1 else 0) (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -989,7 +989,7 @@ let embedding_sparse_backward grad indices num_weights padding_idx scale_grad_by
   t
 
 let empty size options =
-  let t = empty (List.map Signed.Long.of_int size |> CArray.of_list long |> CArray.start) (List.length size) (Kind.to_int options) in
+  let t = empty (List.map Signed.Long.of_int size |> CArray.of_list long |> CArray.start) (List.length size) (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -999,7 +999,7 @@ let empty_like1 self =
   t
 
 let empty_like2 self options =
-  let t = empty_like2 self (Kind.to_int options) in
+  let t = empty_like2 self (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1009,7 +1009,7 @@ let empty_out result size =
   t
 
 let empty_strided size stride options =
-  let t = empty_strided (List.map Signed.Long.of_int size |> CArray.of_list long |> CArray.start) (List.length size) (List.map Signed.Long.of_int stride |> CArray.of_list long |> CArray.start) (List.length stride) (Kind.to_int options) in
+  let t = empty_strided (List.map Signed.Long.of_int size |> CArray.of_list long |> CArray.start) (List.length size) (List.map Signed.Long.of_int stride |> CArray.of_list long |> CArray.start) (List.length stride) (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1114,12 +1114,12 @@ let exponential_ self lambd =
   t
 
 let eye1 n options =
-  let t = eye1 (Int64.of_int n) (Kind.to_int options) in
+  let t = eye1 (Int64.of_int n) (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
 let eye2 n m options =
-  let t = eye2 (Int64.of_int n) (Int64.of_int m) (Kind.to_int options) in
+  let t = eye2 (Int64.of_int n) (Int64.of_int m) (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1249,7 +1249,7 @@ let frobenius_norm_out result self dim keepdim =
   t
 
 let full size fill_value options =
-  let t = full (List.map Signed.Long.of_int size |> CArray.of_list long |> CArray.start) (List.length size) fill_value (Kind.to_int options) in
+  let t = full (List.map Signed.Long.of_int size |> CArray.of_list long |> CArray.start) (List.length size) fill_value (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1259,7 +1259,7 @@ let full_like1 self fill_value =
   t
 
 let full_like2 self fill_value options =
-  let t = full_like2 self fill_value (Kind.to_int options) in
+  let t = full_like2 self fill_value (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1369,32 +1369,32 @@ let gt_ self other =
   t
 
 let hamming_window1 window_length options =
-  let t = hamming_window1 (Int64.of_int window_length) (Kind.to_int options) in
+  let t = hamming_window1 (Int64.of_int window_length) (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
 let hamming_window2 window_length periodic options =
-  let t = hamming_window2 (Int64.of_int window_length) (if periodic then 1 else 0) (Kind.to_int options) in
+  let t = hamming_window2 (Int64.of_int window_length) (if periodic then 1 else 0) (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
 let hamming_window3 window_length periodic alpha options =
-  let t = hamming_window3 (Int64.of_int window_length) (if periodic then 1 else 0) alpha (Kind.to_int options) in
+  let t = hamming_window3 (Int64.of_int window_length) (if periodic then 1 else 0) alpha (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
 let hamming_window4 window_length periodic alpha beta options =
-  let t = hamming_window4 (Int64.of_int window_length) (if periodic then 1 else 0) alpha beta (Kind.to_int options) in
+  let t = hamming_window4 (Int64.of_int window_length) (if periodic then 1 else 0) alpha beta (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
 let hann_window1 window_length options =
-  let t = hann_window1 (Int64.of_int window_length) (Kind.to_int options) in
+  let t = hann_window1 (Int64.of_int window_length) (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
 let hann_window2 window_length periodic options =
-  let t = hann_window2 (Int64.of_int window_length) (if periodic then 1 else 0) (Kind.to_int options) in
+  let t = hann_window2 (Int64.of_int window_length) (if periodic then 1 else 0) (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1604,12 +1604,12 @@ let linear input weight bias =
   t
 
 let linspace1 start end_ options =
-  let t = linspace1 start end_ (Kind.to_int options) in
+  let t = linspace1 start end_ (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
 let linspace2 start end_ steps options =
-  let t = linspace2 start end_ (Int64.of_int steps) (Kind.to_int options) in
+  let t = linspace2 start end_ (Int64.of_int steps) (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1719,12 +1719,12 @@ let logdet self =
   t
 
 let logspace1 start end_ options =
-  let t = logspace1 start end_ (Kind.to_int options) in
+  let t = logspace1 start end_ (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
 let logspace2 start end_ steps options =
-  let t = logspace2 start end_ (Int64.of_int steps) (Kind.to_int options) in
+  let t = logspace2 start end_ (Int64.of_int steps) (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -2274,7 +2274,7 @@ let nuclear_norm_out result self keepdim =
   t
 
 let ones size options =
-  let t = ones (List.map Signed.Long.of_int size |> CArray.of_list long |> CArray.start) (List.length size) (Kind.to_int options) in
+  let t = ones (List.map Signed.Long.of_int size |> CArray.of_list long |> CArray.start) (List.length size) (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -2284,7 +2284,7 @@ let ones_like1 self =
   t
 
 let ones_like2 self options =
-  let t = ones_like2 self (Kind.to_int options) in
+  let t = ones_like2 self (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -2469,7 +2469,7 @@ let put_ self index source accumulate =
   t
 
 let rand size options =
-  let t = rand (List.map Signed.Long.of_int size |> CArray.of_list long |> CArray.start) (List.length size) (Kind.to_int options) in
+  let t = rand (List.map Signed.Long.of_int size |> CArray.of_list long |> CArray.start) (List.length size) (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -2479,7 +2479,7 @@ let rand_like1 self =
   t
 
 let rand_like2 self options =
-  let t = rand_like2 self (Kind.to_int options) in
+  let t = rand_like2 self (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -2489,12 +2489,12 @@ let rand_out result size =
   t
 
 let randint1 high size options =
-  let t = randint1 (Int64.of_int high) (List.map Signed.Long.of_int size |> CArray.of_list long |> CArray.start) (List.length size) (Kind.to_int options) in
+  let t = randint1 (Int64.of_int high) (List.map Signed.Long.of_int size |> CArray.of_list long |> CArray.start) (List.length size) (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
 let randint2 low high size options =
-  let t = randint2 (Int64.of_int low) (Int64.of_int high) (List.map Signed.Long.of_int size |> CArray.of_list long |> CArray.start) (List.length size) (Kind.to_int options) in
+  let t = randint2 (Int64.of_int low) (Int64.of_int high) (List.map Signed.Long.of_int size |> CArray.of_list long |> CArray.start) (List.length size) (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -2509,12 +2509,12 @@ let randint_like2 self low high =
   t
 
 let randint_like3 self high options =
-  let t = randint_like3 self (Int64.of_int high) (Kind.to_int options) in
+  let t = randint_like3 self (Int64.of_int high) (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
 let randint_like4 self low high options =
-  let t = randint_like4 self (Int64.of_int low) (Int64.of_int high) (Kind.to_int options) in
+  let t = randint_like4 self (Int64.of_int low) (Int64.of_int high) (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -2529,7 +2529,7 @@ let randint_out2 result low high size =
   t
 
 let randn size options =
-  let t = randn (List.map Signed.Long.of_int size |> CArray.of_list long |> CArray.start) (List.length size) (Kind.to_int options) in
+  let t = randn (List.map Signed.Long.of_int size |> CArray.of_list long |> CArray.start) (List.length size) (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -2539,7 +2539,7 @@ let randn_like1 self =
   t
 
 let randn_like2 self options =
-  let t = randn_like2 self (Kind.to_int options) in
+  let t = randn_like2 self (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -2564,7 +2564,7 @@ let random_3 self =
   t
 
 let randperm n options =
-  let t = randperm (Int64.of_int n) (Kind.to_int options) in
+  let t = randperm (Int64.of_int n) (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -2574,12 +2574,12 @@ let randperm_out result n =
   t
 
 let range1 start end_ options =
-  let t = range1 start end_ (Kind.to_int options) in
+  let t = range1 start end_ (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
 let range2 start end_ step options =
-  let t = range2 start end_ step (Kind.to_int options) in
+  let t = range2 start end_ step (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -3739,7 +3739,7 @@ let zero_ self =
   t
 
 let zeros size options =
-  let t = zeros (List.map Signed.Long.of_int size |> CArray.of_list long |> CArray.start) (List.length size) (Kind.to_int options) in
+  let t = zeros (List.map Signed.Long.of_int size |> CArray.of_list long |> CArray.start) (List.length size) (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -3749,7 +3749,7 @@ let zeros_like1 self =
   t
 
 let zeros_like2 self options =
-  let t = zeros_like2 self (Kind.to_int options) in
+  let t = zeros_like2 self (Kind.to_int (fst options)) (Device.to_int (snd options)) in
   Gc.finalise C.Tensor.free t;
   t
 

@@ -1,1 +1,3 @@
-include module type of Torch_core.Wrapper.Tensor
+val device_count : unit -> int
+val is_available : unit -> bool
+val cudnn_is_available : unit -> bool

@@ -113,14 +113,14 @@ let read_files
       t
   end else read ()
 
-let train_batch { train_images; train_labels; _ } ~batch_size ~batch_idx =
+let train_batch ?device { train_images; train_labels; _ } ~batch_size ~batch_idx =
   let train_size = Tensor.shape train_images |> List.hd_exn in
   let start = Int.(%) (batch_size * batch_idx) (train_size - batch_size) in
   let batch_images = Tensor.narrow train_images ~dim:0 ~start ~len:batch_size in
   let batch_labels = Tensor.narrow train_labels ~dim:0 ~start ~len:batch_size in
-  batch_images, batch_labels
+  Tensor.to_device batch_images ?device, Tensor.to_device batch_labels ?device
 
-let batch_accuracy ?samples t train_or_test ~batch_size ~predict =
+let batch_accuracy ?device ?samples t train_or_test ~batch_size ~predict =
   let images, labels =
     match train_or_test with
     | `train -> t.train_images, t.train_labels
@@ -131,13 +131,20 @@ let batch_accuracy ?samples t train_or_test ~batch_size ~predict =
     Option.value_map samples ~default:dataset_samples ~f:(Int.min dataset_samples)
   in
   let rec loop start_index sum_accuracy =
+    Caml.Gc.compact ();
     if samples <= start_index
     then sum_accuracy /. Float.of_int samples
     else
       let batch_size = Int.min batch_size (samples - start_index) in
-      let images = Tensor.narrow images ~dim:0 ~start:start_index ~len:batch_size in
+      let images =
+        Tensor.narrow images ~dim:0 ~start:start_index ~len:batch_size
+        |> Tensor.to_device ?device
+      in
       let predicted_labels = predict images in
-      let labels = Tensor.narrow labels ~dim:0 ~start:start_index ~len:batch_size in
+      let labels =
+        Tensor.narrow labels ~dim:0 ~start:start_index ~len:batch_size
+        |> Tensor.to_device ?device
+      in
       let batch_accuracy =
         Tensor.(sum (argmax predicted_labels = argmax labels) |> float_value)
       in

@@ -86,6 +86,8 @@ module Func = struct
         Printf.sprintf "long int *%s_data, int %s_len" arg_name arg_name
       | TensorList ->
         Printf.sprintf "tensor *%s_data, int %s_len" arg_name arg_name
+      | TensorOptions ->
+        Printf.sprintf "int %s_kind, int %s_device" arg_name arg_name
       | otherwise ->
         let simple_type_cstring =
           match otherwise with
@@ -94,11 +96,10 @@ module Func = struct
           | Double -> "double"
           | Tensor -> "tensor"
           | TensorOption -> "tensor"
-          | TensorOptions -> "int" (* only Kind for now. *)
           | ScalarType -> "int"
           | Device -> "int"
           | Scalar -> "scalar"
-          | IntList | TensorList -> assert false
+          | IntList | TensorList | TensorOptions -> assert false
         in
         Printf.sprintf "%s %s" simple_type_cstring arg_name)
     |> String.concat ~sep:", "
@@ -113,7 +114,9 @@ module Func = struct
         Printf.sprintf "of_carray_long_int(%s_data, %s_len)" arg_name arg_name
       | TensorList ->
         Printf.sprintf "of_carray_tensor(%s_data, %s_len)" arg_name arg_name
-      | ScalarType | TensorOptions -> Printf.sprintf "torch::ScalarType(%s)" arg_name
+      | TensorOptions ->
+          Printf.sprintf "at::device(at::DeviceType(%s_device)).dtype(at::ScalarType(%s_kind))" arg_name arg_name
+      | ScalarType -> Printf.sprintf "torch::ScalarType(%s)" arg_name
       | Device -> Printf.sprintf "torch::Device(torch::DeviceType(%s))" arg_name
       | _ -> arg_name)
     |> String.concat ~sep:", "
@@ -136,7 +139,7 @@ module Func = struct
       | Double -> ["double"]
       | Tensor -> ["t"]
       | TensorOption -> ["t"]
-      | TensorOptions -> ["int"]
+      | TensorOptions -> ["int"; "int"]
       | ScalarType -> ["int"]
       | Device -> ["int"]
       | IntList -> ["ptr long"; "int"]
@@ -173,7 +176,8 @@ module Func = struct
           "(CArray.of_list t %s |> CArray.start) (List.length %s)"
           name name
       | Bool -> Printf.sprintf "(if %s then 1 else 0)" name
-      | ScalarType | TensorOptions -> Printf.sprintf "(Kind.to_int %s)" name
+      | ScalarType -> Printf.sprintf "(Kind.to_int %s)" name
+      | TensorOptions -> Printf.sprintf "(Kind.to_int (fst %s)) (Device.to_int (snd %s))" name name
       | Device -> Printf.sprintf "(Device.to_int %s)" name
       | Int64 -> Printf.sprintf "(Int64.of_int %s)" name
       | TensorOption -> Printf.sprintf "(match %s with | Some v -> v | None -> null)" name

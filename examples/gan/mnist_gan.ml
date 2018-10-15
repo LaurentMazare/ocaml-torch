@@ -53,11 +53,11 @@ let write_samples samples ~filename =
 let () =
   let mnist = Mnist_helper.read_files ~with_caching:true () in
 
-  let generator_vs = Layer.Var_store.create ~name:"gen" in
+  let generator_vs = Layer.Var_store.create ~name:"gen" () in
   let generator = create_generator generator_vs in
   let opt_g = Optimizer.adam (Layer.Var_store.vars generator_vs) ~learning_rate in
 
-  let discriminator_vs = Layer.Var_store.create ~name:"disc" in
+  let discriminator_vs = Layer.Var_store.create ~name:"disc" () in
   let discriminator = create_discriminator discriminator_vs in
   let opt_d = Optimizer.adam (Layer.Var_store.vars discriminator_vs) ~learning_rate in
 

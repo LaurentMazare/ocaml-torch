@@ -22,13 +22,15 @@ val image_dim : int
 val label_count : int
 
 val train_batch
-  :  t
+  :  ?device:Torch_core.Device.t
+  -> t
   -> batch_size:int
   -> batch_idx:int
   -> Tensor.t * Tensor.t
 
 val batch_accuracy
-  :  ?samples:int
+  :  ?device:Torch_core.Device.t
+  -> ?samples:int
   -> t
   -> [ `test | `train ]
   -> batch_size:int

@@ -1,1 +1,1 @@
-include Torch_core.Wrapper.Tensor
+include Torch_core.Wrapper.Cuda

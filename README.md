@@ -54,7 +54,6 @@ code](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/mnist/li
 
 ## TODO
 
-* Get CUDA to work.
 * Use a GADT to add type constraints to tensor elements.
 * Make it easier to use/import datasets.
 * Add more complex examples.
