@@ -343,7 +343,6 @@ tensor atg_log_sigmoid_backward(tensor grad_output, tensor self, tensor buffer);
 tensor atg_log_sigmoid_backward_out(tensor grad_input, tensor grad_output, tensor self, tensor buffer);
 tensor atg_log_sigmoid_out(tensor output, tensor self);
 tensor atg_log_softmax(tensor self, int64_t dim);
-tensor atg_log_softmax_backward_data(tensor grad_output, tensor output, int64_t dim, tensor self);
 tensor atg_logdet(tensor self);
 tensor atg_logspace1(scalar start, scalar end, int options);
 tensor atg_logspace2(scalar start, scalar end, int64_t steps, int options);
@@ -616,7 +615,6 @@ tensor atg_soft_margin_loss_forward(tensor self, tensor target, int64_t reductio
 tensor atg_soft_margin_loss_forward_out(tensor output, tensor self, tensor target, int64_t reduction);
 tensor atg_soft_margin_loss_out(tensor output, tensor self, tensor target, int64_t reduction);
 tensor atg_softmax(tensor self, int64_t dim);
-tensor atg_softmax_backward_data(tensor grad_output, tensor output, int64_t dim, tensor self);
 tensor atg_softplus(tensor self);
 tensor atg_softplus_out(tensor output, tensor self);
 tensor atg_softshrink(tensor self);

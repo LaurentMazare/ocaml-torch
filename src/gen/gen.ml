@@ -8,7 +8,8 @@ open Stdio
 let unsupported_functions =
   Set.of_list (module String)
     [ "bincount"; "stft"; "group_norm"; "layer_norm"; "rot90"; "t"
-    ; "multi_margin_loss"; "multi_margin_loss_out"; "sparse_coo_tensor" ]
+    ; "multi_margin_loss"; "multi_margin_loss_out"; "sparse_coo_tensor"
+    ; "log_softmax_backward_data"; "softmax_backward_data" ]
 
 let yaml_error yaml ~msg =
   Printf.sprintf "%s, %s" msg (Yaml.to_string_exn yaml)

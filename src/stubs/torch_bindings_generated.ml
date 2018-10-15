@@ -1374,10 +1374,6 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_log_softmax"
     (t @-> int64_t @-> returning t)
 
-  let log_softmax_backward_data =
-    foreign "atg_log_softmax_backward_data"
-    (t @-> t @-> int64_t @-> t @-> returning t)
-
   let logdet =
     foreign "atg_logdet"
     (t @-> returning t)
@@ -2465,10 +2461,6 @@ module C(F: Cstubs.FOREIGN) = struct
   let softmax =
     foreign "atg_softmax"
     (t @-> int64_t @-> returning t)
-
-  let softmax_backward_data =
-    foreign "atg_softmax_backward_data"
-    (t @-> t @-> int64_t @-> t @-> returning t)
 
   let softplus =
     foreign "atg_softplus"

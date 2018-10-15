@@ -2053,12 +2053,6 @@ tensor atg_log_softmax(tensor self, int64_t dim) {
   )
 }
 
-tensor atg_log_softmax_backward_data(tensor grad_output, tensor output, int64_t dim, tensor self) {
-  PROTECT(
-    return new torch::Tensor(torch::log_softmax_backward_data(*grad_output, *output, dim, *self));
-  )
-}
-
 tensor atg_logdet(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::logdet(*self));
@@ -3688,12 +3682,6 @@ tensor atg_soft_margin_loss_out(tensor output, tensor self, tensor target, int64
 tensor atg_softmax(tensor self, int64_t dim) {
   PROTECT(
     return new torch::Tensor(torch::softmax(*self, dim));
-  )
-}
-
-tensor atg_softmax_backward_data(tensor grad_output, tensor output, int64_t dim, tensor self) {
-  PROTECT(
-    return new torch::Tensor(torch::softmax_backward_data(*grad_output, *output, dim, *self));
   )
 }
 

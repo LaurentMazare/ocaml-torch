@@ -1713,11 +1713,6 @@ let log_softmax self dim =
   Gc.finalise C.Tensor.free t;
   t
 
-let log_softmax_backward_data grad_output output dim self =
-  let t = log_softmax_backward_data grad_output output (Int64.of_int dim) self in
-  Gc.finalise C.Tensor.free t;
-  t
-
 let logdet self =
   let t = logdet self in
   Gc.finalise C.Tensor.free t;
@@ -3075,11 +3070,6 @@ let soft_margin_loss_out output self target reduction =
 
 let softmax self dim =
   let t = softmax self (Int64.of_int dim) in
-  Gc.finalise C.Tensor.free t;
-  t
-
-let softmax_backward_data grad_output output dim self =
-  let t = softmax_backward_data grad_output output (Int64.of_int dim) self in
   Gc.finalise C.Tensor.free t;
   t
 
