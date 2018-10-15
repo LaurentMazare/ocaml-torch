@@ -80,5 +80,11 @@ module C(F: Cstubs.FOREIGN) = struct
     let free = foreign "ato_free" (t @-> returning void)
   end
 
+  module Cuda = struct
+    let device_count = foreign "atc_cuda_device_count" (void @-> returning int)
+    let is_available = foreign "atc_cuda_is_available" (void @-> returning int)
+    let cudnn_is_available = foreign "atc_cudnn_is_available" (void @-> returning int)
+  end
+
   module TensorG = Torch_bindings_generated.C(F)
 end

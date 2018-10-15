@@ -144,3 +144,9 @@ module Serialize = struct
       (List.length named_tensors)
       filename
 end
+
+module Cuda = struct
+  include Wrapper_generated.C.Cuda
+  let is_available () = is_available () <> 0
+  let cudnn_is_available () = cudnn_is_available () <> 0
+end

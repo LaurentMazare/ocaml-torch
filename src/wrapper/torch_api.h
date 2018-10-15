@@ -59,6 +59,10 @@ scalar ats_int(int64_t);
 scalar ats_float(double);
 void ats_free(scalar);
 
+int atc_cuda_device_count();
+int atc_cuda_is_available();
+int atc_cudnn_is_available();
+
 #include "torch_api_generated.h"
 
 #ifdef __cplusplus

@@ -177,4 +177,16 @@ void ats_free(scalar s) {
   delete(s);
 }
 
+int atc_cuda_device_count() {
+  PROTECT(return torch::cuda::device_count();)
+}
+
+int atc_cuda_is_available() {
+  PROTECT(return torch::cuda::is_available();)
+}
+
+int atc_cudnn_is_available() {
+  PROTECT(return torch::cuda::cudnn_is_available();)
+}
+
 #include "torch_api_generated.cpp.h"
