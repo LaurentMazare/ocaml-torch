@@ -19,6 +19,19 @@ let backward_pass () =
   Tensor.print square;
   Tensor.print (Tensor.grad x)
 
+let bigarray () =
+  let ba = Bigarray.Array2.create Float32 C_layout 5 2 in
+  let ba2 = Bigarray.Array2.create Float32 C_layout 5 2 in
+  Bigarray.Array2.fill ba 1337.;
+  Bigarray.Array2.fill ba2 1234.;
+  ba.{1, 1} <- 42.0;
+  let t = Bigarray.genarray_of_array2 ba |> Tensor.of_bigarray in
+  Tensor.print t;
+  Tensor.copy_to_bigarray t (Bigarray.genarray_of_array2 ba2);
+  ba2.{1, 1} <- 42.5;
+  Bigarray.genarray_of_array2 ba2 |> Tensor.of_bigarray |> Tensor.print
+
 let () =
+  bigarray ();
   tensor_ops ();
   backward_pass ()

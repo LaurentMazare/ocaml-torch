@@ -115,3 +115,6 @@ val max_pool2d
 val dropout : t -> keep_probability:float -> is_training:bool -> t
 
 val const_batch_norm : ?momentum:float -> ?eps:float -> t -> t
+
+val of_bigarray : ('a, 'b, Bigarray.c_layout) Bigarray.Genarray.t -> t
+val copy_to_bigarray : t -> ('b, 'a, Bigarray.c_layout) Bigarray.Genarray.t -> unit

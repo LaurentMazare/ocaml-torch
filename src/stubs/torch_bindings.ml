@@ -6,6 +6,23 @@ module C(F: Cstubs.FOREIGN) = struct
     type t = unit ptr
     let t : t typ = ptr void
 
+    let tensor_of_data =
+      foreign "at_tensor_of_data"
+        (   ptr void (* data *)
+        @-> ptr long (* dims *)
+        @-> int      (* ndims *)
+        @-> int      (* element size in bytes *)
+        @-> int      (* kind *)
+        @-> returning t)
+
+    let copy_data =
+      foreign "at_copy_data"
+        (   t        (* tensor *)
+        @-> ptr void (* data *)
+        @-> int64_t  (* numel *)
+        @-> int      (* element size in bytes *)
+        @-> returning void)
+
     let float_vec =
       foreign "at_float_vec"
         (   ptr double (* values *)

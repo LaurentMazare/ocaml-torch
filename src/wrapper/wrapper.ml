@@ -37,6 +37,38 @@ module Tensor = struct
     Gc.finalise free t;
     t
 
+  let of_bigarray (type a) (type b) (ga : (b, a, Bigarray.c_layout) Bigarray.Genarray.t) =
+    let dims = Bigarray.Genarray.dims ga in
+    let kind = Bigarray.Genarray.kind ga in
+    let tensor_kind =
+      match kind with
+      | Bigarray.Float32 -> Kind.Float
+      | Float64 -> Double
+      | Int8_signed -> Int8
+      | Int8_unsigned -> Uint8
+      | Int16_signed -> Int16
+      | Int -> Int
+      | Int64 -> Int64
+      | _ -> failwith "unsupported bigarray kind"
+    in
+    let t =
+      tensor_of_data
+        (bigarray_start genarray ga |> to_voidp)
+        (Array.to_list dims |> List.map Signed.Long.of_int |> CArray.of_list long |> CArray.start)
+        (Array.length dims)
+        (Bigarray.kind_size_in_bytes kind)
+        (Kind.to_int tensor_kind)
+    in
+    Gc.finalise free t;
+    t
+
+  let copy_to_bigarray (type a) (type b) t (ga : (b, a, Bigarray.c_layout) Bigarray.Genarray.t) =
+    let kind = Bigarray.Genarray.kind ga in
+    copy_data t
+      (bigarray_start genarray ga |> to_voidp)
+      (Bigarray.Genarray.dims ga |> Array.fold_left ( * ) 1 |> Int64.of_int)
+      (Bigarray.kind_size_in_bytes kind)
+
   let reshape t ~dims = reshape t dims
 
   let shape t =

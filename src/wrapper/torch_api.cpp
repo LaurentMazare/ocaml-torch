@@ -11,6 +11,28 @@ vector<torch::Tensor> of_carray_tensor(torch::Tensor **vs, int len) {
   return result;
 }
 
+tensor at_tensor_of_data(void *vs, long int *dims, int ndims, int element_size_in_bytes, int type) {
+  PROTECT(
+    torch::Tensor tensor = torch::zeros(torch::IntList(dims, ndims), torch::ScalarType(type));
+    if (element_size_in_bytes != tensor.type().elementSizeInBytes())
+      caml_failwith("incoherent element sizes in bytes");
+    void *tensor_data = tensor.storage().data_ptr().get();
+    memcpy(tensor_data, vs, tensor.numel() * element_size_in_bytes);
+    return new torch::Tensor(tensor);
+  )
+}
+
+void at_copy_data(tensor tensor, void *vs, int64_t numel, int element_size_in_bytes) {
+  PROTECT(
+    if (element_size_in_bytes != tensor->type().elementSizeInBytes())
+      caml_failwith("incoherent element sizes in bytes");
+    if (numel != tensor->numel())
+      caml_failwith("incoherent number of elements");
+    void *tensor_data = tensor->storage().data_ptr().get();
+    memcpy(vs, tensor_data, numel * element_size_in_bytes);
+  )
+}
+
 tensor at_float_vec(double *vs, int len, int type) {
   PROTECT(
     torch::Tensor tensor = torch::empty({len}, torch::ScalarType(type)); 

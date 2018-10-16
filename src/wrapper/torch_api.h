@@ -19,6 +19,8 @@ typedef void *optimizer;
 typedef void *scalar;
 #endif
 
+tensor at_tensor_of_data(void *vs, long int *dims, int ndims, int element_size_in_bytes, int type);
+void at_copy_data(tensor tensor, void *vs, int64_t numel, int element_size_in_bytes);
 tensor at_float_vec(double *values, int value_len, int type);
 tensor at_int_vec(int64_t *values, int value_len, int type);
 
