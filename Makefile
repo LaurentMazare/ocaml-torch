@@ -21,6 +21,10 @@ utop: .FORCE
 	dune build bin/utop_torch.bc
 	dune exec bin/utop_torch.bc
 
+jupyter: .FORCE
+	dune build @install
+	dune exec jupyter lab
+
 clean:
 	rm -Rf _build/ *.exe
 

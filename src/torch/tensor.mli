@@ -47,6 +47,7 @@ val ones : create
 val rand : create
 val randn : create
 
+val defined : t -> bool
 val shape : t -> int list
 
 val backward : t -> unit

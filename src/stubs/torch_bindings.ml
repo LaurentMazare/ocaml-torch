@@ -20,6 +20,7 @@ module C(F: Cstubs.FOREIGN) = struct
         @-> int         (* kind *)
         @-> returning t)
 
+    let defined = foreign "at_defined" (t @-> returning bool)
     let num_dims = foreign "at_dim" (t @-> returning int)
 
     let shape =

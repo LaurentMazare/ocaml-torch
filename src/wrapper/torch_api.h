@@ -22,6 +22,7 @@ typedef void *scalar;
 tensor at_float_vec(double *values, int value_len, int type);
 tensor at_int_vec(int64_t *values, int value_len, int type);
 
+int at_defined(tensor);
 int at_dim(tensor);
 void at_shape(tensor, int *);
 int at_scalar_type(tensor);

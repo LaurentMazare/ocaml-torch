@@ -27,8 +27,11 @@ let no_grad t ~f =
 
 let zero_grad t =
   let grad = grad t in
-  ignore (detach_ grad : t);
-  ignore (zero_ grad : t)
+  if defined grad
+  then begin
+    ignore (detach_ grad : t);
+    ignore (zero_ grad : t)
+  end
 
 type create
   =  ?requires_grad:bool

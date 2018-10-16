@@ -33,6 +33,10 @@ tensor at_int_vec(int64_t *vs, int len, int type) {
   )
 }
 
+int at_defined(tensor t) {
+  PROTECT(return t->defined();)
+}
+
 int at_dim(tensor t) {
   PROTECT(return t->dim();)
 }

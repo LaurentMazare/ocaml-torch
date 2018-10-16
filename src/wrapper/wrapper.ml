@@ -77,6 +77,8 @@ module Tensor = struct
   let argmax t = argmax1 t (-1) false
 
   let softmax t = softmax t (-1)
+
+  let defined = defined
 end
 
 module Scalar = struct

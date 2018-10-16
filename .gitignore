@@ -8,6 +8,7 @@
 *.cmxs
 *.cmxa
 *.swp
+*.ipynb_checkpoints
 
 # ocamlbuild working directory
 _build/
