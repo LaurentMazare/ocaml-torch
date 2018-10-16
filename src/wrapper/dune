@@ -1,5 +1,6 @@
 (library
   (name torch_core)
+  (public_name torch.core)
   (c_names torch_stubs)
   (cxx_names torch_api)
   (cxx_flags -std=c++11 -D_GLIBCXX_USE_CXX11_ABI=0)

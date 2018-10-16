@@ -1,0 +1,30 @@
+opam-version: "2.0"
+name:         "torch"
+bug-reports:  "https://github.com/LaurentMazare/ocaml-torch/issues"
+homepage:     "https://github.com/LaurentMazare/ocaml-torch"
+dev-repo:     "git+https://github.com/LaurentMazare/ocaml-torch.git"
+maintainer:   "Laurent Mazare <lmazare@gmail.com>"
+authors:      [ "Laurent Mazare" ]
+
+version: "dev"
+
+build: [["dune" "build" "--only-packages" "torch" "--root" "." "-j" jobs "@install"]]
+install: []
+remove:  []
+
+depends: [
+  "base" {>= "0.11.0"}
+  "stdio"
+  "ctypes" {>= "0.5"}
+  "ctypes-foreign"
+  "ocamlfind" {build}
+  "dune" {build}
+]
+
+depopts: [
+]
+
+conflicts: [
+]
+
+available: [ ocaml-version >= "4.06" ]
