@@ -5,12 +5,6 @@
 
 using namespace std;
 
-vector<long int> of_carray_long_int(long int *vs, int len) {
-  vector<long int> result;
-  for (int i = 0; i < len; ++i) result.push_back(vs[i]);
-  return result;
-}
-
 vector<torch::Tensor> of_carray_tensor(torch::Tensor **vs, int len) {
   vector<torch::Tensor> result;
   for (int i = 0; i < len; ++i) result.push_back(*(vs[i]));

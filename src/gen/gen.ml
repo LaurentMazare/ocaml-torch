@@ -111,7 +111,7 @@ module Func = struct
       | TensorOption -> Printf.sprintf "(%s ? *%s : torch::Tensor())" arg_name arg_name
       | Bool -> "(bool)" ^ arg_name
       | IntList ->
-        Printf.sprintf "of_carray_long_int(%s_data, %s_len)" arg_name arg_name
+        Printf.sprintf "torch::IntList(%s_data, %s_len)" arg_name arg_name
       | TensorList ->
         Printf.sprintf "of_carray_tensor(%s_data, %s_len)" arg_name arg_name
       | TensorOptions ->
