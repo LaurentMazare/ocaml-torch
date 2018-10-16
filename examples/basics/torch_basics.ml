@@ -34,4 +34,5 @@ let bigarray () =
 let () =
   bigarray ();
   tensor_ops ();
-  backward_pass ()
+  backward_pass ();
+  Stdio.printf "done\n%!"

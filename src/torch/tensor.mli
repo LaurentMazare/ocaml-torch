@@ -118,3 +118,4 @@ val const_batch_norm : ?momentum:float -> ?eps:float -> t -> t
 
 val of_bigarray : ('a, 'b, Bigarray.c_layout) Bigarray.Genarray.t -> t
 val copy_to_bigarray : t -> ('b, 'a, Bigarray.c_layout) Bigarray.Genarray.t -> unit
+val to_bigarray : t -> kind:('a, 'b) Bigarray.kind  -> ('a, 'b, Bigarray.c_layout) Bigarray.Genarray.t

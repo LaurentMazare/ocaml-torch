@@ -129,3 +129,8 @@ let const_batch_norm ?(momentum=0.1) ?(eps=1e-5) input =
   batch_norm input None None None None true momentum eps false
 
 let cat t_list ~dim = cat t_list dim
+
+let to_bigarray t ~kind =
+  let bigarray = Bigarray.Genarray.create kind C_layout (shape t |> Array.of_list) in
+  copy_to_bigarray t bigarray;
+  bigarray
