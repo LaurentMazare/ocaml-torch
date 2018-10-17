@@ -43,12 +43,12 @@ module Tensor = struct
     let tensor_kind =
       match kind with
       | Bigarray.Float32 -> Kind.Float
-      | Float64 -> Double
-      | Int8_signed -> Int8
-      | Int8_unsigned -> Uint8
-      | Int16_signed -> Int16
-      | Int -> Int
-      | Int64 -> Int64
+      | Bigarray.Float64 -> Double
+      | Bigarray.Int8_signed -> Int8
+      | Bigarray.Int8_unsigned -> Uint8
+      | Bigarray.Int16_signed -> Int16
+      | Bigarray.Int -> Int
+      | Bigarray.Int64 -> Int64
       | _ -> failwith "unsupported bigarray kind"
     in
     let t =
