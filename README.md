@@ -1,6 +1,13 @@
 # ocaml-torch
-Experimental [PyTorch](https://pytorch.org) bindings in ocaml using [C++ API](https://pytorch.org/cppdocs/).
+__ocaml-torch__ provides some ocaml bindings for the [PyTorch](https://pytorch.org) tensor library.
+This brings to OCaml NumPy-like tensor computations with GPU acceleration and tape-based automatic
+differentiation.
+These bindings use the [PyTorch C++ API](https://pytorch.org/cppdocs/) and are mostly automatically generated.
+
+
 The libtorch library can be downloaded from the [PyTorch website](https://pytorch.org/resources) ([latest cpu version](https://download.pytorch.org/libtorch/nightly/cpu/libtorch-shared-with-deps-latest.zip)).
+Note that until PyTorch reaches 1.0 there are no stable releases for libtorch so there
+may be some compilation issues.
 
 ## Usage
 Extract the libtorch library in a `LIBTORCH` directory then to build examples run:
@@ -56,6 +63,9 @@ code](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/mnist/li
 
 * Use a GADT to add type constraints to tensor elements.
 * Make it easier to use/import datasets.
+* Model weights import.
 * Add more complex examples.
+    * RNN/LSTM.
+    * Deep CNN on CIFAR-10 or ImageNet, maybe a ResNet ?
 * Add an opam package (this may have to wait until libtorch has stable releases).
 * utop/jupyter integration.
