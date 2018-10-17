@@ -22,15 +22,15 @@ let read_images filename =
   let samples = read_int32_be in_channel in
   let rows = read_int32_be in_channel in
   let columns = read_int32_be in_channel in
-  let data = Tensor.zeros [samples; rows * columns] in
+  let data = Bigarray.Array2.create Float32 C_layout samples (rows * columns) in
   for sample = 0 to samples - 1 do
     for idx = 0 to rows * columns - 1 do
       let v = Option.value_exn (In_channel.input_byte in_channel) in
-      Tensor.set_float2 data sample idx Float.(of_int v / 255.)
+      data.{ sample, idx } <- Float.(of_int v / 255.)
     done;
   done;
   In_channel.close in_channel;
-  data
+  Bigarray.genarray_of_array2 data |> Tensor.of_bigarray
 
 let read_labels filename =
   let in_channel = In_channel.create filename in
@@ -38,26 +38,22 @@ let read_labels filename =
   if magic_number <> 2049
   then Printf.failwithf "Incorrect magic number in %s: %d" filename magic_number ();
   let samples = read_int32_be in_channel in
-  let data = Tensor.zeros ~kind:Int [samples] in
+  let data = Bigarray.Array1.create Int C_layout samples in
   for sample = 0 to samples - 1 do
     let v = Option.value_exn (In_channel.input_byte in_channel) in
-    Tensor.set_int1 data sample v;
+    data.{ sample } <- v;
   done;
   In_channel.close in_channel;
   data
 
 let one_hot labels =
-  let nsamples =
-    match Tensor.shape labels with
-    | [nsamples] -> nsamples
-    | [] | _::_::_ -> failwith "unexpected shape"
-  in
-  let one_hot = Tensor.zeros [nsamples; label_count] in
+  let nsamples = Bigarray.Array1.dim labels in
+  let one_hot = Bigarray.Array2.create Float32 C_layout nsamples label_count in
+  Bigarray.Array2.fill one_hot 0.;
   for idx = 0 to nsamples - 1 do
-    let lbl = Tensor.get_int1 labels idx in
-    Tensor.set_float2 one_hot idx lbl 1.
+    one_hot.{ idx, labels.{ idx } } <- 1.
   done;
-  one_hot
+  Bigarray.genarray_of_array2 one_hot |> Tensor.of_bigarray
 
 type t =
   { train_images : Tensor.t
