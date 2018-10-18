@@ -134,13 +134,14 @@ void at_save_multi(tensor *tensors, char **tensor_names, int ntensors, char *fil
     torch::serialize::OutputArchive archive;
     for (int i = 0; i < ntensors; ++i)
       archive.write(std::string(tensor_names[i]), *(tensors[i]), /* buffer=*/ false);
-    torch::serialize::save_to_file(archive, filename);
+    archive.save_to(filename);
   )
 }
 
 void at_load_multi(tensor *tensors, char **tensor_names, int ntensors, char *filename) {
   PROTECT(
-    torch::serialize::InputArchive archive = torch::serialize::load_from_file(filename);
+    torch::serialize::InputArchive archive; 
+    archive.load_from(std::string(filename));
     vector<torch::Tensor> ts(ntensors);
     for (int i = 0; i < ntensors; ++i)
       archive.read(std::string(tensor_names[i]), ts[i]);
@@ -153,14 +154,19 @@ void at_load_multi(tensor *tensors, char **tensor_names, int ntensors, char *fil
 
 void at_load_multi_(tensor *tensors, char **tensor_names, int ntensors, char *filename) {
   PROTECT(
-    torch::serialize::InputArchive archive = torch::serialize::load_from_file(filename);
+    torch::serialize::InputArchive archive;
+    archive.load_from(std::string(filename));
     for (int i = 0; i < ntensors; ++i)
       archive.read(std::string(tensor_names[i]), (*tensors)[i]);
   )
 }
 
 tensor at_load(char *filename) {
-  PROTECT(return new torch::Tensor(torch::load(filename));)
+  PROTECT(
+    torch::Tensor tensor;
+    torch::load(tensor, filename);
+    return new torch::Tensor(tensor);
+  )
 }
 
 void at_free(tensor t) {
