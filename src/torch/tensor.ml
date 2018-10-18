@@ -123,6 +123,15 @@ let max_pool2d ?(padding=0, 0) ?(dilation=1, 1) ?(ceil_mode=false) ?stride self 
     (pair_to_list dilation)
     ceil_mode
 
+let avg_pool2d ?(padding=0, 0) ?(count_include_pad=false) ?(ceil_mode=false) ?stride self ~ksize =
+  avg_pool2d
+    self
+    (pair_to_list ksize)
+    (Option.value stride ~default:ksize |> pair_to_list)
+    (pair_to_list padding)
+    ceil_mode
+    count_include_pad
+
 let dropout t ~keep_probability ~is_training = dropout t keep_probability is_training
 
 let const_batch_norm ?(momentum=0.1) ?(eps=1e-5) input =

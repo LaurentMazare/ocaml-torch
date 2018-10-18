@@ -112,6 +112,15 @@ val max_pool2d
   -> ksize:int*int
   -> t
 
+val avg_pool2d
+  :  ?padding:int*int
+  -> ?count_include_pad:bool
+  -> ?ceil_mode:bool
+  -> ?stride:int*int
+  -> t
+  -> ksize:int*int
+  -> t
+
 val dropout : t -> keep_probability:float -> is_training:bool -> t
 
 val const_batch_norm : ?momentum:float -> ?eps:float -> t -> t
