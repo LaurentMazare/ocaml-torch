@@ -14,7 +14,7 @@ open Torch
 let learning_rate = Tensor.f 10.
 
 let () =
-  let { Mnist_helper.train_images; train_labels; test_images; test_labels } =
+  let { Dataset_helper.train_images; train_labels; test_images; test_labels } =
     Mnist_helper.read_files ~with_caching:true ()
   in
   let ws = Tensor.zeros Mnist_helper. [image_dim; label_count] ~requires_grad:true in

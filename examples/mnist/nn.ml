@@ -8,7 +8,7 @@ let learning_rate = 1e-3
 
 let () =
   let mnist = Mnist_helper.read_files ~with_caching:true () in
-  let { Mnist_helper.train_images; train_labels; _ } = mnist in
+  let { Dataset_helper.train_images; train_labels; _ } = mnist in
   let vs = Layer.Var_store.create ~name:"nn" () in
   let linear1 =
     Layer.linear vs hidden_nodes ~activation:Relu ~input_dim:Mnist_helper.image_dim
@@ -27,7 +27,7 @@ let () =
     if index % 50 = 0 then begin
       (* Compute the validation error. *)
       let test_accuracy =
-        Mnist_helper.batch_accuracy mnist `test ~batch_size:1000 ~predict:model
+        Dataset_helper.batch_accuracy mnist `test ~batch_size:1000 ~predict:model
       in
       Stdio.printf "%d %f %.2f%%\n%!" index (Tensor.float_value loss) (100. *. test_accuracy);
     end;

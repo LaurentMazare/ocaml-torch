@@ -3,18 +3,11 @@
    Images have shape [ samples; 32; 32; 3 ]. Labels are one-hot encoded with
    shape [ samples; 10 ].
 *)
-type t = Mnist_helper.t =
-  { train_images : Tensor.t
-  ; train_labels : Tensor.t
-  ; test_images : Tensor.t
-  ; test_labels : Tensor.t
-  }
-
 val read_files
   :  ?dirname:string
   -> ?with_caching:bool
   -> unit
-  -> t
+  -> Dataset_helper.t
 
 val image_c : int
 val image_w : int

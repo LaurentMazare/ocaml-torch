@@ -79,7 +79,7 @@ let () =
 
   for batch_idx = 1 to batches do
     let batch_images, batch_labels =
-      Mnist_helper.train_batch mnist ~batch_size ~batch_idx
+      Dataset_helper.train_batch mnist ~batch_size ~batch_idx
     in
     let real_input =
       Tensor.(cat [ f 2. * batch_images - f 1.; batch_labels ]) ~dim:1

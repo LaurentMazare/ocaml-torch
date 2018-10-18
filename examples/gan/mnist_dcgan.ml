@@ -91,7 +91,7 @@ let () =
   let fixed_noise = rand () in
 
   for batch_idx = 1 to batches do
-    let batch_images, _ = Mnist_helper.train_batch mnist ~batch_size ~batch_idx in
+    let batch_images, _ = Dataset_helper.train_batch mnist ~batch_size ~batch_idx in
     let batch_images = Tensor.reshape batch_images ~dims:[ batch_size; 1; image_w; image_h ] in
     let discriminator_loss =
       match loss with
