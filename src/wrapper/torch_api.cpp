@@ -35,7 +35,7 @@ void at_copy_data(tensor tensor, void *vs, int64_t numel, int element_size_in_by
 
 tensor at_float_vec(double *vs, int len, int type) {
   PROTECT(
-    torch::Tensor tensor = torch::empty({len}, torch::ScalarType(type)); 
+    torch::Tensor tensor = torch::empty({len}, torch::ScalarType(type));
     for (int i = 0; i < len; ++i) tensor[i] = vs[i];
     return new torch::Tensor(tensor);
   )
@@ -43,7 +43,7 @@ tensor at_float_vec(double *vs, int len, int type) {
 
 tensor at_int_vec(int64_t *vs, int len, int type) {
   PROTECT(
-    torch::Tensor tensor = torch::empty({len}, torch::ScalarType(type)); 
+    torch::Tensor tensor = torch::empty({len}, torch::ScalarType(type));
     for (int i = 0; i < len; ++i) tensor[i] = vs[i];
     return new torch::Tensor(tensor);
   )
@@ -140,12 +140,12 @@ void at_save_multi(tensor *tensors, char **tensor_names, int ntensors, char *fil
 
 void at_load_multi(tensor *tensors, char **tensor_names, int ntensors, char *filename) {
   PROTECT(
-    torch::serialize::InputArchive archive; 
+    torch::serialize::InputArchive archive;
     archive.load_from(std::string(filename));
     vector<torch::Tensor> ts(ntensors);
     for (int i = 0; i < ntensors; ++i)
       archive.read(std::string(tensor_names[i]), ts[i]);
-    // Only allocate the new tensor now so that if there is an exception raised during 
+    // Only allocate the new tensor now so that if there is an exception raised during
     // [read], no memory has to be freed.
     for (int i = 0; i < ntensors; ++i)
       tensors[i] = new torch::Tensor(ts[i]);

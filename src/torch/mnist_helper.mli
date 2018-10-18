@@ -36,3 +36,5 @@ val batch_accuracy
   -> batch_size:int
   -> predict:(Tensor.t -> Tensor.t)
   -> float
+
+val one_hot : (int, _, Bigarray.c_layout) Bigarray.Array1.t -> label_count:int -> Tensor.t

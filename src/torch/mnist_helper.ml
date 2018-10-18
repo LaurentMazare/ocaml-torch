@@ -46,7 +46,7 @@ let read_labels filename =
   In_channel.close in_channel;
   data
 
-let one_hot labels =
+let one_hot labels ~label_count =
   let nsamples = Bigarray.Array1.dim labels in
   let one_hot = Bigarray.Array2.create Float32 C_layout nsamples label_count in
   Bigarray.Array2.fill one_hot 0.;
@@ -71,7 +71,7 @@ let read_files
       ()
   =
   let read () =
-    let read_onehot filename = read_labels filename |> one_hot in
+    let read_onehot filename = read_labels filename |> one_hot ~label_count in
     { train_images = read_images train_image_file
     ; train_labels = read_onehot train_label_file
     ; test_images = read_images test_image_file
