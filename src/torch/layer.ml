@@ -34,10 +34,10 @@ let apply ?activation ys =
   | Some Leaky_relu -> Tensor.leaky_relu ys
   | None -> ys
 
-let linear vs ?activation ?(use_bias=true) ~input_dim output_dim =
+let linear vs ?(w_init=0.1) ?activation ?(use_bias=true) ~input_dim output_dim =
   let w =
     Tensor.randn [ input_dim; output_dim ]
-      ~scale:0.1 ~requires_grad:true ~device:(Var_store.device vs)
+      ~scale:w_init ~requires_grad:true ~device:(Var_store.device vs)
   in
   let apply =
     if use_bias
@@ -54,23 +54,31 @@ let linear vs ?activation ?(use_bias=true) ~input_dim output_dim =
   in
   { apply }
 
-let conv2d vs ?(w_init=0.1) ~ksize:(k1, k2) ~stride ?activation ?(padding=0, 0) ~input_dim output_dim =
+let conv2d vs ?(w_init=0.1) ~ksize:(k1, k2) ~stride ?activation ?(use_bias=true) ?(padding=0, 0) ~input_dim output_dim =
   let w =
     Tensor.randn [ output_dim; input_dim; k1; k2 ] ~scale:w_init ~requires_grad:true
       ~device:(Var_store.device vs)
   in
-  let b = Tensor.zeros [ output_dim ] ~requires_grad:true ~device:(Var_store.device vs) in
-  Var_store.add_vars vs ~vars:[w; b];
-  let apply xs =
-    Tensor.conv2d xs w b ~padding ~stride |> apply ?activation
+  let apply =
+    if use_bias
+    then begin
+      let b = Tensor.zeros [ output_dim ] ~requires_grad:true ~device:(Var_store.device vs) in
+      Var_store.add_vars vs ~vars:[w; b];
+      fun xs -> Tensor.conv2d xs w b ~padding ~stride |> apply ?activation
+    end else begin
+      let b = Tensor.zeros [ output_dim ] ~device:(Var_store.device vs) in
+      Var_store.add_vars vs ~vars:[w];
+      fun xs -> Tensor.conv2d xs w b ~padding ~stride |> apply ?activation
+    end
   in
   { apply }
 
-let conv2d_ vs ?w_init ~ksize ~stride ?activation ?(padding = 0) ~input_dim output_dim =
+let conv2d_ vs ?w_init ~ksize ~stride ?activation ?use_bias ?(padding = 0) ~input_dim output_dim =
   conv2d vs
     ?w_init
     ~ksize:(ksize, ksize)
     ~stride:(stride, stride)
+    ?use_bias
     ?activation
     ~padding:(padding, padding)
     ~input_dim

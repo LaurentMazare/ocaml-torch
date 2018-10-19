@@ -7,13 +7,14 @@
 *)
 open Base
 open Torch
+module Vs = Layer.Var_store
 
 let batch_size = 64
 let epochs = 5000
-let learning_rate = 1e-3
-let keep_probability = 0.8
+let learning_rate = 1e-4
+let keep_probability = 1.0
 
-let conv2d = Layer.conv2d_ ~padding:1 ~ksize:3 ~w_init:0.01
+let conv2d = Layer.conv2d_ ~padding:1 ~ksize:3 ~w_init:0.01 ~use_bias:false
 
 let basic_block vs ~stride ~input_dim output_dim =
   let conv2d1 = conv2d vs ~stride ~input_dim output_dim in
@@ -30,7 +31,7 @@ let basic_block vs ~stride ~input_dim output_dim =
             [ batch_dim; output_dim - channel_dim; w_dim; h_dim ]
           | _ -> assert false
         in
-        Tensor.cat [xs; Tensor.zeros zero_dims] ~dim:1
+        Tensor.cat [xs; Tensor.zeros zero_dims ~device:(Vs.device vs)] ~dim:1
     in
     Layer.apply conv2d1 xs
     |> Tensor.dropout ~keep_probability ~is_training
@@ -55,10 +56,10 @@ let block_stack vs ~stride ~depth ~input_dim output_dim =
 
 let resnet vs =
   let conv2d1 = conv2d vs ~stride:1 ~input_dim:3 ~activation:Relu 16 in
-  let stack1 = block_stack vs ~stride:1 ~depth:18 ~input_dim:16 16 in
-  let stack2 = block_stack vs ~stride:2 ~depth:18 ~input_dim:16 32 in
-  let stack3 = block_stack vs ~stride:2 ~depth:18 ~input_dim:32 64 in
-  let linear = Layer.linear vs ~activation:Softmax ~input_dim:64 Cifar_helper.label_count in
+  let stack1 = block_stack vs ~stride:1 ~depth:2 ~input_dim:16 16 in
+  let stack2 = block_stack vs ~stride:2 ~depth:2 ~input_dim:16 32 in
+  let stack3 = block_stack vs ~stride:2 ~depth:2 ~input_dim:32 64 in
+  let linear = Layer.linear vs ~w_init:0.01 ~activation:Softmax ~input_dim:64 Cifar_helper.label_count in
   fun xs ~is_training ->
     Tensor.reshape xs ~dims:Cifar_helper. [ -1; image_c; image_w; image_h ]
     |> Layer.apply conv2d1
@@ -78,27 +79,30 @@ let () =
     end else None
   in
   let cifar = Cifar_helper.read_files ~with_caching:true () in
-  let vs = Layer.Var_store.create ~name:"resnet" ?device () in
+  let vs = Vs.create ~name:"resnet" ?device () in
   let model = resnet vs in
-  let adam = Optimizer.adam (Layer.Var_store.vars vs) ~learning_rate in
+  let adam = Optimizer.adam (Vs.vars vs) ~learning_rate in
   let train_model = model ~is_training:true in
   let test_model = model ~is_training:false in
-  for batch_idx = 1 to epochs do
-    let batch_images, batch_labels =
-      Dataset_helper.train_batch cifar ?device ~batch_size ~batch_idx
-    in
-    (* Compute the cross-entropy loss. *)
-    let loss = Tensor.(mean (- batch_labels * log (train_model batch_images +f 1e-6))) in
-
-    Stdio.printf "%d %f\n%!" batch_idx (Tensor.float_value loss);
-    Optimizer.backward_step adam ~loss;
-
-    if batch_idx % 50 = 0 then begin
-      (* Compute the validation error. *)
-      let test_accuracy =
-        Dataset_helper.batch_accuracy cifar `test ?device ~batch_size ~predict:test_model
+  Checkpointing.loop
+    ~start_index:1 ~end_index:epochs
+    ~named_tensors:(Vs.vars vs |> List.mapi ~f:(fun i t -> Int.to_string i, t))
+    ~checkpoint_base:"resnet-ckpt"
+    ~checkpoint_every:(`seconds 600.)
+    (fun ~index:batch_idx ->
+      let batch_images, batch_labels =
+        Dataset_helper.train_batch cifar ?device ~batch_size ~batch_idx
       in
-      Stdio.printf "%d %f %.2f%%\n%!" batch_idx (Tensor.float_value loss) (100. *. test_accuracy);
-    end;
-    Caml.Gc.compact ();
-  done
+      (* Compute the cross-entropy loss. *)
+      let loss = Tensor.(mean (- batch_labels * log (train_model batch_images +f 1e-6))) in
+
+      Optimizer.backward_step adam ~loss;
+
+      if batch_idx % 500 = 0 then begin
+        (* Compute the validation error. *)
+        let test_accuracy =
+          Dataset_helper.batch_accuracy cifar `test ?device ~batch_size ~predict:test_model
+        in
+        Stdio.printf "%d %f %.2f%%\n%!" batch_idx (Tensor.float_value loss) (100. *. test_accuracy);
+      end;
+      Caml.Gc.full_major ())

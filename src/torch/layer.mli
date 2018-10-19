@@ -3,6 +3,7 @@ module Var_store : sig
   val create : ?device:Torch_core.Device.t -> name:string -> unit -> t
   val vars : t -> Tensor.t list
   val name : t -> string
+  val device : t -> Torch_core.Device.t
 end
 
 type t
@@ -16,6 +17,7 @@ type activation =
 
 val linear
   :  Var_store.t
+  -> ?w_init:float
   -> ?activation:activation (* default: no activation *)
   -> ?use_bias:bool (* default: true *)
   -> input_dim:int
@@ -28,6 +30,7 @@ val conv2d
   -> ksize:int * int
   -> stride:int * int
   -> ?activation:activation (* default: no activation *)
+  -> ?use_bias:bool (* default: true *)
   -> ?padding:int * int
   -> input_dim:int
   -> int
@@ -39,6 +42,7 @@ val conv2d_
   -> ksize:int
   -> stride:int
   -> ?activation:activation (* default: no activation *)
+  -> ?use_bias:bool (* default: true *)
   -> ?padding:int
   -> input_dim:int
   -> int
