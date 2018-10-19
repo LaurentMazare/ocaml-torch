@@ -13,9 +13,11 @@ let epochs = 5000
 let learning_rate = 1e-3
 let keep_probability = 0.8
 
+let conv2d = Layer.conv2d_ ~padding:1 ~ksize:3 ~w_init:0.01
+
 let basic_block vs ~stride ~input_dim output_dim =
-  let conv2d1 = Layer.conv2d_ vs ~padding:1 ~ksize:3 ~stride ~input_dim output_dim in
-  let conv2d2 = Layer.conv2d_ vs ~padding:1 ~ksize:3 ~stride:1 ~input_dim:output_dim output_dim in
+  let conv2d1 = conv2d vs ~stride ~input_dim output_dim in
+  let conv2d2 = conv2d vs ~stride:1 ~input_dim:output_dim output_dim in
   fun xs ~is_training ->
     let shortcut =
       if stride = 1
@@ -52,7 +54,7 @@ let block_stack vs ~stride ~depth ~input_dim output_dim =
       ~f:(fun acc basic_block -> basic_block acc ~is_training)
 
 let resnet vs =
-  let conv2d1 = Layer.conv2d_ vs ~ksize:3 ~stride:1 ~input_dim:3 ~padding:1 16 ~activation:Relu in
+  let conv2d1 = conv2d vs ~stride:1 ~input_dim:3 ~activation:Relu 16 in
   let stack1 = block_stack vs ~stride:1 ~depth:18 ~input_dim:16 16 in
   let stack2 = block_stack vs ~stride:2 ~depth:18 ~input_dim:16 32 in
   let stack3 = block_stack vs ~stride:2 ~depth:18 ~input_dim:32 64 in

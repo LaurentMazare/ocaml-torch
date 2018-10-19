@@ -54,9 +54,9 @@ let linear vs ?activation ?(use_bias=true) ~input_dim output_dim =
   in
   { apply }
 
-let conv2d vs ~ksize:(k1, k2) ~stride ?activation ?(padding=0, 0) ~input_dim output_dim =
+let conv2d vs ?(w_init=0.1) ~ksize:(k1, k2) ~stride ?activation ?(padding=0, 0) ~input_dim output_dim =
   let w =
-    Tensor.randn [ output_dim; input_dim; k1; k2 ] ~scale:0.1 ~requires_grad:true
+    Tensor.randn [ output_dim; input_dim; k1; k2 ] ~scale:w_init ~requires_grad:true
       ~device:(Var_store.device vs)
   in
   let b = Tensor.zeros [ output_dim ] ~requires_grad:true ~device:(Var_store.device vs) in
@@ -66,8 +66,9 @@ let conv2d vs ~ksize:(k1, k2) ~stride ?activation ?(padding=0, 0) ~input_dim out
   in
   { apply }
 
-let conv2d_ vs ~ksize ~stride ?activation ?(padding = 0) ~input_dim output_dim =
+let conv2d_ vs ?w_init ~ksize ~stride ?activation ?(padding = 0) ~input_dim output_dim =
   conv2d vs
+    ?w_init
     ~ksize:(ksize, ksize)
     ~stride:(stride, stride)
     ?activation
