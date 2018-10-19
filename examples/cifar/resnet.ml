@@ -14,8 +14,8 @@ let learning_rate = 1e-3
 let keep_probability = 0.8
 
 let basic_block vs ~stride ~input_dim output_dim =
-  let conv2d1 = Layer.conv2d_ vs ~ksize:3 ~stride ~input_dim output_dim in
-  let conv2d2 = Layer.conv2d_ vs ~ksize:3 ~stride:1 ~input_dim:output_dim output_dim in
+  let conv2d1 = Layer.conv2d_ vs ~padding:1 ~ksize:3 ~stride ~input_dim output_dim in
+  let conv2d2 = Layer.conv2d_ vs ~padding:1 ~ksize:3 ~stride:1 ~input_dim:output_dim output_dim in
   fun xs ~is_training ->
     let shortcut =
       if stride = 1
@@ -45,14 +45,14 @@ let block_stack vs ~stride ~depth ~input_dim output_dim =
     List.init depth ~f:(fun i ->
       basic_block vs output_dim
         ~stride:(if i = 0 then stride else 1)
-        ~input_dim:(if i = 0 then output_dim else input_dim))
+        ~input_dim:(if i = 0 then input_dim else output_dim))
   in
   fun (xs : Tensor.t) ~is_training ->
     List.fold basic_blocks ~init:xs
       ~f:(fun acc basic_block -> basic_block acc ~is_training)
 
 let resnet vs =
-  let conv2d1 = Layer.conv2d_ vs ~ksize:3 ~stride:1 ~input_dim:3 16 ~activation:Relu in
+  let conv2d1 = Layer.conv2d_ vs ~ksize:3 ~stride:1 ~input_dim:3 ~padding:1 16 ~activation:Relu in
   let stack1 = block_stack vs ~stride:1 ~depth:18 ~input_dim:16 16 in
   let stack2 = block_stack vs ~stride:2 ~depth:18 ~input_dim:16 32 in
   let stack3 = block_stack vs ~stride:2 ~depth:18 ~input_dim:32 64 in
@@ -77,8 +77,8 @@ let () =
   in
   let cifar = Cifar_helper.read_files ~with_caching:true () in
   let vs = Layer.Var_store.create ~name:"resnet" ?device () in
-  let adam = Optimizer.adam (Layer.Var_store.vars vs) ~learning_rate in
   let model = resnet vs in
+  let adam = Optimizer.adam (Layer.Var_store.vars vs) ~learning_rate in
   let train_model = model ~is_training:true in
   let test_model = model ~is_training:false in
   for batch_idx = 1 to epochs do
@@ -88,6 +88,7 @@ let () =
     (* Compute the cross-entropy loss. *)
     let loss = Tensor.(mean (- batch_labels * log (train_model batch_images +f 1e-6))) in
 
+    Stdio.printf "%d %f\n%!" batch_idx (Tensor.float_value loss);
     Optimizer.backward_step adam ~loss;
 
     if batch_idx % 50 = 0 then begin
