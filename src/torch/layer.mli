@@ -17,7 +17,6 @@ type activation =
 
 val linear
   :  Var_store.t
-  -> ?w_init:float
   -> ?activation:activation (* default: no activation *)
   -> ?use_bias:bool (* default: true *)
   -> input_dim:int
@@ -26,7 +25,6 @@ val linear
 
 val conv2d
   :  Var_store.t
-  -> ?w_init:float
   -> ksize:int * int
   -> stride:int * int
   -> ?activation:activation (* default: no activation *)
@@ -38,7 +36,6 @@ val conv2d
 
 val conv2d_
   :  Var_store.t
-  -> ?w_init:float
   -> ksize:int
   -> stride:int
   -> ?activation:activation (* default: no activation *)
@@ -69,6 +66,9 @@ val conv_transpose2d_
   -> input_dim:int
   -> int
   -> t
+
+val id : t
+val fold : t list -> t
 
 val apply
   :  t

@@ -53,12 +53,12 @@ let () =
 
     Optimizer.backward_step adam ~loss;
 
-    if batch_idx % 50 = 0 then begin
+    if batch_idx % 250 = 0 then begin
       (* Compute the validation error. *)
       let test_accuracy =
         Dataset_helper.batch_accuracy cifar `test ?device ~batch_size ~predict:test_model
       in
       Stdio.printf "%d %f %.2f%%\n%!" batch_idx (Tensor.float_value loss) (100. *. test_accuracy);
     end;
-    Caml.Gc.compact ();
+    Caml.Gc.full_major ();
   done
