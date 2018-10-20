@@ -121,7 +121,19 @@ val avg_pool2d
   -> ksize:int*int
   -> t
 
-val dropout : t -> keep_probability:float -> is_training:bool -> t
+val batch_norm
+  :  t
+  -> t option
+  -> t option
+  -> t option
+  -> t option
+  -> bool
+  -> float
+  -> float
+  -> bool
+  -> t
+
+val dropout : t -> p:float (* dropout probability *) -> is_training:bool -> t
 
 val const_batch_norm : ?momentum:float -> ?eps:float -> t -> t
 

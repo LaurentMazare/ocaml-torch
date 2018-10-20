@@ -38,7 +38,7 @@ let () =
     |> Tensor.max_pool2d ~ksize:(2, 2)
     |> Tensor.reshape ~dims:[ -1; 16 * 5 * 5 ]
     |> Layer.apply linear1
-    |> Tensor.dropout ~keep_probability:0.5 ~is_training
+    |> Tensor.dropout ~p:0.5 ~is_training
     |> Layer.apply linear2
     |> Layer.apply linear3
   in

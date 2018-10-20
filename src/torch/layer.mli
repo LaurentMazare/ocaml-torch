@@ -67,6 +67,13 @@ val conv_transpose2d_
   -> int
   -> t
 
+val batch_norm2d
+  :  Var_store.t
+  -> ?eps:float
+  -> ?momentum:float
+  -> int
+  -> t
+
 val id : t
 val fold : t list -> t
 

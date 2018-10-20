@@ -110,6 +110,19 @@ let conv_transpose2d_ vs ~ksize ~stride ?activation ?(padding = 0) ?(output_padd
     ~input_dim
     output_dim
 
+let batch_norm2d vs ?(eps=1e-5) ?(momentum=0.1) output_dim =
+  let w = Tensor.ones [ output_dim ] ~requires_grad:true ~device:(Var_store.device vs) in
+  let b = Tensor.zeros [ output_dim ] ~requires_grad:true ~device:(Var_store.device vs) in
+  Var_store.add_vars vs ~vars:[w; b];
+  (* TODO *)
+  let running_mean = None in
+  let running_var = None in
+  let is_training = true in
+  let apply xs =
+    Tensor.batch_norm xs (Some w) (Some b) running_mean running_var is_training momentum eps false
+  in
+  { apply }
+
 let apply t xs = t.apply xs
 
 let id = { apply = Fn.id }

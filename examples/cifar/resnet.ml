@@ -12,13 +12,15 @@ module Vs = Layer.Var_store
 let batch_size = 64
 let epochs = 250000
 let learning_rate = 0.1
-let keep_probability = 1.0
+let dropout_p = 0.3
 
 let conv2d ?(padding=1) ?(ksize=3) = Layer.conv2d_ ~ksize ~padding ~use_bias:false
 
 let basic_block vs ~stride ~input_dim output_dim =
   let conv2d1 = conv2d vs ~stride ~input_dim output_dim in
   let conv2d2 = conv2d vs ~stride:1 ~input_dim:output_dim output_dim in
+  let bn1 = Layer.batch_norm2d vs output_dim in
+  let bn2 = Layer.batch_norm2d vs output_dim in
   let shortcut =
     if stride = 1
     then Layer.id
@@ -27,12 +29,12 @@ let basic_block vs ~stride ~input_dim output_dim =
   in
   fun xs ~is_training ->
     Layer.apply conv2d1 xs
-    |> Tensor.dropout ~keep_probability ~is_training
-    (* TODO: add some batch-norm or some group-norm. *)
+    |> Tensor.dropout ~p:dropout_p ~is_training
+    |> Layer.apply bn1
     |> Tensor.relu
     |> Layer.apply conv2d2
-    |> Tensor.dropout ~keep_probability ~is_training
-    (* TODO: add some batch-norm or some group-norm. *)
+    |> Tensor.dropout ~p:dropout_p ~is_training
+    |> Layer.apply bn2
     (* No final relu as per http://torch.ch/blog/2016/02/04/resnets.html *)
     |> fun ys -> Tensor.(ys + Layer.apply shortcut xs)
 
@@ -54,13 +56,14 @@ let resnet vs =
   let stack3 = block_stack vs ~stride:2 ~depth:2 ~input_dim:32 64 in
   let linear = Layer.linear vs ~activation:Softmax ~input_dim:256 Cifar_helper.label_count in
   fun xs ~is_training ->
+    let batch_size = Tensor.shape xs |> List.hd_exn in
     Tensor.reshape xs ~dims:Cifar_helper. [ -1; image_c; image_w; image_h ]
     |> Layer.apply conv2d1
     |> stack1 ~is_training
     |> stack2 ~is_training
     |> stack3 ~is_training
     |> Tensor.avg_pool2d ~ksize:(4, 4)
-    |> Tensor.reshape ~dims:[ -1; 256 ]
+    |> Tensor.reshape ~dims:[ batch_size; -1 ]
     |> Layer.apply linear
 
 let () =
@@ -88,8 +91,6 @@ let () =
       in
       (* Compute the cross-entropy loss. *)
       let loss = Tensor.(mean (- batch_labels * log (train_model batch_images +f 1e-6))) in
-
-      Stdio.printf "%d %f\n%!" batch_idx (Tensor.float_value loss);
 
       Optimizer.backward_step adam ~loss;
 

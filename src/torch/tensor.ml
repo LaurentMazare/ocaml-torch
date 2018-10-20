@@ -132,7 +132,7 @@ let avg_pool2d ?(padding=0, 0) ?(count_include_pad=false) ?(ceil_mode=false) ?st
     ceil_mode
     count_include_pad
 
-let dropout t ~keep_probability ~is_training = dropout t keep_probability is_training
+let dropout t ~p ~is_training = dropout t p is_training
 
 let const_batch_norm ?(momentum=0.1) ?(eps=1e-5) input =
   batch_norm input None None None None true momentum eps false
