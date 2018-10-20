@@ -19,8 +19,8 @@ let conv2d ?(padding=1) ?(ksize=3) = Layer.conv2d_ ~ksize ~padding ~use_bias:fal
 let basic_block vs ~stride ~input_dim output_dim =
   let conv2d1 = conv2d vs ~stride ~input_dim output_dim in
   let conv2d2 = conv2d vs ~stride:1 ~input_dim:output_dim output_dim in
-  let bn1 = Layer.batch_norm2d vs output_dim in
-  let bn2 = Layer.batch_norm2d vs output_dim in
+  let bn1 = Layer.batch_norm2d vs output_dim |> Staged.unstage in
+  let bn2 = Layer.batch_norm2d vs output_dim |> Staged.unstage in
   let shortcut =
     if stride = 1
     then Layer.id
@@ -30,11 +30,11 @@ let basic_block vs ~stride ~input_dim output_dim =
   fun xs ~is_training ->
     Layer.apply conv2d1 xs
     |> Tensor.dropout ~p:dropout_p ~is_training
-    |> Layer.apply bn1
+    |> bn1 ~is_training
     |> Tensor.relu
     |> Layer.apply conv2d2
     |> Tensor.dropout ~p:dropout_p ~is_training
-    |> Layer.apply bn2
+    |> bn2 ~is_training
     (* No final relu as per http://torch.ch/blog/2016/02/04/resnets.html *)
     |> fun ys -> Tensor.(ys + Layer.apply shortcut xs)
 

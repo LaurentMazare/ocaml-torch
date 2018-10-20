@@ -1,3 +1,5 @@
+open Base
+
 module Var_store : sig
   type t
   val create : ?device:Torch_core.Device.t -> name:string -> unit -> t
@@ -72,7 +74,7 @@ val batch_norm2d
   -> ?eps:float
   -> ?momentum:float
   -> int
-  -> t
+  -> (Tensor.t -> is_training:bool -> Tensor.t) Staged.t
 
 val id : t
 val fold : t list -> t
