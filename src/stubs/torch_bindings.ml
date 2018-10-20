@@ -93,6 +93,16 @@ module C(F: Cstubs.FOREIGN) = struct
 
     let adam =
       foreign "ato_adam" (ptr Tensor.t @-> int @-> float @-> returning t)
+    let sgd =
+      foreign "ato_sgd"
+        (   ptr Tensor.t
+        @-> int
+        @-> float (* learning rate *)
+        @-> float (* momentum *)
+        @-> float (* dampening *)
+        @-> float (* weight decay *)
+        @-> bool  (* nesterov *)
+        @-> returning t)
     let zero_grad = foreign "ato_zero_grad" (t @-> returning void)
     let step = foreign "ato_step" (t @-> returning void)
     let free = foreign "ato_free" (t @-> returning void)

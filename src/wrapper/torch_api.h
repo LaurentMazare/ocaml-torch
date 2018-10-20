@@ -54,6 +54,13 @@ void at_load_multi_(tensor *tensors, char **tensor_names, int ntensors, char *fi
 void at_free(tensor);
 
 optimizer ato_adam(tensor *, int ntensors, double learning_rate);
+optimizer ato_sgd(tensor *,
+                  int ntensors,
+                  double learning_rate,
+                  double momentum,
+                  double dampening,
+                  double weight_decay,
+                  int nesterov);
 void ato_zero_grad(optimizer);
 void ato_step(optimizer);
 void ato_free(optimizer);

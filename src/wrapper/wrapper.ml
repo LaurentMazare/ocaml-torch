@@ -139,6 +139,20 @@ module Optimizer = struct
     in
     Gc.finalise free t;
     t
+
+  let sgd tensors ~learning_rate ~momentum ~dampening ~weight_decay ~nesterov =
+    let t =
+      sgd
+        CArray.(of_list Wrapper_generated.C.Tensor.t tensors |> start)
+        (List.length tensors)
+        learning_rate
+        momentum
+        dampening
+        weight_decay
+        nesterov
+    in
+    Gc.finalise free t;
+    t
 end
 
 module Serialize = struct

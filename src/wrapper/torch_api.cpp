@@ -179,6 +179,25 @@ optimizer ato_adam(tensor *tensors, int ntensors, double learning_rate) {
   )
 }
 
+optimizer ato_sgd(tensor *tensors,
+                  int ntensors,
+                  double learning_rate,
+                  double momentum,
+                  double dampening,
+                  double weight_decay,
+                  int nesterov) {
+  PROTECT(
+    auto options = 
+      torch::optim::SGDOptions(learning_rate)
+      .momentum(momentum)
+      .dampening(dampening)
+      .weight_decay(weight_decay)
+      .nesterov(nesterov);
+    return new torch::optim::SGD(of_carray_tensor(tensors, ntensors), options);
+  )
+}
+
+
 void ato_zero_grad(optimizer t) {
   PROTECT(t->zero_grad();)
 }
