@@ -57,8 +57,8 @@ Two optimizers are created, one of them applies to Discriminator variables, the
 other to Generator variables.
 
 ```ocaml
-let opt_g = Optimizer.adam (Layer.Var_store.vars generator_vs) ~learning_rate in
-let opt_d = Optimizer.adam (Layer.Var_store.vars discriminator_vs) ~learning_rate in
+let opt_g = Optimizer.adam (Var_store.vars generator_vs) ~learning_rate in
+let opt_d = Optimizer.adam (Var_store.vars discriminator_vs) ~learning_rate in
 ```
 
 The training loop then runs these two optimizers consecutively.

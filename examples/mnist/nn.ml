@@ -9,14 +9,14 @@ let learning_rate = 1e-3
 let () =
   let mnist = Mnist_helper.read_files ~with_caching:true () in
   let { Dataset_helper.train_images; train_labels; _ } = mnist in
-  let vs = Layer.Var_store.create ~name:"nn" () in
+  let vs = Var_store.create ~name:"nn" () in
   let linear1 =
     Layer.linear vs hidden_nodes ~activation:Relu ~input_dim:Mnist_helper.image_dim
   in
   let linear2 =
     Layer.linear vs Mnist_helper.label_count ~activation:Softmax ~input_dim:hidden_nodes
   in
-  let adam = Optimizer.adam (Layer.Var_store.vars vs) ~learning_rate in
+  let adam = Optimizer.adam (Var_store.vars vs) ~learning_rate in
   let model xs = Layer.apply linear1 xs |> Layer.apply linear2 in
   for index = 1 to epochs do
     (* Compute the cross-entropy loss. *)

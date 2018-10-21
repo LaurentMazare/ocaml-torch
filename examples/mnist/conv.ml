@@ -15,14 +15,14 @@ let () =
     end else None
   in
   let mnist = Mnist_helper.read_files ~with_caching:true () in
-  let vs = Layer.Var_store.create ~name:"cnn" ?device () in
+  let vs = Var_store.create ~name:"cnn" ?device () in
   let conv2d1 = Layer.conv2d_ vs ~ksize:5 ~stride:1 ~input_dim:1 32 in
   let conv2d2 = Layer.conv2d_ vs ~ksize:5 ~stride:1 ~input_dim:32 64 in
   let linear1 = Layer.linear vs ~activation:Relu ~input_dim:1024 1024 in
   let linear2 =
     Layer.linear vs ~activation:Softmax ~input_dim:1024 Mnist_helper.label_count
   in
-  let adam = Optimizer.adam (Layer.Var_store.vars vs) ~learning_rate in
+  let adam = Optimizer.adam (Var_store.vars vs) ~learning_rate in
   let model xs ~is_training =
     Tensor.reshape xs ~dims:[ -1; 1; 28; 28 ]
     |> Layer.apply conv2d1
