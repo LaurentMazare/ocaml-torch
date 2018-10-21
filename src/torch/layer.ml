@@ -115,6 +115,7 @@ let batch_norm2d vs ?(eps=1e-5) ?(momentum=0.1) output_dim =
   let w = Tensor.ones [ output_dim ] ~requires_grad:true ~device in
   let b = Tensor.zeros [ output_dim ] ~requires_grad:true ~device in
   Var_store.add_vars vs ~vars:[w; b];
+  (* TODO: Find a way to store these in checkpoints. *)
   let running_mean = Tensor.zeros [ output_dim ] ~device in
   let running_var = Tensor.ones [ output_dim ] ~device in
   Staged.stage (fun xs ~is_training ->

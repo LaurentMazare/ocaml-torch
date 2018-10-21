@@ -154,10 +154,18 @@ void at_load_multi(tensor *tensors, char **tensor_names, int ntensors, char *fil
 
 void at_load_multi_(tensor *tensors, char **tensor_names, int ntensors, char *filename) {
   PROTECT(
+    torch::NoGradGuard no_grad;
     torch::serialize::InputArchive archive;
     archive.load_from(std::string(filename));
-    for (int i = 0; i < ntensors; ++i)
-      archive.read(std::string(tensor_names[i]), (*tensors)[i]);
+    for (int i = 0; i < ntensors; ++i) {
+      if (tensors[i]->device().type() == at::kCPU)
+        archive.read(std::string(tensor_names[i]), *(tensors[i]));
+      else {
+        torch::Tensor tmp_tensor = torch::empty_like(*(tensors[i]), at::device(at::kCPU));
+        archive.read(std::string(tensor_names[i]), tmp_tensor);
+        tensors[i]->copy_(tmp_tensor);
+      }
+    }
   )
 }
 
