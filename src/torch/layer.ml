@@ -22,6 +22,7 @@ let glorot_uniform vs ?(gain = 1.) ~shape =
 type activation =
   | Relu
   | Softmax
+  | Log_softmax
   | Tanh
   | Leaky_relu
   | Sigmoid
@@ -30,6 +31,7 @@ let apply ?activation ys =
   match activation with
   | Some Relu -> Tensor.relu ys
   | Some Softmax -> Tensor.softmax ys
+  | Some Log_softmax -> Tensor.log_softmax ys
   | Some Tanh -> Tensor.tanh ys
   | Some Sigmoid -> Tensor.sigmoid ys
   | Some Leaky_relu -> Tensor.leaky_relu ys

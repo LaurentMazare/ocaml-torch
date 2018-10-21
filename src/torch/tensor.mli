@@ -53,6 +53,7 @@ val shape : t -> int list
 val backward : t -> unit
 val log : t -> t
 val softmax : t -> t
+val log_softmax : t -> t
 val mean : t -> t
 val grad : t -> t
 val sum : t -> t

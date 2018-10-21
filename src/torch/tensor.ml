@@ -143,3 +143,5 @@ let to_bigarray t ~kind =
   let bigarray = Bigarray.Genarray.create kind C_layout (shape t |> Array.of_list) in
   copy_to_bigarray t bigarray;
   bigarray
+
+let log_softmax t = log_softmax t (-1)

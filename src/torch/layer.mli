@@ -5,6 +5,7 @@ type t
 type activation =
   | Relu
   | Softmax
+  | Log_softmax
   | Tanh
   | Leaky_relu
   | Sigmoid
