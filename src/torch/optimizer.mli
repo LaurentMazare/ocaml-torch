@@ -1,13 +1,13 @@
 type t
 
-val adam : Tensor.t list -> learning_rate:float -> t
+val adam : Var_store.t -> learning_rate:float -> t
 
 val sgd
   :  ?momentum:float
   -> ?dampening:float
   -> ?weight_decay:float
   -> ?nesterov:bool
-  -> Tensor.t list
+  -> Var_store.t
   -> learning_rate:float
   -> t
 

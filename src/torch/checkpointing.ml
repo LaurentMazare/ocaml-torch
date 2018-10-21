@@ -19,7 +19,7 @@ let latest_index_and_filename ~checkpoint_base =
 let loop
       ~start_index
       ~end_index
-      ~named_tensors
+      ~var_stores
       ~checkpoint_base
       ?(checkpoint_every = `seconds 600.)
       f
@@ -28,6 +28,13 @@ let loop
   then raise (Invalid_argument (Printf.sprintf "negative start_index %d" start_index));
   let temp_checkpoint = checkpoint_base ^ ".tmp" in
   let latest_index_and_filename = latest_index_and_filename ~checkpoint_base in
+  let named_tensors =
+    List.concat_map var_stores ~f:(fun vs ->
+      let vs_name = Var_store.name vs in
+      Var_store.vars vs `all
+      |> List.mapi ~f:(fun i tensor ->
+          Printf.sprintf "%s:%d" vs_name i, tensor))
+  in
   Option.iter latest_index_and_filename ~f:(fun (latest_index, filename) ->
     Stdio.eprintf "Restoring checkpoint for index %d from '%s'.\n%!" latest_index filename;
     Serialize.load_multi_ ~named_tensors ~filename);

@@ -16,7 +16,7 @@ let glorot_uniform vs ?(gain = 1.) ~shape =
   let tensor =
     Tensor.randn shape ~device:(Var_store.device vs) ~scale:std ~requires_grad:true
   in
-  Var_store.add_var vs ~var:tensor;
+  Var_store.add_var vs ~var:tensor ~kind:`trainable;
   tensor
 
 type activation =
@@ -43,7 +43,7 @@ let linear vs ?activation ?(use_bias=true) ~input_dim output_dim =
       let b =
         Tensor.zeros [ output_dim ] ~requires_grad:true ~device:(Var_store.device vs)
       in
-      Var_store.add_var vs ~var:b;
+      Var_store.add_var vs ~var:b ~kind:`trainable;
       fun xs -> Tensor.(mm xs w + b) |> apply ?activation
     end else fun xs -> Tensor.(mm xs w) |> apply ?activation
   in
@@ -55,7 +55,7 @@ let conv2d vs ~ksize:(k1, k2) ~stride ?activation ?(use_bias=true) ?(padding=0, 
     if use_bias
     then begin
       let b = Tensor.zeros [ output_dim ] ~requires_grad:true ~device:(Var_store.device vs) in
-      Var_store.add_var vs ~var:b;
+      Var_store.add_var vs ~var:b ~kind:`trainable;
       fun xs -> Tensor.conv2d xs w b ~padding ~stride |> apply ?activation
     end else
       let b = Tensor.zeros [ output_dim ] ~device:(Var_store.device vs) in
@@ -79,7 +79,7 @@ let conv_transpose2d vs ~ksize:(k1, k2) ~stride ?activation ?(padding=0, 0) ?(ou
       ~scale:0.1 ~requires_grad:true ~device:(Var_store.device vs)
   in
   let b = Tensor.zeros [ output_dim ] ~requires_grad:true ~device:(Var_store.device vs) in
-  Var_store.add_vars vs ~vars:[w; b];
+  Var_store.add_vars vs ~vars:[w; b] ~kind:`trainable;
   let apply xs =
     Tensor.conv_transpose2d xs w b ~output_padding ~padding ~stride |> apply ?activation
   in
@@ -99,10 +99,10 @@ let batch_norm2d vs ?(eps=1e-5) ?(momentum=0.1) output_dim =
   let device = Var_store.device vs in
   let w = Tensor.ones [ output_dim ] ~requires_grad:true ~device in
   let b = Tensor.zeros [ output_dim ] ~requires_grad:true ~device in
-  Var_store.add_vars vs ~vars:[w; b];
-  (* TODO: Find a way to store these in checkpoints. *)
+  Var_store.add_vars vs ~vars:[w; b] ~kind:`trainable;
   let running_mean = Tensor.zeros [ output_dim ] ~device in
   let running_var = Tensor.ones [ output_dim ] ~device in
+  Var_store.add_vars vs ~vars:[running_mean; running_var] ~kind:`non_trainable;
   Staged.stage (fun xs ~is_training ->
     Tensor.batch_norm xs
       (Some w)

@@ -76,13 +76,13 @@ let () =
   let cifar = Cifar_helper.read_files ~with_caching:true () in
   let vs = Var_store.create ~name:"resnet" ?device () in
   let model = resnet vs in
-  let adam = Optimizer.sgd (Var_store.vars vs) ~learning_rate ~momentum:0.9 in
+  let adam = Optimizer.sgd vs ~learning_rate ~momentum:0.9 in
   let train_model = model ~is_training:true in
   let test_model = model ~is_training:false in
   Checkpointing.loop
     ~start_index:1 ~end_index:epochs
-    ~named_tensors:(Var_store.vars vs |> List.mapi ~f:(fun i t -> Int.to_string i, t))
-    ~checkpoint_base:"resnet-ckpt"
+    ~var_stores:[ vs ]
+    ~checkpoint_base:"resnet.ot"
     ~checkpoint_every:(`seconds 600.)
     (fun ~index:batch_idx ->
       let batch_images, batch_labels =

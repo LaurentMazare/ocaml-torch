@@ -1,18 +1,20 @@
 open Base
 include Torch_core.Wrapper.Optimizer
 
-let adam tensors ~learning_rate =
-  adam (List.map tensors ~f:Tensor.to_ptr) ~learning_rate
+let adam vs ~learning_rate =
+  let tensors = Var_store.vars vs `trainable |> List.map ~f:Tensor.to_ptr in
+  adam tensors ~learning_rate
 
 let sgd
     ?(momentum=0.)
     ?(dampening=0.)
     ?(weight_decay=0.)
     ?(nesterov=false)
-    tensors
+    vs
     ~learning_rate
   =
-  sgd (List.map tensors ~f:Tensor.to_ptr)
+  let tensors = Var_store.vars vs `trainable |> List.map ~f:Tensor.to_ptr in
+  sgd tensors
     ~learning_rate
     ~momentum
     ~dampening

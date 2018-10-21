@@ -22,7 +22,7 @@ let () =
   let linear2 =
     Layer.linear vs ~activation:Softmax ~input_dim:1024 Mnist_helper.label_count
   in
-  let adam = Optimizer.adam (Var_store.vars vs) ~learning_rate in
+  let adam = Optimizer.adam vs ~learning_rate in
   let model xs ~is_training =
     Tensor.reshape xs ~dims:[ -1; 1; 28; 28 ]
     |> Layer.apply conv2d1

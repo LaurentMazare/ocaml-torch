@@ -16,7 +16,7 @@ let () =
   let linear2 =
     Layer.linear vs Mnist_helper.label_count ~activation:Softmax ~input_dim:hidden_nodes
   in
-  let adam = Optimizer.adam (Var_store.vars vs) ~learning_rate in
+  let adam = Optimizer.adam vs ~learning_rate in
   let model xs = Layer.apply linear1 xs |> Layer.apply linear2 in
   for index = 1 to epochs do
     (* Compute the cross-entropy loss. *)

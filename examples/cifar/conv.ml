@@ -29,7 +29,7 @@ let () =
   let linear3 =
     Layer.linear vs ~activation:Softmax ~input_dim:84 Cifar_helper.label_count
   in
-  let adam = Optimizer.adam (Var_store.vars vs) ~learning_rate in
+  let adam = Optimizer.adam vs ~learning_rate in
   let model xs ~is_training =
     Tensor.reshape xs ~dims:Cifar_helper. [ -1; image_c; image_w; image_h ]
     |> Layer.apply conv2d1

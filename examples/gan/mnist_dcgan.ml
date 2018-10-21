@@ -82,11 +82,11 @@ let () =
 
   let generator_vs = Var_store.create ~name:"gen" () in
   let generator = create_generator generator_vs in
-  let opt_g = Optimizer.adam (Var_store.vars generator_vs) ~learning_rate in
+  let opt_g = Optimizer.adam generator_vs ~learning_rate in
 
   let discriminator_vs = Var_store.create ~name:"disc" () in
   let discriminator = create_discriminator discriminator_vs in
-  let opt_d = Optimizer.adam (Var_store.vars discriminator_vs) ~learning_rate in
+  let opt_d = Optimizer.adam discriminator_vs ~learning_rate in
 
   let fixed_noise = rand () in
 
