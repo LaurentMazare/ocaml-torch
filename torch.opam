@@ -14,6 +14,8 @@ remove:  []
 
 depends: [
   "base" {>= "0.11.0"}
+  "ppx_custom_printf"
+  "ppx_sexp_conv"
   "stdio"
   "ctypes" {>= "0.5"}
   "ctypes-foreign"

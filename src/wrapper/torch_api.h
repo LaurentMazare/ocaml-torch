@@ -61,6 +61,7 @@ optimizer ato_sgd(tensor *,
                   double dampening,
                   double weight_decay,
                   int nesterov);
+void ato_set_learning_rate(optimizer, double learning_rate);
 void ato_zero_grad(optimizer);
 void ato_step(optimizer);
 void ato_free(optimizer);

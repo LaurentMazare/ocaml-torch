@@ -103,6 +103,7 @@ module C(F: Cstubs.FOREIGN) = struct
         @-> float (* weight decay *)
         @-> bool  (* nesterov *)
         @-> returning t)
+    let set_learning_rate = foreign "ato_set_learning_rate" (t @-> float @-> returning void)
     let zero_grad = foreign "ato_zero_grad" (t @-> returning void)
     let step = foreign "ato_step" (t @-> returning void)
     let free = foreign "ato_free" (t @-> returning void)

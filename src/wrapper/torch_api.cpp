@@ -205,6 +205,16 @@ optimizer ato_sgd(tensor *tensors,
   )
 }
 
+void ato_set_learning_rate(optimizer t, double learning_rate) {
+  PROTECT(
+    if (auto adam = dynamic_cast<torch::optim::Adam*>(t))
+      adam->options.learning_rate_ = learning_rate;
+    else if (auto sgd = dynamic_cast<torch::optim::SGD*>(t))
+      sgd->options.learning_rate_ = learning_rate;
+    else
+     caml_invalid_argument("unexpected optimizer");
+  )
+}
 
 void ato_zero_grad(optimizer t) {
   PROTECT(t->zero_grad();)

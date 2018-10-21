@@ -14,3 +14,4 @@ val sgd
 val step : t -> unit
 val zero_grad : t -> unit
 val backward_step : t -> loss:Tensor.t -> unit
+val set_learning_rate : t -> learning_rate:float -> unit

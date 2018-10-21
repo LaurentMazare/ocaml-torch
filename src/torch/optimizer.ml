@@ -25,3 +25,5 @@ let backward_step t ~loss =
   zero_grad t;
   Tensor.backward loss;
   step t
+
+let set_learning_rate t ~learning_rate = set_learning_rate t learning_rate
