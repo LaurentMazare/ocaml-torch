@@ -66,6 +66,5 @@ code](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/mnist/li
 * Model weights import.
 * Add more complex examples.
     * RNN/LSTM.
-    * Deep CNN on CIFAR-10 or ImageNet, maybe a ResNet ?
 * Add an opam package (this may have to wait until libtorch has stable releases).
-* utop/jupyter integration.
+* Better jupyter integration.
