@@ -32,9 +32,9 @@ let read_file filename =
     Bigarray.Genarray.create Float32 C_layout
       [| samples_per_file; image_c; image_w; image_h |]
   in
-  let labels = Bigarray.Array1.create Int C_layout samples_per_file in
+  let labels = Bigarray.Array1.create Int64 C_layout samples_per_file in
   for sample = 0 to 9999 do
-    labels.{sample} <- read_byte in_channel;
+    labels.{sample} <- read_byte in_channel |> Int64.of_int;
     for c = 0 to image_c - 1 do
       for w = 0 to image_w - 1 do
         for h = 0 to image_h - 1 do
@@ -45,13 +45,13 @@ let read_file filename =
     done
   done;
   I.close in_channel;
-  data, labels
+  data, Bigarray.genarray_of_array1 labels
 
 let read_files ?(dirname = "data") ?(with_caching = false) () =
   let read () =
     let read_one filename =
       let images, labels = Caml.Filename.concat dirname filename |> read_file in
-      Tensor.of_bigarray images, Dataset_helper.one_hot labels ~label_count
+      Tensor.of_bigarray images, Tensor.of_bigarray labels
     in
     let train_images, train_labels =
       [ "data_batch_1.bin"

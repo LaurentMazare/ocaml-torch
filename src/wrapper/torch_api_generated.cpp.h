@@ -1225,6 +1225,12 @@ tensor atg_eq_(tensor self, tensor other) {
   )
 }
 
+tensor atg_eq_out(tensor result, tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(torch::eq_out(*result, *self, *other));
+  )
+}
+
 tensor atg_erf(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::erf(*self));
@@ -1543,6 +1549,12 @@ tensor atg_ge_(tensor self, tensor other) {
   )
 }
 
+tensor atg_ge_out(tensor result, tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(torch::ge_out(*result, *self, *other));
+  )
+}
+
 tensor atg_geometric_(tensor self, double p) {
   PROTECT(
     return new torch::Tensor(self->geometric_(p));
@@ -1636,6 +1648,12 @@ tensor atg_gt(tensor self, tensor other) {
 tensor atg_gt_(tensor self, tensor other) {
   PROTECT(
     return new torch::Tensor(self->gt_(*other));
+  )
+}
+
+tensor atg_gt_out(tensor result, tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(torch::gt_out(*result, *self, *other));
   )
 }
 
@@ -1879,6 +1897,12 @@ tensor atg_le_(tensor self, tensor other) {
   )
 }
 
+tensor atg_le_out(tensor result, tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(torch::le_out(*result, *self, *other));
+  )
+}
+
 tensor atg_leaky_relu(tensor self) {
   PROTECT(
     return new torch::Tensor(torch::leaky_relu(*self));
@@ -2107,9 +2131,39 @@ tensor atg_lt_(tensor self, tensor other) {
   )
 }
 
+tensor atg_lt_out(tensor result, tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(torch::lt_out(*result, *self, *other));
+  )
+}
+
 tensor atg_margin_ranking_loss(tensor input1, tensor input2, tensor target, double margin, int64_t reduction) {
   PROTECT(
     return new torch::Tensor(torch::margin_ranking_loss(*input1, *input2, *target, margin, reduction));
+  )
+}
+
+tensor atg_masked_fill_(tensor self, tensor mask, tensor value) {
+  PROTECT(
+    return new torch::Tensor(self->masked_fill_(*mask, *value));
+  )
+}
+
+tensor atg_masked_scatter_(tensor self, tensor mask, tensor source) {
+  PROTECT(
+    return new torch::Tensor(self->masked_scatter_(*mask, *source));
+  )
+}
+
+tensor atg_masked_select(tensor self, tensor mask) {
+  PROTECT(
+    return new torch::Tensor(torch::masked_select(*self, *mask));
+  )
+}
+
+tensor atg_masked_select_out(tensor result, tensor self, tensor mask) {
+  PROTECT(
+    return new torch::Tensor(torch::masked_select_out(*result, *self, *mask));
   )
 }
 
@@ -2578,6 +2632,12 @@ tensor atg_ne(tensor self, tensor other) {
 tensor atg_ne_(tensor self, tensor other) {
   PROTECT(
     return new torch::Tensor(self->ne_(*other));
+  )
+}
+
+tensor atg_ne_out(tensor result, tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(torch::ne_out(*result, *self, *other));
   )
 }
 
@@ -4474,6 +4534,12 @@ tensor atg_view(tensor self, long int *size_data, int size_len) {
 tensor atg_view_as(tensor self, tensor other) {
   PROTECT(
     return new torch::Tensor(self->view_as(*other));
+  )
+}
+
+tensor atg_where(tensor condition, tensor self, tensor other) {
+  PROTECT(
+    return new torch::Tensor(torch::where(*condition, *self, *other));
   )
 }
 

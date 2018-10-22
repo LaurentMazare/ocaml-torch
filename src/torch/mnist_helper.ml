@@ -38,13 +38,13 @@ let read_labels filename =
   if magic_number <> 2049
   then Printf.failwithf "Incorrect magic number in %s: %d" filename magic_number ();
   let samples = read_int32_be in_channel in
-  let data = Bigarray.Array1.create Int C_layout samples in
+  let data = Bigarray.Array1.create Int64 C_layout samples in
   for sample = 0 to samples - 1 do
     let v = Option.value_exn (In_channel.input_byte in_channel) in
-    data.{ sample } <- v;
+    data.{ sample } <- Int64.of_int v;
   done;
   In_channel.close in_channel;
-  data
+  Bigarray.genarray_of_array1 data |> Tensor.of_bigarray
 
 let read_files
       ?(train_image_file = "data/train-images-idx3-ubyte")
@@ -55,14 +55,11 @@ let read_files
       ()
   =
   let read () =
-    let read_onehot filename =
-      read_labels filename |> Dataset_helper.one_hot ~label_count
-    in
     { Dataset_helper.
       train_images = read_images train_image_file
-    ; train_labels = read_onehot train_label_file
+    ; train_labels = read_labels train_label_file
     ; test_images = read_images test_image_file
-    ; test_labels = read_onehot test_label_file
+    ; test_labels = read_labels test_label_file
     }
   in
   if with_caching

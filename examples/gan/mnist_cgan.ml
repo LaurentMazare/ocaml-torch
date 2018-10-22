@@ -76,11 +76,14 @@ let () =
     let ys = Tensor.cat [ xs; fake_labels ] ~dim:1 |> generator in
     Tensor.cat [ ys; fake_labels ] ~dim:1
   in
+  let one = Tensor.ones [] in
 
   for batch_idx = 1 to batches do
     let batch_images, batch_labels =
       Dataset_helper.train_batch mnist ~batch_size ~batch_idx
     in
+    let onehot_labels = Tensor.zeros [ batch_size; label_count ] in
+    Tensor.scatter_ onehot_labels ~dim:1 ~src:one ~index:batch_labels;
     let real_input =
       Tensor.(cat [ f 2. * batch_images - f 1.; batch_labels ]) ~dim:1
     in

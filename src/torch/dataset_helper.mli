@@ -21,8 +21,6 @@ val batch_accuracy
   -> predict:(Tensor.t -> Tensor.t)
   -> float
 
-val one_hot : (int, _, Bigarray.c_layout) Bigarray.Array1.t -> label_count:int -> Tensor.t
-
 val read_with_cache
   :  cache_file:string
   -> read:(unit -> t)

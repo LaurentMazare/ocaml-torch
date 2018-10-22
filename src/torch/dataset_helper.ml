@@ -1,14 +1,5 @@
 open Base
 
-let one_hot labels ~label_count =
-  let nsamples = Bigarray.Array1.dim labels in
-  let one_hot = Bigarray.Array2.create Float32 C_layout nsamples label_count in
-  Bigarray.Array2.fill one_hot 0.;
-  for idx = 0 to nsamples - 1 do
-    one_hot.{ idx, labels.{ idx } } <- 1.
-  done;
-  Bigarray.genarray_of_array2 one_hot |> Tensor.of_bigarray
-
 type t =
   { train_images : Tensor.t
   ; train_labels : Tensor.t
@@ -76,7 +67,7 @@ let batch_accuracy ?device ?samples t train_or_test ~batch_size ~predict =
         |> Tensor.to_device ?device
       in
       let batch_accuracy =
-        Tensor.(sum (argmax predicted_labels = argmax labels) |> float_value)
+        Tensor.(sum (argmax predicted_labels = labels) |> float_value)
       in
       loop (start_index + batch_size) (sum_accuracy +. batch_accuracy)
   in

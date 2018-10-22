@@ -177,6 +177,13 @@ tensor at_load(char *filename) {
   )
 }
 
+tensor at_nll_loss(tensor t, tensor targets, int reduction) {
+  PROTECT(
+    torch::Tensor tensor = torch::nll_loss(*t, *targets, {}, reduction);
+    return new torch::Tensor(tensor);
+  )
+}
+
 void at_free(tensor t) {
   delete(t);
 }

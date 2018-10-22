@@ -47,7 +47,6 @@ let basic_block vs ~stride ~input_dim output_dim =
     |> Tensor.dropout ~p:dropout_p ~is_training
     |> bn2 ~is_training
     |> fun ys -> Tensor.(+) ys (shortcut xs ~is_training)
-    |> Tensor.relu
 
 let block_stack vs ~stride ~depth ~input_dim output_dim =
   let basic_blocks =
@@ -119,7 +118,7 @@ let () =
         Optimizer.zero_grad sgd;
         let predicted = train_model batch_images in
         (* Compute the cross-entropy loss. *)
-        let loss = Tensor.((mean (- batch_labels * log_softmax predicted)) * f 10.) in
+        let loss = Tensor.cross_entropy_for_logits predicted ~targets:batch_labels in
         sum_loss := !sum_loss +. Tensor.float_value loss;
         Stdio.printf "%d/%d %f\r%!" batch_idx batches_per_epoch (!sum_loss /. Float.of_int (1 + batch_idx));
         Tensor.backward loss;

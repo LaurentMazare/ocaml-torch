@@ -26,9 +26,7 @@ let () =
   let conv2d2 = Layer.conv2d_ vs ~ksize:5 ~stride:1 ~input_dim:6 16 in
   let linear1 = Layer.linear vs ~activation:Relu ~input_dim:(16 * 5 * 5) 120 in
   let linear2 = Layer.linear vs ~activation:Relu ~input_dim:120 84 in
-  let linear3 =
-    Layer.linear vs ~activation:Softmax ~input_dim:84 Cifar_helper.label_count
-  in
+  let linear3 = Layer.linear vs ~input_dim:84 Cifar_helper.label_count in
   let adam = Optimizer.adam vs ~learning_rate in
   let model xs ~is_training =
     Tensor.reshape xs ~dims:Cifar_helper. [ -1; image_c; image_w; image_h ]
@@ -49,7 +47,9 @@ let () =
       Dataset_helper.train_batch cifar ?device ~batch_size ~batch_idx
     in
     (* Compute the cross-entropy loss. *)
-    let loss = Tensor.(mean (- batch_labels * log (train_model batch_images +f 1e-6))) in
+    let loss =
+      Tensor.cross_entropy_for_logits (train_model batch_images) ~targets:batch_labels
+    in
 
     Optimizer.backward_step adam ~loss;
 

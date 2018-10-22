@@ -822,6 +822,10 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_eq_"
     (t @-> t @-> returning t)
 
+  let eq_out =
+    foreign "atg_eq_out"
+    (t @-> t @-> t @-> returning t)
+
   let erf =
     foreign "atg_erf"
     (t @-> returning t)
@@ -1034,6 +1038,10 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_ge_"
     (t @-> t @-> returning t)
 
+  let ge_out =
+    foreign "atg_ge_out"
+    (t @-> t @-> t @-> returning t)
+
   let geometric_ =
     foreign "atg_geometric_"
     (t @-> double @-> returning t)
@@ -1097,6 +1105,10 @@ module C(F: Cstubs.FOREIGN) = struct
   let gt_ =
     foreign "atg_gt_"
     (t @-> t @-> returning t)
+
+  let gt_out =
+    foreign "atg_gt_out"
+    (t @-> t @-> t @-> returning t)
 
   let hamming_window1 =
     foreign "atg_hamming_window1"
@@ -1258,6 +1270,10 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_le_"
     (t @-> t @-> returning t)
 
+  let le_out =
+    foreign "atg_le_out"
+    (t @-> t @-> t @-> returning t)
+
   let leaky_relu =
     foreign "atg_leaky_relu"
     (t @-> returning t)
@@ -1410,9 +1426,29 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_lt_"
     (t @-> t @-> returning t)
 
+  let lt_out =
+    foreign "atg_lt_out"
+    (t @-> t @-> t @-> returning t)
+
   let margin_ranking_loss =
     foreign "atg_margin_ranking_loss"
     (t @-> t @-> t @-> double @-> int64_t @-> returning t)
+
+  let masked_fill_ =
+    foreign "atg_masked_fill_"
+    (t @-> t @-> t @-> returning t)
+
+  let masked_scatter_ =
+    foreign "atg_masked_scatter_"
+    (t @-> t @-> t @-> returning t)
+
+  let masked_select =
+    foreign "atg_masked_select"
+    (t @-> t @-> returning t)
+
+  let masked_select_out =
+    foreign "atg_masked_select_out"
+    (t @-> t @-> t @-> returning t)
 
   let matmul =
     foreign "atg_matmul"
@@ -1725,6 +1761,10 @@ module C(F: Cstubs.FOREIGN) = struct
   let ne_ =
     foreign "atg_ne_"
     (t @-> t @-> returning t)
+
+  let ne_out =
+    foreign "atg_ne_out"
+    (t @-> t @-> t @-> returning t)
 
   let neg =
     foreign "atg_neg"
@@ -2989,6 +3029,10 @@ module C(F: Cstubs.FOREIGN) = struct
   let view_as =
     foreign "atg_view_as"
     (t @-> t @-> returning t)
+
+  let where =
+    foreign "atg_where"
+    (t @-> t @-> t @-> returning t)
 
   let zero_ =
     foreign "atg_zero_"

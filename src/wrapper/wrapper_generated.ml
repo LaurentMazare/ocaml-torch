@@ -1023,6 +1023,11 @@ let eq_ self other =
   Gc.finalise C.Tensor.free t;
   t
 
+let eq_out result self other =
+  let t = eq_out result self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let erf self =
   let t = erf self in
   Gc.finalise C.Tensor.free t;
@@ -1288,6 +1293,11 @@ let ge_ self other =
   Gc.finalise C.Tensor.free t;
   t
 
+let ge_out result self other =
+  let t = ge_out result self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let geometric_ self p =
   let t = geometric_ self p in
   Gc.finalise C.Tensor.free t;
@@ -1365,6 +1375,11 @@ let gt self other =
 
 let gt_ self other =
   let t = gt_ self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let gt_out result self other =
+  let t = gt_out result self other in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -1568,6 +1583,11 @@ let le_ self other =
   Gc.finalise C.Tensor.free t;
   t
 
+let le_out result self other =
+  let t = le_out result self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let leaky_relu self =
   let t = leaky_relu self in
   Gc.finalise C.Tensor.free t;
@@ -1758,8 +1778,33 @@ let lt_ self other =
   Gc.finalise C.Tensor.free t;
   t
 
+let lt_out result self other =
+  let t = lt_out result self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
 let margin_ranking_loss input1 input2 target margin reduction =
   let t = margin_ranking_loss input1 input2 target margin (Int64.of_int reduction) in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let masked_fill_ self mask value =
+  let t = masked_fill_ self mask value in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let masked_scatter_ self mask source =
+  let t = masked_scatter_ self mask source in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let masked_select self mask =
+  let t = masked_select self mask in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let masked_select_out result self mask =
+  let t = masked_select_out result self mask in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -2150,6 +2195,11 @@ let ne self other =
 
 let ne_ self other =
   let t = ne_ self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let ne_out result self other =
+  let t = ne_out result self other in
   Gc.finalise C.Tensor.free t;
   t
 
@@ -3730,6 +3780,11 @@ let view self size =
 
 let view_as self other =
   let t = view_as self other in
+  Gc.finalise C.Tensor.free t;
+  t
+
+let where condition self other =
+  let t = where condition self other in
   Gc.finalise C.Tensor.free t;
   t
 

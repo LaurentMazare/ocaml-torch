@@ -34,12 +34,17 @@ let extract_string = function
   | yaml -> yaml_error yaml ~msg:"expected string"
 
 module Func = struct
+  type elt_type =
+    | Elt_bool
+    | Elt_index
+    | Elt_any
+
   type arg_type =
     | Bool
     | Int64
     | Double
-    | Tensor
-    | TensorOption
+    | Tensor of elt_type
+    | TensorOption of elt_type
     | IntList
     | TensorList
     | TensorOptions
@@ -70,7 +75,8 @@ module Func = struct
     | "bool" -> Some Bool
     | "int64_t" -> Some Int64
     | "double" -> Some Double
-    | "indextensor" | "tensor" -> Some (if is_nullable then TensorOption else Tensor)
+    | "booltensor" | "indextensor" | "tensor" ->
+      Some (if is_nullable then TensorOption else Tensor)
     | "tensoroptions" -> Some TensorOptions
     | "intlist" -> Some IntList
     | "tensorlist" -> Some TensorList

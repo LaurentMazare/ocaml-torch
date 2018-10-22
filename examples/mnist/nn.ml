@@ -13,14 +13,12 @@ let () =
   let linear1 =
     Layer.linear vs hidden_nodes ~activation:Relu ~input_dim:Mnist_helper.image_dim
   in
-  let linear2 =
-    Layer.linear vs Mnist_helper.label_count ~activation:Softmax ~input_dim:hidden_nodes
-  in
+  let linear2 = Layer.linear vs Mnist_helper.label_count ~input_dim:hidden_nodes in
   let adam = Optimizer.adam vs ~learning_rate in
   let model xs = Layer.apply linear1 xs |> Layer.apply linear2 in
   for index = 1 to epochs do
     (* Compute the cross-entropy loss. *)
-    let loss = Tensor.(mean (- train_labels * log (model train_images +f 1e-6))) in
+    let loss = Tensor.cross_entropy_for_logits (model train_images) ~targets:train_labels in
 
     Optimizer.backward_step adam ~loss;
 

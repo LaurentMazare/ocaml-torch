@@ -145,3 +145,9 @@ let to_bigarray t ~kind =
   bigarray
 
 let log_softmax t = log_softmax t (-1)
+
+let cross_entropy_for_logits ?reduction logits ~targets =
+  nll_loss_ ?reduction (log_softmax logits) ~targets
+
+let scatter_ t ~dim ~index ~src =
+  ignore (scatter_ t dim index src : t)

@@ -53,6 +53,8 @@ void at_load_multi_(tensor *tensors, char **tensor_names, int ntensors, char *fi
 
 void at_free(tensor);
 
+tensor at_nll_loss(tensor t, tensor targets, int reduction);
+
 optimizer ato_adam(tensor *, int ntensors, double learning_rate);
 optimizer ato_sgd(tensor *,
                   int ntensors,

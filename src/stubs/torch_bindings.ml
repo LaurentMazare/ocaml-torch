@@ -64,6 +64,8 @@ module C(F: Cstubs.FOREIGN) = struct
 
     let print = foreign "at_print" (t @-> returning void)
     let free = foreign "at_free" (t @-> returning void)
+
+    let nll_loss_ = foreign "at_nll_loss" (t @-> t @-> int @-> returning t)
   end
 
   module Scalar = struct

@@ -47,7 +47,7 @@ module Tensor = struct
       | Bigarray.Int8_signed -> Int8
       | Bigarray.Int8_unsigned -> Uint8
       | Bigarray.Int16_signed -> Int16
-      | Bigarray.Int -> Int
+      | Bigarray.Int32 -> Int
       | Bigarray.Int64 -> Int64
       | _ -> failwith "unsupported bigarray kind"
     in
@@ -111,6 +111,11 @@ module Tensor = struct
   let softmax t = softmax t (-1)
 
   let defined = defined
+
+  let nll_loss_ ?(reduction = Reduction.Elementwise_mean) t ~targets =
+    let t = nll_loss_ t targets (Reduction.to_int reduction) in
+    Gc.finalise free t;
+    t
 end
 
 module Scalar = struct
