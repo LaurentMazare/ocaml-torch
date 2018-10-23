@@ -4,7 +4,7 @@ type t =
   { apply : Tensor.t -> Tensor.t
   }
 
-let glorot_uniform vs ?(gain = 1.) ~shape =
+let glorot_normal vs ?(gain = 1.) ~shape =
   let fan_in, fan_out =
     match shape with
     | [] | [_] -> failwith "unexpected tensor shape"
@@ -38,7 +38,7 @@ let apply ?activation ys =
   | None -> ys
 
 let linear vs ?activation ?(use_bias=true) ~input_dim output_dim =
-  let w = glorot_uniform vs ~shape:[ input_dim; output_dim ] ~gain:(Float.sqrt 5.) in
+  let w = glorot_normal vs ~shape:[ input_dim; output_dim ] ~gain:(Float.sqrt 5.) in
   let apply =
     if use_bias
     then begin
@@ -52,7 +52,7 @@ let linear vs ?activation ?(use_bias=true) ~input_dim output_dim =
   { apply }
 
 let conv2d vs ~ksize:(k1, k2) ~stride ?activation ?(use_bias=true) ?(padding=0, 0) ~input_dim output_dim =
-  let w = glorot_uniform vs ~shape:[ output_dim; input_dim; k1; k2 ] ~gain:(Float.sqrt 5.) in
+  let w = glorot_normal vs ~shape:[ output_dim; input_dim; k1; k2 ] ~gain:(Float.sqrt 5.) in
   let apply =
     if use_bias
     then begin
