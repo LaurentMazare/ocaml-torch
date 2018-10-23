@@ -4,23 +4,6 @@ type t =
   { apply : Tensor.t -> Tensor.t
   }
 
-let glorot_normal vs ?(gain = 1.) ~shape =
-  let fan_in, fan_out =
-    match shape with
-    | [] | [_] -> failwith "unexpected tensor shape"
-    (* Weight matrix is transposed for linear layers. *)
-    | [ fan_in; fan_out ] -> fan_in, fan_out
-    | fan_out :: fan_in :: others ->
-      let others = List.fold others ~init:1 ~f:( * ) in
-      (fan_in * others), (fan_out * others)
-  in
-  let std = gain *. Float.sqrt (2. /. Float.of_int (fan_in + fan_out)) in
-  let tensor =
-    Tensor.randn shape ~device:(Var_store.device vs) ~scale:std ~requires_grad:true
-  in
-  Var_store.add_var vs ~var:tensor ~kind:`trainable;
-  tensor
-
 type activation =
   | Relu
   | Softmax
@@ -28,6 +11,24 @@ type activation =
   | Tanh
   | Leaky_relu
   | Sigmoid
+
+let kaiming_uniform vs ~shape ~a =
+  let fan_in =
+    match shape with
+    | [] | [_] -> failwith "unexpected tensor shape"
+    (* Weight matrix is transposed for linear layers. *)
+    | [ fan_in; _fan_out ] -> fan_in
+    | _fan_out :: fan_in :: others ->
+      let others = List.fold others ~init:1 ~f:( * ) in
+      fan_in * others
+  in
+  let std = Float.sqrt (2. /. ((1. +. a *. a) *. Float.of_int fan_in)) in
+  let bound = Float.sqrt 3. *. std in
+  let tensor = Tensor.zeros shape ~device:(Var_store.device vs) in
+  Tensor.uniform_ tensor ~lower:(-. bound) ~upper:bound;
+  ignore (Tensor.set_requires_grad tensor ~b:true : Tensor.t);
+  Var_store.add_var vs ~var:tensor ~kind:`trainable;
+  tensor
 
 let apply ?activation ys =
   match activation with
@@ -40,7 +41,7 @@ let apply ?activation ys =
   | None -> ys
 
 let linear vs ?activation ?(use_bias=true) ~input_dim output_dim =
-  let w = glorot_normal vs ~shape:[ input_dim; output_dim ] ~gain:(Float.sqrt 5.) in
+  let w = kaiming_uniform vs ~shape:[ input_dim; output_dim ] ~a:(Float.sqrt 5.) in
   let apply =
     if use_bias
     then begin
@@ -54,7 +55,7 @@ let linear vs ?activation ?(use_bias=true) ~input_dim output_dim =
   { apply }
 
 let conv2d vs ~ksize:(k1, k2) ~stride ?activation ?(use_bias=true) ?(padding=0, 0) ~input_dim output_dim =
-  let w = glorot_normal vs ~shape:[ output_dim; input_dim; k1; k2 ] ~gain:(Float.sqrt 5.) in
+  let w = kaiming_uniform vs ~shape:[ output_dim; input_dim; k1; k2 ] ~a:(Float.sqrt 5.) in
   let apply =
     if use_bias
     then begin

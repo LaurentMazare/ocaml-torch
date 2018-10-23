@@ -145,3 +145,4 @@ val to_bigarray : t -> kind:('a, 'b) Bigarray.kind  -> ('a, 'b, Bigarray.c_layou
 val cross_entropy_for_logits : ?reduction:Reduction.t -> t -> targets:t -> t
 
 val scatter_ : t -> dim:int -> index:t -> src:t -> unit
+val uniform_ : t -> lower:float -> upper:float -> unit

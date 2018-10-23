@@ -151,3 +151,6 @@ let cross_entropy_for_logits ?reduction logits ~targets =
 
 let scatter_ t ~dim ~index ~src =
   ignore (scatter_ t dim index src : t)
+
+let uniform_ t ~lower ~upper =
+  ignore (uniform_ t lower upper : t)
