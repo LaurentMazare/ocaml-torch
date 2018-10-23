@@ -8,6 +8,8 @@ let glorot_normal vs ?(gain = 1.) ~shape =
   let fan_in, fan_out =
     match shape with
     | [] | [_] -> failwith "unexpected tensor shape"
+    (* Weight matrix is transposed for linear layers. *)
+    | [ fan_in; fan_out ] -> fan_in, fan_out
     | fan_out :: fan_in :: others ->
       let others = List.fold others ~init:1 ~f:( * ) in
       (fan_in * others), (fan_out * others)
