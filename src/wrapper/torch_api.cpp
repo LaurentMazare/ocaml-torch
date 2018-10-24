@@ -102,26 +102,16 @@ void at_fill_int64(tensor t, int64_t v) {
   PROTECT(t->fill_(v);)
 }
 
-void at_set_double2(tensor t, int dim1, int dim2, double v) {
-  PROTECT(
-     auto dtype = t->dtype();
-     if (dtype == torch::ScalarType::Float) {
-       auto accessor = (t->accessor<float, 2>());
-       accessor[dim1][dim2] = v;
-     }
-     else if (dtype == torch::ScalarType::Double) {
-       auto accessor = (t->accessor<double, 2>());
-       accessor[dim1][dim2] = v;
-     }
-     else
-       caml_failwith("unexpected tensor type");
-  )
-}
-
 void at_print(tensor t) {
   PROTECT(
     torch::Tensor *tensor = (torch::Tensor*)t;
     cout << *tensor << endl;
+  )
+}
+
+void at_copy_(tensor dst, tensor src) {
+  PROTECT(
+    dst->copy_(*src);
   )
 }
 

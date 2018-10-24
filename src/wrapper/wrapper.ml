@@ -99,8 +99,6 @@ module Tensor = struct
   let fill_float t v = fill_double t v
   let fill_int t i = fill_int64 t (Int64.of_int i)
 
-  let set_float2 = set_double2
-
   let backward = backward
   let print = print
   let sum = sum2
@@ -116,6 +114,8 @@ module Tensor = struct
     let t = nll_loss_ t targets (Reduction.to_int reduction) in
     Gc.finalise free t;
     t
+
+  let copy_ t ~src = copy_ t src
 end
 
 module Scalar = struct

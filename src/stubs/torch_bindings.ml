@@ -23,6 +23,12 @@ module C(F: Cstubs.FOREIGN) = struct
         @-> int      (* element size in bytes *)
         @-> returning void)
 
+    let copy_ =
+      foreign "at_copy_"
+        (   t (* dst *)
+        @-> t (* src *)
+        @-> returning void)
+
     let float_vec =
       foreign "at_float_vec"
         (   ptr double (* values *)
@@ -58,9 +64,6 @@ module C(F: Cstubs.FOREIGN) = struct
     let int64_value = foreign "at_int64_value" (t @-> returning int64_t)
     let fill_double = foreign "at_fill_double" (t @-> float @-> returning void)
     let fill_int64 = foreign "at_fill_int64" (t @-> int64_t @-> returning void)
-
-    let set_double2 =
-      foreign "at_set_double2" (t @-> int @-> int @-> float @-> returning void)
 
     let print = foreign "at_print" (t @-> returning void)
     let free = foreign "at_free" (t @-> returning void)

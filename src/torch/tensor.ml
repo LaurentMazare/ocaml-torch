@@ -5,6 +5,7 @@ let to_ptr = Fn.id
 let of_ptr = Fn.id
 
 (* TODO: implement these in a single C call rather than chaining [get]. *)
+let set_float2 t i j value = fill_float (get (get t i) j) value
 let set_float1 t i value = fill_float (get t i) value
 let set_int2 t i j value = fill_int (get (get t i) j) value
 let set_int1 t i value = fill_int (get t i) value
@@ -154,3 +155,5 @@ let scatter_ t ~dim ~index ~src =
 
 let uniform_ t ~lower ~upper =
   ignore (uniform_ t lower upper : t)
+
+let flip t ~dims = flip t dims
