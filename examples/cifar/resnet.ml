@@ -114,6 +114,7 @@ let () =
       for batch_idx = 0 to batches_per_epoch -1 do
         let batch_images, batch_labels =
           Dataset_helper.train_batch cifar ?device ~batch_size ~batch_idx
+            ~augmentation:(`flip_and_crop_with_pad 4)
         in
         Optimizer.zero_grad sgd;
         let predicted = train_model batch_images in

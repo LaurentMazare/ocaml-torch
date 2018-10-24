@@ -7,6 +7,7 @@ type t =
 
 val train_batch
   :  ?device:Torch_core.Device.t
+  -> ?augmentation:[ `flip | `crop_with_pad of int | `flip_and_crop_with_pad of int ]
   -> t
   -> batch_size:int
   -> batch_idx:int
@@ -25,3 +26,6 @@ val read_with_cache
   :  cache_file:string
   -> read:(unit -> t)
   -> t
+
+val random_flip : Tensor.t -> Tensor.t
+val random_crop : Tensor.t -> pad:int -> Tensor.t
