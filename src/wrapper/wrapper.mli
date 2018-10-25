@@ -1,6 +1,12 @@
+module Scalar : sig
+  type t
+  val int : int -> t
+  val float : float -> t
+end
+
 module Tensor : sig
-  include module type of Wrapper_generated
-  type t = C.TensorG.t
+  type t
+  include Wrapper_generated_intf.S with type t := t and type scalar := Scalar.t
 
   val float_vec
     :  ?kind:[ `double | `float | `half ]
@@ -40,12 +46,6 @@ module Tensor : sig
   val defined : t -> bool
 
   val copy_ : t -> src:t -> unit
-end
-
-module Scalar : sig
-  type t
-  val int : int -> t
-  val float : float -> t
 end
 
 module Optimizer : sig
