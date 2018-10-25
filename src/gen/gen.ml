@@ -67,6 +67,11 @@ module Func = struct
     | ScalarType -> "Kind.t"
     | Device -> "Device.t"
 
+  let named_arg arg =
+    match arg.arg_name with
+    | "self" | "other" | "result" | "input" | "tensor" | "tensors" -> false
+    | _ -> true
+
   type t =
     { name : string
     ; args : arg list
@@ -175,7 +180,10 @@ module Func = struct
     |> String.lowercase
 
   let caml_args t =
-    List.map t.args ~f:(fun arg -> caml_name arg.arg_name)
+    List.map t.args ~f:(fun arg ->
+      if named_arg arg
+      then "~" ^ caml_name arg.arg_name
+      else caml_name arg.arg_name)
     |> String.concat ~sep:" "
 
   let caml_binding_args t =
@@ -341,7 +349,12 @@ let write_wrapper funcs filename =
         pm "";
         pi "  val %s :" caml_name;
         List.iter func.args ~f:(fun arg ->
-          pi "    %s ->" (Func.ml_arg_type arg));
+          let named_arg =
+            if Func.named_arg arg
+            then Printf.sprintf "%s:" (Func.caml_name arg.arg_name)
+            else ""
+          in
+          pi "    %s%s ->" named_arg (Func.ml_arg_type arg));
         pi "    t";
         pi "";
       );

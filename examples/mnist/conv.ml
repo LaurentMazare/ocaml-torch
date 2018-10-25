@@ -22,12 +22,12 @@ let () =
   let linear2 = Layer.linear vs ~input_dim:1024 Mnist_helper.label_count in
   let adam = Optimizer.adam vs ~learning_rate in
   let model xs ~is_training =
-    Tensor.reshape xs ~dims:[ -1; 1; 28; 28 ]
+    Tensor.reshape xs ~shape:[ -1; 1; 28; 28 ]
     |> Layer.apply conv2d1
     |> Tensor.max_pool2d ~ksize:(2, 2)
     |> Layer.apply conv2d2
     |> Tensor.max_pool2d ~ksize:(2, 2)
-    |> Tensor.reshape ~dims:[ -1; 1024 ]
+    |> Tensor.reshape ~shape:[ -1; 1024 ]
     |> Layer.apply linear1
     |> Tensor.dropout ~p:0.5 ~is_training
     |> Layer.apply linear2

@@ -46,21 +46,14 @@ val ones : create
 val rand : create
 val randn : create
 
-val log_softmax : t -> t
-
 val float_vec
   :  ?kind:[ `double | `float | `half ]
   -> ?device:Torch_core.Device.t
   -> float list
   -> t
 
-val set_requires_grad : t -> b:bool -> t
 val to_type : t -> type_:Kind.t -> t
 val to_device : ?device:Device.t -> t -> t
-
-val narrow : t -> dim:int -> start:int -> len:int -> t
-
-val cat : t list -> dim:int -> t
 
 val conv2d
   :  ?padding:int*int
@@ -101,20 +94,6 @@ val avg_pool2d
   -> ksize:int*int
   -> t
 
-val batch_norm
-  :  t
-  -> t option
-  -> t option
-  -> t option
-  -> t option
-  -> bool
-  -> float
-  -> float
-  -> bool
-  -> t
-
-val dropout : t -> p:float (* dropout probability *) -> is_training:bool -> t
-
 val const_batch_norm : ?momentum:float -> ?eps:float -> t -> t
 
 val of_bigarray : ('a, 'b, Bigarray.c_layout) Bigarray.Genarray.t -> t
@@ -123,7 +102,4 @@ val to_bigarray : t -> kind:('a, 'b) Bigarray.kind  -> ('a, 'b, Bigarray.c_layou
 
 val cross_entropy_for_logits : ?reduction:Reduction.t -> t -> targets:t -> t
 
-val scatter_ : t -> dim:int -> index:t -> src:t -> unit
-val uniform_ : t -> lower:float -> upper:float -> unit
-val copy_ : t -> src:t -> unit
-val flip : t -> dims:int list -> t
+val dropout : t -> p:float (* dropout prob *) -> is_training:bool -> t

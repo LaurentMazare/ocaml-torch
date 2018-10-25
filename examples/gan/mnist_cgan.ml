@@ -70,7 +70,7 @@ let () =
   let fake_labels = (* Generate some regular one-hot encoded labels. *)
     List.init (batch_size * label_count) ~f:(fun i ->
       if i % label_count = (i / label_count) % label_count then 1.0 else 0.0)
-    |> Tensor.float_vec |> Tensor.reshape ~dims:[ batch_size; label_count ]
+    |> Tensor.float_vec |> Tensor.reshape ~shape:[ batch_size; label_count ]
   in
   let generator xs =
     let ys = Tensor.cat [ xs; fake_labels ] ~dim:1 |> generator in
@@ -82,10 +82,12 @@ let () =
     let batch_images, batch_labels =
       Dataset_helper.train_batch mnist ~batch_size ~batch_idx
     in
-    let onehot_labels = Tensor.zeros [ batch_size; label_count ] in
-    Tensor.scatter_ onehot_labels ~dim:1 ~src:one ~index:batch_labels;
+    let onehot_labels =
+      Tensor.zeros [ batch_size; label_count ]
+      |> Tensor.scatter_ ~dim:1 ~src:one ~index:batch_labels
+    in
     let real_input =
-      Tensor.(cat [ f 2. * batch_images - f 1.; batch_labels ]) ~dim:1
+      Tensor.(cat [ f 2. * batch_images - f 1.; onehot_labels ]) ~dim:1
     in
     let discriminator_loss =
       Tensor.(+)

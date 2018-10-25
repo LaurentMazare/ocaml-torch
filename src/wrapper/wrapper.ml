@@ -69,8 +69,6 @@ module Tensor = struct
       (Bigarray.Genarray.dims ga |> Array.fold_left ( * ) 1 |> Int64.of_int)
       (Bigarray.kind_size_in_bytes kind)
 
-  let reshape t ~dims = reshape t dims
-
   let shape t =
     let num_dims = num_dims t in
     let carray = CArray.make int num_dims in
@@ -104,9 +102,9 @@ module Tensor = struct
   let sum = sum2
   let mean = mean2
 
-  let argmax t = argmax1 t (-1) false
+  let argmax t = argmax1 t ~dim:(-1) ~keepdim:false
 
-  let softmax t = softmax t (-1)
+  let softmax t = softmax t ~dim:(-1)
 
   let nll_loss_ ?(reduction = Reduction.Elementwise_mean) t ~targets =
     let t = nll_loss_ t targets (Reduction.to_int reduction) in

@@ -8,12 +8,12 @@ let tensor_ops () =
   Tensor.print tensor1;
   Tensor.print tensor2;
   Tensor.print sum;
-  Tensor.print (Tensor.reshape sum ~dims:[8]);
+  Tensor.print (Tensor.reshape sum ~shape:[8]);
   let v = Tensor.get sum 3 |> fun t -> Tensor.get t 0 |> Tensor.float_value in
   Printf.printf "sum[3] = %f\n%!" v
 
 let backward_pass () =
-  let x = Tensor.float_vec [-1.0; 0.0; 1.0; 2.0] |> Tensor.set_requires_grad ~b:true in
+  let x = Tensor.float_vec [-1.0; 0.0; 1.0; 2.0] |> Tensor.set_requires_grad ~r:true in
   let square = Tensor.(x * x) in
   Tensor.backward square;
   Tensor.print square;

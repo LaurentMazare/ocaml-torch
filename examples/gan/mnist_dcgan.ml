@@ -92,7 +92,7 @@ let () =
 
   for batch_idx = 1 to batches do
     let batch_images, _ = Dataset_helper.train_batch mnist ~batch_size ~batch_idx in
-    let batch_images = Tensor.reshape batch_images ~dims:[ batch_size; 1; image_w; image_h ] in
+    let batch_images = Tensor.reshape batch_images ~shape:[ batch_size; 1; image_w; image_h ] in
     let discriminator_loss =
       match loss with
       | StandardGAN ->
@@ -127,6 +127,6 @@ let () =
     Caml.Gc.compact ();
     if batch_idx % 25000 = 0 || (batch_idx < 100000 && batch_idx % 5000 = 0)
     then
-      write_samples (generator fixed_noise |> Tensor.reshape ~dims:[ -1; image_dim ])
+      write_samples (generator fixed_noise |> Tensor.reshape ~shape:[ -1; image_dim ])
         ~filename:(Printf.sprintf "out%d.txt" batch_idx)
   done

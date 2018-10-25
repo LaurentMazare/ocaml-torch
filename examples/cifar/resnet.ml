@@ -70,7 +70,7 @@ let resnet vs =
   fun xs ~is_training ->
     let batch_size = Tensor.shape xs |> List.hd_exn in
     Tensor.((xs - f 0.5) * f 4.)
-    |> Tensor.reshape ~dims:Cifar_helper. [ -1; image_c; image_w; image_h ]
+    |> Tensor.reshape ~shape:Cifar_helper. [ -1; image_c; image_w; image_h ]
     |> Layer.apply conv2d
     |> bn ~is_training
     |> Tensor.relu
@@ -79,7 +79,7 @@ let resnet vs =
     |> stack3 ~is_training
     |> stack4 ~is_training
     |> Tensor.avg_pool2d ~ksize:(4, 4)
-    |> Tensor.reshape ~dims:[ batch_size; -1 ]
+    |> Tensor.reshape ~shape:[ batch_size; -1 ]
     |> Layer.apply linear
 
 let () =

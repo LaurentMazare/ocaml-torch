@@ -45,8 +45,8 @@ let random_flip t =
   | [ batch_size; _; _; _ ] as shape ->
     let output = Tensor.zeros shape in
     for batch_index = 0 to batch_size - 1 do
-      let output_view = Tensor.narrow output ~dim:0 ~start:batch_index ~len:1 in
-      let t_view = Tensor.narrow t ~dim:0 ~start:batch_index ~len:1 in
+      let output_view = Tensor.narrow output ~dim:0 ~start:batch_index ~length:1 in
+      let t_view = Tensor.narrow t ~dim:0 ~start:batch_index ~length:1 in
       let to_copy = if Random.bool () then t_view else Tensor.flip t_view ~dims:[3] in
       Tensor.copy_ output_view ~src:to_copy
     done;
@@ -57,18 +57,18 @@ let random_crop t ~pad =
   match Tensor.shape t with
   | [ batch_size; dim_c; dim_h; dim_w ] as shape ->
     let padded = Tensor.zeros [ batch_size; dim_c; dim_h + 2*pad; dim_w + 2*pad ] in
-    Tensor.narrow padded ~dim:2 ~start:pad ~len:dim_h
-    |> Tensor.narrow ~dim:3 ~start:pad ~len:dim_w
+    Tensor.narrow padded ~dim:2 ~start:pad ~length:dim_h
+    |> Tensor.narrow ~dim:3 ~start:pad ~length:dim_w
     |> Tensor.copy_ ~src:t;
     let output = Tensor.zeros shape in
     for batch_index = 0 to batch_size - 1 do
-      let output_view = Tensor.narrow output ~dim:0 ~start:batch_index ~len:1 in
+      let output_view = Tensor.narrow output ~dim:0 ~start:batch_index ~length:1 in
       let start_w = Random.int (2 * pad) in
       let start_h = Random.int (2 * pad) in
       let cropped_view =
-        Tensor.narrow padded ~dim:0 ~start:batch_index ~len:1
-        |> Tensor.narrow ~dim:2 ~start:start_h ~len:dim_h
-        |> Tensor.narrow ~dim:3 ~start:start_w ~len:dim_w
+        Tensor.narrow padded ~dim:0 ~start:batch_index ~length:1
+        |> Tensor.narrow ~dim:2 ~start:start_h ~length:dim_h
+        |> Tensor.narrow ~dim:3 ~start:start_w ~length:dim_w
       in
       Tensor.copy_ output_view ~src:cropped_view
     done;
@@ -79,8 +79,8 @@ let train_batch ?device ?augmentation t ~batch_size ~batch_idx =
   let { train_images; train_labels; _ } = t in
   let train_size = Tensor.shape train_images |> List.hd_exn in
   let start = Int.(%) (batch_size * batch_idx) (train_size - batch_size) in
-  let batch_images = Tensor.narrow train_images ~dim:0 ~start ~len:batch_size in
-  let batch_labels = Tensor.narrow train_labels ~dim:0 ~start ~len:batch_size in
+  let batch_images = Tensor.narrow train_images ~dim:0 ~start ~length:batch_size in
+  let batch_labels = Tensor.narrow train_labels ~dim:0 ~start ~length:batch_size in
   let batch_images =
     match augmentation with
     | None -> batch_images
@@ -107,12 +107,12 @@ let batch_accuracy ?device ?samples t train_or_test ~batch_size ~predict =
     else
       let batch_size = Int.min batch_size (samples - start_index) in
       let images =
-        Tensor.narrow images ~dim:0 ~start:start_index ~len:batch_size
+        Tensor.narrow images ~dim:0 ~start:start_index ~length:batch_size
         |> Tensor.to_device ?device
       in
       let predicted_labels = predict images in
       let labels =
-        Tensor.narrow labels ~dim:0 ~start:start_index ~len:batch_size
+        Tensor.narrow labels ~dim:0 ~start:start_index ~length:batch_size
         |> Tensor.to_device ?device
       in
       let batch_accuracy =

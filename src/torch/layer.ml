@@ -25,8 +25,8 @@ let kaiming_uniform vs ~shape ~a =
   let std = Float.sqrt (2. /. ((1. +. a *. a) *. Float.of_int fan_in)) in
   let bound = Float.sqrt 3. *. std in
   let tensor = Tensor.zeros shape ~device:(Var_store.device vs) in
-  Tensor.uniform_ tensor ~lower:(-. bound) ~upper:bound;
-  ignore (Tensor.set_requires_grad tensor ~b:true : Tensor.t);
+  let tensor = Tensor.uniform_ tensor ~from:(-. bound) ~to_:bound in
+  let tensor = Tensor.set_requires_grad tensor ~r:true in
   Var_store.add_var vs ~var:tensor ~kind:`trainable;
   tensor
 
@@ -34,7 +34,7 @@ let apply ?activation ys =
   match activation with
   | Some Relu -> Tensor.relu ys
   | Some Softmax -> Tensor.softmax ys
-  | Some Log_softmax -> Tensor.log_softmax ys
+  | Some Log_softmax -> Tensor.log_softmax ys ~dim:(-1)
   | Some Tanh -> Tensor.tanh ys
   | Some Sigmoid -> Tensor.sigmoid ys
   | Some Leaky_relu -> Tensor.leaky_relu ys
@@ -110,14 +110,14 @@ let batch_norm2d vs ?(eps=1e-5) ?(momentum=0.1) output_dim =
   Var_store.add_vars vs ~vars:[running_mean; running_var] ~kind:`non_trainable;
   Staged.stage (fun xs ~is_training ->
     Tensor.batch_norm xs
-      (Some w)
-      (Some b)
-      (Some running_mean)
-      (Some running_var)
-      is_training
-      momentum
-      eps
-      false)
+      ~weight:(Some w)
+      ~bias:(Some b)
+      ~running_mean:(Some running_mean)
+      ~running_var:(Some running_var)
+      ~training:is_training
+      ~momentum
+      ~eps
+      ~cudnn_enabled:false)
 
 let apply t xs = t.apply xs
 

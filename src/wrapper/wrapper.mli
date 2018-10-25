@@ -21,7 +21,6 @@ module Tensor : sig
   val of_bigarray : (_, _, Bigarray.c_layout) Bigarray.Genarray.t -> t
   val copy_to_bigarray : t -> (_, _, Bigarray.c_layout) Bigarray.Genarray.t -> unit
 
-  val reshape : t -> dims:int list -> t
   val shape : t -> int list
   val kind : t -> Kind.t
   val requires_grad : t -> bool
