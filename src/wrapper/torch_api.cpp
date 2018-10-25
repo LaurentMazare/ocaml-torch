@@ -82,10 +82,6 @@ tensor at_get(tensor t, int index) {
   PROTECT(return new torch::Tensor((*t)[index]);)
 }
 
-tensor at_select(tensor t, int dim, int index) {
-  PROTECT(return new torch::Tensor(select(*t, dim, index));)
-}
-
 double at_double_value(tensor t) {
   PROTECT(return t->item<double>();)
 }
