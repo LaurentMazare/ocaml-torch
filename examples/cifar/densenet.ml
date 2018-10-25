@@ -1,83 +1,91 @@
-(* ResNet model for the CIFAR-10 dataset.
+(* DenseNet model for the CIFAR-10 dataset.
+   https://arxiv.org/pdf/1608.06993.pdf
 
    The dataset can be downloaded from https://www.cs.toronto.edu/~kriz/cifar.html, files
    should be placed in the data/ directory.
 
-   This reaches ~92.5% accuracy.
+   This reaches xx% accuracy.
 *)
 open Base
 open Torch
 
-let batch_size = 128
-let epochs = 150
-let dropout_p = 0.3
+let batch_size = 32
+let epochs = 300
+let dropout_p = 0.2
+
 let learning_rate ~epoch_idx =
-  if epoch_idx < 50
+  if epoch_idx < 150
   then 0.1
-  else if epoch_idx < 100
+  else if epoch_idx < 225
   then 0.01
   else 0.001
 
-let conv2d ?(padding=1) ?(ksize=3) = Layer.conv2d_ ~ksize ~padding ~use_bias:false
+let conv2d = Layer.conv2d_ ~use_bias:false
 
-let basic_block vs ~stride ~input_dim output_dim =
-  let conv2d1 = conv2d vs ~stride ~input_dim output_dim in
-  let conv2d2 = conv2d vs ~stride:1 ~input_dim:output_dim output_dim in
-  let bn1 = Layer.batch_norm2d vs output_dim |> Staged.unstage in
-  let bn2 = Layer.batch_norm2d vs output_dim |> Staged.unstage in
-  let shortcut =
-    if stride = 1
-    then fun xs ~is_training:_ -> xs
-    else
-      let conv = conv2d vs ~padding:0 ~ksize:1 ~stride ~input_dim output_dim in
-      let bn = Layer.batch_norm2d vs output_dim |> Staged.unstage in
-      fun xs ~is_training ->
-        Layer.apply conv xs
-        |> bn ~is_training
-  in
+let bn_relu_conv vs ~padding ~ksize ~input_dim output_dim =
+  let bn = Layer.batch_norm2d vs input_dim |> Staged.unstage in
+  let conv2d = conv2d vs ~padding ~stride:1 ~ksize ~input_dim output_dim in
   fun xs ~is_training ->
-    Layer.apply conv2d1 xs
-    |> Tensor.dropout ~p:dropout_p ~is_training
-    |> bn1 ~is_training
+    bn xs ~is_training
     |> Tensor.relu
-    |> Layer.apply conv2d2
+    |> Layer.apply conv2d
     |> Tensor.dropout ~p:dropout_p ~is_training
-    |> bn2 ~is_training
-    |> fun ys -> Tensor.(+) ys (shortcut xs ~is_training)
 
-let block_stack vs ~stride ~depth ~input_dim output_dim =
-  let basic_blocks =
-    List.init depth ~f:(fun i ->
-      basic_block vs output_dim
-        ~stride:(if i = 0 then stride else 1)
-        ~input_dim:(if i = 0 then input_dim else output_dim))
+let bottleneck vs ~growth_rate ~input_dim =
+  let layer1 = bn_relu_conv vs ~padding:0 ~ksize:1 ~input_dim (4 * growth_rate) in
+  let layer2 = bn_relu_conv vs ~padding:0 ~ksize:1 ~input_dim:(4 * growth_rate) growth_rate in
+  fun xs ~is_training ->
+    layer1 xs ~is_training
+    |> layer2 ~is_training
+    |> fun ys -> Tensor.cat [ xs; ys ] ~dim:1
+
+let block_stack vs ~n ~growth_rate ~input_dim =
+  let blocks =
+    List.init n ~f:(fun block_index ->
+      bottleneck vs ~growth_rate ~input_dim:(input_dim + growth_rate * block_index))
   in
-  fun (xs : Tensor.t) ~is_training ->
-    List.fold basic_blocks ~init:xs
-      ~f:(fun acc basic_block -> basic_block acc ~is_training)
+  let output_dim = input_dim + n * growth_rate in
+  output_dim,
+  fun xs ~is_training ->
+    List.fold blocks ~init:xs ~f:(fun acc block -> block acc ~is_training)
 
-let resnet vs =
-  let conv2d = conv2d vs ~stride:1 ~input_dim:3 32 in
-  let bn = Layer.batch_norm2d vs 32 |> Staged.unstage in
-  let stack1 = block_stack vs ~stride:1 ~depth:2 ~input_dim:32 32 in
-  let stack2 = block_stack vs ~stride:2 ~depth:2 ~input_dim:32 64 in
-  let stack3 = block_stack vs ~stride:2 ~depth:2 ~input_dim:64 128 in
-  let stack4 = block_stack vs ~stride:2 ~depth:2 ~input_dim:128 128 in
-  let linear = Layer.linear vs ~input_dim:128 Cifar_helper.label_count in
+let densenet vs ~n1 ~n2 ~n3 ~n4 ~growth_rate =
+  let interblock ~input_dim =
+    let output_dim = input_dim / 2 in
+    output_dim, bn_relu_conv vs ~padding:0 ~ksize:1 ~input_dim output_dim
+  in
+  let conv2d = conv2d vs ~padding:1 ~stride:1 ~ksize:3 ~input_dim:3 (2 * growth_rate) in
+  let dim, stack1 = block_stack vs ~n:n1 ~growth_rate ~input_dim:(2 * growth_rate) in
+  let dim, bn_relu_conv1 = interblock ~input_dim:dim in
+  let dim, stack2 = block_stack vs ~n:n2 ~growth_rate ~input_dim:dim in
+  let dim, bn_relu_conv2 = interblock ~input_dim:dim in
+  let dim, stack3 = block_stack vs ~n:n3 ~growth_rate ~input_dim:dim in
+  let dim, bn_relu_conv3 = interblock ~input_dim:dim in
+  let dim, stack4 = block_stack vs ~n:n4 ~growth_rate ~input_dim:dim in
+  let bn = Layer.batch_norm2d vs dim |> Staged.unstage in
+  let linear = Layer.linear vs ~input_dim:dim Cifar_helper.label_count in
   fun xs ~is_training ->
     let batch_size = Tensor.shape xs |> List.hd_exn in
     Tensor.((xs - f 0.5) * f 4.)
     |> Tensor.reshape ~shape:Cifar_helper. [ -1; image_c; image_w; image_h ]
     |> Layer.apply conv2d
+    |> stack1 ~is_training
+    |> bn_relu_conv1 ~is_training
+    |> Tensor.avg_pool2d ~ksize:(2, 2)
+    |> stack2 ~is_training
+    |> bn_relu_conv2 ~is_training
+    |> Tensor.avg_pool2d ~ksize:(2, 2)
+    |> stack3 ~is_training
+    |> bn_relu_conv3 ~is_training
+    |> Tensor.avg_pool2d ~ksize:(2, 2)
+    |> stack4 ~is_training
     |> bn ~is_training
     |> Tensor.relu
-    |> stack1 ~is_training
-    |> stack2 ~is_training
-    |> stack3 ~is_training
-    |> stack4 ~is_training
     |> Tensor.avg_pool2d ~ksize:(4, 4)
     |> Tensor.reshape ~shape:[ batch_size; -1 ]
     |> Layer.apply linear
+
+let densenet121 = densenet ~n1:6 ~n2:12 ~n3:24 ~n4:16 ~growth_rate:12
 
 let () =
   let device =
@@ -88,8 +96,8 @@ let () =
     end else None
   in
   let cifar = Cifar_helper.read_files ~with_caching:true () in
-  let vs = Var_store.create ~name:"resnet" ?device () in
-  let model = resnet vs in
+  let vs = Var_store.create ~name:"densenet" ?device () in
+  let model = densenet121 vs in
   let sgd =
     Optimizer.sgd vs
       ~learning_rate:(learning_rate ~epoch_idx:0)
@@ -102,7 +110,7 @@ let () =
   let batches_per_epoch = (Tensor.shape cifar.train_images |> List.hd_exn) / batch_size in
   Checkpointing.loop ~start_index:1 ~end_index:epochs
     ~var_stores:[ vs ]
-    ~checkpoint_base:"resnet.ot"
+    ~checkpoint_base:"densenet.ot"
     ~checkpoint_every:(`iters 10)
     (fun ~index:epoch_idx ->
       Optimizer.set_learning_rate sgd ~learning_rate:(learning_rate ~epoch_idx);
