@@ -1,9 +1,6 @@
 include Base
 include Torch_core.Wrapper.Tensor
 
-let to_ptr = Fn.id
-let of_ptr = Fn.id
-
 (* TODO: implement these in a single C call rather than chaining [get]. *)
 let set_float2 t i j value = fill_float (get (get t i) j) value
 let set_float1 t i value = fill_float (get t i) value
