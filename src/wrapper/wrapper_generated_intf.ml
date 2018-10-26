@@ -101,6 +101,11 @@ module type S = sig
     output_size:int list ->
     t
 
+  val adaptive_max_pool1d :
+    t ->
+    output_size:int list ->
+    t * t
+
   val adaptive_max_pool2d_backward :
     grad_output:t ->
     t ->
@@ -840,6 +845,14 @@ module type S = sig
     pad:int ->
     t
 
+  val conv_tbc_backward :
+    t ->
+    t ->
+    weight:t ->
+    bias:t ->
+    pad:int ->
+    t * t * t
+
   val conv_transpose1d :
     t ->
     weight:t ->
@@ -972,6 +985,28 @@ module type S = sig
     w:int ->
     t
 
+  val cudnn_batch_norm :
+    t ->
+    weight:t ->
+    bias:t option ->
+    running_mean:t option ->
+    running_var:t option ->
+    training:bool ->
+    exponential_average_factor:float ->
+    epsilon:float ->
+    t * t * t
+
+  val cudnn_batch_norm_backward :
+    t ->
+    grad_output:t ->
+    weight:t ->
+    running_mean:t option ->
+    running_var:t option ->
+    save_mean:t option ->
+    save_var:t option ->
+    epsilon:float ->
+    t * t * t
+
   val cudnn_convolution :
     t ->
     weight:t ->
@@ -1056,6 +1091,12 @@ module type S = sig
     t ->
     grid:t ->
     t
+
+  val cudnn_grid_sampler_backward :
+    t ->
+    grid:t ->
+    grad_output:t ->
+    t * t
 
   val cumprod1 :
     t ->
@@ -1202,6 +1243,18 @@ module type S = sig
     train:bool ->
     t
 
+  val eig :
+    t ->
+    eigenvectors:bool ->
+    t * t
+
+  val eig_out :
+    res1:t ->
+    res2:t ->
+    t ->
+    eigenvectors:bool ->
+    t * t
+
   val elu :
     t ->
     t
@@ -1231,6 +1284,15 @@ module type S = sig
     scale_grad_by_freq:bool ->
     sparse:bool ->
     t
+
+  val embedding_bag :
+    weight:t ->
+    indices:t ->
+    offsets:t ->
+    scale_grad_by_freq:bool ->
+    mode:int ->
+    sparse:bool ->
+    t * t * t * t
 
   val embedding_dense_backward :
     grad:t ->
@@ -1578,10 +1640,32 @@ module type S = sig
     t ->
     t
 
+  val gels :
+    t ->
+    a:t ->
+    t * t
+
+  val gels_out :
+    res1:t ->
+    res2:t ->
+    t ->
+    a:t ->
+    t * t
+
   val geometric_ :
     t ->
     p:float ->
     t
+
+  val geqrf :
+    t ->
+    t * t
+
+  val geqrf_out :
+    res1:t ->
+    res2:t ->
+    t ->
+    t * t
 
   val ger :
     t ->
@@ -1593,6 +1677,18 @@ module type S = sig
     t ->
     vec2:t ->
     t
+
+  val gesv :
+    t ->
+    a:t ->
+    t * t
+
+  val gesv_out :
+    solution:t ->
+    lu:t ->
+    t ->
+    a:t ->
+    t * t
 
   val glu :
     t ->
@@ -1647,12 +1743,52 @@ module type S = sig
     padding_mode:int ->
     t
 
+  val grid_sampler_2d_backward :
+    grad_output:t ->
+    t ->
+    grid:t ->
+    interpolation_mode:int ->
+    padding_mode:int ->
+    t * t
+
   val grid_sampler_3d :
     t ->
     grid:t ->
     interpolation_mode:int ->
     padding_mode:int ->
     t
+
+  val grid_sampler_3d_backward :
+    grad_output:t ->
+    t ->
+    grid:t ->
+    interpolation_mode:int ->
+    padding_mode:int ->
+    t * t
+
+  val gru1 :
+    t ->
+    hx:t ->
+    params:t list ->
+    has_biases:bool ->
+    num_layers:int ->
+    dropout:float ->
+    train:bool ->
+    bidirectional:bool ->
+    batch_first:bool ->
+    t * t
+
+  val gru2 :
+    data:t ->
+    batch_sizes:t ->
+    hx:t ->
+    params:t list ->
+    has_biases:bool ->
+    num_layers:int ->
+    dropout:float ->
+    train:bool ->
+    bidirectional:bool ->
+    t * t
 
   val gru_cell :
     t ->
@@ -1875,6 +2011,22 @@ module type S = sig
     reduction:int ->
     t
 
+  val kthvalue :
+    t ->
+    k:int ->
+    dim:int ->
+    keepdim:bool ->
+    t * t
+
+  val kthvalue_out :
+    values:t ->
+    indices:t ->
+    t ->
+    k:int ->
+    dim:int ->
+    keepdim:bool ->
+    t * t
+
   val l1_loss :
     t ->
     target:t ->
@@ -2065,6 +2217,16 @@ module type S = sig
     buffer:t ->
     t
 
+  val log_sigmoid_forward :
+    t ->
+    t * t
+
+  val log_sigmoid_forward_out :
+    output:t ->
+    buffer:t ->
+    t ->
+    t * t
+
   val log_sigmoid_out :
     output:t ->
     t ->
@@ -2117,6 +2279,39 @@ module type S = sig
     dim:int ->
     keepdim:bool ->
     t
+
+  val lstm1 :
+    t ->
+    hx:t list ->
+    params:t list ->
+    has_biases:bool ->
+    num_layers:int ->
+    dropout:float ->
+    train:bool ->
+    bidirectional:bool ->
+    batch_first:bool ->
+    t * t * t
+
+  val lstm2 :
+    data:t ->
+    batch_sizes:t ->
+    hx:t list ->
+    params:t list ->
+    has_biases:bool ->
+    num_layers:int ->
+    dropout:float ->
+    train:bool ->
+    bidirectional:bool ->
+    t * t * t
+
+  val lstm_cell :
+    t ->
+    hx:t list ->
+    w_ih:t ->
+    w_hh:t ->
+    b_ih:t option ->
+    b_hh:t option ->
+    t * t
 
   val lt :
     t ->
@@ -2197,11 +2392,25 @@ module type S = sig
     t ->
     t
 
-  val max_out :
+  val max1 :
+    t ->
+    dim:int ->
+    keepdim:bool ->
+    t * t
+
+  val max_out1 :
     t ->
     t ->
     t ->
     t
+
+  val max_out2 :
+    max:t ->
+    max_values:t ->
+    t ->
+    dim:int ->
+    keepdim:bool ->
+    t * t
 
   val max_pool1d :
     t ->
@@ -2211,6 +2420,15 @@ module type S = sig
     dilation:int list ->
     ceil_mode:bool ->
     t
+
+  val max_pool1d_with_indices :
+    t ->
+    kernel_size:int list ->
+    stride:int list ->
+    padding:int list ->
+    dilation:int list ->
+    ceil_mode:bool ->
+    t * t
 
   val max_pool2d :
     t ->
@@ -2426,22 +2644,72 @@ module type S = sig
     dtype:Kind.t ->
     t
 
+  val median :
+    t ->
+    dim:int ->
+    keepdim:bool ->
+    t * t
+
+  val median_out :
+    values:t ->
+    indices:t ->
+    t ->
+    dim:int ->
+    keepdim:bool ->
+    t * t
+
   val min :
     t ->
     t ->
     t
 
-  val min_out :
+  val min1 :
+    t ->
+    dim:int ->
+    keepdim:bool ->
+    t * t
+
+  val min_out1 :
     t ->
     t ->
     t ->
     t
+
+  val min_out2 :
+    min:t ->
+    min_indices:t ->
+    t ->
+    dim:int ->
+    keepdim:bool ->
+    t * t
 
   val min_values :
     t ->
     dim:int ->
     keepdim:bool ->
     t
+
+  val miopen_batch_norm :
+    t ->
+    weight:t ->
+    bias:t option ->
+    running_mean:t option ->
+    running_var:t option ->
+    training:bool ->
+    exponential_average_factor:float ->
+    epsilon:float ->
+    t * t * t
+
+  val miopen_batch_norm_backward :
+    t ->
+    grad_output:t ->
+    weight:t ->
+    running_mean:t option ->
+    running_var:t option ->
+    save_mean:t option ->
+    save_var:t option ->
+    epsilon:float ->
+    t * t * t
 
   val miopen_convolution :
     t ->
@@ -2540,6 +2808,17 @@ module type S = sig
     bias_defined:bool ->
     t
 
+  val mkldnn_convolution_backward_weights :
+    weight_size:int list ->
+    grad_output:t ->
+    t ->
+    padding:int list ->
+    stride:int list ->
+    dilation:int list ->
+    groups:int ->
+    bias_defined:bool ->
+    t * t
+
   val mm :
     t ->
     mat2:t ->
@@ -2550,6 +2829,20 @@ module type S = sig
     t ->
     mat2:t ->
     t
+
+  val mode :
+    t ->
+    dim:int ->
+    keepdim:bool ->
+    t * t
+
+  val mode_out :
+    values:t ->
+    indices:t ->
+    t ->
+    dim:int ->
+    keepdim:bool ->
+    t * t
 
   val mse_loss :
     t ->
@@ -2640,6 +2933,20 @@ module type S = sig
     reduction:int ->
     is_target:t ->
     t
+
+  val multilabel_margin_loss_forward :
+    t ->
+    target:t ->
+    reduction:int ->
+    t * t
+
+  val multilabel_margin_loss_forward_out :
+    output:t ->
+    is_target:t ->
+    t ->
+    target:t ->
+    reduction:int ->
+    t * t
 
   val multilabel_margin_loss_out :
     output:t ->
@@ -2777,6 +3084,24 @@ module type S = sig
     total_weight:t ->
     t
 
+  val nll_loss2d_forward :
+    t ->
+    target:t ->
+    weight:t option ->
+    reduction:int ->
+    ignore_index:int ->
+    t * t
+
+  val nll_loss2d_forward_out :
+    output:t ->
+    total_weight:t ->
+    t ->
+    target:t ->
+    weight:t option ->
+    reduction:int ->
+    ignore_index:int ->
+    t * t
+
   val nll_loss2d_out :
     output:t ->
     t ->
@@ -2806,6 +3131,24 @@ module type S = sig
     ignore_index:int ->
     total_weight:t ->
     t
+
+  val nll_loss_forward :
+    t ->
+    target:t ->
+    weight:t option ->
+    reduction:int ->
+    ignore_index:int ->
+    t * t
+
+  val nll_loss_forward_out :
+    output:t ->
+    total_weight:t ->
+    t ->
+    target:t ->
+    weight:t option ->
+    reduction:int ->
+    ignore_index:int ->
+    t * t
 
   val nll_loss_out :
     output:t ->
@@ -3057,6 +3400,12 @@ module type S = sig
     weight:t ->
     t
 
+  val prelu_backward :
+    grad_output:t ->
+    t ->
+    weight:t ->
+    t * t
+
   val prod1 :
     t ->
     dtype:Kind.t ->
@@ -3113,6 +3462,16 @@ module type S = sig
     source:t ->
     accumulate:bool ->
     t
+
+  val qr :
+    t ->
+    t * t
+
+  val qr_out :
+    res1:t ->
+    res2:t ->
+    t ->
+    t * t
 
   val rand :
     size:int list ->
@@ -3497,6 +3856,30 @@ module type S = sig
     onesided:bool ->
     t
 
+  val rnn_relu1 :
+    t ->
+    hx:t ->
+    params:t list ->
+    has_biases:bool ->
+    num_layers:int ->
+    dropout:float ->
+    train:bool ->
+    bidirectional:bool ->
+    batch_first:bool ->
+    t * t
+
+  val rnn_relu2 :
+    data:t ->
+    batch_sizes:t ->
+    hx:t ->
+    params:t list ->
+    has_biases:bool ->
+    num_layers:int ->
+    dropout:float ->
+    train:bool ->
+    bidirectional:bool ->
+    t * t
+
   val rnn_relu_cell :
     t ->
     hx:t ->
@@ -3505,6 +3888,30 @@ module type S = sig
     b_ih:t option ->
     b_hh:t option ->
     t
+
+  val rnn_tanh1 :
+    t ->
+    hx:t ->
+    params:t list ->
+    has_biases:bool ->
+    num_layers:int ->
+    dropout:float ->
+    train:bool ->
+    bidirectional:bool ->
+    batch_first:bool ->
+    t * t
+
+  val rnn_tanh2 :
+    data:t ->
+    batch_sizes:t ->
+    hx:t ->
+    params:t list ->
+    has_biases:bool ->
+    num_layers:int ->
+    dropout:float ->
+    train:bool ->
+    bidirectional:bool ->
+    t * t
 
   val rnn_tanh_cell :
     t ->
@@ -3524,6 +3931,14 @@ module type S = sig
     gradoutput:t ->
     argmaxes:t ->
     t
+
+  val roipooling2d_forward :
+    t ->
+    rois:t ->
+    pooledheight:int ->
+    pooledwidth:int ->
+    spatialscale:float ->
+    t * t
 
   val round :
     t ->
@@ -3700,6 +4115,10 @@ module type S = sig
     end_:int ->
     step:int ->
     t
+
+  val slogdet :
+    t ->
+    t * t
 
   val smm :
     t ->
@@ -3976,6 +4395,33 @@ module type S = sig
     dtype:Kind.t ->
     t
 
+  val svd :
+    t ->
+    some:bool ->
+    t * t * t
+
+  val svd_out :
+    res1:t ->
+    res2:t ->
+    res3:t ->
+    t ->
+    some:bool ->
+    t * t * t
+
+  val symeig :
+    t ->
+    eigenvectors:bool ->
+    upper:bool ->
+    t * t
+
+  val symeig_out :
+    res1:t ->
+    res2:t ->
+    t ->
+    eigenvectors:bool ->
+    upper:bool ->
+    t * t
+
   val t_ :
     t ->
     t
@@ -4054,197 +4500,6 @@ module type S = sig
 
   val th_zero_ :
     t ->
-    t
-
-  val thnn_batch_norm :
-    t ->
-    weight:t ->
-    bias:t ->
-    running_mean:t ->
-    running_var:t ->
-    training:bool ->
-    momentum:float ->
-    eps:float ->
-    t
-
-  val thnn_batch_norm_out :
-    output:t ->
-    t ->
-    weight:t ->
-    bias:t ->
-    running_mean:t ->
-    running_var:t ->
-    training:bool ->
-    momentum:float ->
-    eps:float ->
-    t
-
-  val thnn_conv2d :
-    t ->
-    weight:t ->
-    kernel_size:int list ->
-    bias:t ->
-    stride:int list ->
-    padding:int list ->
-    t
-
-  val thnn_conv2d_out :
-    output:t ->
-    t ->
-    weight:t ->
-    kernel_size:int list ->
-    bias:t ->
-    stride:int list ->
-    padding:int list ->
-    t
-
-  val thnn_conv3d :
-    t ->
-    weight:t ->
-    kernel_size:int list ->
-    bias:t ->
-    stride:int list ->
-    padding:int list ->
-    t
-
-  val thnn_conv3d_out :
-    output:t ->
-    t ->
-    weight:t ->
-    kernel_size:int list ->
-    bias:t ->
-    stride:int list ->
-    padding:int list ->
-    t
-
-  val thnn_conv_depthwise2d :
-    t ->
-    weight:t ->
-    kernel_size:int list ->
-    bias:t ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    t
-
-  val thnn_conv_depthwise2d_forward :
-    t ->
-    weight:t ->
-    kernel_size:int list ->
-    bias:t option ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    t
-
-  val thnn_conv_depthwise2d_forward_out :
-    output:t ->
-    t ->
-    weight:t ->
-    kernel_size:int list ->
-    bias:t option ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    t
-
-  val thnn_conv_depthwise2d_out :
-    output:t ->
-    t ->
-    weight:t ->
-    kernel_size:int list ->
-    bias:t ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    t
-
-  val thnn_conv_dilated2d :
-    t ->
-    weight:t ->
-    kernel_size:int list ->
-    bias:t ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    t
-
-  val thnn_conv_dilated2d_out :
-    output:t ->
-    t ->
-    weight:t ->
-    kernel_size:int list ->
-    bias:t ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    t
-
-  val thnn_conv_dilated3d :
-    t ->
-    weight:t ->
-    kernel_size:int list ->
-    bias:t ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    t
-
-  val thnn_conv_dilated3d_out :
-    output:t ->
-    t ->
-    weight:t ->
-    kernel_size:int list ->
-    bias:t ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    t
-
-  val thnn_conv_transpose2d :
-    t ->
-    weight:t ->
-    kernel_size:int list ->
-    bias:t ->
-    stride:int list ->
-    padding:int list ->
-    output_padding:int list ->
-    dilation:int list ->
-    t
-
-  val thnn_conv_transpose2d_out :
-    output:t ->
-    t ->
-    weight:t ->
-    kernel_size:int list ->
-    bias:t ->
-    stride:int list ->
-    padding:int list ->
-    output_padding:int list ->
-    dilation:int list ->
-    t
-
-  val thnn_conv_transpose3d :
-    t ->
-    weight:t ->
-    kernel_size:int list ->
-    bias:t ->
-    stride:int list ->
-    padding:int list ->
-    output_padding:int list ->
-    dilation:int list ->
-    t
-
-  val thnn_conv_transpose3d_out :
-    output:t ->
-    t ->
-    weight:t ->
-    kernel_size:int list ->
-    bias:t ->
-    stride:int list ->
-    padding:int list ->
-    output_padding:int list ->
-    dilation:int list ->
     t
 
   val to1 :
@@ -4340,6 +4595,24 @@ module type S = sig
     t ->
     diagonal:int ->
     t
+
+  val trtrs :
+    t ->
+    a:t ->
+    upper:bool ->
+    transpose:bool ->
+    unitriangular:bool ->
+    t * t
+
+  val trtrs_out :
+    res1:t ->
+    res2:t ->
+    t ->
+    a:t ->
+    upper:bool ->
+    transpose:bool ->
+    unitriangular:bool ->
+    t * t
 
   val trunc :
     t ->

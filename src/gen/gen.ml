@@ -75,7 +75,7 @@ module Func = struct
   type t =
     { name : string
     ; args : arg list
-    ; returns : string
+    ; returns : int (* number of tensors that are returned *)
     ; kind : [ `function_ | `method_ ]
     }
 
@@ -167,7 +167,7 @@ module Func = struct
       | Scalar -> ["scalar"]
     )
     |> String.concat ~sep:" @-> "
-    |> Printf.sprintf "%s @-> returning t"
+    |> Printf.sprintf "ptr t @-> %s @-> returning void"
 
   let replace_map =
     Map.of_alist_exn (module String)
@@ -226,13 +226,16 @@ let read_yaml filename =
     let deprecated = Map.find_exn map "deprecated" |> extract_bool in
     let method_of = Map.find_exn map "method_of" |> extract_list |> List.map ~f:extract_string in
     let arguments = Map.find_exn map "arguments" |> extract_list in
-    let return_ok =
-      match Map.find_exn map "returns" |> extract_list with
-      | [ returns ] ->
+    let returns =
+      let is_tensor returns =
         let returns = extract_map returns in
         let return_type = Map.find_exn returns "dynamic_type" |> extract_string in
         String.(=) return_type "Tensor" || String.(=) return_type "BoolTensor"
-      | _ -> false
+      in
+      let returns = Map.find_exn map "returns" |> extract_list in
+      if List.for_all returns ~f:is_tensor
+      then Some (List.length returns)
+      else None
     in
     let kind =
       if List.exists method_of ~f:(String.(=) "namespace")
@@ -241,12 +244,13 @@ let read_yaml filename =
       then Some `method_
       else None
     in
-    if return_ok
-    && not deprecated
-    && Char.(<>) name.[0] '_'
+    if not deprecated
+    && not (String.is_prefix name ~prefix:"_")
+    && not (String.is_prefix name ~prefix:"thnn_")
     && not (Set.mem unsupported_functions name)
     then
-      Option.bind kind ~f:(fun kind ->
+      Option.both returns kind
+      |> Option.bind ~f:(fun (returns, kind) ->
         try
           let args =
             List.filter_map arguments ~f:(fun arg ->
@@ -268,7 +272,7 @@ let read_yaml filename =
                 else raise Not_a_simple_arg
               )
             in
-            Some { Func.name; args; returns = "Tensor"; kind }
+            Some { Func.name; args; returns; kind }
           with
           | Not_a_simple_arg -> None)
     else None
@@ -290,13 +294,21 @@ let write_cpp funcs filename =
       ph "";
       Map.iteri funcs ~f:(fun ~key:exported_name ~data:func ->
         let c_typed_args_list = Func.c_typed_args_list func in
-        pc "tensor atg_%s(%s) {" exported_name c_typed_args_list;
+        pc "void atg_%s(tensor *out__, %s) {" exported_name c_typed_args_list;
         pc "  PROTECT(";
-        pc "    return new torch::Tensor(%s);" (Func.c_call func);
+        pc "    auto outputs__ = %s;" (Func.c_call func);
+        begin
+          if func.returns = 1
+          then pc "    out__[0] = new torch::Tensor(outputs__);"
+          else
+            for i = 0 to func. returns - 1 do
+              pc "    out__[%d] = new torch::Tensor(std::get<%d>(outputs__));" i i
+            done
+        end;
         pc "  )";
         pc "}";
         pc "";
-        ph "tensor atg_%s(%s);" exported_name c_typed_args_list;
+        ph "void atg_%s(tensor *, %s);" exported_name c_typed_args_list;
       )
     )
   )
@@ -343,9 +355,13 @@ let write_wrapper funcs filename =
       Map.iteri funcs ~f:(fun ~key:exported_name ~data:func ->
         let caml_name = Func.caml_name exported_name in
         pm "let %s %s =" caml_name (Func.caml_args func);
-        pm "  let t = %s %s in" caml_name (Func.caml_binding_args func);
-        pm "  Gc.finalise C.Tensor.free t;";
-        pm "  t";
+        pm "  let out__ = CArray.make t %d in" func.returns;
+        pm "  %s (CArray.start out__) %s;" caml_name (Func.caml_binding_args func);
+        for i = 0 to func.returns - 1 do
+          pm "  let t%d = CArray.get out__ %d in" i i;
+          pm "  Gc.finalise C.Tensor.free t%d;" i;
+        done;
+        pm "  %s" (List.init func.returns ~f:(Printf.sprintf "t%d") |> String.concat ~sep:", ");
         pm "";
         pi "  val %s :" caml_name;
         List.iter func.args ~f:(fun arg ->
@@ -355,7 +371,12 @@ let write_wrapper funcs filename =
             else ""
           in
           pi "    %s%s ->" named_arg (Func.ml_arg_type arg));
-        pi "    t";
+        let returns =
+          if func.returns = 1
+          then "t"
+          else List.init func.returns ~f:(fun _ -> "t") |> String.concat ~sep:" * "
+        in
+        pi "    %s" returns;
         pi "";
       );
       pi "end"
@@ -363,7 +384,7 @@ let write_wrapper funcs filename =
   )
 
 let methods =
-  let c name args = { Func.name; args; returns = "Tensor"; kind = `method_ } in
+  let c name args = { Func.name; args; returns = 1; kind = `method_ } in
   let ca arg_name arg_type = { Func.arg_name; arg_type; default_value = None } in
   [ c "grad" [ ca "self" Tensor ]
   ; c "set_requires_grad" [ ca "self" Tensor; ca "r" Bool ]

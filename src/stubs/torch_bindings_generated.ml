@@ -10,3050 +10,3210 @@ module C(F: Cstubs.FOREIGN) = struct
   let scalar : scalar typ = ptr void
   let abs =
     foreign "atg_abs"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let abs_ =
     foreign "atg_abs_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let abs_out =
     foreign "atg_abs_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let acos =
     foreign "atg_acos"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let acos_ =
     foreign "atg_acos_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let acos_out =
     foreign "atg_acos_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let adaptive_avg_pool1d =
     foreign "atg_adaptive_avg_pool1d"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let adaptive_avg_pool2d =
     foreign "atg_adaptive_avg_pool2d"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let adaptive_avg_pool2d_backward =
     foreign "atg_adaptive_avg_pool2d_backward"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let adaptive_avg_pool2d_backward_out =
     foreign "atg_adaptive_avg_pool2d_backward_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let adaptive_avg_pool2d_forward =
     foreign "atg_adaptive_avg_pool2d_forward"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let adaptive_avg_pool2d_forward_out =
     foreign "atg_adaptive_avg_pool2d_forward_out"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let adaptive_avg_pool2d_out =
     foreign "atg_adaptive_avg_pool2d_out"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let adaptive_avg_pool3d =
     foreign "atg_adaptive_avg_pool3d"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let adaptive_avg_pool3d_backward =
     foreign "atg_adaptive_avg_pool3d_backward"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let adaptive_avg_pool3d_backward_out =
     foreign "atg_adaptive_avg_pool3d_backward_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let adaptive_avg_pool3d_forward =
     foreign "atg_adaptive_avg_pool3d_forward"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let adaptive_avg_pool3d_forward_out =
     foreign "atg_adaptive_avg_pool3d_forward_out"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let adaptive_avg_pool3d_out =
     foreign "atg_adaptive_avg_pool3d_out"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
+
+  let adaptive_max_pool1d =
+    foreign "atg_adaptive_max_pool1d"
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let adaptive_max_pool2d_backward =
     foreign "atg_adaptive_max_pool2d_backward"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let adaptive_max_pool2d_backward_out =
     foreign "atg_adaptive_max_pool2d_backward_out"
-    (t @-> t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
   let adaptive_max_pool3d_backward =
     foreign "atg_adaptive_max_pool3d_backward"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let adaptive_max_pool3d_backward_out =
     foreign "atg_adaptive_max_pool3d_backward_out"
-    (t @-> t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
   let add =
     foreign "atg_add"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let add1 =
     foreign "atg_add1"
-    (t @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> returning void)
 
   let add_ =
     foreign "atg_add_"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let add_1 =
     foreign "atg_add_1"
-    (t @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> returning void)
 
   let add_out =
     foreign "atg_add_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let addbmm =
     foreign "atg_addbmm"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let addbmm_ =
     foreign "atg_addbmm_"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let addbmm_out =
     foreign "atg_addbmm_out"
-    (t @-> t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
   let addcdiv =
     foreign "atg_addcdiv"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let addcdiv_ =
     foreign "atg_addcdiv_"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let addcdiv_out =
     foreign "atg_addcdiv_out"
-    (t @-> t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
   let addcmul =
     foreign "atg_addcmul"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let addcmul_ =
     foreign "atg_addcmul_"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let addcmul_out =
     foreign "atg_addcmul_out"
-    (t @-> t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
   let addmm =
     foreign "atg_addmm"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let addmm_ =
     foreign "atg_addmm_"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let addmm_out =
     foreign "atg_addmm_out"
-    (t @-> t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
   let addmv =
     foreign "atg_addmv"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let addmv_ =
     foreign "atg_addmv_"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let addmv_out =
     foreign "atg_addmv_out"
-    (t @-> t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
   let addr =
     foreign "atg_addr"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let addr_ =
     foreign "atg_addr_"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let addr_out =
     foreign "atg_addr_out"
-    (t @-> t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
   let alias =
     foreign "atg_alias"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let all =
     foreign "atg_all"
-    (t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
   let all_out =
     foreign "atg_all_out"
-    (t @-> t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
   let alpha_dropout =
     foreign "atg_alpha_dropout"
-    (t @-> double @-> int @-> returning t)
+    (ptr t @-> t @-> double @-> int @-> returning void)
 
   let alpha_dropout_ =
     foreign "atg_alpha_dropout_"
-    (t @-> double @-> int @-> returning t)
+    (ptr t @-> t @-> double @-> int @-> returning void)
 
   let any =
     foreign "atg_any"
-    (t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
   let any_out =
     foreign "atg_any_out"
-    (t @-> t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
   let arange1 =
     foreign "atg_arange1"
-    (scalar @-> scalar @-> int @-> int @-> returning t)
+    (ptr t @-> scalar @-> scalar @-> int @-> int @-> returning void)
 
   let arange2 =
     foreign "atg_arange2"
-    (scalar @-> scalar @-> scalar @-> int @-> int @-> returning t)
+    (ptr t @-> scalar @-> scalar @-> scalar @-> int @-> int @-> returning void)
 
   let arange3 =
     foreign "atg_arange3"
-    (scalar @-> int @-> int @-> returning t)
+    (ptr t @-> scalar @-> int @-> int @-> returning void)
 
   let arange_out1 =
     foreign "atg_arange_out1"
-    (t @-> scalar @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> scalar @-> returning void)
 
   let arange_out2 =
     foreign "atg_arange_out2"
-    (t @-> scalar @-> scalar @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> scalar @-> scalar @-> returning void)
 
   let arange_out3 =
     foreign "atg_arange_out3"
-    (t @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> returning void)
 
   let argmax1 =
     foreign "atg_argmax1"
-    (t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
   let argmax2 =
     foreign "atg_argmax2"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let argmin1 =
     foreign "atg_argmin1"
-    (t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
   let argmin2 =
     foreign "atg_argmin2"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let as_strided1 =
     foreign "atg_as_strided1"
-    (t @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
   let as_strided2 =
     foreign "atg_as_strided2"
-    (t @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> returning void)
 
   let as_strided_1 =
     foreign "atg_as_strided_1"
-    (t @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
   let as_strided_2 =
     foreign "atg_as_strided_2"
-    (t @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> returning void)
 
   let asin =
     foreign "atg_asin"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let asin_ =
     foreign "atg_asin_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let asin_out =
     foreign "atg_asin_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let atan =
     foreign "atg_atan"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let atan2 =
     foreign "atg_atan2"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let atan2_ =
     foreign "atg_atan2_"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let atan2_out =
     foreign "atg_atan2_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let atan_ =
     foreign "atg_atan_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let atan_out =
     foreign "atg_atan_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let avg_pool1d =
     foreign "atg_avg_pool1d"
-    (t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
   let avg_pool2d =
     foreign "atg_avg_pool2d"
-    (t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
   let avg_pool2d_backward =
     foreign "atg_avg_pool2d_backward"
-    (t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
   let avg_pool2d_backward_out =
     foreign "atg_avg_pool2d_backward_out"
-    (t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
   let avg_pool2d_forward =
     foreign "atg_avg_pool2d_forward"
-    (t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
   let avg_pool2d_forward_out =
     foreign "atg_avg_pool2d_forward_out"
-    (t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
   let avg_pool2d_out =
     foreign "atg_avg_pool2d_out"
-    (t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
   let avg_pool3d =
     foreign "atg_avg_pool3d"
-    (t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
   let avg_pool3d_backward =
     foreign "atg_avg_pool3d_backward"
-    (t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
   let avg_pool3d_backward_out =
     foreign "atg_avg_pool3d_backward_out"
-    (t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
   let avg_pool3d_forward =
     foreign "atg_avg_pool3d_forward"
-    (t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
   let avg_pool3d_forward_out =
     foreign "atg_avg_pool3d_forward_out"
-    (t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
   let avg_pool3d_out =
     foreign "atg_avg_pool3d_out"
-    (t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
   let baddbmm =
     foreign "atg_baddbmm"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let baddbmm_ =
     foreign "atg_baddbmm_"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let baddbmm_out =
     foreign "atg_baddbmm_out"
-    (t @-> t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
   let bartlett_window1 =
     foreign "atg_bartlett_window1"
-    (int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> int64_t @-> int @-> int @-> returning void)
 
   let bartlett_window2 =
     foreign "atg_bartlett_window2"
-    (int64_t @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> int64_t @-> int @-> int @-> int @-> returning void)
 
   let batch_norm =
     foreign "atg_batch_norm"
-    (t @-> t @-> t @-> t @-> t @-> int @-> double @-> double @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> t @-> int @-> double @-> double @-> int @-> returning void)
 
   let bernoulli1 =
     foreign "atg_bernoulli1"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let bernoulli2 =
     foreign "atg_bernoulli2"
-    (t @-> double @-> returning t)
+    (ptr t @-> t @-> double @-> returning void)
 
   let bernoulli_ =
     foreign "atg_bernoulli_"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let bernoulli_1 =
     foreign "atg_bernoulli_1"
-    (t @-> double @-> returning t)
+    (ptr t @-> t @-> double @-> returning void)
 
   let bernoulli_out =
     foreign "atg_bernoulli_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let bilinear =
     foreign "atg_bilinear"
-    (t @-> t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
   let binary_cross_entropy =
     foreign "atg_binary_cross_entropy"
-    (t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let binary_cross_entropy_backward =
     foreign "atg_binary_cross_entropy_backward"
-    (t @-> t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let binary_cross_entropy_backward_out =
     foreign "atg_binary_cross_entropy_backward_out"
-    (t @-> t @-> t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let binary_cross_entropy_forward =
     foreign "atg_binary_cross_entropy_forward"
-    (t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let binary_cross_entropy_forward_out =
     foreign "atg_binary_cross_entropy_forward_out"
-    (t @-> t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let binary_cross_entropy_out =
     foreign "atg_binary_cross_entropy_out"
-    (t @-> t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let blackman_window1 =
     foreign "atg_blackman_window1"
-    (int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> int64_t @-> int @-> int @-> returning void)
 
   let blackman_window2 =
     foreign "atg_blackman_window2"
-    (int64_t @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> int64_t @-> int @-> int @-> int @-> returning void)
 
   let bmm =
     foreign "atg_bmm"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let bmm_out =
     foreign "atg_bmm_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let cat =
     foreign "atg_cat"
-    (ptr t @-> int @-> int64_t @-> returning t)
+    (ptr t @-> ptr t @-> int @-> int64_t @-> returning void)
 
   let cat_out =
     foreign "atg_cat_out"
-    (t @-> ptr t @-> int @-> int64_t @-> returning t)
+    (ptr t @-> t @-> ptr t @-> int @-> int64_t @-> returning void)
 
   let cauchy_ =
     foreign "atg_cauchy_"
-    (t @-> double @-> double @-> returning t)
+    (ptr t @-> t @-> double @-> double @-> returning void)
 
   let ceil =
     foreign "atg_ceil"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let ceil_ =
     foreign "atg_ceil_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let ceil_out =
     foreign "atg_ceil_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let celu =
     foreign "atg_celu"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let celu_ =
     foreign "atg_celu_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let clamp =
     foreign "atg_clamp"
-    (t @-> scalar @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> scalar @-> returning void)
 
   let clamp_ =
     foreign "atg_clamp_"
-    (t @-> scalar @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> scalar @-> returning void)
 
   let clamp_max =
     foreign "atg_clamp_max"
-    (t @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> returning void)
 
   let clamp_max_ =
     foreign "atg_clamp_max_"
-    (t @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> returning void)
 
   let clamp_max_out =
     foreign "atg_clamp_max_out"
-    (t @-> t @-> scalar @-> returning t)
+    (ptr t @-> t @-> t @-> scalar @-> returning void)
 
   let clamp_min =
     foreign "atg_clamp_min"
-    (t @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> returning void)
 
   let clamp_min_ =
     foreign "atg_clamp_min_"
-    (t @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> returning void)
 
   let clamp_min_out =
     foreign "atg_clamp_min_out"
-    (t @-> t @-> scalar @-> returning t)
+    (ptr t @-> t @-> t @-> scalar @-> returning void)
 
   let clamp_out =
     foreign "atg_clamp_out"
-    (t @-> t @-> scalar @-> scalar @-> returning t)
+    (ptr t @-> t @-> t @-> scalar @-> scalar @-> returning void)
 
   let clone =
     foreign "atg_clone"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let coalesce =
     foreign "atg_coalesce"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let contiguous =
     foreign "atg_contiguous"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let conv1d =
     foreign "atg_conv1d"
-    (t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> returning void)
 
   let conv2d =
     foreign "atg_conv2d"
-    (t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> returning void)
 
   let conv3d =
     foreign "atg_conv3d"
-    (t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> returning void)
 
   let conv_tbc =
     foreign "atg_conv_tbc"
-    (t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
+
+  let conv_tbc_backward =
+    foreign "atg_conv_tbc_backward"
+    (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let conv_transpose1d =
     foreign "atg_conv_transpose1d"
-    (t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> ptr long @-> int @-> returning void)
 
   let conv_transpose2d =
     foreign "atg_conv_transpose2d"
-    (t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> ptr long @-> int @-> returning void)
 
   let conv_transpose3d =
     foreign "atg_conv_transpose3d"
-    (t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> ptr long @-> int @-> returning void)
 
   let convolution =
     foreign "atg_convolution"
-    (t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> ptr long @-> int @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> ptr long @-> int @-> int64_t @-> returning void)
 
   let copy_sparse_to_sparse_ =
     foreign "atg_copy_sparse_to_sparse_"
-    (t @-> t @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int @-> returning void)
 
   let cos =
     foreign "atg_cos"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let cos_ =
     foreign "atg_cos_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let cos_out =
     foreign "atg_cos_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let cosh =
     foreign "atg_cosh"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let cosh_ =
     foreign "atg_cosh_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let cosh_out =
     foreign "atg_cosh_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let cosine_embedding_loss =
     foreign "atg_cosine_embedding_loss"
-    (t @-> t @-> t @-> double @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> double @-> int64_t @-> returning void)
 
   let cross =
     foreign "atg_cross"
-    (t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
   let cross_out =
     foreign "atg_cross_out"
-    (t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let ctc_loss1 =
     foreign "atg_ctc_loss1"
-    (t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int64_t @-> returning void)
 
   let ctc_loss2 =
     foreign "atg_ctc_loss2"
-    (t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
 
   let cudnn_affine_grid_generator =
     foreign "atg_cudnn_affine_grid_generator"
-    (t @-> int64_t @-> int64_t @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int64_t @-> int64_t @-> int64_t @-> returning void)
 
   let cudnn_affine_grid_generator_backward =
     foreign "atg_cudnn_affine_grid_generator_backward"
-    (t @-> int64_t @-> int64_t @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int64_t @-> int64_t @-> int64_t @-> returning void)
+
+  let cudnn_batch_norm =
+    foreign "atg_cudnn_batch_norm"
+    (ptr t @-> t @-> t @-> t @-> t @-> t @-> int @-> double @-> double @-> returning void)
+
+  let cudnn_batch_norm_backward =
+    foreign "atg_cudnn_batch_norm_backward"
+    (ptr t @-> t @-> t @-> t @-> t @-> t @-> t @-> t @-> double @-> returning void)
 
   let cudnn_convolution =
     foreign "atg_cudnn_convolution"
-    (t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning void)
 
   let cudnn_convolution_backward_bias =
     foreign "atg_cudnn_convolution_backward_bias"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let cudnn_convolution_backward_input =
     foreign "atg_cudnn_convolution_backward_input"
-    (ptr long @-> int @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> ptr long @-> int @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning void)
 
   let cudnn_convolution_backward_weight =
     foreign "atg_cudnn_convolution_backward_weight"
-    (ptr long @-> int @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> ptr long @-> int @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning void)
 
   let cudnn_convolution_transpose =
     foreign "atg_cudnn_convolution_transpose"
-    (t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning void)
 
   let cudnn_convolution_transpose_backward_bias =
     foreign "atg_cudnn_convolution_transpose_backward_bias"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let cudnn_convolution_transpose_backward_input =
     foreign "atg_cudnn_convolution_transpose_backward_input"
-    (t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning void)
 
   let cudnn_convolution_transpose_backward_weight =
     foreign "atg_cudnn_convolution_transpose_backward_weight"
-    (ptr long @-> int @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> ptr long @-> int @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning void)
 
   let cudnn_grid_sampler =
     foreign "atg_cudnn_grid_sampler"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
+
+  let cudnn_grid_sampler_backward =
+    foreign "atg_cudnn_grid_sampler_backward"
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let cumprod1 =
     foreign "atg_cumprod1"
-    (t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
   let cumprod2 =
     foreign "atg_cumprod2"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let cumprod_out1 =
     foreign "atg_cumprod_out1"
-    (t @-> t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
   let cumprod_out2 =
     foreign "atg_cumprod_out2"
-    (t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
   let cumsum1 =
     foreign "atg_cumsum1"
-    (t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
   let cumsum2 =
     foreign "atg_cumsum2"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let cumsum_out1 =
     foreign "atg_cumsum_out1"
-    (t @-> t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
   let cumsum_out2 =
     foreign "atg_cumsum_out2"
-    (t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
   let det =
     foreign "atg_det"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let detach =
     foreign "atg_detach"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let detach_ =
     foreign "atg_detach_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let diag =
     foreign "atg_diag"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let diag_out =
     foreign "atg_diag_out"
-    (t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
   let diagflat =
     foreign "atg_diagflat"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let diagonal =
     foreign "atg_diagonal"
-    (t @-> int64_t @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int64_t @-> int64_t @-> returning void)
 
   let digamma =
     foreign "atg_digamma"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let digamma_ =
     foreign "atg_digamma_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let digamma_out =
     foreign "atg_digamma_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let div =
     foreign "atg_div"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let div1 =
     foreign "atg_div1"
-    (t @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> returning void)
 
   let div_ =
     foreign "atg_div_"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let div_1 =
     foreign "atg_div_1"
-    (t @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> returning void)
 
   let div_out =
     foreign "atg_div_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let dot =
     foreign "atg_dot"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let dot_out =
     foreign "atg_dot_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let dropout =
     foreign "atg_dropout"
-    (t @-> double @-> int @-> returning t)
+    (ptr t @-> t @-> double @-> int @-> returning void)
 
   let dropout_ =
     foreign "atg_dropout_"
-    (t @-> double @-> int @-> returning t)
+    (ptr t @-> t @-> double @-> int @-> returning void)
+
+  let eig =
+    foreign "atg_eig"
+    (ptr t @-> t @-> int @-> returning void)
+
+  let eig_out =
+    foreign "atg_eig_out"
+    (ptr t @-> t @-> t @-> t @-> int @-> returning void)
 
   let elu =
     foreign "atg_elu"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let elu_ =
     foreign "atg_elu_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let elu_out =
     foreign "atg_elu_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let embedding =
     foreign "atg_embedding"
-    (t @-> t @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> int @-> int @-> returning void)
 
   let embedding_backward =
     foreign "atg_embedding_backward"
-    (t @-> t @-> int64_t @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> int64_t @-> int @-> int @-> returning void)
+
+  let embedding_bag =
+    foreign "atg_embedding_bag"
+    (ptr t @-> t @-> t @-> t @-> int @-> int64_t @-> int @-> returning void)
 
   let embedding_dense_backward =
     foreign "atg_embedding_dense_backward"
-    (t @-> t @-> int64_t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> int64_t @-> int @-> returning void)
 
   let embedding_renorm_ =
     foreign "atg_embedding_renorm_"
-    (t @-> t @-> double @-> double @-> returning t)
+    (ptr t @-> t @-> t @-> double @-> double @-> returning void)
 
   let embedding_sparse_backward =
     foreign "atg_embedding_sparse_backward"
-    (t @-> t @-> int64_t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> int64_t @-> int @-> returning void)
 
   let empty =
     foreign "atg_empty"
-    (ptr long @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> ptr long @-> int @-> int @-> int @-> returning void)
 
   let empty_like1 =
     foreign "atg_empty_like1"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let empty_like2 =
     foreign "atg_empty_like2"
-    (t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> int @-> int @-> returning void)
 
   let empty_out =
     foreign "atg_empty_out"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let empty_strided =
     foreign "atg_empty_strided"
-    (ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
   let eq =
     foreign "atg_eq"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let eq_ =
     foreign "atg_eq_"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let eq_out =
     foreign "atg_eq_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let erf =
     foreign "atg_erf"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let erf_ =
     foreign "atg_erf_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let erf_out =
     foreign "atg_erf_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let erfc =
     foreign "atg_erfc"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let erfc_ =
     foreign "atg_erfc_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let erfc_out =
     foreign "atg_erfc_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let erfinv =
     foreign "atg_erfinv"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let erfinv_ =
     foreign "atg_erfinv_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let erfinv_out =
     foreign "atg_erfinv_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let exp =
     foreign "atg_exp"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let exp_ =
     foreign "atg_exp_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let exp_out =
     foreign "atg_exp_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let expand =
     foreign "atg_expand"
-    (t @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
   let expand_as =
     foreign "atg_expand_as"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let expm1 =
     foreign "atg_expm1"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let expm1_ =
     foreign "atg_expm1_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let expm1_out =
     foreign "atg_expm1_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let exponential_ =
     foreign "atg_exponential_"
-    (t @-> double @-> returning t)
+    (ptr t @-> t @-> double @-> returning void)
 
   let eye1 =
     foreign "atg_eye1"
-    (int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> int64_t @-> int @-> int @-> returning void)
 
   let eye2 =
     foreign "atg_eye2"
-    (int64_t @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> int64_t @-> int64_t @-> int @-> int @-> returning void)
 
   let eye_out1 =
     foreign "atg_eye_out1"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let eye_out2 =
     foreign "atg_eye_out2"
-    (t @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int64_t @-> returning void)
 
   let feature_alpha_dropout =
     foreign "atg_feature_alpha_dropout"
-    (t @-> double @-> int @-> returning t)
+    (ptr t @-> t @-> double @-> int @-> returning void)
 
   let feature_alpha_dropout_ =
     foreign "atg_feature_alpha_dropout_"
-    (t @-> double @-> int @-> returning t)
+    (ptr t @-> t @-> double @-> int @-> returning void)
 
   let feature_dropout =
     foreign "atg_feature_dropout"
-    (t @-> double @-> int @-> returning t)
+    (ptr t @-> t @-> double @-> int @-> returning void)
 
   let feature_dropout_ =
     foreign "atg_feature_dropout_"
-    (t @-> double @-> int @-> returning t)
+    (ptr t @-> t @-> double @-> int @-> returning void)
 
   let fft =
     foreign "atg_fft"
-    (t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
   let fill_ =
     foreign "atg_fill_"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let fill_1 =
     foreign "atg_fill_1"
-    (t @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> returning void)
 
   let flatten =
     foreign "atg_flatten"
-    (t @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int64_t @-> returning void)
 
   let flip =
     foreign "atg_flip"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let floor =
     foreign "atg_floor"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let floor_ =
     foreign "atg_floor_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let floor_out =
     foreign "atg_floor_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let fmod =
     foreign "atg_fmod"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let fmod_ =
     foreign "atg_fmod_"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let fmod_out =
     foreign "atg_fmod_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let frac =
     foreign "atg_frac"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let frac_ =
     foreign "atg_frac_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let frac_out =
     foreign "atg_frac_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let fractional_max_pool2d_backward =
     foreign "atg_fractional_max_pool2d_backward"
-    (t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> t @-> returning void)
 
   let fractional_max_pool2d_backward_out =
     foreign "atg_fractional_max_pool2d_backward_out"
-    (t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> t @-> returning void)
 
   let frobenius_norm1 =
     foreign "atg_frobenius_norm1"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let frobenius_norm2 =
     foreign "atg_frobenius_norm2"
-    (t @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
   let frobenius_norm_out =
     foreign "atg_frobenius_norm_out"
-    (t @-> t @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
   let full =
     foreign "atg_full"
-    (ptr long @-> int @-> scalar @-> int @-> int @-> returning t)
+    (ptr t @-> ptr long @-> int @-> scalar @-> int @-> int @-> returning void)
 
   let full_like1 =
     foreign "atg_full_like1"
-    (t @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> returning void)
 
   let full_like2 =
     foreign "atg_full_like2"
-    (t @-> scalar @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> scalar @-> int @-> int @-> returning void)
 
   let full_out =
     foreign "atg_full_out"
-    (t @-> ptr long @-> int @-> scalar @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> scalar @-> returning void)
 
   let gather =
     foreign "atg_gather"
-    (t @-> int64_t @-> t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> t @-> returning void)
 
   let gather_out =
     foreign "atg_gather_out"
-    (t @-> t @-> int64_t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> t @-> returning void)
 
   let ge =
     foreign "atg_ge"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let ge_ =
     foreign "atg_ge_"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let ge_out =
     foreign "atg_ge_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
+
+  let gels =
+    foreign "atg_gels"
+    (ptr t @-> t @-> t @-> returning void)
+
+  let gels_out =
+    foreign "atg_gels_out"
+    (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
   let geometric_ =
     foreign "atg_geometric_"
-    (t @-> double @-> returning t)
+    (ptr t @-> t @-> double @-> returning void)
+
+  let geqrf =
+    foreign "atg_geqrf"
+    (ptr t @-> t @-> returning void)
+
+  let geqrf_out =
+    foreign "atg_geqrf_out"
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let ger =
     foreign "atg_ger"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let ger_out =
     foreign "atg_ger_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
+
+  let gesv =
+    foreign "atg_gesv"
+    (ptr t @-> t @-> t @-> returning void)
+
+  let gesv_out =
+    foreign "atg_gesv_out"
+    (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
   let glu =
     foreign "atg_glu"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let glu_backward =
     foreign "atg_glu_backward"
-    (t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
   let glu_backward_out =
     foreign "atg_glu_backward_out"
-    (t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let glu_forward =
     foreign "atg_glu_forward"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let glu_forward_out =
     foreign "atg_glu_forward_out"
-    (t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
   let glu_out =
     foreign "atg_glu_out"
-    (t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
   let grad =
     foreign "atg_grad"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let grid_sampler =
     foreign "atg_grid_sampler"
-    (t @-> t @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
 
   let grid_sampler_2d =
     foreign "atg_grid_sampler_2d"
-    (t @-> t @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
+
+  let grid_sampler_2d_backward =
+    foreign "atg_grid_sampler_2d_backward"
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
 
   let grid_sampler_3d =
     foreign "atg_grid_sampler_3d"
-    (t @-> t @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
+
+  let grid_sampler_3d_backward =
+    foreign "atg_grid_sampler_3d_backward"
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
+
+  let gru1 =
+    foreign "atg_gru1"
+    (ptr t @-> t @-> t @-> ptr t @-> int @-> int @-> int64_t @-> double @-> int @-> int @-> int @-> returning void)
+
+  let gru2 =
+    foreign "atg_gru2"
+    (ptr t @-> t @-> t @-> t @-> ptr t @-> int @-> int @-> int64_t @-> double @-> int @-> int @-> returning void)
 
   let gru_cell =
     foreign "atg_gru_cell"
-    (t @-> t @-> t @-> t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> t @-> t @-> returning void)
 
   let gt =
     foreign "atg_gt"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let gt_ =
     foreign "atg_gt_"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let gt_out =
     foreign "atg_gt_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let hamming_window1 =
     foreign "atg_hamming_window1"
-    (int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> int64_t @-> int @-> int @-> returning void)
 
   let hamming_window2 =
     foreign "atg_hamming_window2"
-    (int64_t @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> int64_t @-> int @-> int @-> int @-> returning void)
 
   let hamming_window3 =
     foreign "atg_hamming_window3"
-    (int64_t @-> int @-> double @-> int @-> int @-> returning t)
+    (ptr t @-> int64_t @-> int @-> double @-> int @-> int @-> returning void)
 
   let hamming_window4 =
     foreign "atg_hamming_window4"
-    (int64_t @-> int @-> double @-> double @-> int @-> int @-> returning t)
+    (ptr t @-> int64_t @-> int @-> double @-> double @-> int @-> int @-> returning void)
 
   let hann_window1 =
     foreign "atg_hann_window1"
-    (int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> int64_t @-> int @-> int @-> returning void)
 
   let hann_window2 =
     foreign "atg_hann_window2"
-    (int64_t @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> int64_t @-> int @-> int @-> int @-> returning void)
 
   let hardshrink =
     foreign "atg_hardshrink"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let hardshrink_backward =
     foreign "atg_hardshrink_backward"
-    (t @-> t @-> scalar @-> returning t)
+    (ptr t @-> t @-> t @-> scalar @-> returning void)
 
   let hardtanh =
     foreign "atg_hardtanh"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let hardtanh_ =
     foreign "atg_hardtanh_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let hardtanh_out =
     foreign "atg_hardtanh_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let hinge_embedding_loss =
     foreign "atg_hinge_embedding_loss"
-    (t @-> t @-> double @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> double @-> int64_t @-> returning void)
 
   let histc =
     foreign "atg_histc"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let histc_out =
     foreign "atg_histc_out"
-    (t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
   let hspmm =
     foreign "atg_hspmm"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let hspmm_out =
     foreign "atg_hspmm_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let ifft =
     foreign "atg_ifft"
-    (t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
   let index =
     foreign "atg_index"
-    (t @-> ptr t @-> int @-> returning t)
+    (ptr t @-> t @-> ptr t @-> int @-> returning void)
 
   let index_add_ =
     foreign "atg_index_add_"
-    (t @-> int64_t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> t @-> t @-> returning void)
 
   let index_copy_ =
     foreign "atg_index_copy_"
-    (t @-> int64_t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> t @-> t @-> returning void)
 
   let index_fill_ =
     foreign "atg_index_fill_"
-    (t @-> int64_t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> t @-> t @-> returning void)
 
   let index_put =
     foreign "atg_index_put"
-    (t @-> ptr t @-> int @-> t @-> returning t)
+    (ptr t @-> t @-> ptr t @-> int @-> t @-> returning void)
 
   let index_put_ =
     foreign "atg_index_put_"
-    (t @-> ptr t @-> int @-> t @-> returning t)
+    (ptr t @-> t @-> ptr t @-> int @-> t @-> returning void)
 
   let index_select =
     foreign "atg_index_select"
-    (t @-> int64_t @-> t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> t @-> returning void)
 
   let index_select_out =
     foreign "atg_index_select_out"
-    (t @-> t @-> int64_t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> t @-> returning void)
 
   let instance_norm =
     foreign "atg_instance_norm"
-    (t @-> t @-> t @-> t @-> t @-> int @-> double @-> double @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> t @-> int @-> double @-> double @-> int @-> returning void)
 
   let inverse =
     foreign "atg_inverse"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let inverse_out =
     foreign "atg_inverse_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let irfft =
     foreign "atg_irfft"
-    (t @-> int64_t @-> int @-> int @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int @-> int @-> ptr long @-> int @-> returning void)
 
   let isclose =
     foreign "atg_isclose"
-    (t @-> t @-> double @-> double @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> double @-> double @-> int @-> returning void)
 
   let kl_div =
     foreign "atg_kl_div"
-    (t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
   let kl_div_backward =
     foreign "atg_kl_div_backward"
-    (t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
+
+  let kthvalue =
+    foreign "atg_kthvalue"
+    (ptr t @-> t @-> int64_t @-> int64_t @-> int @-> returning void)
+
+  let kthvalue_out =
+    foreign "atg_kthvalue_out"
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> int @-> returning void)
 
   let l1_loss =
     foreign "atg_l1_loss"
-    (t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
   let l1_loss_backward =
     foreign "atg_l1_loss_backward"
-    (t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let l1_loss_backward_out =
     foreign "atg_l1_loss_backward_out"
-    (t @-> t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let l1_loss_forward =
     foreign "atg_l1_loss_forward"
-    (t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
   let l1_loss_forward_out =
     foreign "atg_l1_loss_forward_out"
-    (t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let l1_loss_out =
     foreign "atg_l1_loss_out"
-    (t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let le =
     foreign "atg_le"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let le_ =
     foreign "atg_le_"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let le_out =
     foreign "atg_le_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let leaky_relu =
     foreign "atg_leaky_relu"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let leaky_relu_ =
     foreign "atg_leaky_relu_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let leaky_relu_out =
     foreign "atg_leaky_relu_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let lgamma =
     foreign "atg_lgamma"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let lgamma_ =
     foreign "atg_lgamma_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let lgamma_out =
     foreign "atg_lgamma_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let linear =
     foreign "atg_linear"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let linspace1 =
     foreign "atg_linspace1"
-    (scalar @-> scalar @-> int @-> int @-> returning t)
+    (ptr t @-> scalar @-> scalar @-> int @-> int @-> returning void)
 
   let linspace2 =
     foreign "atg_linspace2"
-    (scalar @-> scalar @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> scalar @-> scalar @-> int64_t @-> int @-> int @-> returning void)
 
   let linspace_out1 =
     foreign "atg_linspace_out1"
-    (t @-> scalar @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> scalar @-> returning void)
 
   let linspace_out2 =
     foreign "atg_linspace_out2"
-    (t @-> scalar @-> scalar @-> int64_t @-> returning t)
+    (ptr t @-> t @-> scalar @-> scalar @-> int64_t @-> returning void)
 
   let log =
     foreign "atg_log"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let log10 =
     foreign "atg_log10"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let log10_ =
     foreign "atg_log10_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let log10_out =
     foreign "atg_log10_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let log1p =
     foreign "atg_log1p"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let log1p_ =
     foreign "atg_log1p_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let log1p_out =
     foreign "atg_log1p_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let log2 =
     foreign "atg_log2"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let log2_ =
     foreign "atg_log2_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let log2_out =
     foreign "atg_log2_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let log_ =
     foreign "atg_log_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let log_normal_ =
     foreign "atg_log_normal_"
-    (t @-> double @-> double @-> returning t)
+    (ptr t @-> t @-> double @-> double @-> returning void)
 
   let log_out =
     foreign "atg_log_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let log_sigmoid =
     foreign "atg_log_sigmoid"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let log_sigmoid_backward =
     foreign "atg_log_sigmoid_backward"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let log_sigmoid_backward_out =
     foreign "atg_log_sigmoid_backward_out"
-    (t @-> t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> returning void)
+
+  let log_sigmoid_forward =
+    foreign "atg_log_sigmoid_forward"
+    (ptr t @-> t @-> returning void)
+
+  let log_sigmoid_forward_out =
+    foreign "atg_log_sigmoid_forward_out"
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let log_sigmoid_out =
     foreign "atg_log_sigmoid_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let log_softmax =
     foreign "atg_log_softmax"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let logdet =
     foreign "atg_logdet"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let logspace1 =
     foreign "atg_logspace1"
-    (scalar @-> scalar @-> int @-> int @-> returning t)
+    (ptr t @-> scalar @-> scalar @-> int @-> int @-> returning void)
 
   let logspace2 =
     foreign "atg_logspace2"
-    (scalar @-> scalar @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> scalar @-> scalar @-> int64_t @-> int @-> int @-> returning void)
 
   let logspace_out1 =
     foreign "atg_logspace_out1"
-    (t @-> scalar @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> scalar @-> returning void)
 
   let logspace_out2 =
     foreign "atg_logspace_out2"
-    (t @-> scalar @-> scalar @-> int64_t @-> returning t)
+    (ptr t @-> t @-> scalar @-> scalar @-> int64_t @-> returning void)
 
   let logsumexp =
     foreign "atg_logsumexp"
-    (t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
   let logsumexp_out =
     foreign "atg_logsumexp_out"
-    (t @-> t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> int @-> returning void)
+
+  let lstm1 =
+    foreign "atg_lstm1"
+    (ptr t @-> t @-> ptr t @-> int @-> ptr t @-> int @-> int @-> int64_t @-> double @-> int @-> int @-> int @-> returning void)
+
+  let lstm2 =
+    foreign "atg_lstm2"
+    (ptr t @-> t @-> t @-> ptr t @-> int @-> ptr t @-> int @-> int @-> int64_t @-> double @-> int @-> int @-> returning void)
+
+  let lstm_cell =
+    foreign "atg_lstm_cell"
+    (ptr t @-> t @-> ptr t @-> int @-> t @-> t @-> t @-> t @-> returning void)
 
   let lt =
     foreign "atg_lt"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let lt_ =
     foreign "atg_lt_"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let lt_out =
     foreign "atg_lt_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let margin_ranking_loss =
     foreign "atg_margin_ranking_loss"
-    (t @-> t @-> t @-> double @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> double @-> int64_t @-> returning void)
 
   let masked_fill_ =
     foreign "atg_masked_fill_"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let masked_scatter_ =
     foreign "atg_masked_scatter_"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let masked_select =
     foreign "atg_masked_select"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let masked_select_out =
     foreign "atg_masked_select_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let matmul =
     foreign "atg_matmul"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let matmul_out =
     foreign "atg_matmul_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let matrix_power =
     foreign "atg_matrix_power"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let matrix_rank1 =
     foreign "atg_matrix_rank1"
-    (t @-> double @-> int @-> returning t)
+    (ptr t @-> t @-> double @-> int @-> returning void)
 
   let matrix_rank2 =
     foreign "atg_matrix_rank2"
-    (t @-> int @-> returning t)
+    (ptr t @-> t @-> int @-> returning void)
 
   let max =
     foreign "atg_max"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
-  let max_out =
-    foreign "atg_max_out"
-    (t @-> t @-> t @-> returning t)
+  let max1 =
+    foreign "atg_max1"
+    (ptr t @-> t @-> int64_t @-> int @-> returning void)
+
+  let max_out1 =
+    foreign "atg_max_out1"
+    (ptr t @-> t @-> t @-> t @-> returning void)
+
+  let max_out2 =
+    foreign "atg_max_out2"
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
   let max_pool1d =
     foreign "atg_max_pool1d"
-    (t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
+
+  let max_pool1d_with_indices =
+    foreign "atg_max_pool1d_with_indices"
+    (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
   let max_pool2d =
     foreign "atg_max_pool2d"
-    (t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
   let max_pool2d_with_indices_backward =
     foreign "atg_max_pool2d_with_indices_backward"
-    (t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> t @-> returning void)
 
   let max_pool2d_with_indices_backward_out =
     foreign "atg_max_pool2d_with_indices_backward_out"
-    (t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> t @-> returning void)
 
   let max_pool3d =
     foreign "atg_max_pool3d"
-    (t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
   let max_pool3d_with_indices_backward =
     foreign "atg_max_pool3d_with_indices_backward"
-    (t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> t @-> returning void)
 
   let max_pool3d_with_indices_backward_out =
     foreign "atg_max_pool3d_with_indices_backward_out"
-    (t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> t @-> returning void)
 
   let max_unpool2d =
     foreign "atg_max_unpool2d"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let max_unpool2d_backward =
     foreign "atg_max_unpool2d_backward"
-    (t @-> t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let max_unpool2d_backward_out =
     foreign "atg_max_unpool2d_backward_out"
-    (t @-> t @-> t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let max_unpool2d_forward =
     foreign "atg_max_unpool2d_forward"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let max_unpool2d_forward_out =
     foreign "atg_max_unpool2d_forward_out"
-    (t @-> t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let max_unpool2d_out =
     foreign "atg_max_unpool2d_out"
-    (t @-> t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let max_unpool3d =
     foreign "atg_max_unpool3d"
-    (t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
   let max_unpool3d_backward =
     foreign "atg_max_unpool3d_backward"
-    (t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
   let max_unpool3d_backward_out =
     foreign "atg_max_unpool3d_backward_out"
-    (t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
   let max_unpool3d_forward =
     foreign "atg_max_unpool3d_forward"
-    (t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
   let max_unpool3d_forward_out =
     foreign "atg_max_unpool3d_forward_out"
-    (t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
   let max_unpool3d_out =
     foreign "atg_max_unpool3d_out"
-    (t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
   let max_values =
     foreign "atg_max_values"
-    (t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
   let mean1 =
     foreign "atg_mean1"
-    (t @-> int @-> returning t)
+    (ptr t @-> t @-> int @-> returning void)
 
   let mean2 =
     foreign "atg_mean2"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let mean3 =
     foreign "atg_mean3"
-    (t @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int @-> int @-> returning void)
 
   let mean4 =
     foreign "atg_mean4"
-    (t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
   let mean5 =
     foreign "atg_mean5"
-    (t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
   let mean_out1 =
     foreign "atg_mean_out1"
-    (t @-> t @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> int @-> int @-> returning void)
 
   let mean_out2 =
     foreign "atg_mean_out2"
-    (t @-> t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
   let mean_out3 =
     foreign "atg_mean_out3"
-    (t @-> t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> int @-> returning void)
+
+  let median =
+    foreign "atg_median"
+    (ptr t @-> t @-> int64_t @-> int @-> returning void)
+
+  let median_out =
+    foreign "atg_median_out"
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
   let min =
     foreign "atg_min"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
-  let min_out =
-    foreign "atg_min_out"
-    (t @-> t @-> t @-> returning t)
+  let min1 =
+    foreign "atg_min1"
+    (ptr t @-> t @-> int64_t @-> int @-> returning void)
+
+  let min_out1 =
+    foreign "atg_min_out1"
+    (ptr t @-> t @-> t @-> t @-> returning void)
+
+  let min_out2 =
+    foreign "atg_min_out2"
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
   let min_values =
     foreign "atg_min_values"
-    (t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int @-> returning void)
+
+  let miopen_batch_norm =
+    foreign "atg_miopen_batch_norm"
+    (ptr t @-> t @-> t @-> t @-> t @-> t @-> int @-> double @-> double @-> returning void)
+
+  let miopen_batch_norm_backward =
+    foreign "atg_miopen_batch_norm_backward"
+    (ptr t @-> t @-> t @-> t @-> t @-> t @-> t @-> t @-> double @-> returning void)
 
   let miopen_convolution =
     foreign "atg_miopen_convolution"
-    (t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning void)
 
   let miopen_convolution_backward_bias =
     foreign "atg_miopen_convolution_backward_bias"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let miopen_convolution_backward_input =
     foreign "atg_miopen_convolution_backward_input"
-    (ptr long @-> int @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> ptr long @-> int @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning void)
 
   let miopen_convolution_backward_weight =
     foreign "atg_miopen_convolution_backward_weight"
-    (ptr long @-> int @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> ptr long @-> int @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning void)
 
   let miopen_convolution_transpose =
     foreign "atg_miopen_convolution_transpose"
-    (t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning void)
 
   let miopen_convolution_transpose_backward_input =
     foreign "atg_miopen_convolution_transpose_backward_input"
-    (t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning void)
 
   let miopen_convolution_transpose_backward_weight =
     foreign "atg_miopen_convolution_transpose_backward_weight"
-    (ptr long @-> int @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> ptr long @-> int @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning void)
 
   let mkldnn_convolution =
     foreign "atg_mkldnn_convolution"
-    (t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> returning void)
 
   let mkldnn_convolution_backward_input =
     foreign "atg_mkldnn_convolution_backward_input"
-    (ptr long @-> int @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> returning t)
+    (ptr t @-> ptr long @-> int @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> returning void)
+
+  let mkldnn_convolution_backward_weights =
+    foreign "atg_mkldnn_convolution_backward_weights"
+    (ptr t @-> ptr long @-> int @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> returning void)
 
   let mm =
     foreign "atg_mm"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let mm_out =
     foreign "atg_mm_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
+
+  let mode =
+    foreign "atg_mode"
+    (ptr t @-> t @-> int64_t @-> int @-> returning void)
+
+  let mode_out =
+    foreign "atg_mode_out"
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
   let mse_loss =
     foreign "atg_mse_loss"
-    (t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
   let mse_loss_backward =
     foreign "atg_mse_loss_backward"
-    (t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let mse_loss_backward_out =
     foreign "atg_mse_loss_backward_out"
-    (t @-> t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let mse_loss_forward =
     foreign "atg_mse_loss_forward"
-    (t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
   let mse_loss_forward_out =
     foreign "atg_mse_loss_forward_out"
-    (t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let mse_loss_out =
     foreign "atg_mse_loss_out"
-    (t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let mul =
     foreign "atg_mul"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let mul1 =
     foreign "atg_mul1"
-    (t @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> returning void)
 
   let mul_ =
     foreign "atg_mul_"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let mul_1 =
     foreign "atg_mul_1"
-    (t @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> returning void)
 
   let mul_out =
     foreign "atg_mul_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let multilabel_margin_loss =
     foreign "atg_multilabel_margin_loss"
-    (t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
   let multilabel_margin_loss_backward =
     foreign "atg_multilabel_margin_loss_backward"
-    (t @-> t @-> t @-> int64_t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> t @-> returning void)
 
   let multilabel_margin_loss_backward_out =
     foreign "atg_multilabel_margin_loss_backward_out"
-    (t @-> t @-> t @-> t @-> int64_t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> t @-> returning void)
+
+  let multilabel_margin_loss_forward =
+    foreign "atg_multilabel_margin_loss_forward"
+    (ptr t @-> t @-> t @-> int64_t @-> returning void)
+
+  let multilabel_margin_loss_forward_out =
+    foreign "atg_multilabel_margin_loss_forward_out"
+    (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let multilabel_margin_loss_out =
     foreign "atg_multilabel_margin_loss_out"
-    (t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let mv =
     foreign "atg_mv"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let mv_out =
     foreign "atg_mv_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let mvlgamma =
     foreign "atg_mvlgamma"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let mvlgamma_ =
     foreign "atg_mvlgamma_"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let narrow =
     foreign "atg_narrow"
-    (t @-> int64_t @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int64_t @-> int64_t @-> returning void)
 
   let narrow_copy =
     foreign "atg_narrow_copy"
-    (t @-> int64_t @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int64_t @-> int64_t @-> returning void)
 
   let native_clone =
     foreign "atg_native_clone"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let native_norm =
     foreign "atg_native_norm"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let native_pow =
     foreign "atg_native_pow"
-    (t @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> returning void)
 
   let native_pow_out =
     foreign "atg_native_pow_out"
-    (t @-> t @-> scalar @-> returning t)
+    (ptr t @-> t @-> t @-> scalar @-> returning void)
 
   let native_resize_as_ =
     foreign "atg_native_resize_as_"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let native_zero_ =
     foreign "atg_native_zero_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let ne =
     foreign "atg_ne"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let ne_ =
     foreign "atg_ne_"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let ne_out =
     foreign "atg_ne_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let neg =
     foreign "atg_neg"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let neg_ =
     foreign "atg_neg_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let neg_out =
     foreign "atg_neg_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let nll_loss =
     foreign "atg_nll_loss"
-    (t @-> t @-> t @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
 
   let nll_loss2d =
     foreign "atg_nll_loss2d"
-    (t @-> t @-> t @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
 
   let nll_loss2d_backward =
     foreign "atg_nll_loss2d_backward"
-    (t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> t @-> returning void)
 
   let nll_loss2d_backward_out =
     foreign "atg_nll_loss2d_backward_out"
-    (t @-> t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> t @-> returning void)
+
+  let nll_loss2d_forward =
+    foreign "atg_nll_loss2d_forward"
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
+
+  let nll_loss2d_forward_out =
+    foreign "atg_nll_loss2d_forward_out"
+    (ptr t @-> t @-> t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
 
   let nll_loss2d_out =
     foreign "atg_nll_loss2d_out"
-    (t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
 
   let nll_loss_backward =
     foreign "atg_nll_loss_backward"
-    (t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> t @-> returning void)
 
   let nll_loss_backward_out =
     foreign "atg_nll_loss_backward_out"
-    (t @-> t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> t @-> returning void)
+
+  let nll_loss_forward =
+    foreign "atg_nll_loss_forward"
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
+
+  let nll_loss_forward_out =
+    foreign "atg_nll_loss_forward_out"
+    (ptr t @-> t @-> t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
 
   let nll_loss_out =
     foreign "atg_nll_loss_out"
-    (t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
 
   let norm1 =
     foreign "atg_norm1"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let norm2 =
     foreign "atg_norm2"
-    (t @-> scalar @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> scalar @-> int64_t @-> int @-> returning void)
 
   let norm_except_dim =
     foreign "atg_norm_except_dim"
-    (t @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int64_t @-> returning void)
 
   let norm_out =
     foreign "atg_norm_out"
-    (t @-> t @-> scalar @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> scalar @-> int64_t @-> int @-> returning void)
 
   let normal =
     foreign "atg_normal"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let normal1 =
     foreign "atg_normal1"
-    (t @-> double @-> returning t)
+    (ptr t @-> t @-> double @-> returning void)
 
   let normal2 =
     foreign "atg_normal2"
-    (double @-> t @-> returning t)
+    (ptr t @-> double @-> t @-> returning void)
 
   let normal_ =
     foreign "atg_normal_"
-    (t @-> double @-> double @-> returning t)
+    (ptr t @-> t @-> double @-> double @-> returning void)
 
   let normal_out1 =
     foreign "atg_normal_out1"
-    (t @-> t @-> double @-> returning t)
+    (ptr t @-> t @-> t @-> double @-> returning void)
 
   let normal_out2 =
     foreign "atg_normal_out2"
-    (t @-> double @-> t @-> returning t)
+    (ptr t @-> t @-> double @-> t @-> returning void)
 
   let normal_out3 =
     foreign "atg_normal_out3"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let nuclear_norm =
     foreign "atg_nuclear_norm"
-    (t @-> int @-> returning t)
+    (ptr t @-> t @-> int @-> returning void)
 
   let nuclear_norm_out =
     foreign "atg_nuclear_norm_out"
-    (t @-> t @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int @-> returning void)
 
   let ones =
     foreign "atg_ones"
-    (ptr long @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> ptr long @-> int @-> int @-> int @-> returning void)
 
   let ones_like1 =
     foreign "atg_ones_like1"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let ones_like2 =
     foreign "atg_ones_like2"
-    (t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> int @-> int @-> returning void)
 
   let ones_out =
     foreign "atg_ones_out"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let orgqr =
     foreign "atg_orgqr"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let orgqr_out =
     foreign "atg_orgqr_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let ormqr =
     foreign "atg_ormqr"
-    (t @-> t @-> t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int @-> int @-> returning void)
 
   let ormqr_out =
     foreign "atg_ormqr_out"
-    (t @-> t @-> t @-> t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> int @-> int @-> returning void)
 
   let pairwise_distance =
     foreign "atg_pairwise_distance"
-    (t @-> t @-> double @-> double @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> double @-> double @-> int @-> returning void)
 
   let pdist =
     foreign "atg_pdist"
-    (t @-> double @-> returning t)
+    (ptr t @-> t @-> double @-> returning void)
 
   let permute =
     foreign "atg_permute"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let pin_memory =
     foreign "atg_pin_memory"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let pinverse =
     foreign "atg_pinverse"
-    (t @-> double @-> returning t)
+    (ptr t @-> t @-> double @-> returning void)
 
   let pixel_shuffle =
     foreign "atg_pixel_shuffle"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let poisson =
     foreign "atg_poisson"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let polygamma =
     foreign "atg_polygamma"
-    (int64_t @-> t @-> returning t)
+    (ptr t @-> int64_t @-> t @-> returning void)
 
   let polygamma_ =
     foreign "atg_polygamma_"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let polygamma_out =
     foreign "atg_polygamma_out"
-    (t @-> int64_t @-> t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> t @-> returning void)
 
   let potrf =
     foreign "atg_potrf"
-    (t @-> int @-> returning t)
+    (ptr t @-> t @-> int @-> returning void)
 
   let potrf_out =
     foreign "atg_potrf_out"
-    (t @-> t @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int @-> returning void)
 
   let potri =
     foreign "atg_potri"
-    (t @-> int @-> returning t)
+    (ptr t @-> t @-> int @-> returning void)
 
   let potri_out =
     foreign "atg_potri_out"
-    (t @-> t @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int @-> returning void)
 
   let potrs =
     foreign "atg_potrs"
-    (t @-> t @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int @-> returning void)
 
   let potrs_out =
     foreign "atg_potrs_out"
-    (t @-> t @-> t @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int @-> returning void)
 
   let pow =
     foreign "atg_pow"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let pow1 =
     foreign "atg_pow1"
-    (t @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> returning void)
 
   let pow_ =
     foreign "atg_pow_"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let pow_out1 =
     foreign "atg_pow_out1"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let pow_out2 =
     foreign "atg_pow_out2"
-    (t @-> t @-> scalar @-> returning t)
+    (ptr t @-> t @-> t @-> scalar @-> returning void)
 
   let prelu =
     foreign "atg_prelu"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
+
+  let prelu_backward =
+    foreign "atg_prelu_backward"
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let prod1 =
     foreign "atg_prod1"
-    (t @-> int @-> returning t)
+    (ptr t @-> t @-> int @-> returning void)
 
   let prod2 =
     foreign "atg_prod2"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let prod3 =
     foreign "atg_prod3"
-    (t @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int @-> int @-> returning void)
 
   let prod4 =
     foreign "atg_prod4"
-    (t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
   let prod5 =
     foreign "atg_prod5"
-    (t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
   let prod_out1 =
     foreign "atg_prod_out1"
-    (t @-> t @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> int @-> int @-> returning void)
 
   let prod_out2 =
     foreign "atg_prod_out2"
-    (t @-> t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
   let prod_out3 =
     foreign "atg_prod_out3"
-    (t @-> t @-> int64_t @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
   let put_ =
     foreign "atg_put_"
-    (t @-> t @-> t @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int @-> returning void)
+
+  let qr =
+    foreign "atg_qr"
+    (ptr t @-> t @-> returning void)
+
+  let qr_out =
+    foreign "atg_qr_out"
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let rand =
     foreign "atg_rand"
-    (ptr long @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> ptr long @-> int @-> int @-> int @-> returning void)
 
   let rand_like1 =
     foreign "atg_rand_like1"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let rand_like2 =
     foreign "atg_rand_like2"
-    (t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> int @-> int @-> returning void)
 
   let rand_out =
     foreign "atg_rand_out"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let randint1 =
     foreign "atg_randint1"
-    (int64_t @-> ptr long @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> int64_t @-> ptr long @-> int @-> int @-> int @-> returning void)
 
   let randint2 =
     foreign "atg_randint2"
-    (int64_t @-> int64_t @-> ptr long @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> int64_t @-> int64_t @-> ptr long @-> int @-> int @-> int @-> returning void)
 
   let randint_like1 =
     foreign "atg_randint_like1"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let randint_like2 =
     foreign "atg_randint_like2"
-    (t @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int64_t @-> returning void)
 
   let randint_like3 =
     foreign "atg_randint_like3"
-    (t @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int @-> int @-> returning void)
 
   let randint_like4 =
     foreign "atg_randint_like4"
-    (t @-> int64_t @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int64_t @-> int @-> int @-> returning void)
 
   let randint_out1 =
     foreign "atg_randint_out1"
-    (t @-> int64_t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> ptr long @-> int @-> returning void)
 
   let randint_out2 =
     foreign "atg_randint_out2"
-    (t @-> int64_t @-> int64_t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int64_t @-> ptr long @-> int @-> returning void)
 
   let randn =
     foreign "atg_randn"
-    (ptr long @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> ptr long @-> int @-> int @-> int @-> returning void)
 
   let randn_like1 =
     foreign "atg_randn_like1"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let randn_like2 =
     foreign "atg_randn_like2"
-    (t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> int @-> int @-> returning void)
 
   let randn_out =
     foreign "atg_randn_out"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let random_1 =
     foreign "atg_random_1"
-    (t @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int64_t @-> returning void)
 
   let random_2 =
     foreign "atg_random_2"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let random_3 =
     foreign "atg_random_3"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let randperm =
     foreign "atg_randperm"
-    (int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> int64_t @-> int @-> int @-> returning void)
 
   let randperm_out =
     foreign "atg_randperm_out"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let range1 =
     foreign "atg_range1"
-    (scalar @-> scalar @-> int @-> int @-> returning t)
+    (ptr t @-> scalar @-> scalar @-> int @-> int @-> returning void)
 
   let range2 =
     foreign "atg_range2"
-    (scalar @-> scalar @-> scalar @-> int @-> int @-> returning t)
+    (ptr t @-> scalar @-> scalar @-> scalar @-> int @-> int @-> returning void)
 
   let range_out1 =
     foreign "atg_range_out1"
-    (t @-> scalar @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> scalar @-> returning void)
 
   let range_out2 =
     foreign "atg_range_out2"
-    (t @-> scalar @-> scalar @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> scalar @-> scalar @-> returning void)
 
   let reciprocal =
     foreign "atg_reciprocal"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let reciprocal_ =
     foreign "atg_reciprocal_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let reciprocal_out =
     foreign "atg_reciprocal_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let reflection_pad1d =
     foreign "atg_reflection_pad1d"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let reflection_pad1d_backward =
     foreign "atg_reflection_pad1d_backward"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let reflection_pad1d_backward_out =
     foreign "atg_reflection_pad1d_backward_out"
-    (t @-> t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let reflection_pad1d_forward =
     foreign "atg_reflection_pad1d_forward"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let reflection_pad1d_forward_out =
     foreign "atg_reflection_pad1d_forward_out"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let reflection_pad1d_out =
     foreign "atg_reflection_pad1d_out"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let reflection_pad2d =
     foreign "atg_reflection_pad2d"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let reflection_pad2d_backward =
     foreign "atg_reflection_pad2d_backward"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let reflection_pad2d_backward_out =
     foreign "atg_reflection_pad2d_backward_out"
-    (t @-> t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let reflection_pad2d_forward =
     foreign "atg_reflection_pad2d_forward"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let reflection_pad2d_forward_out =
     foreign "atg_reflection_pad2d_forward_out"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let reflection_pad2d_out =
     foreign "atg_reflection_pad2d_out"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let relu =
     foreign "atg_relu"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let relu_ =
     foreign "atg_relu_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let remainder =
     foreign "atg_remainder"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let remainder_ =
     foreign "atg_remainder_"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let remainder_out =
     foreign "atg_remainder_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let repeat =
     foreign "atg_repeat"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let replication_pad1d =
     foreign "atg_replication_pad1d"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let replication_pad1d_backward =
     foreign "atg_replication_pad1d_backward"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let replication_pad1d_backward_out =
     foreign "atg_replication_pad1d_backward_out"
-    (t @-> t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let replication_pad1d_forward =
     foreign "atg_replication_pad1d_forward"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let replication_pad1d_forward_out =
     foreign "atg_replication_pad1d_forward_out"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let replication_pad1d_out =
     foreign "atg_replication_pad1d_out"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let replication_pad2d =
     foreign "atg_replication_pad2d"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let replication_pad2d_backward =
     foreign "atg_replication_pad2d_backward"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let replication_pad2d_backward_out =
     foreign "atg_replication_pad2d_backward_out"
-    (t @-> t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let replication_pad2d_forward =
     foreign "atg_replication_pad2d_forward"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let replication_pad2d_forward_out =
     foreign "atg_replication_pad2d_forward_out"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let replication_pad2d_out =
     foreign "atg_replication_pad2d_out"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let replication_pad3d =
     foreign "atg_replication_pad3d"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let replication_pad3d_backward =
     foreign "atg_replication_pad3d_backward"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let replication_pad3d_backward_out =
     foreign "atg_replication_pad3d_backward_out"
-    (t @-> t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let replication_pad3d_forward =
     foreign "atg_replication_pad3d_forward"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let replication_pad3d_forward_out =
     foreign "atg_replication_pad3d_forward_out"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let replication_pad3d_out =
     foreign "atg_replication_pad3d_out"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let reshape =
     foreign "atg_reshape"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let reshape_as =
     foreign "atg_reshape_as"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let resize_ =
     foreign "atg_resize_"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let resize_as_ =
     foreign "atg_resize_as_"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let rfft =
     foreign "atg_rfft"
-    (t @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int @-> int @-> returning void)
+
+  let rnn_relu1 =
+    foreign "atg_rnn_relu1"
+    (ptr t @-> t @-> t @-> ptr t @-> int @-> int @-> int64_t @-> double @-> int @-> int @-> int @-> returning void)
+
+  let rnn_relu2 =
+    foreign "atg_rnn_relu2"
+    (ptr t @-> t @-> t @-> t @-> ptr t @-> int @-> int @-> int64_t @-> double @-> int @-> int @-> returning void)
 
   let rnn_relu_cell =
     foreign "atg_rnn_relu_cell"
-    (t @-> t @-> t @-> t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> t @-> t @-> returning void)
+
+  let rnn_tanh1 =
+    foreign "atg_rnn_tanh1"
+    (ptr t @-> t @-> t @-> ptr t @-> int @-> int @-> int64_t @-> double @-> int @-> int @-> int @-> returning void)
+
+  let rnn_tanh2 =
+    foreign "atg_rnn_tanh2"
+    (ptr t @-> t @-> t @-> t @-> ptr t @-> int @-> int @-> int64_t @-> double @-> int @-> int @-> returning void)
 
   let rnn_tanh_cell =
     foreign "atg_rnn_tanh_cell"
-    (t @-> t @-> t @-> t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> t @-> t @-> returning void)
 
   let roipooling2d_backward =
     foreign "atg_roipooling2d_backward"
-    (t @-> t @-> int64_t @-> int64_t @-> double @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> int64_t @-> double @-> t @-> t @-> returning void)
+
+  let roipooling2d_forward =
+    foreign "atg_roipooling2d_forward"
+    (ptr t @-> t @-> t @-> int64_t @-> int64_t @-> double @-> returning void)
 
   let round =
     foreign "atg_round"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let round_ =
     foreign "atg_round_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let round_out =
     foreign "atg_round_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let rrelu =
     foreign "atg_rrelu"
-    (t @-> int @-> returning t)
+    (ptr t @-> t @-> int @-> returning void)
 
   let rrelu_ =
     foreign "atg_rrelu_"
-    (t @-> int @-> returning t)
+    (ptr t @-> t @-> int @-> returning void)
 
   let rrelu_with_noise =
     foreign "atg_rrelu_with_noise"
-    (t @-> t @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int @-> returning void)
 
   let rrelu_with_noise_ =
     foreign "atg_rrelu_with_noise_"
-    (t @-> t @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int @-> returning void)
 
   let rrelu_with_noise_out =
     foreign "atg_rrelu_with_noise_out"
-    (t @-> t @-> t @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int @-> returning void)
 
   let rsqrt =
     foreign "atg_rsqrt"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let rsqrt_ =
     foreign "atg_rsqrt_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let rsqrt_out =
     foreign "atg_rsqrt_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let s_native_addmm =
     foreign "atg_s_native_addmm"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let s_native_addmm_ =
     foreign "atg_s_native_addmm_"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let s_native_addmm_out =
     foreign "atg_s_native_addmm_out"
-    (t @-> t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
   let scatter_ =
     foreign "atg_scatter_"
-    (t @-> int64_t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> t @-> t @-> returning void)
 
   let scatter_add_ =
     foreign "atg_scatter_add_"
-    (t @-> int64_t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> t @-> t @-> returning void)
 
   let select =
     foreign "atg_select"
-    (t @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int64_t @-> returning void)
 
   let selu =
     foreign "atg_selu"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let selu_ =
     foreign "atg_selu_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let set_ =
     foreign "atg_set_"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let set_1 =
     foreign "atg_set_1"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let set_requires_grad =
     foreign "atg_set_requires_grad"
-    (t @-> int @-> returning t)
+    (ptr t @-> t @-> int @-> returning void)
 
   let sigmoid =
     foreign "atg_sigmoid"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let sigmoid_ =
     foreign "atg_sigmoid_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let sigmoid_out =
     foreign "atg_sigmoid_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let sign =
     foreign "atg_sign"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let sign_ =
     foreign "atg_sign_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let sign_out =
     foreign "atg_sign_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let sin =
     foreign "atg_sin"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let sin_ =
     foreign "atg_sin_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let sin_out =
     foreign "atg_sin_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let sinh =
     foreign "atg_sinh"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let sinh_ =
     foreign "atg_sinh_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let sinh_out =
     foreign "atg_sinh_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let slice =
     foreign "atg_slice"
-    (t @-> int64_t @-> int64_t @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int64_t @-> int64_t @-> int64_t @-> returning void)
+
+  let slogdet =
+    foreign "atg_slogdet"
+    (ptr t @-> t @-> returning void)
 
   let smm =
     foreign "atg_smm"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let smooth_l1_loss =
     foreign "atg_smooth_l1_loss"
-    (t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
   let smooth_l1_loss_backward =
     foreign "atg_smooth_l1_loss_backward"
-    (t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let smooth_l1_loss_backward_out =
     foreign "atg_smooth_l1_loss_backward_out"
-    (t @-> t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let smooth_l1_loss_forward =
     foreign "atg_smooth_l1_loss_forward"
-    (t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
   let smooth_l1_loss_forward_out =
     foreign "atg_smooth_l1_loss_forward_out"
-    (t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let smooth_l1_loss_out =
     foreign "atg_smooth_l1_loss_out"
-    (t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let soft_margin_loss =
     foreign "atg_soft_margin_loss"
-    (t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
   let soft_margin_loss_backward =
     foreign "atg_soft_margin_loss_backward"
-    (t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let soft_margin_loss_backward_out =
     foreign "atg_soft_margin_loss_backward_out"
-    (t @-> t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let soft_margin_loss_forward =
     foreign "atg_soft_margin_loss_forward"
-    (t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
   let soft_margin_loss_forward_out =
     foreign "atg_soft_margin_loss_forward_out"
-    (t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let soft_margin_loss_out =
     foreign "atg_soft_margin_loss_out"
-    (t @-> t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
   let softmax =
     foreign "atg_softmax"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let softplus =
     foreign "atg_softplus"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let softplus_out =
     foreign "atg_softplus_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let softshrink =
     foreign "atg_softshrink"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let softshrink_out =
     foreign "atg_softshrink_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let sparse_resize_ =
     foreign "atg_sparse_resize_"
-    (t @-> ptr long @-> int @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> int64_t @-> int64_t @-> returning void)
 
   let sparse_resize_and_clear_ =
     foreign "atg_sparse_resize_and_clear_"
-    (t @-> ptr long @-> int @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> int64_t @-> int64_t @-> returning void)
 
   let sqrt =
     foreign "atg_sqrt"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let sqrt_ =
     foreign "atg_sqrt_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let sqrt_out =
     foreign "atg_sqrt_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let squeeze1 =
     foreign "atg_squeeze1"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let squeeze2 =
     foreign "atg_squeeze2"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let squeeze_1 =
     foreign "atg_squeeze_1"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let squeeze_2 =
     foreign "atg_squeeze_2"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let sspaddmm =
     foreign "atg_sspaddmm"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let sspaddmm_out =
     foreign "atg_sspaddmm_out"
-    (t @-> t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
   let stack =
     foreign "atg_stack"
-    (ptr t @-> int @-> int64_t @-> returning t)
+    (ptr t @-> ptr t @-> int @-> int64_t @-> returning void)
 
   let stack_out =
     foreign "atg_stack_out"
-    (t @-> ptr t @-> int @-> int64_t @-> returning t)
+    (ptr t @-> t @-> ptr t @-> int @-> int64_t @-> returning void)
 
   let std1 =
     foreign "atg_std1"
-    (t @-> int @-> returning t)
+    (ptr t @-> t @-> int @-> returning void)
 
   let std2 =
     foreign "atg_std2"
-    (t @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int @-> int @-> returning void)
 
   let std_out =
     foreign "atg_std_out"
-    (t @-> t @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> int @-> int @-> returning void)
 
   let sub =
     foreign "atg_sub"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let sub1 =
     foreign "atg_sub1"
-    (t @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> returning void)
 
   let sub_ =
     foreign "atg_sub_"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let sub_1 =
     foreign "atg_sub_1"
-    (t @-> scalar @-> returning t)
+    (ptr t @-> t @-> scalar @-> returning void)
 
   let sub_out =
     foreign "atg_sub_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let sum1 =
     foreign "atg_sum1"
-    (t @-> int @-> returning t)
+    (ptr t @-> t @-> int @-> returning void)
 
   let sum2 =
     foreign "atg_sum2"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let sum3 =
     foreign "atg_sum3"
-    (t @-> ptr long @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> int @-> int @-> returning void)
 
   let sum4 =
     foreign "atg_sum4"
-    (t @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
   let sum5 =
     foreign "atg_sum5"
-    (t @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
   let sum_out1 =
     foreign "atg_sum_out1"
-    (t @-> t @-> ptr long @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> int @-> int @-> returning void)
 
   let sum_out2 =
     foreign "atg_sum_out2"
-    (t @-> t @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
   let sum_out3 =
     foreign "atg_sum_out3"
-    (t @-> t @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> int @-> returning void)
+
+  let svd =
+    foreign "atg_svd"
+    (ptr t @-> t @-> int @-> returning void)
+
+  let svd_out =
+    foreign "atg_svd_out"
+    (ptr t @-> t @-> t @-> t @-> t @-> int @-> returning void)
+
+  let symeig =
+    foreign "atg_symeig"
+    (ptr t @-> t @-> int @-> int @-> returning void)
+
+  let symeig_out =
+    foreign "atg_symeig_out"
+    (ptr t @-> t @-> t @-> t @-> int @-> int @-> returning void)
 
   let t_ =
     foreign "atg_t_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let take =
     foreign "atg_take"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let take_out =
     foreign "atg_take_out"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let tan =
     foreign "atg_tan"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let tan_ =
     foreign "atg_tan_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let tan_out =
     foreign "atg_tan_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let tanh =
     foreign "atg_tanh"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let tanh_ =
     foreign "atg_tanh_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let tanh_out =
     foreign "atg_tanh_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let tensordot =
     foreign "atg_tensordot"
-    (t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
   let th_addmm =
     foreign "atg_th_addmm"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let th_addmm_ =
     foreign "atg_th_addmm_"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let th_addmm_out =
     foreign "atg_th_addmm_out"
-    (t @-> t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
   let th_clone =
     foreign "atg_th_clone"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let th_resize_as_ =
     foreign "atg_th_resize_as_"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let th_zero_ =
     foreign "atg_th_zero_"
-    (t @-> returning t)
-
-  let thnn_batch_norm =
-    foreign "atg_thnn_batch_norm"
-    (t @-> t @-> t @-> t @-> t @-> int @-> double @-> double @-> returning t)
-
-  let thnn_batch_norm_out =
-    foreign "atg_thnn_batch_norm_out"
-    (t @-> t @-> t @-> t @-> t @-> t @-> int @-> double @-> double @-> returning t)
-
-  let thnn_conv2d =
-    foreign "atg_thnn_conv2d"
-    (t @-> t @-> ptr long @-> int @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
-
-  let thnn_conv2d_out =
-    foreign "atg_thnn_conv2d_out"
-    (t @-> t @-> t @-> ptr long @-> int @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
-
-  let thnn_conv3d =
-    foreign "atg_thnn_conv3d"
-    (t @-> t @-> ptr long @-> int @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
-
-  let thnn_conv3d_out =
-    foreign "atg_thnn_conv3d_out"
-    (t @-> t @-> t @-> ptr long @-> int @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
-
-  let thnn_conv_depthwise2d =
-    foreign "atg_thnn_conv_depthwise2d"
-    (t @-> t @-> ptr long @-> int @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
-
-  let thnn_conv_depthwise2d_forward =
-    foreign "atg_thnn_conv_depthwise2d_forward"
-    (t @-> t @-> ptr long @-> int @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
-
-  let thnn_conv_depthwise2d_forward_out =
-    foreign "atg_thnn_conv_depthwise2d_forward_out"
-    (t @-> t @-> t @-> ptr long @-> int @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
-
-  let thnn_conv_depthwise2d_out =
-    foreign "atg_thnn_conv_depthwise2d_out"
-    (t @-> t @-> t @-> ptr long @-> int @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
-
-  let thnn_conv_dilated2d =
-    foreign "atg_thnn_conv_dilated2d"
-    (t @-> t @-> ptr long @-> int @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
-
-  let thnn_conv_dilated2d_out =
-    foreign "atg_thnn_conv_dilated2d_out"
-    (t @-> t @-> t @-> ptr long @-> int @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
-
-  let thnn_conv_dilated3d =
-    foreign "atg_thnn_conv_dilated3d"
-    (t @-> t @-> ptr long @-> int @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
-
-  let thnn_conv_dilated3d_out =
-    foreign "atg_thnn_conv_dilated3d_out"
-    (t @-> t @-> t @-> ptr long @-> int @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
-
-  let thnn_conv_transpose2d =
-    foreign "atg_thnn_conv_transpose2d"
-    (t @-> t @-> ptr long @-> int @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
-
-  let thnn_conv_transpose2d_out =
-    foreign "atg_thnn_conv_transpose2d_out"
-    (t @-> t @-> t @-> ptr long @-> int @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
-
-  let thnn_conv_transpose3d =
-    foreign "atg_thnn_conv_transpose3d"
-    (t @-> t @-> ptr long @-> int @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
-
-  let thnn_conv_transpose3d_out =
-    foreign "atg_thnn_conv_transpose3d_out"
-    (t @-> t @-> t @-> ptr long @-> int @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let to1 =
     foreign "atg_to1"
-    (t @-> int @-> returning t)
+    (ptr t @-> t @-> int @-> returning void)
 
   let to2 =
     foreign "atg_to2"
-    (t @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> int @-> int @-> int @-> returning void)
 
   let to3 =
     foreign "atg_to3"
-    (t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> int @-> int @-> returning void)
 
   let to4 =
     foreign "atg_to4"
-    (t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> int @-> int @-> returning void)
 
   let to5 =
     foreign "atg_to5"
-    (t @-> t @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int @-> returning void)
 
   let to_dense =
     foreign "atg_to_dense"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let totype =
     foreign "atg_totype"
-    (t @-> int @-> returning t)
+    (ptr t @-> t @-> int @-> returning void)
 
   let transpose =
     foreign "atg_transpose"
-    (t @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int64_t @-> returning void)
 
   let transpose_ =
     foreign "atg_transpose_"
-    (t @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int64_t @-> returning void)
 
   let tril =
     foreign "atg_tril"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let tril_ =
     foreign "atg_tril_"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let tril_out =
     foreign "atg_tril_out"
-    (t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
   let triplet_margin_loss =
     foreign "atg_triplet_margin_loss"
-    (t @-> t @-> t @-> double @-> double @-> double @-> int @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> double @-> double @-> double @-> int @-> int64_t @-> returning void)
 
   let triu =
     foreign "atg_triu"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let triu_ =
     foreign "atg_triu_"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let triu_out =
     foreign "atg_triu_out"
-    (t @-> t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> returning void)
+
+  let trtrs =
+    foreign "atg_trtrs"
+    (ptr t @-> t @-> t @-> int @-> int @-> int @-> returning void)
+
+  let trtrs_out =
+    foreign "atg_trtrs_out"
+    (ptr t @-> t @-> t @-> t @-> t @-> int @-> int @-> int @-> returning void)
 
   let trunc =
     foreign "atg_trunc"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let trunc_ =
     foreign "atg_trunc_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let trunc_out =
     foreign "atg_trunc_out"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let type_as =
     foreign "atg_type_as"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let unfold =
     foreign "atg_unfold"
-    (t @-> int64_t @-> int64_t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int64_t @-> int64_t @-> returning void)
 
   let uniform_ =
     foreign "atg_uniform_"
-    (t @-> double @-> double @-> returning t)
+    (ptr t @-> t @-> double @-> double @-> returning void)
 
   let unsqueeze =
     foreign "atg_unsqueeze"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let unsqueeze_ =
     foreign "atg_unsqueeze_"
-    (t @-> int64_t @-> returning t)
+    (ptr t @-> t @-> int64_t @-> returning void)
 
   let upsample_bilinear2d =
     foreign "atg_upsample_bilinear2d"
-    (t @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
   let upsample_bilinear2d_backward =
     foreign "atg_upsample_bilinear2d_backward"
-    (t @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
   let upsample_bilinear2d_backward_out =
     foreign "atg_upsample_bilinear2d_backward_out"
-    (t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
   let upsample_bilinear2d_forward =
     foreign "atg_upsample_bilinear2d_forward"
-    (t @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
   let upsample_bilinear2d_forward_out =
     foreign "atg_upsample_bilinear2d_forward_out"
-    (t @-> t @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
   let upsample_bilinear2d_out =
     foreign "atg_upsample_bilinear2d_out"
-    (t @-> t @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
   let upsample_linear1d =
     foreign "atg_upsample_linear1d"
-    (t @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
   let upsample_linear1d_backward =
     foreign "atg_upsample_linear1d_backward"
-    (t @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
   let upsample_linear1d_backward_out =
     foreign "atg_upsample_linear1d_backward_out"
-    (t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
   let upsample_linear1d_forward =
     foreign "atg_upsample_linear1d_forward"
-    (t @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
   let upsample_linear1d_forward_out =
     foreign "atg_upsample_linear1d_forward_out"
-    (t @-> t @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
   let upsample_linear1d_out =
     foreign "atg_upsample_linear1d_out"
-    (t @-> t @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
   let upsample_nearest1d =
     foreign "atg_upsample_nearest1d"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let upsample_nearest1d_backward =
     foreign "atg_upsample_nearest1d_backward"
-    (t @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
   let upsample_nearest1d_backward_out =
     foreign "atg_upsample_nearest1d_backward_out"
-    (t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
   let upsample_nearest1d_forward =
     foreign "atg_upsample_nearest1d_forward"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let upsample_nearest1d_forward_out =
     foreign "atg_upsample_nearest1d_forward_out"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let upsample_nearest1d_out =
     foreign "atg_upsample_nearest1d_out"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let upsample_nearest2d =
     foreign "atg_upsample_nearest2d"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let upsample_nearest2d_backward =
     foreign "atg_upsample_nearest2d_backward"
-    (t @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
   let upsample_nearest2d_backward_out =
     foreign "atg_upsample_nearest2d_backward_out"
-    (t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
   let upsample_nearest2d_forward =
     foreign "atg_upsample_nearest2d_forward"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let upsample_nearest2d_forward_out =
     foreign "atg_upsample_nearest2d_forward_out"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let upsample_nearest2d_out =
     foreign "atg_upsample_nearest2d_out"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let upsample_nearest3d =
     foreign "atg_upsample_nearest3d"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let upsample_nearest3d_backward =
     foreign "atg_upsample_nearest3d_backward"
-    (t @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
   let upsample_nearest3d_backward_out =
     foreign "atg_upsample_nearest3d_backward_out"
-    (t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
   let upsample_nearest3d_forward =
     foreign "atg_upsample_nearest3d_forward"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let upsample_nearest3d_forward_out =
     foreign "atg_upsample_nearest3d_forward_out"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let upsample_nearest3d_out =
     foreign "atg_upsample_nearest3d_out"
-    (t @-> t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
   let upsample_trilinear3d =
     foreign "atg_upsample_trilinear3d"
-    (t @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
   let upsample_trilinear3d_backward =
     foreign "atg_upsample_trilinear3d_backward"
-    (t @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
   let upsample_trilinear3d_backward_out =
     foreign "atg_upsample_trilinear3d_backward_out"
-    (t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
   let upsample_trilinear3d_forward =
     foreign "atg_upsample_trilinear3d_forward"
-    (t @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
   let upsample_trilinear3d_forward_out =
     foreign "atg_upsample_trilinear3d_forward_out"
-    (t @-> t @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
   let upsample_trilinear3d_out =
     foreign "atg_upsample_trilinear3d_out"
-    (t @-> t @-> ptr long @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
   let var1 =
     foreign "atg_var1"
-    (t @-> int @-> returning t)
+    (ptr t @-> t @-> int @-> returning void)
 
   let var2 =
     foreign "atg_var2"
-    (t @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> int64_t @-> int @-> int @-> returning void)
 
   let var_out =
     foreign "atg_var_out"
-    (t @-> t @-> int64_t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> t @-> int64_t @-> int @-> int @-> returning void)
 
   let view =
     foreign "atg_view"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
   let view_as =
     foreign "atg_view_as"
-    (t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> returning void)
 
   let where =
     foreign "atg_where"
-    (t @-> t @-> t @-> returning t)
+    (ptr t @-> t @-> t @-> t @-> returning void)
 
   let zero_ =
     foreign "atg_zero_"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let zeros =
     foreign "atg_zeros"
-    (ptr long @-> int @-> int @-> int @-> returning t)
+    (ptr t @-> ptr long @-> int @-> int @-> int @-> returning void)
 
   let zeros_like1 =
     foreign "atg_zeros_like1"
-    (t @-> returning t)
+    (ptr t @-> t @-> returning void)
 
   let zeros_like2 =
     foreign "atg_zeros_like2"
-    (t @-> int @-> int @-> returning t)
+    (ptr t @-> t @-> int @-> int @-> returning void)
 
   let zeros_out =
     foreign "atg_zeros_out"
-    (t @-> ptr long @-> int @-> returning t)
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
 end
