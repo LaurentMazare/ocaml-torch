@@ -92,11 +92,11 @@ let () =
     if Cuda.is_available ()
     then begin
       Stdio.printf "Using cuda, devices: %d\n%!" (Cuda.device_count ());
-      Some Torch_core.Device.Cuda
-    end else None
+      Torch_core.Device.Cuda
+    end else Cpu
   in
   let cifar = Cifar_helper.read_files ~with_caching:true () in
-  let vs = Var_store.create ~name:"densenet" ?device () in
+  let vs = Var_store.create ~name:"densenet" ~device () in
   let model = densenet121 vs in
   let sgd =
     Optimizer.sgd vs
@@ -116,29 +116,24 @@ let () =
       Optimizer.set_learning_rate sgd ~learning_rate:(learning_rate ~epoch_idx);
       let start_time = Unix.gettimeofday () in
       let sum_loss = ref 0. in
-      for batch_idx = 0 to batches_per_epoch -1 do
-        let batch_images, batch_labels =
-          Dataset_helper.train_batch cifar ?device ~batch_size ~batch_idx
-            ~augmentation:(`flip_and_crop_with_pad 4)
-        in
-        Optimizer.zero_grad sgd;
-        let predicted = train_model batch_images in
-        (* Compute the cross-entropy loss. *)
-        let loss = Tensor.cross_entropy_for_logits predicted ~targets:batch_labels in
-        sum_loss := !sum_loss +. Tensor.float_value loss;
-        Stdio.printf "%d/%d %f\r%!" batch_idx batches_per_epoch (!sum_loss /. Float.of_int (1 + batch_idx));
-        Tensor.backward loss;
-        Optimizer.step sgd;
-        Caml.Gc.full_major ();
-      done;
+      Dataset_helper.iter cifar ~augmentation:(`flip_and_crop_with_pad 4) ~device ~batch_size
+        ~f:(fun batch_idx ~batch_images ~batch_labels ->
+          Optimizer.zero_grad sgd;
+          let predicted = train_model batch_images in
+          (* Compute the cross-entropy loss. *)
+          let loss = Tensor.cross_entropy_for_logits predicted ~targets:batch_labels in
+          sum_loss := !sum_loss +. Tensor.float_value loss;
+          Stdio.printf "%d/%d %f\r%!" batch_idx batches_per_epoch (!sum_loss /. Float.of_int (1 + batch_idx));
+          Tensor.backward loss;
+          Optimizer.step sgd);
 
       (* Compute the validation error. *)
       let test_accuracy =
-        Dataset_helper.batch_accuracy cifar `test ?device ~batch_size ~predict:test_model
+        Dataset_helper.batch_accuracy cifar `test ~device ~batch_size ~predict:test_model
       in
       Stdio.printf "%d %.0fs %f %.2f%%\n%!"
         epoch_idx
         (Unix.gettimeofday () -. start_time)
-        (!sum_loss /. Float.of_int batches_per_epoch)
+        (!sum_loss /. Float.of_int (Dataset_helper.batches_per_epoch cifar ~batch_size))
         (100. *. test_accuracy);
     )

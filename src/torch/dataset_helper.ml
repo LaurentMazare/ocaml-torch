@@ -121,3 +121,26 @@ let batch_accuracy ?device ?samples t train_or_test ~batch_size ~predict =
       loop (start_index + batch_size) (sum_accuracy +. batch_accuracy)
   in
   loop 0 0.
+
+let shuffle_ t =
+  let batch_size = Tensor.shape t.train_images |> List.hd_exn in
+  let index = Tensor.randperm ~n:batch_size ~options:(Int64, Cpu) in
+  { t with
+    train_images = Tensor.index_select t.train_images ~dim:0 ~index
+  ; train_labels = Tensor.index_select t.train_labels ~dim:0 ~index
+  }
+
+let batches_per_epoch t ~batch_size =
+  (Tensor.shape t.train_images |> List.hd_exn) / batch_size
+
+let iter ?device ?augmentation ?(shuffle = true) t ~f ~batch_size =
+  let t = if shuffle then shuffle_ t else t in
+  for batch_idx = 0 to batches_per_epoch t ~batch_size - 1 do
+    let batch_images, batch_labels =
+      train_batch ?device ?augmentation t ~batch_size ~batch_idx
+    in
+    f batch_idx ~batch_images ~batch_labels;
+    Caml.Gc.full_major ()
+  done
+
+let shuffle = shuffle_
