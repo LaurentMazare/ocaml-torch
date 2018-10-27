@@ -107,7 +107,6 @@ let () =
   in
   let train_model = model ~is_training:true in
   let test_model = model ~is_training:false in
-  let batches_per_epoch = (Tensor.shape cifar.train_images |> List.hd_exn) / batch_size in
   Checkpointing.loop ~start_index:1 ~end_index:epochs
     ~var_stores:[ vs ]
     ~checkpoint_base:"densenet.ot"
@@ -123,7 +122,10 @@ let () =
           (* Compute the cross-entropy loss. *)
           let loss = Tensor.cross_entropy_for_logits predicted ~targets:batch_labels in
           sum_loss := !sum_loss +. Tensor.float_value loss;
-          Stdio.printf "%d/%d %f\r%!" batch_idx batches_per_epoch (!sum_loss /. Float.of_int (1 + batch_idx));
+          Stdio.printf "%d/%d %f\r%!"
+            batch_idx
+            (Dataset_helper.batches_per_epoch cifar ~batch_size)
+            (!sum_loss /. Float.of_int (1 + batch_idx));
           Tensor.backward loss;
           Optimizer.step sgd);
 

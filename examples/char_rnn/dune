@@ -1,0 +1,3 @@
+(executables
+  (names char_rnn)
+  (libraries base torch_core torch stdio))

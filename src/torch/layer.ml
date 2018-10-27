@@ -127,3 +127,50 @@ let fold t_list =
     List.fold t_list ~init:xs ~f:(fun acc t -> t.apply acc)
   in
   { apply }
+
+module Lstm = struct
+  type t =
+    { w_ih : Tensor.t
+    ; w_hh : Tensor.t
+    ; b_ih : Tensor.t
+    ; b_hh : Tensor.t
+    ; hidden_size : int
+    ; device : Torch_core.Device.t
+    }
+
+  type state = Tensor.t * Tensor.t
+
+  let create vs ~input_dim ~hidden_size =
+    let gate_size = 4 * hidden_size in
+    let w_ih = kaiming_uniform vs ~shape:[ gate_size; input_dim ] ~a:(Float.sqrt 5.) in
+    let w_hh = kaiming_uniform vs ~shape:[ gate_size; hidden_size ] ~a:(Float.sqrt 5.) in
+    let b_ih = Tensor.zeros [ gate_size ] ~requires_grad:true ~device:(Var_store.device vs) in
+    let b_hh = Tensor.zeros [ gate_size ] ~requires_grad:true ~device:(Var_store.device vs) in
+    Var_store.add_vars vs ~vars:[ b_ih; b_hh ] ~kind:`trainable;
+    { w_ih; w_hh; b_ih; b_hh; hidden_size; device = Var_store.device vs }
+
+  let zero_state t ~batch_size =
+    let zeros = Tensor.zeros [ batch_size; t.hidden_size ] ~device:t.device in
+    zeros, zeros
+
+  let step t (h, c) input_ =
+    Tensor.lstm_cell input_
+      ~hx:[ h; c ] ~w_ih:t.w_ih ~w_hh:t.w_hh ~b_ih:(Some t.b_ih) ~b_hh:(Some t.b_hh)
+
+  let seq t input_ =
+    let batch_size = Tensor.shape input_ |> List.hd_exn in
+    let h = Tensor.zeros [ 1; batch_size; t.hidden_size ] ~device:t.device in
+    let c = Tensor.zeros [ 1; batch_size; t.hidden_size ] ~device:t.device in
+    let output, h, c =
+      Tensor.lstm1 input_
+        ~hx:[ h; c ]
+        ~params:[ t.w_ih; t.w_hh; t.b_ih; t.b_hh ]
+        ~has_biases:true
+        ~num_layers:1
+        ~dropout:0.
+        ~train:false
+        ~bidirectional:false
+        ~batch_first:true
+    in
+    output, (h, c)
+end

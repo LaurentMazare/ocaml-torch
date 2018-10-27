@@ -42,7 +42,9 @@ let iter ?device t ~f ~seq_len ~batch_size =
         Tensor.narrow t.content ~dim:0 ~start:(start + 1) ~length:seq_len)
       |> List.unzip
     in
-    let xs = Tensor.cat xs ~dim:1 |> Tensor.to_device ?device in
-    let ys = Tensor.cat ys ~dim:1 |> Tensor.to_device ?device in
-    f index ~xs ~ys
+    let stack v =
+      Tensor.stack v ~dim:0 |> Tensor.to_device ?device |> Tensor.to_type ~type_:Int64
+    in
+    f index ~xs:(stack xs) ~ys:(stack ys);
+    Caml.Gc.full_major ();
   done

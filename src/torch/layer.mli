@@ -76,3 +76,13 @@ val apply
   :  t
   -> Tensor.t
   -> Tensor.t
+
+module Lstm : sig
+  type t
+  type state = Tensor.t * Tensor.t
+
+  val create : Var_store.t -> input_dim:int -> hidden_size:int -> t
+  val step : t -> state -> Tensor.t -> state
+  val seq : t -> Tensor.t -> Tensor.t * state
+  val zero_state : t -> batch_size:int -> state
+end
