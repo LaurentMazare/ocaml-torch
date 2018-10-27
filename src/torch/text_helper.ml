@@ -34,7 +34,7 @@ let labels t = Map.length t.char_for_label
 let iter ?device t ~f ~seq_len ~batch_size =
   let total_length = total_length t in
   let start_indexes = Tensor.randperm ~n:(total_length - seq_len) ~options:(Int64, Cpu) in
-  for index = 0 to (total_length - seq_len - 1) / batch_size do
+  for index = 0 to (total_length - seq_len - 1) / batch_size - 1 do
     let xs, ys =
       List.init batch_size ~f:(fun i ->
         let start = Tensor.get start_indexes (index * batch_size + i) |> Tensor.int_value in
