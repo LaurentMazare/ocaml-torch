@@ -141,6 +141,14 @@ void atg_adaptive_max_pool1d(tensor *out__, tensor self, long int *output_size_d
   )
 }
 
+void atg_adaptive_max_pool2d(tensor *out__, tensor self, long int *output_size_data, int output_size_len) {
+  PROTECT(
+    auto outputs__ = torch::adaptive_max_pool2d(*self, torch::IntList(output_size_data, output_size_len));
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+  )
+}
+
 void atg_adaptive_max_pool2d_backward(tensor *out__, tensor grad_output, tensor self, tensor indices) {
   PROTECT(
     auto outputs__ = torch::adaptive_max_pool2d_backward(*grad_output, *self, *indices);
@@ -155,6 +163,38 @@ void atg_adaptive_max_pool2d_backward_out(tensor *out__, tensor grad_input, tens
   )
 }
 
+void atg_adaptive_max_pool2d_forward(tensor *out__, tensor self, long int *output_size_data, int output_size_len) {
+  PROTECT(
+    auto outputs__ = torch::adaptive_max_pool2d_forward(*self, torch::IntList(output_size_data, output_size_len));
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+  )
+}
+
+void atg_adaptive_max_pool2d_forward_out(tensor *out__, tensor output, tensor indices, tensor self, long int *output_size_data, int output_size_len) {
+  PROTECT(
+    auto outputs__ = torch::adaptive_max_pool2d_forward_out(*output, *indices, *self, torch::IntList(output_size_data, output_size_len));
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+  )
+}
+
+void atg_adaptive_max_pool2d_out(tensor *out__, tensor output, tensor indices, tensor self, long int *output_size_data, int output_size_len) {
+  PROTECT(
+    auto outputs__ = torch::adaptive_max_pool2d_out(*output, *indices, *self, torch::IntList(output_size_data, output_size_len));
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+  )
+}
+
+void atg_adaptive_max_pool3d(tensor *out__, tensor self, long int *output_size_data, int output_size_len) {
+  PROTECT(
+    auto outputs__ = torch::adaptive_max_pool3d(*self, torch::IntList(output_size_data, output_size_len));
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+  )
+}
+
 void atg_adaptive_max_pool3d_backward(tensor *out__, tensor grad_output, tensor self, tensor indices) {
   PROTECT(
     auto outputs__ = torch::adaptive_max_pool3d_backward(*grad_output, *self, *indices);
@@ -166,6 +206,30 @@ void atg_adaptive_max_pool3d_backward_out(tensor *out__, tensor grad_input, tens
   PROTECT(
     auto outputs__ = torch::adaptive_max_pool3d_backward_out(*grad_input, *grad_output, *self, *indices);
     out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg_adaptive_max_pool3d_forward(tensor *out__, tensor self, long int *output_size_data, int output_size_len) {
+  PROTECT(
+    auto outputs__ = torch::adaptive_max_pool3d_forward(*self, torch::IntList(output_size_data, output_size_len));
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+  )
+}
+
+void atg_adaptive_max_pool3d_forward_out(tensor *out__, tensor output, tensor indices, tensor self, long int *output_size_data, int output_size_len) {
+  PROTECT(
+    auto outputs__ = torch::adaptive_max_pool3d_forward_out(*output, *indices, *self, torch::IntList(output_size_data, output_size_len));
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+  )
+}
+
+void atg_adaptive_max_pool3d_out(tensor *out__, tensor output, tensor indices, tensor self, long int *output_size_data, int output_size_len) {
+  PROTECT(
+    auto outputs__ = torch::adaptive_max_pool3d_out(*output, *indices, *self, torch::IntList(output_size_data, output_size_len));
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
   )
 }
 
@@ -1784,6 +1848,14 @@ void atg_frac_out(tensor *out__, tensor result, tensor self) {
   )
 }
 
+void atg_fractional_max_pool2d(tensor *out__, tensor self, long int *kernel_size_data, int kernel_size_len, long int *output_size_data, int output_size_len, tensor random_samples) {
+  PROTECT(
+    auto outputs__ = torch::fractional_max_pool2d(*self, torch::IntList(kernel_size_data, kernel_size_len), torch::IntList(output_size_data, output_size_len), *random_samples);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+  )
+}
+
 void atg_fractional_max_pool2d_backward(tensor *out__, tensor grad_output, tensor self, long int *kernel_size_data, int kernel_size_len, long int *output_size_data, int output_size_len, tensor indices) {
   PROTECT(
     auto outputs__ = torch::fractional_max_pool2d_backward(*grad_output, *self, torch::IntList(kernel_size_data, kernel_size_len), torch::IntList(output_size_data, output_size_len), *indices);
@@ -1795,6 +1867,30 @@ void atg_fractional_max_pool2d_backward_out(tensor *out__, tensor grad_input, te
   PROTECT(
     auto outputs__ = torch::fractional_max_pool2d_backward_out(*grad_input, *grad_output, *self, torch::IntList(kernel_size_data, kernel_size_len), torch::IntList(output_size_data, output_size_len), *indices);
     out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg_fractional_max_pool2d_forward(tensor *out__, tensor self, long int *kernel_size_data, int kernel_size_len, long int *output_size_data, int output_size_len, tensor random_samples) {
+  PROTECT(
+    auto outputs__ = torch::fractional_max_pool2d_forward(*self, torch::IntList(kernel_size_data, kernel_size_len), torch::IntList(output_size_data, output_size_len), *random_samples);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+  )
+}
+
+void atg_fractional_max_pool2d_forward_out(tensor *out__, tensor output, tensor indices, tensor self, long int *kernel_size_data, int kernel_size_len, long int *output_size_data, int output_size_len, tensor random_samples) {
+  PROTECT(
+    auto outputs__ = torch::fractional_max_pool2d_forward_out(*output, *indices, *self, torch::IntList(kernel_size_data, kernel_size_len), torch::IntList(output_size_data, output_size_len), *random_samples);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+  )
+}
+
+void atg_fractional_max_pool2d_out(tensor *out__, tensor output, tensor indices, tensor self, long int *kernel_size_data, int kernel_size_len, long int *output_size_data, int output_size_len, tensor random_samples) {
+  PROTECT(
+    auto outputs__ = torch::fractional_max_pool2d_out(*output, *indices, *self, torch::IntList(kernel_size_data, kernel_size_len), torch::IntList(output_size_data, output_size_len), *random_samples);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
   )
 }
 
@@ -2821,6 +2917,14 @@ void atg_max_pool2d(tensor *out__, tensor self, long int *kernel_size_data, int 
   )
 }
 
+void atg_max_pool2d_with_indices(tensor *out__, tensor self, long int *kernel_size_data, int kernel_size_len, long int *stride_data, int stride_len, long int *padding_data, int padding_len, long int *dilation_data, int dilation_len, int ceil_mode) {
+  PROTECT(
+    auto outputs__ = torch::max_pool2d_with_indices(*self, torch::IntList(kernel_size_data, kernel_size_len), torch::IntList(stride_data, stride_len), torch::IntList(padding_data, padding_len), torch::IntList(dilation_data, dilation_len), (bool)ceil_mode);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+  )
+}
+
 void atg_max_pool2d_with_indices_backward(tensor *out__, tensor grad_output, tensor self, long int *kernel_size_data, int kernel_size_len, long int *stride_data, int stride_len, long int *padding_data, int padding_len, long int *dilation_data, int dilation_len, int ceil_mode, tensor indices) {
   PROTECT(
     auto outputs__ = torch::max_pool2d_with_indices_backward(*grad_output, *self, torch::IntList(kernel_size_data, kernel_size_len), torch::IntList(stride_data, stride_len), torch::IntList(padding_data, padding_len), torch::IntList(dilation_data, dilation_len), (bool)ceil_mode, *indices);
@@ -2835,10 +2939,42 @@ void atg_max_pool2d_with_indices_backward_out(tensor *out__, tensor grad_input, 
   )
 }
 
+void atg_max_pool2d_with_indices_forward(tensor *out__, tensor self, long int *kernel_size_data, int kernel_size_len, long int *stride_data, int stride_len, long int *padding_data, int padding_len, long int *dilation_data, int dilation_len, int ceil_mode) {
+  PROTECT(
+    auto outputs__ = torch::max_pool2d_with_indices_forward(*self, torch::IntList(kernel_size_data, kernel_size_len), torch::IntList(stride_data, stride_len), torch::IntList(padding_data, padding_len), torch::IntList(dilation_data, dilation_len), (bool)ceil_mode);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+  )
+}
+
+void atg_max_pool2d_with_indices_forward_out(tensor *out__, tensor output, tensor indices, tensor self, long int *kernel_size_data, int kernel_size_len, long int *stride_data, int stride_len, long int *padding_data, int padding_len, long int *dilation_data, int dilation_len, int ceil_mode) {
+  PROTECT(
+    auto outputs__ = torch::max_pool2d_with_indices_forward_out(*output, *indices, *self, torch::IntList(kernel_size_data, kernel_size_len), torch::IntList(stride_data, stride_len), torch::IntList(padding_data, padding_len), torch::IntList(dilation_data, dilation_len), (bool)ceil_mode);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+  )
+}
+
+void atg_max_pool2d_with_indices_out(tensor *out__, tensor output, tensor indices, tensor self, long int *kernel_size_data, int kernel_size_len, long int *stride_data, int stride_len, long int *padding_data, int padding_len, long int *dilation_data, int dilation_len, int ceil_mode) {
+  PROTECT(
+    auto outputs__ = torch::max_pool2d_with_indices_out(*output, *indices, *self, torch::IntList(kernel_size_data, kernel_size_len), torch::IntList(stride_data, stride_len), torch::IntList(padding_data, padding_len), torch::IntList(dilation_data, dilation_len), (bool)ceil_mode);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+  )
+}
+
 void atg_max_pool3d(tensor *out__, tensor self, long int *kernel_size_data, int kernel_size_len, long int *stride_data, int stride_len, long int *padding_data, int padding_len, long int *dilation_data, int dilation_len, int ceil_mode) {
   PROTECT(
     auto outputs__ = torch::max_pool3d(*self, torch::IntList(kernel_size_data, kernel_size_len), torch::IntList(stride_data, stride_len), torch::IntList(padding_data, padding_len), torch::IntList(dilation_data, dilation_len), (bool)ceil_mode);
     out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg_max_pool3d_with_indices(tensor *out__, tensor self, long int *kernel_size_data, int kernel_size_len, long int *stride_data, int stride_len, long int *padding_data, int padding_len, long int *dilation_data, int dilation_len, int ceil_mode) {
+  PROTECT(
+    auto outputs__ = torch::max_pool3d_with_indices(*self, torch::IntList(kernel_size_data, kernel_size_len), torch::IntList(stride_data, stride_len), torch::IntList(padding_data, padding_len), torch::IntList(dilation_data, dilation_len), (bool)ceil_mode);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
   )
 }
 
@@ -2853,6 +2989,30 @@ void atg_max_pool3d_with_indices_backward_out(tensor *out__, tensor grad_input, 
   PROTECT(
     auto outputs__ = torch::max_pool3d_with_indices_backward_out(*grad_input, *grad_output, *self, torch::IntList(kernel_size_data, kernel_size_len), torch::IntList(stride_data, stride_len), torch::IntList(padding_data, padding_len), torch::IntList(dilation_data, dilation_len), (bool)ceil_mode, *indices);
     out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg_max_pool3d_with_indices_forward(tensor *out__, tensor self, long int *kernel_size_data, int kernel_size_len, long int *stride_data, int stride_len, long int *padding_data, int padding_len, long int *dilation_data, int dilation_len, int ceil_mode) {
+  PROTECT(
+    auto outputs__ = torch::max_pool3d_with_indices_forward(*self, torch::IntList(kernel_size_data, kernel_size_len), torch::IntList(stride_data, stride_len), torch::IntList(padding_data, padding_len), torch::IntList(dilation_data, dilation_len), (bool)ceil_mode);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+  )
+}
+
+void atg_max_pool3d_with_indices_forward_out(tensor *out__, tensor output, tensor indices, tensor self, long int *kernel_size_data, int kernel_size_len, long int *stride_data, int stride_len, long int *padding_data, int padding_len, long int *dilation_data, int dilation_len, int ceil_mode) {
+  PROTECT(
+    auto outputs__ = torch::max_pool3d_with_indices_forward_out(*output, *indices, *self, torch::IntList(kernel_size_data, kernel_size_len), torch::IntList(stride_data, stride_len), torch::IntList(padding_data, padding_len), torch::IntList(dilation_data, dilation_len), (bool)ceil_mode);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+  )
+}
+
+void atg_max_pool3d_with_indices_out(tensor *out__, tensor output, tensor indices, tensor self, long int *kernel_size_data, int kernel_size_len, long int *stride_data, int stride_len, long int *padding_data, int padding_len, long int *dilation_data, int dilation_len, int ceil_mode) {
+  PROTECT(
+    auto outputs__ = torch::max_pool3d_with_indices_out(*output, *indices, *self, torch::IntList(kernel_size_data, kernel_size_len), torch::IntList(stride_data, stride_len), torch::IntList(padding_data, padding_len), torch::IntList(dilation_data, dilation_len), (bool)ceil_mode);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
   )
 }
 
@@ -3296,6 +3456,20 @@ void atg_multilabel_margin_loss_out(tensor *out__, tensor output, tensor self, t
   )
 }
 
+void atg_multinomial(tensor *out__, tensor self, int64_t num_samples, int replacement) {
+  PROTECT(
+    auto outputs__ = torch::multinomial(*self, num_samples, (bool)replacement);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg_multinomial_out(tensor *out__, tensor result, tensor self, int64_t num_samples, int replacement) {
+  PROTECT(
+    auto outputs__ = torch::multinomial_out(*result, *self, num_samples, (bool)replacement);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
 void atg_mv(tensor *out__, tensor self, tensor vec) {
   PROTECT(
     auto outputs__ = torch::mv(*self, *vec);
@@ -3506,6 +3680,20 @@ void atg_nll_loss_forward_out(tensor *out__, tensor output, tensor total_weight,
 void atg_nll_loss_out(tensor *out__, tensor output, tensor self, tensor target, tensor weight, int64_t reduction, int64_t ignore_index) {
   PROTECT(
     auto outputs__ = torch::nll_loss_out(*output, *self, *target, *weight, reduction, ignore_index);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg_nonzero(tensor *out__, tensor self) {
+  PROTECT(
+    auto outputs__ = torch::nonzero(*self);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg_nonzero_out(tensor *out__, tensor result, tensor self) {
+  PROTECT(
+    auto outputs__ = torch::nonzero_out(*result, *self);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -4821,6 +5009,22 @@ void atg_softshrink_out(tensor *out__, tensor output, tensor self) {
   )
 }
 
+void atg_sort(tensor *out__, tensor self, int64_t dim, int descending) {
+  PROTECT(
+    auto outputs__ = torch::sort(*self, dim, (bool)descending);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+  )
+}
+
+void atg_sort_out(tensor *out__, tensor values, tensor indices, tensor self, int64_t dim, int descending) {
+  PROTECT(
+    auto outputs__ = torch::sort_out(*values, *indices, *self, dim, (bool)descending);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+  )
+}
+
 void atg_sparse_resize_(tensor *out__, tensor self, long int *size_data, int size_len, int64_t sparseDims, int64_t denseDims) {
   PROTECT(
     auto outputs__ = self->sparse_resize_(torch::IntList(size_data, size_len), sparseDims, denseDims);
@@ -5209,6 +5413,22 @@ void atg_to_dense(tensor *out__, tensor self) {
   PROTECT(
     auto outputs__ = self->to_dense();
     out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
+void atg_topk(tensor *out__, tensor self, int64_t k, int64_t dim, int largest, int sorted) {
+  PROTECT(
+    auto outputs__ = torch::topk(*self, k, dim, (bool)largest, (bool)sorted);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
+  )
+}
+
+void atg_topk_out(tensor *out__, tensor values, tensor indices, tensor self, int64_t k, int64_t dim, int largest, int sorted) {
+  PROTECT(
+    auto outputs__ = torch::topk_out(*values, *indices, *self, k, dim, (bool)largest, (bool)sorted);
+    out__[0] = new torch::Tensor(std::get<0>(outputs__));
+    out__[1] = new torch::Tensor(std::get<1>(outputs__));
   )
 }
 

@@ -65,6 +65,5 @@ code](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/mnist/li
 * Make it easier to use/import datasets.
 * Model weights import.
 * Add more complex examples.
-    * RNN/LSTM.
 * Add an opam package (this may have to wait until libtorch has stable releases).
 * Better jupyter integration.

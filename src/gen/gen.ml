@@ -230,7 +230,9 @@ let read_yaml filename =
       let is_tensor returns =
         let returns = extract_map returns in
         let return_type = Map.find_exn returns "dynamic_type" |> extract_string in
-        String.(=) return_type "Tensor" || String.(=) return_type "BoolTensor"
+        String.(=) return_type "Tensor"
+        || String.(=) return_type "BoolTensor"
+        || String.(=) return_type "IndexTensor"
       in
       let returns = Map.find_exn map "returns" |> extract_list in
       if List.for_all returns ~f:is_tensor

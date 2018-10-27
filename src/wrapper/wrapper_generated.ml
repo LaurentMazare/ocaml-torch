@@ -147,6 +147,15 @@ let adaptive_max_pool1d self ~output_size =
   Gc.finalise C.Tensor.free t1;
   t0, t1
 
+let adaptive_max_pool2d self ~output_size =
+  let out__ = CArray.make t 2 in
+  adaptive_max_pool2d (CArray.start out__) self (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  t0, t1
+
 let adaptive_max_pool2d_backward ~grad_output self ~indices =
   let out__ = CArray.make t 1 in
   adaptive_max_pool2d_backward (CArray.start out__) grad_output self indices;
@@ -161,6 +170,42 @@ let adaptive_max_pool2d_backward_out ~grad_input ~grad_output self ~indices =
   Gc.finalise C.Tensor.free t0;
   t0
 
+let adaptive_max_pool2d_forward self ~output_size =
+  let out__ = CArray.make t 2 in
+  adaptive_max_pool2d_forward (CArray.start out__) self (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  t0, t1
+
+let adaptive_max_pool2d_forward_out ~output ~indices self ~output_size =
+  let out__ = CArray.make t 2 in
+  adaptive_max_pool2d_forward_out (CArray.start out__) output indices self (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  t0, t1
+
+let adaptive_max_pool2d_out ~output ~indices self ~output_size =
+  let out__ = CArray.make t 2 in
+  adaptive_max_pool2d_out (CArray.start out__) output indices self (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  t0, t1
+
+let adaptive_max_pool3d self ~output_size =
+  let out__ = CArray.make t 2 in
+  adaptive_max_pool3d (CArray.start out__) self (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  t0, t1
+
 let adaptive_max_pool3d_backward ~grad_output self ~indices =
   let out__ = CArray.make t 1 in
   adaptive_max_pool3d_backward (CArray.start out__) grad_output self indices;
@@ -174,6 +219,33 @@ let adaptive_max_pool3d_backward_out ~grad_input ~grad_output self ~indices =
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
+
+let adaptive_max_pool3d_forward self ~output_size =
+  let out__ = CArray.make t 2 in
+  adaptive_max_pool3d_forward (CArray.start out__) self (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  t0, t1
+
+let adaptive_max_pool3d_forward_out ~output ~indices self ~output_size =
+  let out__ = CArray.make t 2 in
+  adaptive_max_pool3d_forward_out (CArray.start out__) output indices self (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  t0, t1
+
+let adaptive_max_pool3d_out ~output ~indices self ~output_size =
+  let out__ = CArray.make t 2 in
+  adaptive_max_pool3d_out (CArray.start out__) output indices self (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  t0, t1
 
 let add self other =
   let out__ = CArray.make t 1 in
@@ -1802,6 +1874,15 @@ let frac_out result self =
   Gc.finalise C.Tensor.free t0;
   t0
 
+let fractional_max_pool2d self ~kernel_size ~output_size ~random_samples =
+  let out__ = CArray.make t 2 in
+  fractional_max_pool2d (CArray.start out__) self (List.map Signed.Long.of_int kernel_size |> CArray.of_list long |> CArray.start) (List.length kernel_size) (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size) random_samples;
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  t0, t1
+
 let fractional_max_pool2d_backward ~grad_output self ~kernel_size ~output_size ~indices =
   let out__ = CArray.make t 1 in
   fractional_max_pool2d_backward (CArray.start out__) grad_output self (List.map Signed.Long.of_int kernel_size |> CArray.of_list long |> CArray.start) (List.length kernel_size) (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size) indices;
@@ -1815,6 +1896,33 @@ let fractional_max_pool2d_backward_out ~grad_input ~grad_output self ~kernel_siz
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
+
+let fractional_max_pool2d_forward self ~kernel_size ~output_size ~random_samples =
+  let out__ = CArray.make t 2 in
+  fractional_max_pool2d_forward (CArray.start out__) self (List.map Signed.Long.of_int kernel_size |> CArray.of_list long |> CArray.start) (List.length kernel_size) (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size) random_samples;
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  t0, t1
+
+let fractional_max_pool2d_forward_out ~output ~indices self ~kernel_size ~output_size ~random_samples =
+  let out__ = CArray.make t 2 in
+  fractional_max_pool2d_forward_out (CArray.start out__) output indices self (List.map Signed.Long.of_int kernel_size |> CArray.of_list long |> CArray.start) (List.length kernel_size) (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size) random_samples;
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  t0, t1
+
+let fractional_max_pool2d_out ~output ~indices self ~kernel_size ~output_size ~random_samples =
+  let out__ = CArray.make t 2 in
+  fractional_max_pool2d_out (CArray.start out__) output indices self (List.map Signed.Long.of_int kernel_size |> CArray.of_list long |> CArray.start) (List.length kernel_size) (List.map Signed.Long.of_int output_size |> CArray.of_list long |> CArray.start) (List.length output_size) random_samples;
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  t0, t1
 
 let frobenius_norm1 self =
   let out__ = CArray.make t 1 in
@@ -2861,6 +2969,15 @@ let max_pool2d self ~kernel_size ~stride ~padding ~dilation ~ceil_mode =
   Gc.finalise C.Tensor.free t0;
   t0
 
+let max_pool2d_with_indices self ~kernel_size ~stride ~padding ~dilation ~ceil_mode =
+  let out__ = CArray.make t 2 in
+  max_pool2d_with_indices (CArray.start out__) self (List.map Signed.Long.of_int kernel_size |> CArray.of_list long |> CArray.start) (List.length kernel_size) (List.map Signed.Long.of_int stride |> CArray.of_list long |> CArray.start) (List.length stride) (List.map Signed.Long.of_int padding |> CArray.of_list long |> CArray.start) (List.length padding) (List.map Signed.Long.of_int dilation |> CArray.of_list long |> CArray.start) (List.length dilation) (if ceil_mode then 1 else 0);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  t0, t1
+
 let max_pool2d_with_indices_backward ~grad_output self ~kernel_size ~stride ~padding ~dilation ~ceil_mode ~indices =
   let out__ = CArray.make t 1 in
   max_pool2d_with_indices_backward (CArray.start out__) grad_output self (List.map Signed.Long.of_int kernel_size |> CArray.of_list long |> CArray.start) (List.length kernel_size) (List.map Signed.Long.of_int stride |> CArray.of_list long |> CArray.start) (List.length stride) (List.map Signed.Long.of_int padding |> CArray.of_list long |> CArray.start) (List.length padding) (List.map Signed.Long.of_int dilation |> CArray.of_list long |> CArray.start) (List.length dilation) (if ceil_mode then 1 else 0) indices;
@@ -2875,12 +2992,48 @@ let max_pool2d_with_indices_backward_out ~grad_input ~grad_output self ~kernel_s
   Gc.finalise C.Tensor.free t0;
   t0
 
+let max_pool2d_with_indices_forward self ~kernel_size ~stride ~padding ~dilation ~ceil_mode =
+  let out__ = CArray.make t 2 in
+  max_pool2d_with_indices_forward (CArray.start out__) self (List.map Signed.Long.of_int kernel_size |> CArray.of_list long |> CArray.start) (List.length kernel_size) (List.map Signed.Long.of_int stride |> CArray.of_list long |> CArray.start) (List.length stride) (List.map Signed.Long.of_int padding |> CArray.of_list long |> CArray.start) (List.length padding) (List.map Signed.Long.of_int dilation |> CArray.of_list long |> CArray.start) (List.length dilation) (if ceil_mode then 1 else 0);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  t0, t1
+
+let max_pool2d_with_indices_forward_out ~output ~indices self ~kernel_size ~stride ~padding ~dilation ~ceil_mode =
+  let out__ = CArray.make t 2 in
+  max_pool2d_with_indices_forward_out (CArray.start out__) output indices self (List.map Signed.Long.of_int kernel_size |> CArray.of_list long |> CArray.start) (List.length kernel_size) (List.map Signed.Long.of_int stride |> CArray.of_list long |> CArray.start) (List.length stride) (List.map Signed.Long.of_int padding |> CArray.of_list long |> CArray.start) (List.length padding) (List.map Signed.Long.of_int dilation |> CArray.of_list long |> CArray.start) (List.length dilation) (if ceil_mode then 1 else 0);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  t0, t1
+
+let max_pool2d_with_indices_out ~output ~indices self ~kernel_size ~stride ~padding ~dilation ~ceil_mode =
+  let out__ = CArray.make t 2 in
+  max_pool2d_with_indices_out (CArray.start out__) output indices self (List.map Signed.Long.of_int kernel_size |> CArray.of_list long |> CArray.start) (List.length kernel_size) (List.map Signed.Long.of_int stride |> CArray.of_list long |> CArray.start) (List.length stride) (List.map Signed.Long.of_int padding |> CArray.of_list long |> CArray.start) (List.length padding) (List.map Signed.Long.of_int dilation |> CArray.of_list long |> CArray.start) (List.length dilation) (if ceil_mode then 1 else 0);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  t0, t1
+
 let max_pool3d self ~kernel_size ~stride ~padding ~dilation ~ceil_mode =
   let out__ = CArray.make t 1 in
   max_pool3d (CArray.start out__) self (List.map Signed.Long.of_int kernel_size |> CArray.of_list long |> CArray.start) (List.length kernel_size) (List.map Signed.Long.of_int stride |> CArray.of_list long |> CArray.start) (List.length stride) (List.map Signed.Long.of_int padding |> CArray.of_list long |> CArray.start) (List.length padding) (List.map Signed.Long.of_int dilation |> CArray.of_list long |> CArray.start) (List.length dilation) (if ceil_mode then 1 else 0);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
+
+let max_pool3d_with_indices self ~kernel_size ~stride ~padding ~dilation ~ceil_mode =
+  let out__ = CArray.make t 2 in
+  max_pool3d_with_indices (CArray.start out__) self (List.map Signed.Long.of_int kernel_size |> CArray.of_list long |> CArray.start) (List.length kernel_size) (List.map Signed.Long.of_int stride |> CArray.of_list long |> CArray.start) (List.length stride) (List.map Signed.Long.of_int padding |> CArray.of_list long |> CArray.start) (List.length padding) (List.map Signed.Long.of_int dilation |> CArray.of_list long |> CArray.start) (List.length dilation) (if ceil_mode then 1 else 0);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  t0, t1
 
 let max_pool3d_with_indices_backward ~grad_output self ~kernel_size ~stride ~padding ~dilation ~ceil_mode ~indices =
   let out__ = CArray.make t 1 in
@@ -2895,6 +3048,33 @@ let max_pool3d_with_indices_backward_out ~grad_input ~grad_output self ~kernel_s
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
+
+let max_pool3d_with_indices_forward self ~kernel_size ~stride ~padding ~dilation ~ceil_mode =
+  let out__ = CArray.make t 2 in
+  max_pool3d_with_indices_forward (CArray.start out__) self (List.map Signed.Long.of_int kernel_size |> CArray.of_list long |> CArray.start) (List.length kernel_size) (List.map Signed.Long.of_int stride |> CArray.of_list long |> CArray.start) (List.length stride) (List.map Signed.Long.of_int padding |> CArray.of_list long |> CArray.start) (List.length padding) (List.map Signed.Long.of_int dilation |> CArray.of_list long |> CArray.start) (List.length dilation) (if ceil_mode then 1 else 0);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  t0, t1
+
+let max_pool3d_with_indices_forward_out ~output ~indices self ~kernel_size ~stride ~padding ~dilation ~ceil_mode =
+  let out__ = CArray.make t 2 in
+  max_pool3d_with_indices_forward_out (CArray.start out__) output indices self (List.map Signed.Long.of_int kernel_size |> CArray.of_list long |> CArray.start) (List.length kernel_size) (List.map Signed.Long.of_int stride |> CArray.of_list long |> CArray.start) (List.length stride) (List.map Signed.Long.of_int padding |> CArray.of_list long |> CArray.start) (List.length padding) (List.map Signed.Long.of_int dilation |> CArray.of_list long |> CArray.start) (List.length dilation) (if ceil_mode then 1 else 0);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  t0, t1
+
+let max_pool3d_with_indices_out ~output ~indices self ~kernel_size ~stride ~padding ~dilation ~ceil_mode =
+  let out__ = CArray.make t 2 in
+  max_pool3d_with_indices_out (CArray.start out__) output indices self (List.map Signed.Long.of_int kernel_size |> CArray.of_list long |> CArray.start) (List.length kernel_size) (List.map Signed.Long.of_int stride |> CArray.of_list long |> CArray.start) (List.length stride) (List.map Signed.Long.of_int padding |> CArray.of_list long |> CArray.start) (List.length padding) (List.map Signed.Long.of_int dilation |> CArray.of_list long |> CArray.start) (List.length dilation) (if ceil_mode then 1 else 0);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  t0, t1
 
 let max_unpool2d self ~indices ~output_size =
   let out__ = CArray.make t 1 in
@@ -3349,6 +3529,20 @@ let multilabel_margin_loss_out ~output self ~target ~reduction =
   Gc.finalise C.Tensor.free t0;
   t0
 
+let multinomial self ~num_samples ~replacement =
+  let out__ = CArray.make t 1 in
+  multinomial (CArray.start out__) self (Int64.of_int num_samples) (if replacement then 1 else 0);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
+let multinomial_out result self ~num_samples ~replacement =
+  let out__ = CArray.make t 1 in
+  multinomial_out (CArray.start out__) result self (Int64.of_int num_samples) (if replacement then 1 else 0);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
 let mv self ~vec =
   let out__ = CArray.make t 1 in
   mv (CArray.start out__) self vec;
@@ -3563,6 +3757,20 @@ let nll_loss_forward_out ~output ~total_weight self ~target ~weight ~reduction ~
 let nll_loss_out ~output self ~target ~weight ~reduction ~ignore_index =
   let out__ = CArray.make t 1 in
   nll_loss_out (CArray.start out__) output self target weight (Int64.of_int reduction) (Int64.of_int ignore_index);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
+let nonzero self =
+  let out__ = CArray.make t 1 in
+  nonzero (CArray.start out__) self;
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
+let nonzero_out result self =
+  let out__ = CArray.make t 1 in
+  nonzero_out (CArray.start out__) result self;
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
@@ -4887,6 +5095,24 @@ let softshrink_out ~output self =
   Gc.finalise C.Tensor.free t0;
   t0
 
+let sort self ~dim ~descending =
+  let out__ = CArray.make t 2 in
+  sort (CArray.start out__) self (Int64.of_int dim) (if descending then 1 else 0);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  t0, t1
+
+let sort_out ~values ~indices self ~dim ~descending =
+  let out__ = CArray.make t 2 in
+  sort_out (CArray.start out__) values indices self (Int64.of_int dim) (if descending then 1 else 0);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  t0, t1
+
 let sparse_resize_ self ~size ~sparsedims ~densedims =
   let out__ = CArray.make t 1 in
   sparse_resize_ (CArray.start out__) self (List.map Signed.Long.of_int size |> CArray.of_list long |> CArray.start) (List.length size) (Int64.of_int sparsedims) (Int64.of_int densedims);
@@ -5283,6 +5509,24 @@ let to_dense self =
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
+
+let topk self ~k ~dim ~largest ~sorted =
+  let out__ = CArray.make t 2 in
+  topk (CArray.start out__) self (Int64.of_int k) (Int64.of_int dim) (if largest then 1 else 0) (if sorted then 1 else 0);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  t0, t1
+
+let topk_out ~values ~indices self ~k ~dim ~largest ~sorted =
+  let out__ = CArray.make t 2 in
+  topk_out (CArray.start out__) values indices self (Int64.of_int k) (Int64.of_int dim) (if largest then 1 else 0) (if sorted then 1 else 0);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  t0, t1
 
 let totype self ~scalar_type =
   let out__ = CArray.make t 1 in

@@ -106,6 +106,11 @@ module type S = sig
     output_size:int list ->
     t * t
 
+  val adaptive_max_pool2d :
+    t ->
+    output_size:int list ->
+    t * t
+
   val adaptive_max_pool2d_backward :
     grad_output:t ->
     t ->
@@ -119,6 +124,30 @@ module type S = sig
     indices:t ->
     t
 
+  val adaptive_max_pool2d_forward :
+    t ->
+    output_size:int list ->
+    t * t
+
+  val adaptive_max_pool2d_forward_out :
+    output:t ->
+    indices:t ->
+    t ->
+    output_size:int list ->
+    t * t
+
+  val adaptive_max_pool2d_out :
+    output:t ->
+    indices:t ->
+    t ->
+    output_size:int list ->
+    t * t
+
+  val adaptive_max_pool3d :
+    t ->
+    output_size:int list ->
+    t * t
+
   val adaptive_max_pool3d_backward :
     grad_output:t ->
     t ->
@@ -131,6 +160,25 @@ module type S = sig
     t ->
     indices:t ->
     t
+
+  val adaptive_max_pool3d_forward :
+    t ->
+    output_size:int list ->
+    t * t
+
+  val adaptive_max_pool3d_forward_out :
+    output:t ->
+    indices:t ->
+    t ->
+    output_size:int list ->
+    t * t
+
+  val adaptive_max_pool3d_out :
+    output:t ->
+    indices:t ->
+    t ->
+    output_size:int list ->
+    t * t
 
   val add :
     t ->
@@ -1554,6 +1602,13 @@ module type S = sig
     t ->
     t
 
+  val fractional_max_pool2d :
+    t ->
+    kernel_size:int list ->
+    output_size:int list ->
+    random_samples:t ->
+    t * t
+
   val fractional_max_pool2d_backward :
     grad_output:t ->
     t ->
@@ -1570,6 +1625,31 @@ module type S = sig
     output_size:int list ->
     indices:t ->
     t
+
+  val fractional_max_pool2d_forward :
+    t ->
+    kernel_size:int list ->
+    output_size:int list ->
+    random_samples:t ->
+    t * t
+
+  val fractional_max_pool2d_forward_out :
+    output:t ->
+    indices:t ->
+    t ->
+    kernel_size:int list ->
+    output_size:int list ->
+    random_samples:t ->
+    t * t
+
+  val fractional_max_pool2d_out :
+    output:t ->
+    indices:t ->
+    t ->
+    kernel_size:int list ->
+    output_size:int list ->
+    random_samples:t ->
+    t * t
 
   val frobenius_norm1 :
     t ->
@@ -2439,6 +2519,15 @@ module type S = sig
     ceil_mode:bool ->
     t
 
+  val max_pool2d_with_indices :
+    t ->
+    kernel_size:int list ->
+    stride:int list ->
+    padding:int list ->
+    dilation:int list ->
+    ceil_mode:bool ->
+    t * t
+
   val max_pool2d_with_indices_backward :
     grad_output:t ->
     t ->
@@ -2462,6 +2551,37 @@ module type S = sig
     indices:t ->
     t
 
+  val max_pool2d_with_indices_forward :
+    t ->
+    kernel_size:int list ->
+    stride:int list ->
+    padding:int list ->
+    dilation:int list ->
+    ceil_mode:bool ->
+    t * t
+
+  val max_pool2d_with_indices_forward_out :
+    output:t ->
+    indices:t ->
+    t ->
+    kernel_size:int list ->
+    stride:int list ->
+    padding:int list ->
+    dilation:int list ->
+    ceil_mode:bool ->
+    t * t
+
+  val max_pool2d_with_indices_out :
+    output:t ->
+    indices:t ->
+    t ->
+    kernel_size:int list ->
+    stride:int list ->
+    padding:int list ->
+    dilation:int list ->
+    ceil_mode:bool ->
+    t * t
+
   val max_pool3d :
     t ->
     kernel_size:int list ->
@@ -2470,6 +2590,15 @@ module type S = sig
     dilation:int list ->
     ceil_mode:bool ->
     t
+
+  val max_pool3d_with_indices :
+    t ->
+    kernel_size:int list ->
+    stride:int list ->
+    padding:int list ->
+    dilation:int list ->
+    ceil_mode:bool ->
+    t * t
 
   val max_pool3d_with_indices_backward :
     grad_output:t ->
@@ -2493,6 +2622,37 @@ module type S = sig
     ceil_mode:bool ->
     indices:t ->
     t
+
+  val max_pool3d_with_indices_forward :
+    t ->
+    kernel_size:int list ->
+    stride:int list ->
+    padding:int list ->
+    dilation:int list ->
+    ceil_mode:bool ->
+    t * t
+
+  val max_pool3d_with_indices_forward_out :
+    output:t ->
+    indices:t ->
+    t ->
+    kernel_size:int list ->
+    stride:int list ->
+    padding:int list ->
+    dilation:int list ->
+    ceil_mode:bool ->
+    t * t
+
+  val max_pool3d_with_indices_out :
+    output:t ->
+    indices:t ->
+    t ->
+    kernel_size:int list ->
+    stride:int list ->
+    padding:int list ->
+    dilation:int list ->
+    ceil_mode:bool ->
+    t * t
 
   val max_unpool2d :
     t ->
@@ -2955,6 +3115,19 @@ module type S = sig
     reduction:int ->
     t
 
+  val multinomial :
+    t ->
+    num_samples:int ->
+    replacement:bool ->
+    t
+
+  val multinomial_out :
+    t ->
+    t ->
+    num_samples:int ->
+    replacement:bool ->
+    t
+
   val mv :
     t ->
     vec:t ->
@@ -3157,6 +3330,15 @@ module type S = sig
     weight:t ->
     reduction:int ->
     ignore_index:int ->
+    t
+
+  val nonzero :
+    t ->
+    t
+
+  val nonzero_out :
+    t ->
+    t ->
     t
 
   val norm1 :
@@ -4230,6 +4412,20 @@ module type S = sig
     t ->
     t
 
+  val sort :
+    t ->
+    dim:int ->
+    descending:bool ->
+    t * t
+
+  val sort_out :
+    values:t ->
+    indices:t ->
+    t ->
+    dim:int ->
+    descending:bool ->
+    t * t
+
   val sparse_resize_ :
     t ->
     size:int list ->
@@ -4535,6 +4731,24 @@ module type S = sig
   val to_dense :
     t ->
     t
+
+  val topk :
+    t ->
+    k:int ->
+    dim:int ->
+    largest:bool ->
+    sorted:bool ->
+    t * t
+
+  val topk_out :
+    values:t ->
+    indices:t ->
+    t ->
+    k:int ->
+    dim:int ->
+    largest:bool ->
+    sorted:bool ->
+    t * t
 
   val totype :
     t ->
