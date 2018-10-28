@@ -174,15 +174,13 @@ void at_free(tensor t) {
   delete(t);
 }
 
-optimizer ato_adam(tensor *tensors, int ntensors, double learning_rate) {
+optimizer ato_adam(double learning_rate) {
   PROTECT(
-    return new torch::optim::Adam(of_carray_tensor(tensors, ntensors), learning_rate);
+    return new torch::optim::Adam(vector<torch::Tensor>(), learning_rate);
   )
 }
 
-optimizer ato_sgd(tensor *tensors,
-                  int ntensors,
-                  double learning_rate,
+optimizer ato_sgd(double learning_rate,
                   double momentum,
                   double dampening,
                   double weight_decay,
@@ -194,7 +192,13 @@ optimizer ato_sgd(tensor *tensors,
       .dampening(dampening)
       .weight_decay(weight_decay)
       .nesterov(nesterov);
-    return new torch::optim::SGD(of_carray_tensor(tensors, ntensors), options);
+    return new torch::optim::SGD(vector<torch::Tensor>(), options);
+  )
+}
+
+void ato_add_parameters(optimizer t, tensor *tensors, int ntensors) {
+  PROTECT(
+    t->add_parameters(of_carray_tensor(tensors, ntensors));
   )
 }
 

@@ -53,14 +53,13 @@ void at_free(tensor);
 
 tensor at_nll_loss(tensor t, tensor targets, int reduction);
 
-optimizer ato_adam(tensor *, int ntensors, double learning_rate);
-optimizer ato_sgd(tensor *,
-                  int ntensors,
-                  double learning_rate,
+optimizer ato_adam(double learning_rate);
+optimizer ato_sgd(double learning_rate,
                   double momentum,
                   double dampening,
                   double weight_decay,
                   int nesterov);
+void ato_add_parameters(optimizer, tensor *, int ntensors);
 void ato_set_learning_rate(optimizer, double learning_rate);
 void ato_zero_grad(optimizer);
 void ato_step(optimizer);

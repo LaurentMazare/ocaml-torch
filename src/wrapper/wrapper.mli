@@ -50,11 +50,10 @@ end
 module Optimizer : sig
   type t
 
-  val adam : Tensor.t list -> learning_rate:float -> t
+  val adam : learning_rate:float -> t
 
   val sgd
-    :  Tensor.t list
-    -> learning_rate:float
+    :  learning_rate:float
     -> momentum:float
     -> dampening:float
     -> weight_decay:float
@@ -66,6 +65,7 @@ module Optimizer : sig
     -> float
     -> unit
 
+  val add_parameters : t -> Tensor.t list -> unit
   val zero_grad : t -> unit
   val step : t -> unit
 end

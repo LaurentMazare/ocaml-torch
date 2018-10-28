@@ -128,21 +128,14 @@ end
 module Optimizer = struct
   include Wrapper_generated.C.Optimizer
 
-  let adam tensors ~learning_rate =
-    let t =
-      adam
-        CArray.(of_list Wrapper_generated.C.Tensor.t tensors |> start)
-        (List.length tensors)
-        learning_rate
-    in
+  let adam ~learning_rate =
+    let t = adam learning_rate in
     Gc.finalise free t;
     t
 
-  let sgd tensors ~learning_rate ~momentum ~dampening ~weight_decay ~nesterov =
+  let sgd ~learning_rate ~momentum ~dampening ~weight_decay ~nesterov =
     let t =
       sgd
-        CArray.(of_list Wrapper_generated.C.Tensor.t tensors |> start)
-        (List.length tensors)
         learning_rate
         momentum
         dampening
@@ -151,6 +144,12 @@ module Optimizer = struct
     in
     Gc.finalise free t;
     t
+
+  let add_parameters t tensors =
+    add_parameters
+      t
+      CArray.(of_list Wrapper_generated.C.Tensor.t tensors |> start)
+      (List.length tensors)
 end
 
 module Serialize = struct
