@@ -67,6 +67,7 @@ module C(F: Cstubs.FOREIGN) = struct
     let fill_int64 = foreign "at_fill_int64" (t @-> int64_t @-> returning void)
 
     let print = foreign "at_print" (t @-> returning void)
+    let to_string = foreign "at_to_string" (t @-> int @-> returning string)
     let free = foreign "at_free" (t @-> returning void)
   end
 

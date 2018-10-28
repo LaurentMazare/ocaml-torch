@@ -41,6 +41,7 @@ void at_fill_int64(tensor, int64_t);
 void at_copy_(tensor dst, tensor src);
 
 void at_print(tensor);
+char *at_to_string(tensor, int line_size);
 void at_save(tensor, char *filename);
 tensor at_load(char *filename);
 

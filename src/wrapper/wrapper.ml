@@ -94,6 +94,7 @@ module Tensor = struct
 
   let backward = backward
   let print = print
+  let to_string t ~line_size = to_string t line_size
   let sum = sum2
   let mean = mean2
 

@@ -111,6 +111,14 @@ void at_print(tensor t) {
   )
 }
 
+char *at_to_string(tensor t, int line_size) {
+  PROTECT(
+    std::ostringstream oss;
+    torch::print(oss, *t, line_size);
+    return strdup(oss.str().c_str());
+  )
+}
+
 void at_copy_(tensor dst, tensor src) {
   PROTECT(
     dst->copy_(*src);

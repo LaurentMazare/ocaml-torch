@@ -37,6 +37,7 @@ module Tensor : sig
   val backward : t -> unit
 
   val print : t -> unit
+  val to_string : t -> line_size:int -> string
 
   val sum : t -> t
   val mean : t -> t
