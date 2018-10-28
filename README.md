@@ -57,6 +57,10 @@ code](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/mnist/li
 ```
 
 * A more detailed [MNIST tutorial](https://github.com/LaurentMazare/ocaml-torch/tree/master/examples/mnist).
+* Some [ResNet examples on CIFAR-10](https://github.com/LaurentMazare/ocaml-torch/tree/master/examples/cifar).
+* A simplified version of
+  [char-rnn](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/char_rnn)
+  illustrating character level language modeling using Recurrent Neural Networks.
 * [Generative Adverserial Networks](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/gan).
 
 ## TODO

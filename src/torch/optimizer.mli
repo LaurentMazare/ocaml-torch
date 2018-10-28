@@ -11,7 +11,7 @@ val sgd
   -> learning_rate:float
   -> t
 
-val step : t -> unit
+val step : ?clip_grad_norm2:float -> t -> unit
 val zero_grad : t -> unit
-val backward_step : t -> loss:Tensor.t -> unit
+val backward_step : ?clip_grad_norm2:float -> t -> loss:Tensor.t -> unit
 val set_learning_rate : t -> learning_rate:float -> unit
