@@ -103,3 +103,16 @@ val to_bigarray : t -> kind:('a, 'b) Bigarray.kind  -> ('a, 'b, Bigarray.c_layou
 val cross_entropy_for_logits : ?reduction:Reduction.t -> t -> targets:t -> t
 
 val dropout : t -> p:float (* dropout prob *) -> is_training:bool -> t
+val nll_loss
+  :  ?reduction:Torch_core.Reduction.t
+  -> t
+  -> targets:t
+  -> t
+
+val bce_loss
+  :  ?reduction:Torch_core.Reduction.t
+  -> t
+  -> targets:t
+  -> t
+
+val undefined : t Lazy.t

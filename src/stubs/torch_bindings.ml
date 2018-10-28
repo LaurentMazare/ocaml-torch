@@ -6,6 +6,8 @@ module C(F: Cstubs.FOREIGN) = struct
     type t = unit ptr
     let t : t typ = ptr void
 
+    let new_tensor = foreign "at_new_tensor" (void @-> returning t)
+
     let tensor_of_data =
       foreign "at_tensor_of_data"
         (   ptr void (* data *)
@@ -66,8 +68,6 @@ module C(F: Cstubs.FOREIGN) = struct
 
     let print = foreign "at_print" (t @-> returning void)
     let free = foreign "at_free" (t @-> returning void)
-
-    let nll_loss_ = foreign "at_nll_loss" (t @-> t @-> int @-> returning t)
   end
 
   module Scalar = struct

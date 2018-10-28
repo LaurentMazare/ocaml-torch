@@ -139,7 +139,22 @@ let to_bigarray t ~kind =
   copy_to_bigarray t bigarray;
   bigarray
 
+let undefined = lazy (new_tensor ())
+
+let nll_loss ?(reduction=Torch_core.Reduction.Elementwise_mean) xs ~targets =
+  nll_loss xs
+    ~target:targets
+    ~weight:(Lazy.force undefined)
+    ~reduction:(Torch_core.Reduction.to_int reduction)
+    ~ignore_index:(-100)
+
 let cross_entropy_for_logits ?reduction logits ~targets =
-  nll_loss_ ?reduction (log_softmax logits ~dim:(-1)) ~targets
+  nll_loss ?reduction (log_softmax logits ~dim:(-1)) ~targets
 
 let dropout t ~p ~is_training = dropout t ~p ~train:is_training
+
+let bce_loss ?(reduction=Torch_core.Reduction.Elementwise_mean) t ~targets =
+  binary_cross_entropy t
+    ~target:targets
+    ~weight:(Lazy.force undefined)
+    ~reduction:(Torch_core.Reduction.to_int reduction)

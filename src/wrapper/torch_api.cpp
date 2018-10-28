@@ -11,6 +11,12 @@ vector<torch::Tensor> of_carray_tensor(torch::Tensor **vs, int len) {
   return result;
 }
 
+tensor at_new_tensor() {
+  PROTECT(
+    return new torch::Tensor();
+  )
+}
+
 tensor at_tensor_of_data(void *vs, long int *dims, int ndims, int element_size_in_bytes, int type) {
   PROTECT(
     torch::Tensor tensor = torch::zeros(torch::IntList(dims, ndims), torch::ScalarType(type));
@@ -159,13 +165,6 @@ tensor at_load(char *filename) {
   PROTECT(
     torch::Tensor tensor;
     torch::load(tensor, filename);
-    return new torch::Tensor(tensor);
-  )
-}
-
-tensor at_nll_loss(tensor t, tensor targets, int reduction) {
-  PROTECT(
-    torch::Tensor tensor = torch::nll_loss(*t, *targets, {}, reduction);
     return new torch::Tensor(tensor);
   )
 }

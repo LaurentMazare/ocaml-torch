@@ -101,14 +101,14 @@ module Tensor = struct
 
   let softmax t = softmax t ~dim:(-1)
 
-  let nll_loss_ ?(reduction = Reduction.Elementwise_mean) t ~targets =
-    let t = nll_loss_ t targets (Reduction.to_int reduction) in
-    Gc.finalise free t;
-    t
-
   let copy_ t ~src = copy_ t src
 
   let defined = defined
+
+  let new_tensor () =
+    let t = new_tensor () in
+    Gc.finalise free t;
+    t
 end
 
 module Scalar = struct

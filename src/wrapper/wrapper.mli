@@ -8,6 +8,8 @@ module Tensor : sig
   type t
   include Wrapper_generated_intf.S with type t := t and type scalar := Scalar.t
 
+  val new_tensor : unit -> t
+
   val float_vec
     :  ?kind:[ `double | `float | `half ]
     -> float list
@@ -40,7 +42,6 @@ module Tensor : sig
   val mean : t -> t
   val argmax : t -> t
   val softmax : t -> t
-  val nll_loss_ : ?reduction:Reduction.t -> t -> targets:t -> t
 
   val defined : t -> bool
 

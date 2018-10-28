@@ -19,6 +19,7 @@ typedef void *optimizer;
 typedef void *scalar;
 #endif
 
+tensor at_new_tensor();
 tensor at_tensor_of_data(void *vs, long int *dims, int ndims, int element_size_in_bytes, int type);
 void at_copy_data(tensor tensor, void *vs, int64_t numel, int element_size_in_bytes);
 tensor at_float_vec(double *values, int value_len, int type);
@@ -50,8 +51,6 @@ void at_load_multi(tensor *tensors, char **tensor_names, int ntensors, char *fil
 void at_load_multi_(tensor *tensors, char **tensor_names, int ntensors, char *filename);
 
 void at_free(tensor);
-
-tensor at_nll_loss(tensor t, tensor targets, int reduction);
 
 optimizer ato_adam(double learning_rate);
 optimizer ato_sgd(double learning_rate,
