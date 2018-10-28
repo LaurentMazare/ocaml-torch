@@ -2,4 +2,4 @@
  (name utop_torch)
  (link_flags (-linkall))
  (modes byte)
- (libraries torch_core torch utop))
+ (libraries torch_core torch torch_toplevel utop))

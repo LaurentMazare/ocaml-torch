@@ -1,0 +1,6 @@
+(library
+  (name torch_toplevel)
+  (public_name torch.toplevel)
+  (modes byte)
+  (libraries base ocaml-compiler-libs.toplevel torch)
+)

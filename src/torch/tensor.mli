@@ -116,3 +116,5 @@ val bce_loss
   -> t
 
 val undefined : t Lazy.t
+
+val pp : Format.formatter -> t -> unit

@@ -158,3 +158,18 @@ let bce_loss ?(reduction=Torch_core.Reduction.Elementwise_mean) t ~targets =
     ~target:targets
     ~weight:(Lazy.force undefined)
     ~reduction:(Torch_core.Reduction.to_int reduction)
+
+let pp formatter t =
+  let shape = shape t in
+  let element_count = List.fold shape ~init:1 ~f:Int.( * ) in
+  if element_count < 1_000
+  then begin
+    Caml.Format.pp_print_newline formatter ();
+    Caml.Format.pp_print_string formatter (to_string t ~line_size:96);
+    Caml.Format.pp_print_newline formatter ()
+  end else begin
+    List.map shape ~f:Int.to_string
+    |> String.concat ~sep:", "
+    |> Printf.sprintf "Tensor<%s>"
+    |> Caml.Format.pp_print_string formatter
+  end
