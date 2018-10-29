@@ -19,7 +19,7 @@ depends: [
   "stdio"
   "ctypes" {>= "0.5"}
   "ctypes-foreign"
-  "ocamlfind" {build}
+  "ocaml-compiler-libs"
   "dune" {build}
 ]
 
