@@ -7,6 +7,7 @@ ALL = examples/basics/torch_basics.exe \
       examples/gan/mnist_dcgan.exe \
       examples/cifar/conv.exe \
       examples/cifar/resnet.exe \
+      examples/cifar/preactresnet.exe \
       examples/cifar/densenet.exe \
       examples/char_rnn/char_rnn.exe
 
