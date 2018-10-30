@@ -45,9 +45,10 @@ let linear vs ?activation ?(use_bias=true) ~input_dim output_dim =
   let apply =
     if use_bias
     then begin
-      let b =
-        Tensor.zeros [ output_dim ] ~requires_grad:true ~device:(Var_store.device vs)
-      in
+      let b = Tensor.zeros [ output_dim ] ~device:(Var_store.device vs) in
+      let bound = 1.0 /. Float.sqrt (Float.of_int input_dim) in
+      let b = Tensor.uniform_ b ~from:(-. bound) ~to_:bound in
+      let b = Tensor.set_requires_grad b ~r:true in
       Var_store.add_var vs ~var:b ~kind:`trainable;
       fun xs -> Tensor.(mm xs w + b) |> apply ?activation
     end else fun xs -> Tensor.(mm xs w) |> apply ?activation
@@ -102,7 +103,9 @@ let conv_transpose2d_ vs ~ksize ~stride ?activation ?(padding = 0) ?(output_padd
 
 let batch_norm2d vs ?(eps=1e-5) ?(momentum=0.1) output_dim =
   let device = Var_store.device vs in
-  let w = Tensor.ones [ output_dim ] ~requires_grad:true ~device in
+  let w = Tensor.zeros [ output_dim ] ~device in
+  let w = Tensor.uniform_ w ~from:0. ~to_:1. in
+  let w = Tensor.set_requires_grad w ~r:true in
   let b = Tensor.zeros [ output_dim ] ~requires_grad:true ~device in
   Var_store.add_vars vs ~vars:[w; b] ~kind:`trainable;
   let running_mean = Tensor.zeros [ output_dim ] ~device in

@@ -1,9 +1,14 @@
-(* ResNet model for the CIFAR-10 dataset.
+(* Pre-activation ResNet model for the CIFAR-10 dataset.
 
    The dataset can be downloaded from https://www.cs.toronto.edu/~kriz/cifar.html, files
    should be placed in the data/ directory.
 
-   This reaches ~92.5% accuracy.
+   This model uses the pre-activation variant of ResNet18 as introduced in:
+     Identity Mappings in Deep Residual Networks
+     Kaiming He et al., 2016
+     https://arxiv.org/abs/1603.05027
+
+   This reaches ~94.6% accuracy.
 *)
 open Base
 open Torch
@@ -52,12 +57,15 @@ let block_stack vs ~stride ~depth ~input_dim output_dim =
       ~f:(fun acc basic_block -> basic_block acc ~is_training)
 
 let resnet vs =
-  let conv2d = conv2d vs ~stride:1 ~input_dim:3 32 in
-  let stack1 = block_stack vs ~stride:1 ~depth:2 ~input_dim:32 32 in
-  let stack2 = block_stack vs ~stride:2 ~depth:2 ~input_dim:32 64 in
-  let stack3 = block_stack vs ~stride:2 ~depth:2 ~input_dim:64 128 in
-  let stack4 = block_stack vs ~stride:2 ~depth:2 ~input_dim:128 128 in
-  let linear = Layer.linear vs ~input_dim:128 Cifar_helper.label_count in
+  let conv2d = conv2d vs ~stride:1 ~input_dim:3 64 in
+  let stack1 = block_stack vs ~stride:1 ~depth:2 ~input_dim:64 64 in
+  let stack2 = block_stack vs ~stride:2 ~depth:2 ~input_dim:64 128 in
+  let stack3 = block_stack vs ~stride:2 ~depth:2 ~input_dim:128 256 in
+  (* The output there should be of size 512 but this requires more than
+     2GB of memory.
+  *)
+  let stack4 = block_stack vs ~stride:2 ~depth:2 ~input_dim:256 256 in
+  let linear = Layer.linear vs ~input_dim:256 Cifar_helper.label_count in
   fun xs ~is_training ->
     let batch_size = Tensor.shape xs |> List.hd_exn in
     Tensor.((xs - f 0.5) * f 4.)
