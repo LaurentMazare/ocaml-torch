@@ -5332,48 +5332,6 @@ void atg_tensordot(tensor *out__, tensor self, tensor other, long int *dims_self
   )
 }
 
-void atg_th_addmm(tensor *out__, tensor self, tensor mat1, tensor mat2) {
-  PROTECT(
-    auto outputs__ = torch::th_addmm(*self, *mat1, *mat2);
-    out__[0] = new torch::Tensor(outputs__);
-  )
-}
-
-void atg_th_addmm_(tensor *out__, tensor self, tensor mat1, tensor mat2) {
-  PROTECT(
-    auto outputs__ = torch::th_addmm_(*self, *mat1, *mat2);
-    out__[0] = new torch::Tensor(outputs__);
-  )
-}
-
-void atg_th_addmm_out(tensor *out__, tensor result, tensor self, tensor mat1, tensor mat2) {
-  PROTECT(
-    auto outputs__ = torch::th_addmm_out(*result, *self, *mat1, *mat2);
-    out__[0] = new torch::Tensor(outputs__);
-  )
-}
-
-void atg_th_clone(tensor *out__, tensor self) {
-  PROTECT(
-    auto outputs__ = torch::th_clone(*self);
-    out__[0] = new torch::Tensor(outputs__);
-  )
-}
-
-void atg_th_resize_as_(tensor *out__, tensor self, tensor the_template) {
-  PROTECT(
-    auto outputs__ = torch::th_resize_as_(*self, *the_template);
-    out__[0] = new torch::Tensor(outputs__);
-  )
-}
-
-void atg_th_zero_(tensor *out__, tensor self) {
-  PROTECT(
-    auto outputs__ = torch::th_zero_(*self);
-    out__[0] = new torch::Tensor(outputs__);
-  )
-}
-
 void atg_to1(tensor *out__, tensor self, int device) {
   PROTECT(
     auto outputs__ = self->to(torch::Device(torch::DeviceType(device)));

@@ -5,11 +5,13 @@
 open Base
 open Stdio
 
-let unsupported_functions =
+let excluded_functions =
   Set.of_list (module String)
     [ "bincount"; "stft"; "group_norm"; "layer_norm"; "rot90"; "t"
     ; "multi_margin_loss"; "multi_margin_loss_out"; "sparse_coo_tensor"
     ; "log_softmax_backward_data"; "softmax_backward_data" ]
+
+let excluded_prefixes = [ "_"; "thnn_"; "th_" ]
 
 let yaml_error yaml ~msg =
   Printf.sprintf "%s, %s" msg (Yaml.to_string_exn yaml)
@@ -247,9 +249,8 @@ let read_yaml filename =
       else None
     in
     if not deprecated
-    && not (String.is_prefix name ~prefix:"_")
-    && not (String.is_prefix name ~prefix:"thnn_")
-    && not (Set.mem unsupported_functions name)
+    && not (List.exists excluded_prefixes ~f:(fun prefix -> String.is_prefix name ~prefix))
+    && not (Set.mem excluded_functions name)
     then
       Option.both returns kind
       |> Option.bind ~f:(fun (returns, kind) ->

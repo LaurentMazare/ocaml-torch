@@ -5426,48 +5426,6 @@ let tensordot self other ~dims_self ~dims_other =
   Gc.finalise C.Tensor.free t0;
   t0
 
-let th_addmm self ~mat1 ~mat2 =
-  let out__ = CArray.make t 1 in
-  th_addmm (CArray.start out__) self mat1 mat2;
-  let t0 = CArray.get out__ 0 in
-  Gc.finalise C.Tensor.free t0;
-  t0
-
-let th_addmm_ self ~mat1 ~mat2 =
-  let out__ = CArray.make t 1 in
-  th_addmm_ (CArray.start out__) self mat1 mat2;
-  let t0 = CArray.get out__ 0 in
-  Gc.finalise C.Tensor.free t0;
-  t0
-
-let th_addmm_out result self ~mat1 ~mat2 =
-  let out__ = CArray.make t 1 in
-  th_addmm_out (CArray.start out__) result self mat1 mat2;
-  let t0 = CArray.get out__ 0 in
-  Gc.finalise C.Tensor.free t0;
-  t0
-
-let th_clone self =
-  let out__ = CArray.make t 1 in
-  th_clone (CArray.start out__) self;
-  let t0 = CArray.get out__ 0 in
-  Gc.finalise C.Tensor.free t0;
-  t0
-
-let th_resize_as_ self ~the_template =
-  let out__ = CArray.make t 1 in
-  th_resize_as_ (CArray.start out__) self the_template;
-  let t0 = CArray.get out__ 0 in
-  Gc.finalise C.Tensor.free t0;
-  t0
-
-let th_zero_ self =
-  let out__ = CArray.make t 1 in
-  th_zero_ (CArray.start out__) self;
-  let t0 = CArray.get out__ 0 in
-  Gc.finalise C.Tensor.free t0;
-  t0
-
 let to1 self ~device =
   let out__ = CArray.make t 1 in
   to1 (CArray.start out__) self (Device.to_int device);

@@ -3004,30 +3004,6 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_tensordot"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
-  let th_addmm =
-    foreign "atg_th_addmm"
-    (ptr t @-> t @-> t @-> t @-> returning void)
-
-  let th_addmm_ =
-    foreign "atg_th_addmm_"
-    (ptr t @-> t @-> t @-> t @-> returning void)
-
-  let th_addmm_out =
-    foreign "atg_th_addmm_out"
-    (ptr t @-> t @-> t @-> t @-> t @-> returning void)
-
-  let th_clone =
-    foreign "atg_th_clone"
-    (ptr t @-> t @-> returning void)
-
-  let th_resize_as_ =
-    foreign "atg_th_resize_as_"
-    (ptr t @-> t @-> t @-> returning void)
-
-  let th_zero_ =
-    foreign "atg_th_zero_"
-    (ptr t @-> t @-> returning void)
-
   let to1 =
     foreign "atg_to1"
     (ptr t @-> t @-> int @-> returning void)

@@ -4666,38 +4666,6 @@ module type S = sig
     dims_other:int list ->
     t
 
-  val th_addmm :
-    t ->
-    mat1:t ->
-    mat2:t ->
-    t
-
-  val th_addmm_ :
-    t ->
-    mat1:t ->
-    mat2:t ->
-    t
-
-  val th_addmm_out :
-    t ->
-    t ->
-    mat1:t ->
-    mat2:t ->
-    t
-
-  val th_clone :
-    t ->
-    t
-
-  val th_resize_as_ :
-    t ->
-    the_template:t ->
-    t
-
-  val th_zero_ :
-    t ->
-    t
-
   val to1 :
     t ->
     device:Device.t ->
