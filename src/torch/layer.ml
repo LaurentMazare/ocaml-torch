@@ -36,9 +36,11 @@ let apply ?activation ys =
   | Some Leaky_relu -> Tensor.leaky_relu ys
   | None -> ys
 
-let linear vs ?activation ?(use_bias=true) ~input_dim output_dim =
+let linear ?name vs ?activation ?(use_bias=true) ~input_dim output_dim =
+  let name = N.default name "linear" in
   let w =
-    kaiming_uniform vs ~shape:[ input_dim; output_dim ] ~a:(Float.sqrt 5.) ~name:"weight"
+    kaiming_uniform vs ~shape:[ input_dim; output_dim ] ~a:(Float.sqrt 5.)
+      ~name:N.(name / "weight")
   in
   let apply =
     if use_bias
@@ -46,7 +48,7 @@ let linear vs ?activation ?(use_bias=true) ~input_dim output_dim =
       let bound = 1.0 /. Float.sqrt (Float.of_int input_dim) in
       let b =
         Var_store.new_var vs ~shape:[ output_dim ] ~init:(Uniform (-. bound, bound))
-          ~name:"bias"
+          ~name:N.(name / "bias")
       in
       fun xs -> Tensor.(mm xs w + b) |> apply ?activation
     end else fun xs -> Tensor.(mm xs w) |> apply ?activation
@@ -54,6 +56,7 @@ let linear vs ?activation ?(use_bias=true) ~input_dim output_dim =
   { apply }
 
 let conv2d
+      ?name
       vs
       ~ksize:(k1, k2)
       ~stride
@@ -63,14 +66,19 @@ let conv2d
       ~input_dim
       output_dim
   =
+  let name = N.default name "conv2d" in
   let w =
     kaiming_uniform vs
-      ~shape:[ output_dim; input_dim; k1; k2 ] ~a:(Float.sqrt 5.) ~name:"weight"
+      ~shape:[ output_dim; input_dim; k1; k2 ] ~a:(Float.sqrt 5.)
+      ~name:N.(name / "weight")
   in
   let apply =
     if use_bias
     then begin
-      let b = Var_store.new_var vs ~shape:[ output_dim ] ~init:Zeros ~name:"bias" in
+      let b =
+        Var_store.new_var vs ~shape:[ output_dim ] ~init:Zeros
+          ~name:N.(name / "bias")
+      in
       fun xs -> Tensor.conv2d xs w b ~padding ~stride |> apply ?activation
     end else
       let b = Tensor.zeros [ output_dim ] ~device:(Var_store.device vs) in
@@ -78,8 +86,9 @@ let conv2d
   in
   { apply }
 
-let conv2d_ vs ~ksize ~stride ?activation ?use_bias ?(padding = 0) ~input_dim output_dim =
+let conv2d_ ?name vs ~ksize ~stride ?activation ?use_bias ?(padding = 0) ~input_dim output_dim =
   conv2d vs
+    ?name
     ~ksize:(ksize, ksize)
     ~stride:(stride, stride)
     ?use_bias
@@ -88,19 +97,25 @@ let conv2d_ vs ~ksize ~stride ?activation ?use_bias ?(padding = 0) ~input_dim ou
     ~input_dim
     output_dim
 
-let conv_transpose2d vs ~ksize:(k1, k2) ~stride ?activation ?(padding=0, 0) ?(output_padding=0, 0) ~input_dim output_dim =
+let conv_transpose2d ?name vs ~ksize:(k1, k2) ~stride ?activation ?(padding=0, 0) ?(output_padding=0, 0) ~input_dim output_dim =
+  let name = N.default name "conv_transpose2d" in
   let w =
     Var_store.new_var vs
-      ~shape:[ input_dim; output_dim; k1; k2 ] ~init:(Normal_with_stdev 0.1) ~name:"weight"
+      ~shape:[ input_dim; output_dim; k1; k2 ] ~init:(Normal_with_stdev 0.1)
+      ~name:N.(name / "weight")
   in
-  let b = Var_store.new_var vs ~shape:[ output_dim ] ~init:Zeros ~name:"bias" in
+  let b =
+    Var_store.new_var vs ~shape:[ output_dim ] ~init:Zeros
+      ~name:N.(name / "bias")
+  in
   let apply xs =
     Tensor.conv_transpose2d xs w b ~output_padding ~padding ~stride |> apply ?activation
   in
   { apply }
 
-let conv_transpose2d_ vs ~ksize ~stride ?activation ?(padding = 0) ?(output_padding = 0) ~input_dim output_dim =
+let conv_transpose2d_ ?name vs ~ksize ~stride ?activation ?(padding = 0) ?(output_padding = 0) ~input_dim output_dim =
   conv_transpose2d vs
+    ?name
     ~ksize:(ksize, ksize)
     ~stride:(stride, stride)
     ?activation
@@ -109,14 +124,23 @@ let conv_transpose2d_ vs ~ksize ~stride ?activation ?(padding = 0) ?(output_padd
     ~input_dim
     output_dim
 
-let batch_norm2d vs ?(eps=1e-5) ?(momentum=0.1) output_dim =
-  let w = Var_store.new_var vs ~shape:[ output_dim ] ~init:(Uniform (0., 1.)) ~name:"weight" in
-  let b = Var_store.new_var vs ~shape:[ output_dim ] ~init:Zeros ~name:"bias" in
+let batch_norm2d ?name vs ?(eps=1e-5) ?(momentum=0.1) output_dim =
+  let name = N.default name "batch_norm2d" in
+  let w =
+    Var_store.new_var vs ~shape:[ output_dim ] ~init:(Uniform (0., 1.))
+      ~name:N.(name / "weight")
+  in
+  let b =
+    Var_store.new_var vs ~shape:[ output_dim ] ~init:Zeros
+      ~name:N.(name / "bias")
+  in
   let running_mean =
-    Var_store.new_var vs ~trainable:false ~shape:[ output_dim ] ~init:Zeros ~name:"running_mean"
+    Var_store.new_var vs ~trainable:false ~shape:[ output_dim ] ~init:Zeros
+      ~name:N.(name / "running_mean")
   in
   let running_var =
-    Var_store.new_var vs ~trainable:false ~shape:[ output_dim ] ~init:Ones ~name:"running_var"
+    Var_store.new_var vs ~trainable:false ~shape:[ output_dim ] ~init:Ones
+      ~name:N.(name / "running_var")
   in
   Staged.stage (fun xs ~is_training ->
     Tensor.batch_norm xs
@@ -150,12 +174,25 @@ module Lstm = struct
 
   type state = Tensor.t * Tensor.t
 
-  let create vs ~input_dim ~hidden_size =
+  let create ?name vs ~input_dim ~hidden_size =
+    let name = N.default name "lstm" in
     let gate_size = 4 * hidden_size in
-    let w_ih = kaiming_uniform vs ~shape:[ gate_size; input_dim ] ~a:(Float.sqrt 5.) ~name:"w_ih" in
-    let w_hh = kaiming_uniform vs ~shape:[ gate_size; hidden_size ] ~a:(Float.sqrt 5.) ~name:"w_hh" in
-    let b_ih = Var_store.new_var vs ~shape:[ gate_size ] ~init:Zeros ~name:"b_ih" in
-    let b_hh = Var_store.new_var vs ~shape:[ gate_size ] ~init:Zeros ~name:"b_hh" in
+    let w_ih =
+      kaiming_uniform vs ~shape:[ gate_size; input_dim ] ~a:(Float.sqrt 5.)
+        ~name:N.(name / "w_ih")
+    in
+    let w_hh =
+      kaiming_uniform vs ~shape:[ gate_size; hidden_size ] ~a:(Float.sqrt 5.)
+        ~name:N.(name / "w_hh")
+    in
+    let b_ih =
+      Var_store.new_var vs ~shape:[ gate_size ] ~init:Zeros
+        ~name:N.(name / "b_ih")
+    in
+    let b_hh =
+      Var_store.new_var vs ~shape:[ gate_size ] ~init:Zeros
+        ~name:N.(name / "b_hh")
+    in
     { w_ih; w_hh; b_ih; b_hh; hidden_size; device = Var_store.device vs }
 
   let zero_state t ~batch_size =

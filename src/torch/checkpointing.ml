@@ -29,11 +29,14 @@ let loop
   let temp_checkpoint = checkpoint_base ^ ".tmp" in
   let latest_index_and_filename = latest_index_and_filename ~checkpoint_base in
   let named_tensors =
-    List.concat_map var_stores ~f:(fun vs ->
-      let vs_name = Var_store.name vs in
-      Var_store.vars vs `all
-      |> List.mapi ~f:(fun i tensor ->
-          Printf.sprintf "%s:%d" vs_name i, tensor))
+    match var_stores with
+    | [ vs ] -> Var_store.all_vars vs
+    | var_stores ->
+      List.concat_map var_stores ~f:(fun vs ->
+        let vs_name = Var_store.name vs in
+        Var_store.all_vars vs
+        |> List.map ~f:(fun (name, tensor) ->
+            Printf.sprintf "%s:%s" vs_name name, tensor))
   in
   Option.iter latest_index_and_filename ~f:(fun (latest_index, filename) ->
     Stdio.eprintf "Restoring checkpoint for index %d from '%s'.\n%!" latest_index filename;

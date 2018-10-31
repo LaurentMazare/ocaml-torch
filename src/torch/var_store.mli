@@ -5,7 +5,8 @@ val create : ?device:Torch_core.Device.t -> name:string -> unit -> t
 (* The trainable variables are guaranteed to be returned in
    reverse order of addition (the [Optimizer] module relies
    on this). *)
-val vars : t -> [`trainable | `all ] -> Tensor.t list
+val trainable_vars : t -> Tensor.t list
+val all_vars : t -> (string * Tensor.t) list
 val name : t -> string
 val device : t -> Torch_core.Device.t
 
@@ -23,5 +24,5 @@ val new_var
   -> t
   -> shape:int list
   -> init:Init.t
-  -> name:string
+  -> name:N.t
   -> Tensor.t

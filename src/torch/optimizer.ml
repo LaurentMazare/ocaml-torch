@@ -8,7 +8,7 @@ type t =
   }
 
 let add_missing_parameters t =
-  let tensors = Var_store.vars t.vs `trainable in
+  let tensors = Var_store.trainable_vars t.vs in
   let missing = List.length tensors - t.parameters_in_optimizer in
   if missing > 0
   then begin
@@ -51,7 +51,7 @@ let sgd
 
 let clip_grad_norm2_ t ~max_norm2 =
   let total_norm =
-    Var_store.vars t.vs `trainable
+    Var_store.trainable_vars t.vs
     |> List.fold ~init:0. ~f:(fun acc tensor ->
       let grad = Tensor.grad tensor in
       let grad_norm =
@@ -66,7 +66,7 @@ let clip_grad_norm2_ t ~max_norm2 =
   if Float.(<) clip_coef 1.
   then begin
     let clip_coef = Tensor.f clip_coef in
-    Var_store.vars t.vs `trainable
+    Var_store.trainable_vars t.vs
     |> List.iter ~f:(fun tensor ->
       let grad = Tensor.grad tensor in
       if Tensor.defined grad
