@@ -5,6 +5,7 @@ type t =
   ; mutable trainable_tensors : Tensor.t list
   ; all_tensors_by_name : (string, Tensor.t) Hashtbl.t
   ; device : Torch_core.Device.t
+  ; mutable name_counter : int
   }
 
 let create ?(device = Torch_core.Device.Cpu) ~name () =
@@ -12,7 +13,15 @@ let create ?(device = Torch_core.Device.Cpu) ~name () =
   ; trainable_tensors = []
   ; all_tensors_by_name = Hashtbl.create (module String)
   ; device
+  ; name_counter = 1
   }
+
+let default_name t name_option base =
+  match name_option with
+  | Some t -> t
+  | None ->
+    t.name_counter <- t.name_counter + 1;
+    N.of_list [ Printf.sprintf "%s__%d" base t.name_counter ]
 
 let trainable_vars t = t.trainable_tensors
 

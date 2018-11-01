@@ -37,7 +37,7 @@ let apply ?activation ys =
   | None -> ys
 
 let linear ?name vs ?activation ?(use_bias=true) ~input_dim output_dim =
-  let name = N.default name "linear" in
+  let name = Var_store.default_name vs name "linear" in
   let w =
     kaiming_uniform vs ~shape:[ input_dim; output_dim ] ~a:(Float.sqrt 5.)
       ~name:N.(name / "weight")
@@ -66,7 +66,7 @@ let conv2d
       ~input_dim
       output_dim
   =
-  let name = N.default name "conv2d" in
+  let name = Var_store.default_name vs name "conv2d" in
   let w =
     kaiming_uniform vs
       ~shape:[ output_dim; input_dim; k1; k2 ] ~a:(Float.sqrt 5.)
@@ -98,7 +98,7 @@ let conv2d_ ?name vs ~ksize ~stride ?activation ?use_bias ?(padding = 0) ~input_
     output_dim
 
 let conv_transpose2d ?name vs ~ksize:(k1, k2) ~stride ?activation ?(padding=0, 0) ?(output_padding=0, 0) ~input_dim output_dim =
-  let name = N.default name "conv_transpose2d" in
+  let name = Var_store.default_name vs name "conv_transpose2d" in
   let w =
     Var_store.new_var vs
       ~shape:[ input_dim; output_dim; k1; k2 ] ~init:(Normal_with_stdev 0.1)
@@ -125,7 +125,7 @@ let conv_transpose2d_ ?name vs ~ksize ~stride ?activation ?(padding = 0) ?(outpu
     output_dim
 
 let batch_norm2d ?name vs ?(eps=1e-5) ?(momentum=0.1) output_dim =
-  let name = N.default name "batch_norm2d" in
+  let name = Var_store.default_name vs name "batch_norm2d" in
   let w =
     Var_store.new_var vs ~shape:[ output_dim ] ~init:(Uniform (0., 1.))
       ~name:N.(name / "weight")
@@ -175,7 +175,7 @@ module Lstm = struct
   type state = Tensor.t * Tensor.t
 
   let create ?name vs ~input_dim ~hidden_size =
-    let name = N.default name "lstm" in
+    let name = Var_store.default_name vs name "lstm" in
     let gate_size = 4 * hidden_size in
     let w_ih =
       kaiming_uniform vs ~shape:[ gate_size; input_dim ] ~a:(Float.sqrt 5.)

@@ -26,3 +26,8 @@ val new_var
   -> init:Init.t
   -> name:N.t
   -> Tensor.t
+
+(** [default_name t name_option str] builds a default name based on [str] when
+    [name_option] is [None], otherwise [name_option] is used.
+*)
+val default_name : t -> N.t option -> string -> N.t
