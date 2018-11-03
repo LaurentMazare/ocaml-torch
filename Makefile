@@ -10,7 +10,7 @@ ALL = examples/basics/torch_basics.exe \
       examples/cifar/preactresnet.exe \
       examples/cifar/densenet.exe \
       examples/char_rnn/char_rnn.exe \
-			bin/list_tensors.exe
+      bin/tensor_tools.exe
 
 %.exe: .FORCE
 	dune build $@

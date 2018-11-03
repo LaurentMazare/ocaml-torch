@@ -6,6 +6,6 @@
  (libraries torch_core torch torch_toplevel utop))
 
 (executable
- (name list_tensors)
- (modules list_tensors)
- (libraries base torch_core torch))
+ (name tensor_tools)
+ (modules tensor_tools)
+ (libraries base cmdliner npy torch_core torch))
