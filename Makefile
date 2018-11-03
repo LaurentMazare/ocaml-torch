@@ -9,7 +9,8 @@ ALL = examples/basics/torch_basics.exe \
       examples/cifar/resnet.exe \
       examples/cifar/preactresnet.exe \
       examples/cifar/densenet.exe \
-      examples/char_rnn/char_rnn.exe
+      examples/char_rnn/char_rnn.exe \
+			bin/list_tensors.exe
 
 %.exe: .FORCE
 	dune build $@

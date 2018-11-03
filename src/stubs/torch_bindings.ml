@@ -90,6 +90,12 @@ module C(F: Cstubs.FOREIGN) = struct
       foreign "at_load_multi" (ptr t @-> ptr string @-> int @-> string @-> returning void)
     let load_multi_ =
       foreign "at_load_multi_" (ptr t @-> ptr string @-> int @-> string @-> returning void)
+    let load_callback =
+      foreign
+        "at_load_callback"
+        (string
+        @-> static_funptr Ctypes.(string @-> t @-> returning void)
+        @-> returning void)
   end
 
   module Optimizer = struct

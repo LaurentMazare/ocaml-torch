@@ -1,4 +1,5 @@
-#include <torch/torch.h>
+#include<torch/torch.h>
+#include<torch/script.h>
 #include<vector>
 #include<caml/fail.h>
 #include "torch_api.h"
@@ -149,6 +150,15 @@ void at_load_multi(tensor *tensors, char **tensor_names, int ntensors, char *fil
     // [read], no memory has to be freed.
     for (int i = 0; i < ntensors; ++i)
       tensors[i] = new torch::Tensor(ts[i]);
+  )
+}
+
+void at_load_callback(char *filename, void (*f)(char *, tensor)) {
+  PROTECT(
+    shared_ptr<torch::jit::script::Module> module = torch::jit::load(filename);
+    for (const auto &p : module->get_parameters()) {
+      f((char*)p.key.c_str(), new torch::Tensor(*p.value.slot()));
+    }
   )
 }
 

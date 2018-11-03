@@ -189,6 +189,19 @@ module Serialize = struct
       CArray.(of_list string names |> start)
       (List.length named_tensors)
       filename
+
+  let load_all ~filename =
+    let all_tensors = ref [] in
+    let callback =
+      coerce
+        (Foreign.funptr (string @-> Wrapper_generated.C.Tensor.t @-> returning void))
+        (static_funptr (string @-> Wrapper_generated.C.Tensor.t @-> returning void))
+        (fun tensor_name tensor ->
+          Gc.finalise Wrapper_generated.C.Tensor.free tensor;
+          all_tensors := (tensor_name, tensor) :: !all_tensors)
+    in
+    load_callback filename callback;
+    !all_tensors
 end
 
 module Cuda = struct

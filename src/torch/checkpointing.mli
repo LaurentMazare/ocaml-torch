@@ -1,5 +1,4 @@
 (* TODO: also save optimizer states. *)
-(* TODO: get the named tensors from (named) variables stores. *)
 
 (** [loop ~start_index ~end_index ~var_stores ~checkpoint_base f] starts a
     loop ranging from [start_index] to [end_index]. On each iteration [f] is

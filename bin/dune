@@ -1,5 +1,11 @@
 (executable
  (name utop_torch)
  (link_flags (-linkall))
+ (modules utop_torch)
  (modes byte)
  (libraries torch_core torch torch_toplevel utop))
+
+(executable
+ (name list_tensors)
+ (modules list_tensors)
+ (libraries base torch_core torch))
