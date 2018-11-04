@@ -18,10 +18,10 @@ let load_image image_file =
       |> Tensor.of_bigarray
       (* Crop/resize to 224x224 or use adaptive pooling ? *)
       |> Tensor.to_type ~type_:Float
-      |> fun xs -> Tensor.((xs - f imagenet_mean) / f 255.)
+      |> fun xs -> Tensor.((xs - f imagenet_mean) / f 1.)
     in
     let image =
-      Tensor.stack [ convert red `red; convert green `green; convert blue `blue ] ~dim:0
+      Tensor.stack [ convert blue `blue; convert green `green; convert red `red ] ~dim:0
       |> Tensor.transpose ~dim0:1 ~dim1:2
     in
     Tensor.view image ~size:(1 :: Tensor.shape image)
@@ -46,6 +46,6 @@ let () =
     Layer.apply_ model image ~is_training:false
     |> Tensor.softmax
   in
-  let a, b = Tensor.topk probabilities ~k:10 ~dim:1 ~largest:true ~sorted:true in
+  let a, b = Tensor.topk probabilities ~k:5 ~dim:1 ~largest:true ~sorted:true in
   Tensor.print a;
   Tensor.print b

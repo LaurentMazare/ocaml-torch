@@ -739,6 +739,7 @@ void atg_svd(tensor *, tensor self, int some);
 void atg_svd_out(tensor *, tensor res1, tensor res2, tensor res3, tensor self, int some);
 void atg_symeig(tensor *, tensor self, int eigenvectors, int upper);
 void atg_symeig_out(tensor *, tensor res1, tensor res2, tensor self, int eigenvectors, int upper);
+void atg_t(tensor *, tensor self);
 void atg_t_(tensor *, tensor self);
 void atg_take(tensor *, tensor self, tensor index);
 void atg_take_out(tensor *, tensor result, tensor self, tensor index);

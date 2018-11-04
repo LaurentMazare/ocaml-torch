@@ -5262,6 +5262,13 @@ void atg_symeig_out(tensor *out__, tensor res1, tensor res2, tensor self, int ei
   )
 }
 
+void atg_t(tensor *out__, tensor self) {
+  PROTECT(
+    auto outputs__ = torch::t(*self);
+    out__[0] = new torch::Tensor(outputs__);
+  )
+}
+
 void atg_t_(tensor *out__, tensor self) {
   PROTECT(
     auto outputs__ = self->t_();

@@ -2964,6 +2964,10 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_symeig_out"
     (ptr t @-> t @-> t @-> t @-> int @-> int @-> returning void)
 
+  let tr =
+    foreign "atg_t"
+    (ptr t @-> t @-> returning void)
+
   let t_ =
     foreign "atg_t_"
     (ptr t @-> t @-> returning void)

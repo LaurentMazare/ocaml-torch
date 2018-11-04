@@ -24,8 +24,6 @@ let kaiming_uniform vs ~name ~shape ~a =
   let fan_in =
     match shape with
     | [] | [_] -> failwith "unexpected tensor shape"
-    (* Weight matrix is transposed for linear layers. *)
-    | [ fan_in; _fan_out ] -> fan_in
     | _fan_out :: fan_in :: others ->
       let others = List.fold others ~init:1 ~f:( * ) in
       fan_in * others
@@ -47,7 +45,7 @@ let apply ?activation ys =
 let linear ?n vs ?activation ?(use_bias=true) ~input_dim output_dim =
   let name = Var_store.default_name vs n "linear" in
   let w =
-    kaiming_uniform vs ~shape:[ input_dim; output_dim ] ~a:(Float.sqrt 5.)
+    kaiming_uniform vs ~shape:[ output_dim; input_dim ] ~a:(Float.sqrt 5.)
       ~name:N.(name / "weight")
   in
   let apply =
@@ -58,7 +56,7 @@ let linear ?n vs ?activation ?(use_bias=true) ~input_dim output_dim =
         Var_store.new_var vs ~shape:[ output_dim ] ~init:(Uniform (-. bound, bound))
           ~name:N.(name / "bias")
       in
-      fun xs -> Tensor.(mm xs w + b) |> apply ?activation
+      fun xs -> Tensor.(mm xs (tr w) + b) |> apply ?activation
     end else fun xs -> Tensor.(mm xs w) |> apply ?activation
   in
   { apply }

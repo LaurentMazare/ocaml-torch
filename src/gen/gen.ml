@@ -175,6 +175,7 @@ module Func = struct
     Map.of_alist_exn (module String)
       [ "end", "end_"
       ; "to", "to_"
+      ; "t", "tr"
       ]
 
   let caml_name name =

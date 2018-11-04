@@ -4618,6 +4618,10 @@ module type S = sig
     upper:bool ->
     t * t
 
+  val tr :
+    t ->
+    t
+
   val t_ :
     t ->
     t

@@ -5356,6 +5356,13 @@ let symeig_out ~res1 ~res2 self ~eigenvectors ~upper =
   Gc.finalise C.Tensor.free t1;
   t0, t1
 
+let tr self =
+  let out__ = CArray.make t 1 in
+  tr (CArray.start out__) self;
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
 let t_ self =
   let out__ = CArray.make t 1 in
   t_ (CArray.start out__) self;
