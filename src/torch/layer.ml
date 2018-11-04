@@ -4,6 +4,14 @@ type t =
   { apply : Tensor.t -> Tensor.t
   }
 
+type t_with_training =
+  { apply_with_training : Tensor.t -> is_training:bool -> Tensor.t
+  }
+
+let set_training t_with_training ~is_training =
+  let apply xs = t_with_training.apply_with_training xs ~is_training in
+  { apply }
+
 type activation =
   | Relu
   | Softmax
@@ -142,7 +150,7 @@ let batch_norm2d ?name vs ?(eps=1e-5) ?(momentum=0.1) output_dim =
     Var_store.new_var vs ~trainable:false ~shape:[ output_dim ] ~init:Ones
       ~name:N.(name / "running_var")
   in
-  Staged.stage (fun xs ~is_training ->
+  let apply_with_training xs ~is_training =
     Tensor.batch_norm xs
       ~weight:(Some w)
       ~bias:(Some b)
@@ -151,9 +159,13 @@ let batch_norm2d ?name vs ?(eps=1e-5) ?(momentum=0.1) output_dim =
       ~training:is_training
       ~momentum
       ~eps
-      ~cudnn_enabled:false)
+      ~cudnn_enabled:false
+  in
+  { apply_with_training }
 
 let apply t xs = t.apply xs
+let apply_ t_with_training xs ~is_training =
+  t_with_training.apply_with_training xs ~is_training
 
 let id = { apply = Fn.id }
 let fold t_list =

@@ -1,6 +1,8 @@
 open Base
 
 type t
+type t_with_training
+val set_training : t_with_training -> is_training:bool -> t
 
 type activation =
   | Relu
@@ -73,7 +75,7 @@ val batch_norm2d
   -> ?eps:float
   -> ?momentum:float
   -> int
-  -> (Tensor.t -> is_training:bool -> Tensor.t) Staged.t
+  -> t_with_training
 
 val id : t
 val fold : t list -> t
@@ -81,6 +83,12 @@ val fold : t list -> t
 val apply
   :  t
   -> Tensor.t
+  -> Tensor.t
+
+val apply_
+  :  t_with_training
+  -> Tensor.t
+  -> is_training:bool
   -> Tensor.t
 
 module Lstm : sig

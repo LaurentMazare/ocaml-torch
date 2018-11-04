@@ -23,10 +23,10 @@ let learning_rate ~epoch_idx =
 let conv2d = Layer.conv2d_ ~use_bias:false
 
 let bn_relu_conv vs ~padding ~ksize ~input_dim output_dim =
-  let bn = Layer.batch_norm2d vs input_dim |> Staged.unstage in
+  let bn = Layer.batch_norm2d vs input_dim in
   let conv2d = conv2d vs ~padding ~stride:1 ~ksize ~input_dim output_dim in
   fun xs ~is_training ->
-    bn xs ~is_training
+    Layer.apply_ bn xs ~is_training
     |> Tensor.relu
     |> Layer.apply conv2d
     |> Tensor.dropout ~p:dropout_p ~is_training
@@ -62,7 +62,7 @@ let densenet vs ~n1 ~n2 ~n3 ~n4 ~growth_rate =
   let dim, stack3 = block_stack vs ~n:n3 ~growth_rate ~input_dim:dim in
   let dim, bn_relu_conv3 = interblock ~input_dim:dim in
   let dim, stack4 = block_stack vs ~n:n4 ~growth_rate ~input_dim:dim in
-  let bn = Layer.batch_norm2d vs dim |> Staged.unstage in
+  let bn = Layer.batch_norm2d vs dim in
   let linear = Layer.linear vs ~input_dim:dim Cifar_helper.label_count in
   fun xs ~is_training ->
     let batch_size = Tensor.shape xs |> List.hd_exn in
@@ -79,7 +79,7 @@ let densenet vs ~n1 ~n2 ~n3 ~n4 ~growth_rate =
     |> bn_relu_conv3 ~is_training
     |> Tensor.avg_pool2d ~ksize:(2, 2)
     |> stack4 ~is_training
-    |> bn ~is_training
+    |> Layer.apply_ bn ~is_training
     |> Tensor.relu
     |> Tensor.avg_pool2d ~ksize:(4, 4)
     |> Tensor.reshape ~shape:[ batch_size; -1 ]

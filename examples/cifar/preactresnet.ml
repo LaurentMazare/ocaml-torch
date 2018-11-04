@@ -27,8 +27,8 @@ let conv2d ?(padding=1) ?(ksize=3) = Layer.conv2d_ ~ksize ~padding ~use_bias:fal
 let basic_block vs ~stride ~input_dim output_dim =
   let conv2d1 = conv2d vs ~stride ~input_dim output_dim in
   let conv2d2 = conv2d vs ~stride:1 ~input_dim:output_dim output_dim in
-  let bn1 = Layer.batch_norm2d vs input_dim |> Staged.unstage in
-  let bn2 = Layer.batch_norm2d vs output_dim |> Staged.unstage in
+  let bn1 = Layer.batch_norm2d vs input_dim in
+  let bn2 = Layer.batch_norm2d vs output_dim in
   let shortcut =
     if stride = 1 && input_dim = output_dim
     then fun ~xs ~out:_ -> xs
@@ -37,10 +37,10 @@ let basic_block vs ~stride ~input_dim output_dim =
       fun ~xs:_ ~out -> Layer.apply conv2d out
   in
   fun xs ~is_training ->
-    let out = bn1 ~is_training xs |> Tensor.relu in
+    let out = Layer.apply_ bn1 ~is_training xs |> Tensor.relu in
     let shortcut = shortcut ~xs ~out in
     Layer.apply conv2d1 out
-    |> bn2 ~is_training
+    |> Layer.apply_ bn2 ~is_training
     |> Tensor.relu
     |> Layer.apply conv2d2
     |> fun ys -> Tensor.(+) ys shortcut
