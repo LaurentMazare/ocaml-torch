@@ -168,11 +168,21 @@ let apply_ t_with_training xs ~is_training =
   t_with_training.apply_with_training xs ~is_training
 
 let id = { apply = Fn.id }
+let id_ = { apply_with_training = fun xs ~is_training:_ -> xs }
+let of_fn apply = { apply }
+let of_fn_ apply_with_training = { apply_with_training }
+
 let fold t_list =
   let apply xs =
     List.fold t_list ~init:xs ~f:(fun acc t -> t.apply acc)
   in
   { apply }
+
+let fold_ t_list =
+  let apply_with_training xs ~is_training =
+    List.fold t_list ~init:xs ~f:(fun acc t -> t.apply_with_training acc ~is_training)
+  in
+  { apply_with_training }
 
 module Lstm = struct
   type t =

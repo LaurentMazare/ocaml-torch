@@ -78,7 +78,11 @@ val batch_norm2d
   -> t_with_training
 
 val id : t
+val id_ : t_with_training
+val of_fn : (Tensor.t -> Tensor.t) -> t
+val of_fn_ : (Tensor.t -> is_training:bool -> Tensor.t) -> t_with_training
 val fold : t list -> t
+val fold_ : t_with_training list -> t_with_training
 
 val apply
   :  t
