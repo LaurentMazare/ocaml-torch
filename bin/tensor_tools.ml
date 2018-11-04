@@ -6,7 +6,7 @@ let npz_tensors ~filename ~f =
   let named_tensors =
     Npy.Npz.entries npz_file
     |> List.map ~f:(fun tensor_name ->
-      tensor_name, Npy.Npz.read npz_file tensor_name |> f)
+      f tensor_name (Npy.Npz.read npz_file tensor_name))
   in
   Npy.Npz.close_in npz_file;
   named_tensors
@@ -17,9 +17,11 @@ let ls files =
     let tensor_names_and_shapes =
       if String.is_suffix filename ~suffix:".npz"
       then
-        npz_tensors ~filename ~f:(fun packed_tensor ->
+        npz_tensors ~filename ~f:(fun tensor_name packed_tensor ->
           match packed_tensor with
-          | Npy.P tensor -> Bigarray.Genarray.dims tensor |> Array.to_list)
+          | Npy.P tensor ->
+            let tensor_shape = Bigarray.Genarray.dims tensor |> Array.to_list in
+            tensor_name, tensor_shape)
       else
         Serialize.load_all ~filename
         |> List.map ~f:(fun (tensor_name, tensor) ->
@@ -31,11 +33,11 @@ let ls files =
 
 let npz_to_pytorch npz_src pytorch_dst =
   let named_tensors =
-    npz_tensors ~filename:npz_src ~f:(fun packed_tensor ->
+    npz_tensors ~filename:npz_src ~f:(fun tensor_name packed_tensor ->
       match packed_tensor with
       | Npy.P tensor ->
         match Bigarray.Genarray.layout tensor with
-        | C_layout -> Tensor.of_bigarray tensor
+        | C_layout -> tensor_name, Tensor.of_bigarray tensor
         | Fortran_layout -> failwith "fortran layout is not supported")
   in
   Serialize.save_multi ~named_tensors ~filename:pytorch_dst

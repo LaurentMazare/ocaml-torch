@@ -157,6 +157,10 @@ module Serialize = struct
   include Wrapper_generated.C.Serialize
 
   let save t ~filename = save t filename
+
+  let escape s = String.map (function | '.' -> '|' | c -> c) s
+  let unescape s = String.map (function | '|' -> '.' | c -> c) s
+
   let load ~filename =
     let t = load filename in
     Gc.finalise Wrapper_generated.C.Tensor.free t;
@@ -164,6 +168,7 @@ module Serialize = struct
 
   let save_multi ~named_tensors ~filename =
     let names, tensors = List.split named_tensors in
+    let names = List.map escape names in
     save_multi
       CArray.(of_list Wrapper_generated.C.Tensor.t tensors |> start)
       CArray.(of_list string names |> start)
@@ -171,6 +176,7 @@ module Serialize = struct
       filename
 
   let load_multi ~names ~filename =
+    let names = List.map escape names in
     let ntensors = List.length names in
     let tensors = CArray.make Wrapper_generated.C.Tensor.t ntensors in
     load_multi
@@ -184,6 +190,7 @@ module Serialize = struct
 
   let load_multi_ ~named_tensors ~filename =
     let names, tensors = List.split named_tensors in
+    let names = List.map escape names in
     load_multi_
       CArray.(of_list Wrapper_generated.C.Tensor.t tensors |> start)
       CArray.(of_list string names |> start)
@@ -198,7 +205,7 @@ module Serialize = struct
         (static_funptr (string @-> Wrapper_generated.C.Tensor.t @-> returning void))
         (fun tensor_name tensor ->
           Gc.finalise Wrapper_generated.C.Tensor.free tensor;
-          all_tensors := (tensor_name, tensor) :: !all_tensors)
+          all_tensors := (unescape tensor_name, tensor) :: !all_tensors)
     in
     load_callback filename callback;
     !all_tensors
