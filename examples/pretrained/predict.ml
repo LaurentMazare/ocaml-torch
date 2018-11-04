@@ -8,17 +8,17 @@ let load_image image_file =
   match image.pixels with
   | RGB (Pix8 red, Pix8 green, Pix8 blue) ->
     let convert pixels kind =
-      let imagenet_mean =
+      let imagenet_mean, imagenet_std =
         match kind with
-        | `blue -> 103.939
-        | `green -> 116.779
-        | `red -> 123.68
+        | `blue -> 0.485, 0.229
+        | `green -> 0.456, 0.224
+        | `red -> 0.406, 0.225
       in
       Bigarray.genarray_of_array2 pixels
       |> Tensor.of_bigarray
       (* Crop/resize to 224x224 or use adaptive pooling ? *)
       |> Tensor.to_type ~type_:Float
-      |> fun xs -> Tensor.((xs - f imagenet_mean) / f 1.)
+      |> fun xs -> Tensor.((xs / f 255. - f imagenet_mean) / f imagenet_std)
     in
     let image =
       Tensor.stack [ convert blue `blue; convert green `green; convert red `red ] ~dim:0
