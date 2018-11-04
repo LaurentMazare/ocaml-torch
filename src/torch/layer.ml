@@ -44,8 +44,8 @@ let apply ?activation ys =
   | Some Leaky_relu -> Tensor.leaky_relu ys
   | None -> ys
 
-let linear ?name vs ?activation ?(use_bias=true) ~input_dim output_dim =
-  let name = Var_store.default_name vs name "linear" in
+let linear ?n vs ?activation ?(use_bias=true) ~input_dim output_dim =
+  let name = Var_store.default_name vs n "linear" in
   let w =
     kaiming_uniform vs ~shape:[ input_dim; output_dim ] ~a:(Float.sqrt 5.)
       ~name:N.(name / "weight")
@@ -64,7 +64,7 @@ let linear ?name vs ?activation ?(use_bias=true) ~input_dim output_dim =
   { apply }
 
 let conv2d
-      ?name
+      ?n
       vs
       ~ksize:(k1, k2)
       ~stride
@@ -74,7 +74,7 @@ let conv2d
       ~input_dim
       output_dim
   =
-  let name = Var_store.default_name vs name "conv2d" in
+  let name = Var_store.default_name vs n "conv2d" in
   let w =
     kaiming_uniform vs
       ~shape:[ output_dim; input_dim; k1; k2 ] ~a:(Float.sqrt 5.)
@@ -94,9 +94,9 @@ let conv2d
   in
   { apply }
 
-let conv2d_ ?name vs ~ksize ~stride ?activation ?use_bias ?(padding = 0) ~input_dim output_dim =
+let conv2d_ ?n vs ~ksize ~stride ?activation ?use_bias ?(padding = 0) ~input_dim output_dim =
   conv2d vs
-    ?name
+    ?n
     ~ksize:(ksize, ksize)
     ~stride:(stride, stride)
     ?use_bias
@@ -105,8 +105,8 @@ let conv2d_ ?name vs ~ksize ~stride ?activation ?use_bias ?(padding = 0) ~input_
     ~input_dim
     output_dim
 
-let conv_transpose2d ?name vs ~ksize:(k1, k2) ~stride ?activation ?(padding=0, 0) ?(output_padding=0, 0) ~input_dim output_dim =
-  let name = Var_store.default_name vs name "conv_transpose2d" in
+let conv_transpose2d ?n vs ~ksize:(k1, k2) ~stride ?activation ?(padding=0, 0) ?(output_padding=0, 0) ~input_dim output_dim =
+  let name = Var_store.default_name vs n "conv_transpose2d" in
   let w =
     Var_store.new_var vs
       ~shape:[ input_dim; output_dim; k1; k2 ] ~init:(Normal_with_stdev 0.1)
@@ -121,9 +121,9 @@ let conv_transpose2d ?name vs ~ksize:(k1, k2) ~stride ?activation ?(padding=0, 0
   in
   { apply }
 
-let conv_transpose2d_ ?name vs ~ksize ~stride ?activation ?(padding = 0) ?(output_padding = 0) ~input_dim output_dim =
+let conv_transpose2d_ ?n vs ~ksize ~stride ?activation ?(padding = 0) ?(output_padding = 0) ~input_dim output_dim =
   conv_transpose2d vs
-    ?name
+    ?n
     ~ksize:(ksize, ksize)
     ~stride:(stride, stride)
     ?activation
@@ -132,8 +132,8 @@ let conv_transpose2d_ ?name vs ~ksize ~stride ?activation ?(padding = 0) ?(outpu
     ~input_dim
     output_dim
 
-let batch_norm2d ?name vs ?(eps=1e-5) ?(momentum=0.1) output_dim =
-  let name = Var_store.default_name vs name "batch_norm2d" in
+let batch_norm2d ?n vs ?(eps=1e-5) ?(momentum=0.1) output_dim =
+  let name = Var_store.default_name vs n "batch_norm2d" in
   let w =
     Var_store.new_var vs ~shape:[ output_dim ] ~init:(Uniform (0., 1.))
       ~name:N.(name / "weight")
@@ -196,8 +196,8 @@ module Lstm = struct
 
   type state = Tensor.t * Tensor.t
 
-  let create ?name vs ~input_dim ~hidden_size =
-    let name = Var_store.default_name vs name "lstm" in
+  let create ?n vs ~input_dim ~hidden_size =
+    let name = Var_store.default_name vs n "lstm" in
     let gate_size = 4 * hidden_size in
     let w_ih =
       kaiming_uniform vs ~shape:[ gate_size; input_dim ] ~a:(Float.sqrt 5.)

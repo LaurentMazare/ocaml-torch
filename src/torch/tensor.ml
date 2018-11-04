@@ -173,3 +173,8 @@ let pp formatter t =
     |> Printf.sprintf "Tensor<%s>"
     |> Caml.Format.pp_print_string formatter
   end
+
+let copy t =
+  let t_ = view t ~size:(shape t) in
+  copy_ t_ ~src:t;
+  t_

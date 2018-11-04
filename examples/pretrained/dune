@@ -1,3 +1,3 @@
 (executables
-  (names resnet)
-  (libraries base torch_core torch stdio))
+  (names predict)
+  (libraries base imagelib torch_core torch stdio))
