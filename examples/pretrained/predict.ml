@@ -10,9 +10,9 @@ let load_image image_file =
     let convert pixels kind =
       let imagenet_mean, imagenet_std =
         match kind with
-        | `blue -> 0.485, 0.229
+        | `red -> 0.485, 0.229
         | `green -> 0.456, 0.224
-        | `red -> 0.406, 0.225
+        | `blue -> 0.406, 0.225
       in
       Bigarray.genarray_of_array2 pixels
       |> Tensor.of_bigarray
@@ -21,7 +21,7 @@ let load_image image_file =
       |> fun xs -> Tensor.((xs / f 255. - f imagenet_mean) / f imagenet_std)
     in
     let image =
-      Tensor.stack [ convert blue `blue; convert green `green; convert red `red ] ~dim:0
+      Tensor.stack [ convert red `red; convert green `green; convert blue `blue ] ~dim:0
       |> Tensor.transpose ~dim0:1 ~dim1:2
     in
     Tensor.view image ~size:(1 :: Tensor.shape image)
@@ -46,6 +46,11 @@ let () =
     Layer.apply_ model image ~is_training:false
     |> Tensor.softmax
   in
-  let a, b = Tensor.topk probabilities ~k:5 ~dim:1 ~largest:true ~sorted:true in
-  Tensor.print a;
-  Tensor.print b
+  let k = 5 in
+  let _, indexes = Tensor.topk probabilities ~k ~dim:1 ~largest:true ~sorted:true in
+  for i = 0 to k - 1 do
+    let class_index = Tensor.get_int2 indexes 0 i in
+    Stdio.printf "%s: %.2f%%\n%!"
+      (Imagenet_classes.classes.(class_index))
+      (100. *. (Tensor.get_float2 probabilities 0 class_index))
+  done
