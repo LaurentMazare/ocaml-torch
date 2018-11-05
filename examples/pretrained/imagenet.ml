@@ -19,7 +19,9 @@ let resize_and_crop image_file ~f =
     | WSIGNALED i -> Printf.sprintf "%s killed by signal %d" command i |> failwith
     | WSTOPPED i -> Printf.sprintf "%s stopped %d" command i |> failwith
   end;
-  Exn.protect ~f:(fun () -> f tmp_file) ~finally:(fun () -> ())
+  Exn.protect
+    ~f:(fun () -> f tmp_file)
+    ~finally:(fun () -> Unix.unlink tmp_file)
 
 let load_image_ image_file =
   let image = ImageLib.openfile image_file in
