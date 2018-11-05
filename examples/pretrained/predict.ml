@@ -1,10 +1,13 @@
-(* Evaluation using a pre-trained ResNet model. *)
+(* Evaluation using a pre-trained ResNet model.
+   The pre-trained weight file can be found at:
+     https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/resnet18.ot
+*)
 open Base
 open Torch
 
 let () =
   if Array.length Sys.argv <> 3
-  then Printf.sprintf "usage: %s weights.ot input.png" Sys.argv.(0) |> failwith;
+  then Printf.sprintf "usage: %s resnet18.ot input.png" Sys.argv.(0) |> failwith;
   let device =
     if Cuda.is_available ()
     then begin
