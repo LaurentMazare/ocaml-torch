@@ -15,7 +15,7 @@ Extract the libtorch library in a `LIBTORCH` directory then to build examples ru
 ```bash
 LD_LIBRARY_PATH=$LIBTORCH/lib:$LD_LIBRARY_PATH \
 LIBRARY_PATH=$LIBTORCH/lib:$LIBRARY_PATH \
-CPATH=$LIBTORCH/include:libtorch/include/torch/csrc/api/include:$CPATH \
+CPATH=$LIBTORCH/include:$LIBTORCH/include/torch/csrc/api/include:$CPATH \
 make all
 ```
 
@@ -67,6 +67,5 @@ code](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/mnist/li
 
 * Use a GADT to add type constraints to tensor elements.
 * Make it easier to use/import datasets.
-* Model weights import.
 * Add more complex examples.
 * Add an opam package (this may have to wait until libtorch has stable releases).
