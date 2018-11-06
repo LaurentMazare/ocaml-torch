@@ -1,6 +1,7 @@
 (* Evaluation using a pre-trained ResNet model.
    The pre-trained weight file can be found at:
      https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/resnet18.ot
+     https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/densenet121.ot
 *)
 open Base
 open Torch
@@ -18,7 +19,7 @@ let () =
   let image = Imagenet.load_image Sys.argv.(2) in
   let vs = Var_store.create ~name:"rn" ~device () in
   let model =
-    match Sys.argv.(1) with
+    match Caml.Filename.basename Sys.argv.(1) with
     | "densenet121.ot" -> Densenet.densenet121 vs ~num_classes:1000
     | "resnet18.ot" | _ -> Resnet.resnet18 vs ~num_classes:1000
   in

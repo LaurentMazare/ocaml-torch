@@ -39,16 +39,17 @@ let transition vs ~n ~input_dim output_dim =
 
 let densenet vs ~growth_rate ~block_config ~init_dim ~bn_size ~num_classes =
   let n str = N.(root / str) in
+  let f str = N.(n "features" / str) in
   let conv0 =
-    conv2d vs ~n:(n "conv0") ~ksize:7 ~stride:2 ~padding:3 ~input_dim:3 init_dim
+    conv2d vs ~n:(f "conv0") ~ksize:7 ~stride:2 ~padding:3 ~input_dim:3 init_dim
   in
-  let bn0 = Layer.batch_norm2d vs ~n:(n "norm0") init_dim in
+  let bn0 = Layer.batch_norm2d vs ~n:(f "norm0") init_dim in
   let num_features, layers =
     let last_index = List.length block_config - 1 in
     List.foldi block_config ~init:(init_dim, Layer.id_) ~f:(fun i (num_features, acc) num_layers ->
       let block =
         dense_block vs ~bn_size ~growth_rate ~num_layers ~input_dim:num_features
-          ~n:(Printf.sprintf "denseblock%d" (1 + i) |> n)
+          ~n:(Printf.sprintf "denseblock%d" (1 + i) |> f)
       in
       let num_features = num_features + num_layers * growth_rate in
       if i <> last_index
@@ -56,13 +57,13 @@ let densenet vs ~growth_rate ~block_config ~init_dim ~bn_size ~num_classes =
         let num_features = num_features / 2 in
         let trans =
           transition vs ~input_dim:num_features num_features
-            ~n:(Printf.sprintf "transition%d" (1 + i) |> n)
+            ~n:(Printf.sprintf "transition%d" (1 + i) |> f)
         in
         num_features, Layer.fold_ [ acc; block; trans ]
       else num_features, Layer.fold_ [ acc; block ])
   in
-  let bn5 = Layer.batch_norm2d vs ~n:(n "norm5") num_features in
-  let linear = Layer.linear vs ~n:(n "linear") ~input_dim:num_features num_classes in
+  let bn5 = Layer.batch_norm2d vs ~n:(f "norm5") num_features in
+  let linear = Layer.linear vs ~n:(n "classifier") ~input_dim:num_features num_classes in
   Layer.of_fn_ (fun xs ~is_training ->
     Layer.apply conv0 xs
     |> Layer.apply_ bn0 ~is_training
@@ -70,6 +71,10 @@ let densenet vs ~growth_rate ~block_config ~init_dim ~bn_size ~num_classes =
     |> Tensor.max_pool2d ~padding:(1, 1) ~stride:(2, 2) ~ksize:(3, 3)
     |> Layer.apply_ layers ~is_training
     |> Layer.apply_ bn5 ~is_training
+    |> fun features ->
+    Tensor.relu features
+    |> Tensor.avg_pool2d ~stride:(1, 1) ~ksize:(7, 7)
+    |> Tensor.view ~size:[ Tensor.shape features |> List.hd_exn; -1 ]
     |> Layer.apply linear)
 
 let densenet121 vs =
