@@ -17,7 +17,11 @@ let () =
   in
   let image = Imagenet.load_image Sys.argv.(2) in
   let vs = Var_store.create ~name:"rn" ~device () in
-  let model = Resnet.resnet18 vs ~num_classes:1000 in
+  let model =
+    match Sys.argv.(1) with
+    | "densenet121.ot" -> Densenet.densenet121 vs ~num_classes:1000
+    | "resnet18.ot" | _ -> Resnet.resnet18 vs ~num_classes:1000
+  in
   Stdio.printf "Loading weights from %s\n%!" Sys.argv.(1);
   Serialize.load_multi_ ~named_tensors:(Var_store.all_vars vs) ~filename:Sys.argv.(1);
   let probabilities =
