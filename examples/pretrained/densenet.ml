@@ -54,12 +54,11 @@ let densenet vs ~growth_rate ~block_config ~init_dim ~bn_size ~num_classes =
       let num_features = num_features + num_layers * growth_rate in
       if i <> last_index
       then
-        let num_features = num_features / 2 in
         let trans =
-          transition vs ~input_dim:num_features num_features
+          transition vs ~input_dim:num_features (num_features / 2)
             ~n:(Printf.sprintf "transition%d" (1 + i) |> f)
         in
-        num_features, Layer.fold_ [ acc; block; trans ]
+        num_features / 2, Layer.fold_ [ acc; block; trans ]
       else num_features, Layer.fold_ [ acc; block ])
   in
   let bn5 = Layer.batch_norm2d vs ~n:(f "norm5") num_features in

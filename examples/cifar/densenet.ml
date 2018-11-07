@@ -9,83 +9,89 @@
 open Base
 open Torch
 
-let batch_size = 32
-let epochs = 300
-let dropout_p = 0.2
-
+let batch_size = 64
+let epochs = 150
 let learning_rate ~epoch_idx =
-  if epoch_idx < 150
+  if epoch_idx < 50
   then 0.1
-  else if epoch_idx < 225
+  else if epoch_idx < 150
   then 0.01
   else 0.001
 
-let conv2d = Layer.conv2d_ ~use_bias:false
+let conv2d ?(stride=1) ?(padding=0) = Layer.conv2d_ ~stride ~padding ~use_bias:false
 
-let bn_relu_conv vs ~padding ~ksize ~input_dim output_dim =
-  let bn = Layer.batch_norm2d vs input_dim in
-  let conv2d = conv2d vs ~padding ~stride:1 ~ksize ~input_dim output_dim in
-  fun xs ~is_training ->
+let dense_layer vs ~n ~bn_size ~growth_rate ~input_dim =
+  let n str = N.(n / str) in
+  let inter_dim = bn_size * growth_rate in
+  let bn1 = Layer.batch_norm2d vs ~n:(n "norm1") input_dim in
+  let conv1 = conv2d vs ~n:(n "conv1") ~ksize:1 ~input_dim inter_dim in
+  let bn2 = Layer.batch_norm2d vs ~n:(n "norm2") inter_dim in
+  let conv2 =
+    conv2d vs ~n:(n "conv2") ~ksize:3 ~padding:1 ~input_dim:inter_dim growth_rate
+  in
+  Layer.of_fn_ (fun xs ~is_training ->
+    Layer.apply_ bn1 xs ~is_training
+    |> Tensor.relu
+    |> Layer.apply conv1
+    |> Layer.apply_ bn2 ~is_training
+    |> Tensor.relu
+    |> Layer.apply conv2
+    |> fun ys -> Tensor.cat [ xs; ys ] ~dim:1)
+
+let dense_block vs ~n ~bn_size ~growth_rate ~num_layers ~input_dim =
+  List.init num_layers ~f:(fun i ->
+    let n = N.(n / Printf.sprintf "denselayer%d" (1 + i)) in
+    dense_layer vs ~n ~bn_size ~growth_rate ~input_dim:(input_dim + i * growth_rate))
+  |> Layer.fold_
+
+let transition vs ~n ~input_dim output_dim =
+  let n str = N.(n / str) in
+  let bn = Layer.batch_norm2d vs ~n:(n "norm") input_dim in
+  let conv = conv2d vs ~n:(n "conv") ~ksize:1 ~input_dim output_dim in
+  Layer.of_fn_ (fun xs ~is_training ->
     Layer.apply_ bn xs ~is_training
     |> Tensor.relu
-    |> Layer.apply conv2d
-    |> Tensor.dropout ~p:dropout_p ~is_training
+    |> Layer.apply conv
+    |> Tensor.avg_pool2d ~stride:(2, 2) ~ksize:(2, 2))
 
-let bottleneck vs ~growth_rate ~input_dim =
-  let layer1 = bn_relu_conv vs ~padding:0 ~ksize:1 ~input_dim (4 * growth_rate) in
-  let layer2 = bn_relu_conv vs ~padding:0 ~ksize:1 ~input_dim:(4 * growth_rate) growth_rate in
-  fun xs ~is_training ->
-    layer1 xs ~is_training
-    |> layer2 ~is_training
-    |> fun ys -> Tensor.cat [ xs; ys ] ~dim:1
-
-let block_stack vs ~n ~growth_rate ~input_dim =
-  let blocks =
-    List.init n ~f:(fun block_index ->
-      bottleneck vs ~growth_rate ~input_dim:(input_dim + growth_rate * block_index))
+let densenet vs ~growth_rate ~block_config ~init_dim ~bn_size ~num_classes =
+  let n str = N.(root / str) in
+  let f str = N.(n "features" / str) in
+  let conv0 = conv2d vs ~n:(f "conv0") ~ksize:3 ~padding:2 ~input_dim:3 init_dim in
+  let bn0 = Layer.batch_norm2d vs ~n:(f "norm0") init_dim in
+  let num_features, layers =
+    let last_index = List.length block_config - 1 in
+    List.foldi block_config ~init:(init_dim, Layer.id_) ~f:(fun i (num_features, acc) num_layers ->
+      let block =
+        dense_block vs ~bn_size ~growth_rate ~num_layers ~input_dim:num_features
+          ~n:(Printf.sprintf "denseblock%d" (1 + i) |> f)
+      in
+      let num_features = num_features + num_layers * growth_rate in
+      if i <> last_index
+      then
+        let trans =
+          transition vs ~input_dim:num_features (num_features / 2)
+            ~n:(Printf.sprintf "transition%d" (1 + i) |> f)
+        in
+        num_features / 2, Layer.fold_ [ acc; block; trans ]
+      else num_features, Layer.fold_ [ acc; block ])
   in
-  let output_dim = input_dim + n * growth_rate in
-  output_dim,
-  fun xs ~is_training ->
-    List.fold blocks ~init:xs ~f:(fun acc block -> block acc ~is_training)
-
-let densenet vs ~n1 ~n2 ~n3 ~n4 ~growth_rate =
-  let interblock ~input_dim =
-    let output_dim = input_dim / 2 in
-    output_dim, bn_relu_conv vs ~padding:0 ~ksize:1 ~input_dim output_dim
-  in
-  let conv2d = conv2d vs ~padding:1 ~stride:1 ~ksize:3 ~input_dim:3 (2 * growth_rate) in
-  let dim, stack1 = block_stack vs ~n:n1 ~growth_rate ~input_dim:(2 * growth_rate) in
-  let dim, bn_relu_conv1 = interblock ~input_dim:dim in
-  let dim, stack2 = block_stack vs ~n:n2 ~growth_rate ~input_dim:dim in
-  let dim, bn_relu_conv2 = interblock ~input_dim:dim in
-  let dim, stack3 = block_stack vs ~n:n3 ~growth_rate ~input_dim:dim in
-  let dim, bn_relu_conv3 = interblock ~input_dim:dim in
-  let dim, stack4 = block_stack vs ~n:n4 ~growth_rate ~input_dim:dim in
-  let bn = Layer.batch_norm2d vs dim in
-  let linear = Layer.linear vs ~input_dim:dim Cifar_helper.label_count in
-  fun xs ~is_training ->
-    let batch_size = Tensor.shape xs |> List.hd_exn in
-    Tensor.((xs - f 0.5) * f 4.)
-    |> Tensor.reshape ~shape:Cifar_helper. [ -1; image_c; image_w; image_h ]
-    |> Layer.apply conv2d
-    |> stack1 ~is_training
-    |> bn_relu_conv1 ~is_training
-    |> Tensor.avg_pool2d ~ksize:(2, 2)
-    |> stack2 ~is_training
-    |> bn_relu_conv2 ~is_training
-    |> Tensor.avg_pool2d ~ksize:(2, 2)
-    |> stack3 ~is_training
-    |> bn_relu_conv3 ~is_training
-    |> Tensor.avg_pool2d ~ksize:(2, 2)
-    |> stack4 ~is_training
-    |> Layer.apply_ bn ~is_training
+  let bn5 = Layer.batch_norm2d vs ~n:(f "norm5") num_features in
+  let linear = Layer.linear vs ~n:(n "classifier") ~input_dim:num_features num_classes in
+  Layer.of_fn_ (fun xs ~is_training ->
+    Layer.apply conv0 xs
+    |> Layer.apply_ bn0 ~is_training
     |> Tensor.relu
-    |> Tensor.avg_pool2d ~ksize:(4, 4)
-    |> Tensor.reshape ~shape:[ batch_size; -1 ]
-    |> Layer.apply linear
+    |> Layer.apply_ layers ~is_training
+    |> Layer.apply_ bn5 ~is_training
+    |> fun features ->
+    Tensor.relu features
+    |> Tensor.avg_pool2d ~stride:(4, 4) ~ksize:(4, 4)
+    |> Tensor.view ~size:[ Tensor.shape features |> List.hd_exn; -1 ]
+    |> Layer.apply linear)
 
-let densenet121 = densenet ~n1:6 ~n2:12 ~n3:24 ~n4:16 ~growth_rate:12
+let densenet121 vs =
+  densenet vs ~growth_rate:32 ~init_dim:64 ~block_config:[ 6; 12; 24; 16 ] ~bn_size:4
 
 let () =
   let device =
@@ -97,7 +103,7 @@ let () =
   in
   let cifar = Cifar_helper.read_files ~with_caching:true () in
   let vs = Var_store.create ~name:"densenet" ~device () in
-  let model = densenet121 vs in
+  let model = densenet121 vs ~num_classes:10 in
   let sgd =
     Optimizer.sgd vs
       ~learning_rate:(learning_rate ~epoch_idx:0)
@@ -105,8 +111,8 @@ let () =
       ~weight_decay:5e-4
       ~nesterov:true
   in
-  let train_model = model ~is_training:true in
-  let test_model = model ~is_training:false in
+  let train_model xs = Layer.apply_ model xs ~is_training:true in
+  let test_model xs = Layer.apply_ model xs ~is_training:false in
   Checkpointing.loop ~start_index:1 ~end_index:epochs
     ~var_stores:[ vs ]
     ~checkpoint_base:"densenet.ot"
