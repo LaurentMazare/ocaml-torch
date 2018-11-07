@@ -178,3 +178,9 @@ let copy t =
   let t_ = view t ~size:(shape t) in
   copy_ t_ ~src:t;
   t_
+
+let print_shape ?(name="") t =
+  List.map (shape t) ~f:Int.to_string
+  |> String.concat ~sep:", "
+  |> Stdio.printf "%s<%s>\n%!" name
+

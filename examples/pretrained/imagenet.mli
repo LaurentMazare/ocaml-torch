@@ -1,6 +1,7 @@
 open Torch
 
 val load_image : string -> Tensor.t
+val load_images : dir:string -> Tensor.t
 
 module Classes : sig
   val count : int

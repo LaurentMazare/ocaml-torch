@@ -7,7 +7,7 @@ let resize_and_crop image_file ~f =
     [ "-resize"; "224x224^"
     ; "-gravity"; "center"
     ; "-crop"; "224x224+0+0"
-    ; image_file; tmp_file
+    ; Printf.sprintf "\"%s\"" image_file; tmp_file
     ]
   in
   let command = Printf.sprintf "convert %s" (String.concat args ~sep:" ") in
@@ -49,6 +49,22 @@ let load_image_ image_file =
   | _ -> failwith "unexpected pixmaps"
 
 let load_image image_file = resize_and_crop image_file ~f:load_image_
+
+let image_suffixes = [ ".jpg"; ".png" ]
+
+let load_images ~dir =
+  if not (Caml.Sys.is_directory dir)
+  then Printf.sprintf "not a directory %s" dir |> failwith;
+  Caml.Sys.readdir dir
+  |> Array.to_list
+  |> List.filter_map ~f:(fun filename ->
+    if List.exists image_suffixes ~f:(fun suffix -> String.is_suffix filename ~suffix)
+    then begin
+      Stdio.printf "<%s>\n%!" filename;
+      try Some (load_image (Caml.Filename.concat dir filename))
+      with _ -> None
+    end else None)
+  |> Tensor.cat ~dim:0
 
 module Classes = struct
   let count = 1000

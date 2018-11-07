@@ -119,3 +119,4 @@ val undefined : t Lazy.t
 
 val pp : Format.formatter -> t -> unit
 val copy : t -> t
+val print_shape : ?name:string -> t -> unit

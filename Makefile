@@ -10,6 +10,7 @@ ALL = examples/basics/torch_basics.exe \
       examples/cifar/preactresnet.exe \
       examples/cifar/densenet.exe \
       examples/char_rnn/char_rnn.exe \
+      examples/pretrained/finetuning.exe \
       examples/pretrained/predict.exe \
       bin/tensor_tools.exe
 

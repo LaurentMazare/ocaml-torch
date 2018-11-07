@@ -156,6 +156,8 @@ void at_load_multi(tensor *tensors, char **tensor_names, int ntensors, char *fil
 void at_load_callback(char *filename, void (*f)(char *, tensor)) {
   PROTECT(
     shared_ptr<torch::jit::script::Module> module = torch::jit::load(filename);
+    if (module == nullptr)
+      caml_failwith("torch::jit::load returned a nullptr");
     for (const auto &p : module->get_parameters()) {
       f((char*)p.key.c_str(), new torch::Tensor(*p.value.slot()));
     }

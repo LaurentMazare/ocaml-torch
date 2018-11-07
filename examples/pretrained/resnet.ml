@@ -53,7 +53,7 @@ let bottleneck_block vs ~n ~expansion ~stride ~input_dim output_dim =
     |> fun ys -> Tensor.(+) ys (Layer.apply_ downsample xs ~is_training)
     |> Tensor.relu)
 
-let resnet vs ~block ~layers:(c1, c2, c3, c4) ~num_classes =
+let resnet ?num_classes vs ~block ~layers:(c1, c2, c3, c4) =
   let n str = N.(root / str) in
   let block, e =
     match block with
@@ -74,7 +74,11 @@ let resnet vs ~block ~layers:(c1, c2, c3, c4) ~num_classes =
   let layer2 = make_layer ~n:(n "layer2") ~stride:2 ~cnt:c2 ~input_dim:(64  * e) 128 in
   let layer3 = make_layer ~n:(n "layer3") ~stride:2 ~cnt:c3 ~input_dim:(128 * e) 256 in
   let layer4 = make_layer ~n:(n "layer4") ~stride:2 ~cnt:c4 ~input_dim:(256 * e) 512 in
-  let fc = Layer.linear vs ~n:(n "fc") ~input_dim:(512 * e) num_classes in
+  let fc =
+    match num_classes with
+    | Some num_classes -> Layer.linear vs ~n:(n "fc") ~input_dim:(512 * e) num_classes
+    | None -> Layer.id
+  in
   Layer.of_fn_ (fun xs ~is_training ->
     let batch_size = Tensor.shape xs |> List.hd_exn in
     Layer.apply conv1 xs
@@ -89,8 +93,13 @@ let resnet vs ~block ~layers:(c1, c2, c3, c4) ~num_classes =
     |> Tensor.view ~size:[ batch_size; -1 ]
     |> Layer.apply fc)
 
-let resnet18 vs = resnet vs ~block:`basic ~layers:(2, 2, 2, 2)
-let resnet34 vs = resnet vs ~block:`basic ~layers:(3, 4, 6, 3)
-let resnet50 vs = resnet vs ~block:`bottleneck ~layers:(3, 4, 6, 3)
-let resnet101 vs = resnet vs ~block:`bottleneck ~layers:(3, 4, 23, 3)
-let resnet152 vs = resnet vs ~block:`bottleneck ~layers:(3, 8, 36, 3)
+let resnet18 ?num_classes vs =
+  resnet ?num_classes vs ~block:`basic ~layers:(2, 2, 2, 2)
+let resnet34 ?num_classes vs =
+  resnet ?num_classes vs ~block:`basic ~layers:(3, 4, 6, 3)
+let resnet50 ?num_classes vs =
+  resnet ?num_classes vs ~block:`bottleneck ~layers:(3, 4, 6, 3)
+let resnet101 ?num_classes vs =
+  resnet ?num_classes vs ~block:`bottleneck ~layers:(3, 4, 23, 3)
+let resnet152 ?num_classes vs =
+  resnet ?num_classes vs ~block:`bottleneck ~layers:(3, 8, 36, 3)
