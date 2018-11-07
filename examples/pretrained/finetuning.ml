@@ -12,6 +12,8 @@
 open Base
 open Torch
 
+let batch_size = 16
+
 let load_dataset path =
   Dataset_helper.read_with_cache
     ~cache_file:(Printf.sprintf "%s/cache.ot" path)
@@ -46,9 +48,35 @@ let () =
   let frozen_vs = Var_store.create ~name:"rn" () in
   let train_vs = Var_store.create ~name:"rn-vs" () in
   let model = Resnet.resnet18 frozen_vs in
-  let fc = Layer.linear train_vs ~input_dim:52 2 in
+  let fc = Layer.linear train_vs ~input_dim:512 2 in
   let model xs = Layer.apply_ model xs ~is_training:false |> Layer.apply fc in
   Stdio.printf "Loading weights from %s\n%!" Sys.argv.(1);
   Serialize.load_multi_ ~named_tensors:(Var_store.all_vars frozen_vs) ~filename:Sys.argv.(1);
-  ignore (model, ())
+  let sgd = Optimizer.sgd train_vs ~learning_rate:0.001 ~momentum:0.9 in
+  for epoch_idx = 1 to 15 do
+    let start_time = Unix.gettimeofday () in
+    let sum_loss = ref 0. in
+    Dataset_helper.iter dataset ~augmentation:`flip ~batch_size
+      ~f:(fun batch_idx ~batch_images ~batch_labels ->
+        Optimizer.zero_grad sgd;
+        let predicted = model batch_images in
+        (* Compute the cross-entropy loss. *)
+        let loss = Tensor.cross_entropy_for_logits predicted ~targets:batch_labels in
+        sum_loss := !sum_loss +. Tensor.float_value loss;
+        Stdio.printf "%d/%d %f\r%!"
+          (1 + batch_idx)
+          (Dataset_helper.batches_per_epoch dataset ~batch_size)
+          (!sum_loss /. Float.of_int (1 + batch_idx));
+        Tensor.backward loss;
+        Optimizer.step sgd);
 
+    (* Compute the validation error. *)
+    let test_accuracy =
+      Dataset_helper.batch_accuracy dataset `test ~batch_size ~predict:model
+    in
+    Stdio.printf "%d %.0fs %f %.2f%%\n%!"
+      epoch_idx
+      (Unix.gettimeofday () -. start_time)
+      (!sum_loss /. Float.of_int (Dataset_helper.batches_per_epoch dataset ~batch_size))
+      (100. *. test_accuracy);
+  done
