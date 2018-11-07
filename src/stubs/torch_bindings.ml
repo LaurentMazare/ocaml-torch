@@ -85,11 +85,11 @@ module C(F: Cstubs.FOREIGN) = struct
     let save = foreign "at_save" (t @-> string @-> returning void)
     let load = foreign "at_load" (string @-> returning t)
     let save_multi =
-      foreign "at_save_multi" (ptr t @-> ptr string @-> int @-> string @-> returning void)
+      foreign "at_save_multi" (ptr t @-> ptr (ptr char) @-> int @-> string @-> returning void)
     let load_multi =
-      foreign "at_load_multi" (ptr t @-> ptr string @-> int @-> string @-> returning void)
+      foreign "at_load_multi" (ptr t @-> ptr (ptr char) @-> int @-> string @-> returning void)
     let load_multi_ =
-      foreign "at_load_multi_" (ptr t @-> ptr string @-> int @-> string @-> returning void)
+      foreign "at_load_multi_" (ptr t @-> ptr (ptr char) @-> int @-> string @-> returning void)
     let load_callback =
       foreign
         "at_load_callback"

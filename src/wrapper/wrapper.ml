@@ -1,5 +1,18 @@
 open Ctypes
 
+let ptr_of_string str =
+  let len = String.length str in
+  let carray = CArray.make Ctypes.char (1 + len) in
+  String.iteri (fun i char -> CArray.set carray i char) str;
+  CArray.set carray len '\x00';
+  CArray.start carray
+
+let ptr_of_strings strings =
+  let strings = List.map ptr_of_string strings in
+  let start = CArray.(of_list (ptr char) strings |> start) in
+  Gc.finalise (fun _ -> ignore (Sys.opaque_identity start : _ pointer)) start;
+  start
+
 module Tensor = struct
   include Wrapper_generated
   open! C.Tensor
@@ -171,7 +184,7 @@ module Serialize = struct
     let names = List.map escape names in
     save_multi
       CArray.(of_list Wrapper_generated.C.Tensor.t tensors |> start)
-      CArray.(of_list string names |> start)
+      (ptr_of_strings names)
       (List.length named_tensors)
       filename
 
@@ -181,7 +194,7 @@ module Serialize = struct
     let tensors = CArray.make Wrapper_generated.C.Tensor.t ntensors in
     load_multi
       (CArray.start tensors)
-      CArray.(of_list string names |> start)
+      (ptr_of_strings names)
       ntensors
       filename;
     let tensors = CArray.to_list tensors in
@@ -193,7 +206,7 @@ module Serialize = struct
     let names = List.map escape names in
     load_multi_
       CArray.(of_list Wrapper_generated.C.Tensor.t tensors |> start)
-      CArray.(of_list string names |> start)
+      (ptr_of_strings names)
       (List.length named_tensors)
       filename
 
