@@ -46,7 +46,7 @@ let () =
   let dataset = load_dataset Sys.argv.(2) in
   Tensor.print_shape ~name:"train-images" dataset.train_images;
   Tensor.print_shape ~name:"test-images" dataset.test_images;
-  let frozen_vs = Var_store.create ~name:"rn" () in
+  let frozen_vs = Var_store.create ~frozen:true ~name:"rn" () in
   let train_vs = Var_store.create ~name:"rn-vs" () in
   let pretrained_model = Resnet.resnet18 frozen_vs in
   Stdio.printf "Loading weights from %s\n%!" Sys.argv.(1);
@@ -54,7 +54,6 @@ let () =
   (* Pre-compute the last layer of the pre-trained model on the whole dataset. *)
   Stdio.printf "Pre-computing activations, this can take a minute...\n%!";
   let dataset =
-    Var_store.freeze frozen_vs;
     Dataset_helper.map dataset ~batch_size:4 ~f:(fun _ ~batch_images ~batch_labels ->
       let activations = Layer.apply_ pretrained_model batch_images ~is_training:false in
       Tensor.copy activations, batch_labels)
