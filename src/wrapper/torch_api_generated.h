@@ -549,8 +549,6 @@ void atg_poisson(tensor *, tensor self);
 void atg_polygamma(tensor *, int64_t n, tensor self);
 void atg_polygamma_(tensor *, tensor self, int64_t n);
 void atg_polygamma_out(tensor *, tensor result, int64_t n, tensor self);
-void atg_potrf(tensor *, tensor self, int upper);
-void atg_potrf_out(tensor *, tensor output, tensor self, int upper);
 void atg_potri(tensor *, tensor self, int upper);
 void atg_potri_out(tensor *, tensor output, tensor self, int upper);
 void atg_potrs(tensor *, tensor self, tensor input2, int upper);

@@ -3992,20 +3992,6 @@ let polygamma_out result ~n self =
   Gc.finalise C.Tensor.free t0;
   t0
 
-let potrf self ~upper =
-  let out__ = CArray.make t 1 in
-  potrf (CArray.start out__) self (if upper then 1 else 0);
-  let t0 = CArray.get out__ 0 in
-  Gc.finalise C.Tensor.free t0;
-  t0
-
-let potrf_out ~output self ~upper =
-  let out__ = CArray.make t 1 in
-  potrf_out (CArray.start out__) output self (if upper then 1 else 0);
-  let t0 = CArray.get out__ 0 in
-  Gc.finalise C.Tensor.free t0;
-  t0
-
 let potri self ~upper =
   let out__ = CArray.make t 1 in
   potri (CArray.start out__) self (if upper then 1 else 0);

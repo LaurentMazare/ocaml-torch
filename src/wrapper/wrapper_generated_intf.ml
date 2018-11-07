@@ -3515,17 +3515,6 @@ module type S = sig
     t ->
     t
 
-  val potrf :
-    t ->
-    upper:bool ->
-    t
-
-  val potrf_out :
-    output:t ->
-    t ->
-    upper:bool ->
-    t
-
   val potri :
     t ->
     upper:bool ->

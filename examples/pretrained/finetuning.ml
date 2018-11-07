@@ -1,8 +1,9 @@
 (* Finetuning an ImageNet trained model.
-   This is similar to the PyTorch tutorial "Finetuning Torchvision Models"
-     https://download.pytorch.org/tutorial/hymenoptera_data.zip
+   This is based on the PyTorch tutorial "Finetuning Torchvision Models".
+   The final accuracy is ~94%.
+     https://pytorch.org/tutorials/beginner/finetuning_torchvision_models_tutorial.html
 
-   The dataset can be found here:
+   The ants and bees dataset can be found at the following link.
      https://download.pytorch.org/tutorial/hymenoptera_data.zip
 
    Network weights can be found here:
@@ -12,7 +13,7 @@
 open Base
 open Torch
 
-let batch_size = 16
+let batch_size = 8
 
 let load_dataset path =
   Dataset_helper.read_with_cache
@@ -47,28 +48,38 @@ let () =
   Tensor.print_shape ~name:"test-images" dataset.test_images;
   let frozen_vs = Var_store.create ~name:"rn" () in
   let train_vs = Var_store.create ~name:"rn-vs" () in
-  let model = Resnet.resnet18 frozen_vs in
-  let fc = Layer.linear train_vs ~input_dim:512 2 in
-  let model xs = Layer.apply_ model xs ~is_training:false |> Layer.apply fc in
+  let pretrained_model = Resnet.resnet18 frozen_vs in
   Stdio.printf "Loading weights from %s\n%!" Sys.argv.(1);
   Serialize.load_multi_ ~named_tensors:(Var_store.all_vars frozen_vs) ~filename:Sys.argv.(1);
+  (* Pre-compute the last layer of the pre-trained model on the whole dataset. *)
+  Stdio.printf "Pre-computing activations, this can take a minute...\n%!";
+  let dataset =
+    Var_store.freeze frozen_vs;
+    Dataset_helper.map dataset ~batch_size:4 ~f:(fun _ ~batch_images ~batch_labels ->
+      let activations = Layer.apply_ pretrained_model batch_images ~is_training:false in
+      Tensor.copy activations, batch_labels)
+  in
+  Tensor.print_shape ~name:"train-images" dataset.train_images;
+  Tensor.print_shape ~name:"test-images" dataset.test_images;
+  let fc1 = Layer.linear train_vs ~input_dim:512 2 in
+  let model xs = Layer.apply fc1 xs in
+
   let sgd = Optimizer.sgd train_vs ~learning_rate:0.001 ~momentum:0.9 in
-  for epoch_idx = 1 to 15 do
+  for epoch_idx = 1 to 20 do
     let start_time = Unix.gettimeofday () in
     let sum_loss = ref 0. in
-    Dataset_helper.iter dataset ~augmentation:`flip ~batch_size
-      ~f:(fun batch_idx ~batch_images ~batch_labels ->
-        Optimizer.zero_grad sgd;
-        let predicted = model batch_images in
-        (* Compute the cross-entropy loss. *)
-        let loss = Tensor.cross_entropy_for_logits predicted ~targets:batch_labels in
-        sum_loss := !sum_loss +. Tensor.float_value loss;
-        Stdio.printf "%d/%d %f\r%!"
-          (1 + batch_idx)
-          (Dataset_helper.batches_per_epoch dataset ~batch_size)
-          (!sum_loss /. Float.of_int (1 + batch_idx));
-        Tensor.backward loss;
-        Optimizer.step sgd);
+    Dataset_helper.iter dataset ~batch_size ~f:(fun batch_idx ~batch_images ~batch_labels ->
+      Optimizer.zero_grad sgd;
+      let predicted = model batch_images in
+      (* Compute the cross-entropy loss. *)
+      let loss = Tensor.cross_entropy_for_logits predicted ~targets:batch_labels in
+      sum_loss := !sum_loss +. Tensor.float_value loss;
+      Stdio.printf "%d/%d %f\r%!"
+        (1 + batch_idx)
+        (Dataset_helper.batches_per_epoch dataset ~batch_size)
+        (!sum_loss /. Float.of_int (1 + batch_idx));
+      Tensor.backward loss;
+      Optimizer.step sgd);
 
     (* Compute the validation error. *)
     let test_accuracy =

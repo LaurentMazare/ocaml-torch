@@ -3915,20 +3915,6 @@ void atg_polygamma_out(tensor *out__, tensor result, int64_t n, tensor self) {
   )
 }
 
-void atg_potrf(tensor *out__, tensor self, int upper) {
-  PROTECT(
-    auto outputs__ = torch::potrf(*self, (bool)upper);
-    out__[0] = new torch::Tensor(outputs__);
-  )
-}
-
-void atg_potrf_out(tensor *out__, tensor output, tensor self, int upper) {
-  PROTECT(
-    auto outputs__ = torch::potrf_out(*output, *self, (bool)upper);
-    out__[0] = new torch::Tensor(outputs__);
-  )
-}
-
 void atg_potri(tensor *out__, tensor self, int upper) {
   PROTECT(
     auto outputs__ = torch::potri(*self, (bool)upper);

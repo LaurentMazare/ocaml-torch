@@ -31,3 +31,6 @@ val new_var
     [name_option] is [None], otherwise [name_option] is used.
 *)
 val default_name : t -> N.t option -> string -> N.t
+
+val freeze : t -> unit
+val unfreeze : t -> unit

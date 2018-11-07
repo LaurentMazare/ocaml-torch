@@ -74,3 +74,10 @@ val random_crop : Tensor.t -> pad:int -> Tensor.t
 
 (** [shuffle t] returns [t] where training images and labels have been shuffled. *)
 val shuffle : t -> t
+
+val map
+  :  ?device:Torch_core.Device.t
+  -> t
+  -> f:(int -> batch_images:Tensor.t -> batch_labels:Tensor.t -> Tensor.t * Tensor.t)
+  -> batch_size:int
+  -> t

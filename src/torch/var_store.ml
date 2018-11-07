@@ -25,6 +25,14 @@ let default_name t name_option base =
 
 let trainable_vars t = t.trainable_tensors
 
+let freeze t =
+  List.iter (trainable_vars t) ~f:(fun tensor ->
+    ignore (Tensor.set_requires_grad tensor ~r:false : Tensor.t))
+
+let unfreeze t =
+  List.iter (trainable_vars t) ~f:(fun tensor ->
+    ignore (Tensor.set_requires_grad tensor ~r:true : Tensor.t))
+
 let all_vars t = Hashtbl.to_alist t.all_tensors_by_name
 
 let name t = t.name

@@ -9,7 +9,8 @@ let excluded_functions =
   Set.of_list (module String)
     [ "bincount"; "stft"; "group_norm"; "layer_norm"; "rot90"
     ; "multi_margin_loss"; "multi_margin_loss_out"; "sparse_coo_tensor"
-    ; "log_softmax_backward_data"; "softmax_backward_data" ]
+    ; "log_softmax_backward_data"; "softmax_backward_data"
+    ; "potrf"; "potrf_out" ]
 
 let excluded_prefixes = [ "_"; "thnn_"; "th_" ]
 

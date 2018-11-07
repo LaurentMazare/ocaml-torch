@@ -90,6 +90,14 @@ let train_batch ?device ?augmentation t ~batch_size ~batch_idx =
   in
   Tensor.to_device batch_images ?device, Tensor.to_device batch_labels ?device
 
+let test_batch ?device t ~batch_size ~batch_idx =
+  let { test_images; test_labels; _ } = t in
+  let test_size = Tensor.shape test_images |> List.hd_exn in
+  let start = Int.(%) (batch_size * batch_idx) (test_size - batch_size) in
+  let batch_images = Tensor.narrow test_images ~dim:0 ~start ~length:batch_size in
+  let batch_labels = Tensor.narrow test_labels ~dim:0 ~start ~length:batch_size in
+  Tensor.to_device batch_images ?device, Tensor.to_device batch_labels ?device
+
 let batch_accuracy ?device ?samples t train_or_test ~batch_size ~predict =
   let images, labels =
     match train_or_test with
@@ -133,6 +141,9 @@ let shuffle_ t =
 let batches_per_epoch t ~batch_size =
   (Tensor.shape t.train_images |> List.hd_exn) / batch_size
 
+let test_batches_per_epoch t ~batch_size =
+  (Tensor.shape t.test_images |> List.hd_exn) / batch_size
+
 let iter ?device ?augmentation ?(shuffle = true) t ~f ~batch_size =
   let t = if shuffle then shuffle_ t else t in
   for batch_idx = 0 to batches_per_epoch t ~batch_size - 1 do
@@ -142,5 +153,26 @@ let iter ?device ?augmentation ?(shuffle = true) t ~f ~batch_size =
     f batch_idx ~batch_images ~batch_labels;
     Caml.Gc.full_major ()
   done
+
+let map ?device t ~f ~batch_size =
+  let train_images, train_labels =
+    List.init (batches_per_epoch t ~batch_size) ~f:(fun batch_idx ->
+      let batch_images, batch_labels = train_batch ?device t ~batch_size ~batch_idx in
+      Caml.Gc.full_major ();
+      f batch_idx ~batch_images ~batch_labels)
+    |> List.unzip
+  in
+  let test_images, test_labels =
+    List.init (test_batches_per_epoch t ~batch_size) ~f:(fun batch_idx ->
+      let batch_images, batch_labels = test_batch ?device t ~batch_size ~batch_idx in
+      Caml.Gc.full_major ();
+      f batch_idx ~batch_images ~batch_labels)
+    |> List.unzip
+  in
+  { train_images = Tensor.cat train_images ~dim:0
+  ; train_labels = Tensor.cat train_labels ~dim:0
+  ; test_images = Tensor.cat test_images ~dim:0
+  ; test_labels = Tensor.cat test_labels ~dim:0
+  }
 
 let shuffle = shuffle_

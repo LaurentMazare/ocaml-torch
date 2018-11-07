@@ -2204,14 +2204,6 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_polygamma_out"
     (ptr t @-> t @-> int64_t @-> t @-> returning void)
 
-  let potrf =
-    foreign "atg_potrf"
-    (ptr t @-> t @-> int @-> returning void)
-
-  let potrf_out =
-    foreign "atg_potrf_out"
-    (ptr t @-> t @-> t @-> int @-> returning void)
-
   let potri =
     foreign "atg_potri"
     (ptr t @-> t @-> int @-> returning void)
