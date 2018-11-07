@@ -43,9 +43,12 @@ let () =
   let dataset = load_dataset Sys.argv.(2) in
   Tensor.print_shape ~name:"train-images" dataset.train_images;
   Tensor.print_shape ~name:"test-images" dataset.test_images;
-  let vs = Var_store.create ~name:"rn" () in
-  let model = Resnet.resnet18 vs ~num_classes:1000 in
+  let frozen_vs = Var_store.create ~name:"rn" () in
+  let train_vs = Var_store.create ~name:"rn-vs" () in
+  let model = Resnet.resnet18 frozen_vs in
+  let fc = Layer.linear train_vs ~input_dim:52 2 in
+  let model xs = Layer.apply_ model xs ~is_training:false |> Layer.apply fc in
   Stdio.printf "Loading weights from %s\n%!" Sys.argv.(1);
-  Serialize.load_multi_ ~named_tensors:(Var_store.all_vars vs) ~filename:Sys.argv.(1);
-  ignore model
+  Serialize.load_multi_ ~named_tensors:(Var_store.all_vars frozen_vs) ~filename:Sys.argv.(1);
+  ignore (model, ())
 
