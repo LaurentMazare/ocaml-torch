@@ -62,10 +62,10 @@ code](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/mnist/li
   [char-rnn](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/char_rnn)
   illustrating character level language modeling using Recurrent Neural Networks.
 * [Generative Adverserial Networks](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/gan).
+* [Finetuning a ResNet-18 model](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/pretrained/finetuning.ml).
 
 ## TODO
 
 * Use a GADT to add type constraints to tensor elements.
 * Make it easier to use/import datasets.
-* Add more complex examples.
 * Add an opam package (this may have to wait until libtorch has stable releases).
