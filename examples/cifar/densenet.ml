@@ -4,7 +4,7 @@
    The dataset can be downloaded from https://www.cs.toronto.edu/~kriz/cifar.html, files
    should be placed in the data/ directory.
 
-   This reaches xx% accuracy.
+   This reaches 94.2% accuracy.
 *)
 open Base
 open Torch
