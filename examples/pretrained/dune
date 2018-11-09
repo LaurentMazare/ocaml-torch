@@ -1,3 +1,3 @@
 (executables
   (names finetuning predict)
-  (libraries base imagelib torch_core torch stdio))
+  (libraries base torch_core torch torch_vision stdio))

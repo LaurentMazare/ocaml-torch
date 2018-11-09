@@ -5,6 +5,7 @@
 *)
 open Base
 open Torch
+open Torch_vision
 
 let () =
   if Array.length Sys.argv <> 3

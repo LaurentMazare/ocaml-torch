@@ -66,6 +66,31 @@ let load_images ~dir =
     end else None)
   |> Tensor.cat ~dim:0
 
+let load_dataset ~dir ~classes ~with_cache =
+  let read () =
+    let load tv s = load_images ~dir:(Printf.sprintf "%s/%s/%s" dir tv s) in
+    let load_tv tv =
+      List.mapi classes ~f:(fun class_index class_dir ->
+        let images = load tv class_dir in
+        let labels = Tensor.zeros [ Tensor.shape images |> List.hd_exn ] ~kind:Int64 in
+        Tensor.fill_int labels class_index;
+        images, labels)
+      |> List.unzip
+      |> fun (images, labels) ->
+      Tensor.cat images ~dim:0, Tensor.cat labels ~dim:0
+    in
+    let train_images, train_labels = load_tv "train" in
+    let test_images, test_labels = load_tv "val" in
+    { Dataset_helper.train_images
+    ; train_labels
+    ; test_images
+    ; test_labels
+    }
+  in
+  match with_cache with
+  | None -> read ()
+  | Some cache_file -> Dataset_helper.read_with_cache ~cache_file ~read
+
 module Classes = struct
   let count = 1000
 

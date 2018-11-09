@@ -81,3 +81,5 @@ val map
   -> f:(int -> batch_images:Tensor.t -> batch_labels:Tensor.t -> Tensor.t * Tensor.t)
   -> batch_size:int
   -> t
+
+val print_summary : t -> unit

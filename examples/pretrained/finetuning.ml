@@ -12,54 +12,37 @@
 
 open Base
 open Torch
+open Torch_vision
 
 let batch_size = 8
 
-let load_dataset path =
-  Dataset_helper.read_with_cache
-    ~cache_file:(Printf.sprintf "%s/cache.ot" path)
-    ~read:(fun () ->
-      let load s =
-        Imagenet.load_images ~dir:(Printf.sprintf "%s/%s" path s)
-      in
-      let train0 = load "train/ants" in
-      let train1 = load "train/bees" in
-      let val0 = load "val/ants" in
-      let val1 = load "val/bees" in
-      let labels img0 img1 =
-        let n0 = Tensor.shape img0 |> List.hd_exn in
-        let n1 = Tensor.shape img1 |> List.hd_exn in
-        Tensor.cat ~dim:0
-          [ Tensor.zeros [ n0 ] ~kind:Int64
-          ; Tensor.ones [ n1 ] ~kind:Int64
-          ]
-      in
-      { Dataset_helper.train_images = Tensor.cat [ train0; train1 ] ~dim:0
-      ; train_labels = labels train0 train1
-      ; test_images = Tensor.cat [ val0; val1 ] ~dim:0
-      ; test_labels = labels val0 val1
-      })
-
-let () =
-  if Array.length Sys.argv <> 3
-  then Printf.sprintf "usage: %s resnet18.ot dataset-path" Sys.argv.(0) |> failwith;
-  let dataset = load_dataset Sys.argv.(2) in
-  Tensor.print_shape ~name:"train-images" dataset.train_images;
-  Tensor.print_shape ~name:"test-images" dataset.test_images;
-  let frozen_vs = Var_store.create ~frozen:true ~name:"rn" () in
-  let train_vs = Var_store.create ~name:"rn-vs" () in
-  let pretrained_model = Resnet.resnet18 frozen_vs in
-  Stdio.printf "Loading weights from %s\n%!" Sys.argv.(1);
-  Serialize.load_multi_ ~named_tensors:(Var_store.all_vars frozen_vs) ~filename:Sys.argv.(1);
-  (* Pre-compute the last layer of the pre-trained model on the whole dataset. *)
-  Stdio.printf "Pre-computing activations, this can take a minute...\n%!";
+let precompute_activations dataset ~model_path =
+  (* Precompute the last layer of the pre-trained model on the whole dataset. *)
+  Stdio.printf "Precomputing activations, this can take a minute...\n%!";
   let dataset =
+    let frozen_vs = Var_store.create ~frozen:true ~name:"rn" () in
+    let pretrained_model = Resnet.resnet18 frozen_vs in
+    Stdio.printf "Loading weights from %s\n%!" model_path;
+    Serialize.load_multi_
+      ~named_tensors:(Var_store.all_vars frozen_vs) ~filename:model_path;
     Dataset_helper.map dataset ~batch_size:4 ~f:(fun _ ~batch_images ~batch_labels ->
       let activations = Layer.apply_ pretrained_model batch_images ~is_training:false in
       Tensor.copy activations, batch_labels)
   in
-  Tensor.print_shape ~name:"train-images" dataset.train_images;
-  Tensor.print_shape ~name:"test-images" dataset.test_images;
+  Dataset_helper.print_summary dataset;
+  dataset
+
+let () =
+  if Array.length Sys.argv <> 3
+  then Printf.sprintf "usage: %s resnet18.ot dataset-path" Sys.argv.(0) |> failwith;
+  let dataset =
+    Imagenet.load_dataset ~dir:Sys.argv.(2) ~classes:[ "ants"; "bees" ]
+      ~with_cache:(Some (Caml.Filename.concat Sys.argv.(2) "cache.ot"))
+  in
+  Dataset_helper.print_summary dataset;
+  let dataset = precompute_activations dataset ~model_path:Sys.argv.(1) in
+
+  let train_vs = Var_store.create ~name:"rn-vs" () in
   let fc1 = Layer.linear train_vs ~input_dim:512 2 in
   let model xs = Layer.apply fc1 xs in
 
@@ -67,18 +50,16 @@ let () =
   for epoch_idx = 1 to 20 do
     let start_time = Unix.gettimeofday () in
     let sum_loss = ref 0. in
-    Dataset_helper.iter dataset ~batch_size ~f:(fun batch_idx ~batch_images ~batch_labels ->
-      Optimizer.zero_grad sgd;
+    Dataset_helper.iter dataset ~batch_size ~f:(fun b_idx ~batch_images ~batch_labels ->
       let predicted = model batch_images in
       (* Compute the cross-entropy loss. *)
       let loss = Tensor.cross_entropy_for_logits predicted ~targets:batch_labels in
       sum_loss := !sum_loss +. Tensor.float_value loss;
       Stdio.printf "%d/%d %f\r%!"
-        (1 + batch_idx)
+        (1 + b_idx)
         (Dataset_helper.batches_per_epoch dataset ~batch_size)
-        (!sum_loss /. Float.of_int (1 + batch_idx));
-      Tensor.backward loss;
-      Optimizer.step sgd);
+        (!sum_loss /. Float.of_int (1 + b_idx));
+      Optimizer.backward_step sgd ~loss);
 
     (* Compute the validation error. *)
     let test_accuracy =
