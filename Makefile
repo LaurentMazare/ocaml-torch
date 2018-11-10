@@ -5,10 +5,7 @@ ALL = examples/basics/torch_basics.exe \
       examples/gan/mnist_gan.exe \
       examples/gan/mnist_cgan.exe \
       examples/gan/mnist_dcgan.exe \
-      examples/cifar/conv.exe \
-      examples/cifar/resnet.exe \
-      examples/cifar/preactresnet.exe \
-      examples/cifar/densenet.exe \
+      examples/cifar/cifar_train.exe \
       examples/char_rnn/char_rnn.exe \
       examples/pretrained/finetuning.exe \
       examples/pretrained/predict.exe \

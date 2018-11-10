@@ -1,3 +1,3 @@
 (executables
-  (names conv preactresnet resnet densenet)
+  (names cifar_train)
   (libraries base torch_core torch stdio))

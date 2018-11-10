@@ -11,7 +11,7 @@ open Torch
 
 let batch_size = 64
 let epochs = 150
-let learning_rate ~epoch_idx =
+let lr_schedule ~batch_idx:_ ~batches_per_epoch:_ ~epoch_idx =
   if epoch_idx < 50
   then 0.1
   else if epoch_idx < 150
@@ -91,57 +91,13 @@ let densenet vs ~growth_rate ~block_config ~init_dim ~bn_size ~num_classes =
     |> Layer.apply linear)
 
 let densenet121 vs =
-  densenet vs ~growth_rate:32 ~init_dim:64 ~block_config:[ 6; 12; 24; 16 ] ~bn_size:4
+  densenet vs
+    ~growth_rate:32 ~init_dim:64 ~block_config:[ 6; 12; 24; 16 ] ~bn_size:4 ~num_classes:10
 
-let () =
-  let device =
-    if Cuda.is_available ()
-    then begin
-      Stdio.printf "Using cuda, devices: %d\n%!" (Cuda.device_count ());
-      Torch_core.Device.Cuda
-    end else Cpu
-  in
-  let cifar = Cifar_helper.read_files ~with_caching:true () in
-  let vs = Var_store.create ~name:"densenet" ~device () in
-  let model = densenet121 vs ~num_classes:10 in
-  let sgd =
-    Optimizer.sgd vs
-      ~learning_rate:(learning_rate ~epoch_idx:0)
-      ~momentum:0.9
-      ~weight_decay:5e-4
-      ~nesterov:true
-  in
-  let train_model xs = Layer.apply_ model xs ~is_training:true in
-  let test_model xs = Layer.apply_ model xs ~is_training:false in
-  Checkpointing.loop ~start_index:1 ~end_index:epochs
-    ~var_stores:[ vs ]
-    ~checkpoint_base:"densenet.ot"
-    ~checkpoint_every:(`iters 10)
-    (fun ~index:epoch_idx ->
-      Optimizer.set_learning_rate sgd ~learning_rate:(learning_rate ~epoch_idx);
-      let start_time = Unix.gettimeofday () in
-      let sum_loss = ref 0. in
-      Dataset_helper.iter cifar ~augmentation:[`flip; `crop_with_pad 4] ~device ~batch_size
-        ~f:(fun batch_idx ~batch_images ~batch_labels ->
-          Optimizer.zero_grad sgd;
-          let predicted = train_model batch_images in
-          (* Compute the cross-entropy loss. *)
-          let loss = Tensor.cross_entropy_for_logits predicted ~targets:batch_labels in
-          sum_loss := !sum_loss +. Tensor.float_value loss;
-          Stdio.printf "%d/%d %f\r%!"
-            batch_idx
-            (Dataset_helper.batches_per_epoch cifar ~batch_size)
-            (!sum_loss /. Float.of_int (1 + batch_idx));
-          Tensor.backward loss;
-          Optimizer.step sgd);
-
-      (* Compute the validation error. *)
-      let test_accuracy =
-        Dataset_helper.batch_accuracy cifar `test ~device ~batch_size ~predict:test_model
-      in
-      Stdio.printf "%d %.0fs %f %.2f%%\n%!"
-        epoch_idx
-        (Unix.gettimeofday () -. start_time)
-        (!sum_loss /. Float.of_int (Dataset_helper.batches_per_epoch cifar ~batch_size))
-        (100. *. test_accuracy);
-    )
+let model vs =
+  { Model.model_name = "densenet121"
+  ; model = densenet121 vs
+  ; epochs
+  ; lr_schedule
+  ; batch_size
+  }
