@@ -268,4 +268,8 @@ int atc_cudnn_is_available() {
   PROTECT(return torch::cuda::cudnn_is_available();)
 }
 
+void atc_set_benchmark_cudnn(int b) {
+  at::globalContext().setBenchmarkCuDNN(b);
+}
+
 #include "torch_api_generated.cpp.h"

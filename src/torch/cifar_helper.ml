@@ -38,7 +38,7 @@ let read_file filename =
     for c = 0 to image_c - 1 do
       for w = 0 to image_w - 1 do
         for h = 0 to image_h - 1 do
-          (Float.of_int (read_byte in_channel) /. 256.)
+          4. *. (Float.of_int (read_byte in_channel) /. 255. -. 0.5)
           |> Bigarray.Genarray.set data [| sample; c; w; h |]
         done
       done

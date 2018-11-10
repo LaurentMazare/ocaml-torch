@@ -55,11 +55,8 @@ let random_flip t =
 
 let random_crop t ~pad =
   match Tensor.shape t with
-  | [ batch_size; dim_c; dim_h; dim_w ] as shape ->
-    let padded = Tensor.zeros [ batch_size; dim_c; dim_h + 2*pad; dim_w + 2*pad ] in
-    Tensor.narrow padded ~dim:2 ~start:pad ~length:dim_h
-    |> Tensor.narrow ~dim:3 ~start:pad ~length:dim_w
-    |> Tensor.copy_ ~src:t;
+  | [ batch_size; _; dim_h; dim_w ] as shape ->
+    let padded = Tensor.reflection_pad2d t ~padding:[ pad; pad; pad; pad ] in
     let output = Tensor.zeros shape in
     for batch_index = 0 to batch_size - 1 do
       let output_view = Tensor.narrow output ~dim:0 ~start:batch_index ~length:1 in

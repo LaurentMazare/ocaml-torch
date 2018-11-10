@@ -66,8 +66,7 @@ let resnet vs =
   let linear = Layer.linear vs ~input_dim:128 Cifar_helper.label_count in
   fun xs ~is_training ->
     let batch_size = Tensor.shape xs |> List.hd_exn in
-    Tensor.((xs - f 0.5) * f 4.)
-    |> Tensor.reshape ~shape:Cifar_helper. [ -1; image_c; image_w; image_h ]
+    Tensor.reshape xs ~shape:Cifar_helper. [ -1; image_c; image_w; image_h ]
     |> Layer.apply conv2d
     |> Layer.apply_ bn ~is_training
     |> Tensor.relu

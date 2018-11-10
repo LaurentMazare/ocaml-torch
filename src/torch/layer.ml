@@ -57,7 +57,7 @@ let linear ?n vs ?activation ?(use_bias=true) ~input_dim output_dim =
           ~name:N.(name / "bias")
       in
       fun xs -> Tensor.(mm xs (tr w) + b) |> apply ?activation
-    end else fun xs -> Tensor.(mm xs w) |> apply ?activation
+    end else fun xs -> Tensor.(mm xs (tr w)) |> apply ?activation
   in
   { apply }
 

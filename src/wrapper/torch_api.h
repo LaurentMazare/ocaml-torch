@@ -74,6 +74,7 @@ void ats_free(scalar);
 int atc_cuda_device_count();
 int atc_cuda_is_available();
 int atc_cudnn_is_available();
+void atc_set_benchmark_cudnn(int b);
 
 #include "torch_api_generated.h"
 

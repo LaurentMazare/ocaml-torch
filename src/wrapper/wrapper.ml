@@ -228,4 +228,5 @@ module Cuda = struct
   include Wrapper_generated.C.Cuda
   let is_available () = is_available () <> 0
   let cudnn_is_available () = cudnn_is_available () <> 0
+  let set_benchmark_cudnn b = set_benchmark_cudnn (if b then 1 else 0)
 end
