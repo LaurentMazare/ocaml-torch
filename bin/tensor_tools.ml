@@ -56,7 +56,7 @@ let pytorch_to_npz pytorch_src npz_dst =
     | Int -> write Bigarray.int32
     | Int64 -> write Bigarray.int64
     | _ ->
-      Printf.sprintf "unsupported tensor kind for %s" tensor_name |> failwith
+      Printf.failwithf "unsupported tensor kind for %s" tensor_name ()
   );
   Npy.Npz.close_out npz_file
 

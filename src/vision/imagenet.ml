@@ -15,9 +15,9 @@ let resize_and_crop image_file ~f =
     match Unix.system command with
     | WEXITED 0 -> ()
     | WEXITED i ->
-      Printf.sprintf "%s returns a non-zero exit code %d" command i |> failwith
-    | WSIGNALED i -> Printf.sprintf "%s killed by signal %d" command i |> failwith
-    | WSTOPPED i -> Printf.sprintf "%s stopped %d" command i |> failwith
+      Printf.failwithf "%s returns a non-zero exit code %d" command i ()
+    | WSIGNALED i -> Printf.failwithf "%s killed by signal %d" command i ()
+    | WSTOPPED i -> Printf.failwithf "%s stopped %d" command i ()
   end;
   Exn.protect
     ~f:(fun () -> f tmp_file)
@@ -54,7 +54,7 @@ let image_suffixes = [ ".jpg"; ".png" ]
 
 let load_images ~dir =
   if not (Caml.Sys.is_directory dir)
-  then Printf.sprintf "not a directory %s" dir |> failwith;
+  then Printf.failwithf "not a directory %s" dir ();
   Caml.Sys.readdir dir
   |> Array.to_list
   |> List.filter_map ~f:(fun filename ->
@@ -1103,10 +1103,8 @@ module Classes = struct
       | [ 1000 ] -> vs
       | [ 1; 1000 ] | [ 1; 1; 1000 ] -> Tensor.view vs ~size:[ 1000 ]
       | shape ->
-        List.map shape ~f:Int.to_string
-        |> String.concat ~sep:", "
-        |> Printf.sprintf "unexpected shape %s"
-        |> failwith
+        Printf.failwithf "unexpected shape %s"
+            (List.map shape ~f:Int.to_string |> String.concat ~sep:", ") ()
     in
     let _, indexes = Tensor.topk vs ~k ~dim:0 ~largest:true ~sorted:true in
     List.init k ~f:(fun i ->

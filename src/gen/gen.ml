@@ -12,8 +12,7 @@ let excluded_functions =
 let excluded_prefixes = [ "_"; "thnn_"; "th_" ]
 
 let yaml_error yaml ~msg =
-  Printf.sprintf "%s, %s" msg (Yaml.to_string_exn yaml)
-  |> failwith
+  Printf.failwithf "%s, %s" msg (Yaml.to_string_exn yaml) ()
 
 let extract_bool = function
   | `Bool b -> b
@@ -148,8 +147,7 @@ module Func = struct
       match t.args with
       | head :: tail -> Printf.sprintf "%s->%s(%s)" head.arg_name t.name (c_args_list tail)
       | [] ->
-        Printf.sprintf "Method calls should have at least one argument %s" t.name
-        |> failwith
+        Printf.failwithf "Method calls should have at least one argument %s" t.name ()
 
   let stubs_signature t =
     List.concat_map t.args ~f:(fun arg ->

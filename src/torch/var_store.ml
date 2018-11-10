@@ -67,9 +67,7 @@ let new_var ?(trainable=true) t ~shape ~init ~name =
   in
   let name = N.to_string name in
   if Hashtbl.mem t.all_tensors_by_name name
-  then begin
-    Printf.sprintf "multiple variable with name: %s" name |> failwith
-  end;
+  then Printf.failwithf "multiple variable with name: %s" name ();
   Hashtbl.add_exn t.all_tensors_by_name ~key:name ~data:tensor;
   if trainable
   then begin

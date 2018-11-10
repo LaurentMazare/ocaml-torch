@@ -9,7 +9,7 @@ open Torch_vision
 
 let () =
   if Array.length Sys.argv <> 3
-  then Printf.sprintf "usage: %s resnet18.ot input.png" Sys.argv.(0) |> failwith;
+  then Printf.failwithf "usage: %s resnet18.ot input.png" Sys.argv.(0) ();
   let device =
     if Cuda.is_available ()
     then begin
