@@ -27,7 +27,7 @@ let sample ~lstm ~linear ~dataset ~device =
         let state = Layer.Lstm.step lstm state prev_y in
         let sampled_y =
           Layer.apply linear (fst state)
-          |> Tensor.softmax
+          |> Tensor.softmax ~dim:(-1)
           |> Tensor.multinomial ~num_samples:1 ~replacement:false
         in
         let sampled_label = Tensor.get (Tensor.get sampled_y 0) 0 |> Tensor.int_value in

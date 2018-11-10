@@ -183,4 +183,3 @@ let print_shape ?(name="") t =
   List.map (shape t) ~f:Int.to_string
   |> String.concat ~sep:", "
   |> Stdio.printf "%s<%s>\n%!" name
-

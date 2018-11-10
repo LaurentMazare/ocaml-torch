@@ -7,10 +7,7 @@ open Stdio
 
 let excluded_functions =
   Set.of_list (module String)
-    [ "bincount"; "stft"; "group_norm"; "layer_norm"; "rot90"
-    ; "multi_margin_loss"; "multi_margin_loss_out"; "sparse_coo_tensor"
-    ; "log_softmax_backward_data"; "softmax_backward_data"
-    ; "potrf"; "potrf_out" ]
+    [ "multi_margin_loss"; "multi_margin_loss_out" ]
 
 let excluded_prefixes = [ "_"; "thnn_"; "th_" ]
 
@@ -332,7 +329,7 @@ let write_stubs funcs filename =
     p "  type scalar = unit ptr";
     p "  let scalar : scalar typ = ptr void";
     Map.iteri funcs ~f:(fun ~key:exported_name ~data:func ->
-      p "  let %s =" (Func.caml_name exported_name);
+      p "  let stubs_%s =" (Func.caml_name exported_name);
       p "    foreign \"atg_%s\"" exported_name;
       p "    (%s)" (Func.stubs_signature func);
       p "";
@@ -361,7 +358,7 @@ let write_wrapper funcs filename =
         let caml_name = Func.caml_name exported_name in
         pm "let %s %s =" caml_name (Func.caml_args func);
         pm "  let out__ = CArray.make t %d in" func.returns;
-        pm "  %s (CArray.start out__) %s;" caml_name (Func.caml_binding_args func);
+        pm "  stubs_%s (CArray.start out__) %s;" caml_name (Func.caml_binding_args func);
         for i = 0 to func.returns - 1 do
           pm "  let t%d = CArray.get out__ %d in" i i;
           pm "  Gc.finalise C.Tensor.free t%d;" i;

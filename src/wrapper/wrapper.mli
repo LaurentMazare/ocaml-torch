@@ -42,7 +42,9 @@ module Tensor : sig
   val sum : t -> t
   val mean : t -> t
   val argmax : t -> t
-  val softmax : t -> t
+  val softmax : t -> dim:int -> t
+  val log_softmax : t -> dim:int -> t
+  val scatter_ : t -> dim:int -> index:t -> src:t -> t
 
   val defined : t -> bool
 

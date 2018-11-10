@@ -8,3295 +8,3615 @@ module C(F: Cstubs.FOREIGN) = struct
   let t : t typ = ptr void
   type scalar = unit ptr
   let scalar : scalar typ = ptr void
-  let abs =
+  let stubs_abs =
     foreign "atg_abs"
     (ptr t @-> t @-> returning void)
 
-  let abs_ =
+  let stubs_abs_ =
     foreign "atg_abs_"
     (ptr t @-> t @-> returning void)
 
-  let abs_out =
+  let stubs_abs_out =
     foreign "atg_abs_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let acos =
+  let stubs_acos =
     foreign "atg_acos"
     (ptr t @-> t @-> returning void)
 
-  let acos_ =
+  let stubs_acos_ =
     foreign "atg_acos_"
     (ptr t @-> t @-> returning void)
 
-  let acos_out =
+  let stubs_acos_out =
     foreign "atg_acos_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let adaptive_avg_pool1d =
+  let stubs_adaptive_avg_pool1d =
     foreign "atg_adaptive_avg_pool1d"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let adaptive_avg_pool2d =
+  let stubs_adaptive_avg_pool2d =
     foreign "atg_adaptive_avg_pool2d"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let adaptive_avg_pool2d_backward =
+  let stubs_adaptive_avg_pool2d_backward =
     foreign "atg_adaptive_avg_pool2d_backward"
     (ptr t @-> t @-> t @-> returning void)
 
-  let adaptive_avg_pool2d_backward_out =
+  let stubs_adaptive_avg_pool2d_backward_out =
     foreign "atg_adaptive_avg_pool2d_backward_out"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let adaptive_avg_pool2d_forward =
+  let stubs_adaptive_avg_pool2d_forward =
     foreign "atg_adaptive_avg_pool2d_forward"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let adaptive_avg_pool2d_forward_out =
+  let stubs_adaptive_avg_pool2d_forward_out =
     foreign "atg_adaptive_avg_pool2d_forward_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let adaptive_avg_pool2d_out =
+  let stubs_adaptive_avg_pool2d_out =
     foreign "atg_adaptive_avg_pool2d_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let adaptive_avg_pool3d =
+  let stubs_adaptive_avg_pool3d =
     foreign "atg_adaptive_avg_pool3d"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let adaptive_avg_pool3d_backward =
+  let stubs_adaptive_avg_pool3d_backward =
     foreign "atg_adaptive_avg_pool3d_backward"
     (ptr t @-> t @-> t @-> returning void)
 
-  let adaptive_avg_pool3d_backward_out =
+  let stubs_adaptive_avg_pool3d_backward_out =
     foreign "atg_adaptive_avg_pool3d_backward_out"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let adaptive_avg_pool3d_forward =
+  let stubs_adaptive_avg_pool3d_forward =
     foreign "atg_adaptive_avg_pool3d_forward"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let adaptive_avg_pool3d_forward_out =
+  let stubs_adaptive_avg_pool3d_forward_out =
     foreign "atg_adaptive_avg_pool3d_forward_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let adaptive_avg_pool3d_out =
+  let stubs_adaptive_avg_pool3d_out =
     foreign "atg_adaptive_avg_pool3d_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let adaptive_max_pool1d =
+  let stubs_adaptive_max_pool1d =
     foreign "atg_adaptive_max_pool1d"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let adaptive_max_pool2d =
+  let stubs_adaptive_max_pool2d =
     foreign "atg_adaptive_max_pool2d"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let adaptive_max_pool2d_backward =
+  let stubs_adaptive_max_pool2d_backward =
     foreign "atg_adaptive_max_pool2d_backward"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let adaptive_max_pool2d_backward_out =
+  let stubs_adaptive_max_pool2d_backward_out =
     foreign "atg_adaptive_max_pool2d_backward_out"
     (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
-  let adaptive_max_pool2d_forward =
+  let stubs_adaptive_max_pool2d_forward =
     foreign "atg_adaptive_max_pool2d_forward"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let adaptive_max_pool2d_forward_out =
+  let stubs_adaptive_max_pool2d_forward_out =
     foreign "atg_adaptive_max_pool2d_forward_out"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let adaptive_max_pool2d_out =
+  let stubs_adaptive_max_pool2d_out =
     foreign "atg_adaptive_max_pool2d_out"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let adaptive_max_pool3d =
+  let stubs_adaptive_max_pool3d =
     foreign "atg_adaptive_max_pool3d"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let adaptive_max_pool3d_backward =
+  let stubs_adaptive_max_pool3d_backward =
     foreign "atg_adaptive_max_pool3d_backward"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let adaptive_max_pool3d_backward_out =
+  let stubs_adaptive_max_pool3d_backward_out =
     foreign "atg_adaptive_max_pool3d_backward_out"
     (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
-  let adaptive_max_pool3d_forward =
+  let stubs_adaptive_max_pool3d_forward =
     foreign "atg_adaptive_max_pool3d_forward"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let adaptive_max_pool3d_forward_out =
+  let stubs_adaptive_max_pool3d_forward_out =
     foreign "atg_adaptive_max_pool3d_forward_out"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let adaptive_max_pool3d_out =
+  let stubs_adaptive_max_pool3d_out =
     foreign "atg_adaptive_max_pool3d_out"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let add =
+  let stubs_add =
     foreign "atg_add"
     (ptr t @-> t @-> t @-> returning void)
 
-  let add1 =
+  let stubs_add1 =
     foreign "atg_add1"
     (ptr t @-> t @-> scalar @-> returning void)
 
-  let add_ =
+  let stubs_add_ =
     foreign "atg_add_"
     (ptr t @-> t @-> t @-> returning void)
 
-  let add_1 =
+  let stubs_add_1 =
     foreign "atg_add_1"
     (ptr t @-> t @-> scalar @-> returning void)
 
-  let add_out =
+  let stubs_add_out =
     foreign "atg_add_out"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let addbmm =
+  let stubs_addbmm =
     foreign "atg_addbmm"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let addbmm_ =
+  let stubs_addbmm_ =
     foreign "atg_addbmm_"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let addbmm_out =
+  let stubs_addbmm_out =
     foreign "atg_addbmm_out"
     (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
-  let addcdiv =
+  let stubs_addcdiv =
     foreign "atg_addcdiv"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let addcdiv_ =
+  let stubs_addcdiv_ =
     foreign "atg_addcdiv_"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let addcdiv_out =
+  let stubs_addcdiv_out =
     foreign "atg_addcdiv_out"
     (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
-  let addcmul =
+  let stubs_addcmul =
     foreign "atg_addcmul"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let addcmul_ =
+  let stubs_addcmul_ =
     foreign "atg_addcmul_"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let addcmul_out =
+  let stubs_addcmul_out =
     foreign "atg_addcmul_out"
     (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
-  let addmm =
+  let stubs_addmm =
     foreign "atg_addmm"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let addmm_ =
+  let stubs_addmm_ =
     foreign "atg_addmm_"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let addmm_out =
+  let stubs_addmm_out =
     foreign "atg_addmm_out"
     (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
-  let addmv =
+  let stubs_addmv =
     foreign "atg_addmv"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let addmv_ =
+  let stubs_addmv_ =
     foreign "atg_addmv_"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let addmv_out =
+  let stubs_addmv_out =
     foreign "atg_addmv_out"
     (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
-  let addr =
+  let stubs_addr =
     foreign "atg_addr"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let addr_ =
+  let stubs_addr_ =
     foreign "atg_addr_"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let addr_out =
+  let stubs_addr_out =
     foreign "atg_addr_out"
     (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
-  let alias =
+  let stubs_alias =
     foreign "atg_alias"
     (ptr t @-> t @-> returning void)
 
-  let all =
-    foreign "atg_all"
+  let stubs_all1 =
+    foreign "atg_all1"
     (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
-  let all_out =
+  let stubs_all2 =
+    foreign "atg_all2"
+    (ptr t @-> t @-> returning void)
+
+  let stubs_all_out =
     foreign "atg_all_out"
     (ptr t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
-  let alpha_dropout =
+  let stubs_alpha_dropout =
     foreign "atg_alpha_dropout"
     (ptr t @-> t @-> double @-> int @-> returning void)
 
-  let alpha_dropout_ =
+  let stubs_alpha_dropout_ =
     foreign "atg_alpha_dropout_"
     (ptr t @-> t @-> double @-> int @-> returning void)
 
-  let any =
-    foreign "atg_any"
+  let stubs_any1 =
+    foreign "atg_any1"
     (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
-  let any_out =
+  let stubs_any2 =
+    foreign "atg_any2"
+    (ptr t @-> t @-> returning void)
+
+  let stubs_any_out =
     foreign "atg_any_out"
     (ptr t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
-  let arange1 =
+  let stubs_arange1 =
     foreign "atg_arange1"
     (ptr t @-> scalar @-> scalar @-> int @-> int @-> returning void)
 
-  let arange2 =
+  let stubs_arange2 =
     foreign "atg_arange2"
     (ptr t @-> scalar @-> scalar @-> scalar @-> int @-> int @-> returning void)
 
-  let arange3 =
+  let stubs_arange3 =
     foreign "atg_arange3"
     (ptr t @-> scalar @-> int @-> int @-> returning void)
 
-  let arange_out1 =
+  let stubs_arange_out1 =
     foreign "atg_arange_out1"
     (ptr t @-> t @-> scalar @-> scalar @-> returning void)
 
-  let arange_out2 =
+  let stubs_arange_out2 =
     foreign "atg_arange_out2"
     (ptr t @-> t @-> scalar @-> scalar @-> scalar @-> returning void)
 
-  let arange_out3 =
+  let stubs_arange_out3 =
     foreign "atg_arange_out3"
     (ptr t @-> t @-> scalar @-> returning void)
 
-  let argmax1 =
+  let stubs_argmax1 =
     foreign "atg_argmax1"
     (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
-  let argmax2 =
+  let stubs_argmax2 =
     foreign "atg_argmax2"
     (ptr t @-> t @-> returning void)
 
-  let argmin1 =
+  let stubs_argmin1 =
     foreign "atg_argmin1"
     (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
-  let argmin2 =
+  let stubs_argmin2 =
     foreign "atg_argmin2"
     (ptr t @-> t @-> returning void)
 
-  let as_strided1 =
+  let stubs_as_strided1 =
     foreign "atg_as_strided1"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
-  let as_strided2 =
+  let stubs_as_strided2 =
     foreign "atg_as_strided2"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> returning void)
 
-  let as_strided_1 =
+  let stubs_as_strided_1 =
     foreign "atg_as_strided_1"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
-  let as_strided_2 =
+  let stubs_as_strided_2 =
     foreign "atg_as_strided_2"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> returning void)
 
-  let asin =
+  let stubs_asin =
     foreign "atg_asin"
     (ptr t @-> t @-> returning void)
 
-  let asin_ =
+  let stubs_asin_ =
     foreign "atg_asin_"
     (ptr t @-> t @-> returning void)
 
-  let asin_out =
+  let stubs_asin_out =
     foreign "atg_asin_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let atan =
+  let stubs_atan =
     foreign "atg_atan"
     (ptr t @-> t @-> returning void)
 
-  let atan2 =
+  let stubs_atan2 =
     foreign "atg_atan2"
     (ptr t @-> t @-> t @-> returning void)
 
-  let atan2_ =
+  let stubs_atan2_ =
     foreign "atg_atan2_"
     (ptr t @-> t @-> t @-> returning void)
 
-  let atan2_out =
+  let stubs_atan2_out =
     foreign "atg_atan2_out"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let atan_ =
+  let stubs_atan_ =
     foreign "atg_atan_"
     (ptr t @-> t @-> returning void)
 
-  let atan_out =
+  let stubs_atan_out =
     foreign "atg_atan_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let avg_pool1d =
+  let stubs_avg_pool1d =
     foreign "atg_avg_pool1d"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
-  let avg_pool2d =
+  let stubs_avg_pool2d =
     foreign "atg_avg_pool2d"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
-  let avg_pool2d_backward =
+  let stubs_avg_pool2d_backward =
     foreign "atg_avg_pool2d_backward"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
-  let avg_pool2d_backward_out =
+  let stubs_avg_pool2d_backward_out =
     foreign "atg_avg_pool2d_backward_out"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
-  let avg_pool2d_forward =
+  let stubs_avg_pool2d_forward =
     foreign "atg_avg_pool2d_forward"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
-  let avg_pool2d_forward_out =
+  let stubs_avg_pool2d_forward_out =
     foreign "atg_avg_pool2d_forward_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
-  let avg_pool2d_out =
+  let stubs_avg_pool2d_out =
     foreign "atg_avg_pool2d_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
-  let avg_pool3d =
+  let stubs_avg_pool3d =
     foreign "atg_avg_pool3d"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
-  let avg_pool3d_backward =
+  let stubs_avg_pool3d_backward =
     foreign "atg_avg_pool3d_backward"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
-  let avg_pool3d_backward_out =
+  let stubs_avg_pool3d_backward_out =
     foreign "atg_avg_pool3d_backward_out"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
-  let avg_pool3d_forward =
+  let stubs_avg_pool3d_forward =
     foreign "atg_avg_pool3d_forward"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
-  let avg_pool3d_forward_out =
+  let stubs_avg_pool3d_forward_out =
     foreign "atg_avg_pool3d_forward_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
-  let avg_pool3d_out =
+  let stubs_avg_pool3d_out =
     foreign "atg_avg_pool3d_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
-  let baddbmm =
+  let stubs_baddbmm =
     foreign "atg_baddbmm"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let baddbmm_ =
+  let stubs_baddbmm_ =
     foreign "atg_baddbmm_"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let baddbmm_out =
+  let stubs_baddbmm_out =
     foreign "atg_baddbmm_out"
     (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
-  let bartlett_window1 =
+  let stubs_bartlett_window1 =
     foreign "atg_bartlett_window1"
     (ptr t @-> int64_t @-> int @-> int @-> returning void)
 
-  let bartlett_window2 =
+  let stubs_bartlett_window2 =
     foreign "atg_bartlett_window2"
     (ptr t @-> int64_t @-> int @-> int @-> int @-> returning void)
 
-  let batch_norm =
+  let stubs_batch_norm =
     foreign "atg_batch_norm"
     (ptr t @-> t @-> t @-> t @-> t @-> t @-> int @-> double @-> double @-> int @-> returning void)
 
-  let bernoulli1 =
+  let stubs_bernoulli1 =
     foreign "atg_bernoulli1"
     (ptr t @-> t @-> returning void)
 
-  let bernoulli2 =
+  let stubs_bernoulli2 =
     foreign "atg_bernoulli2"
     (ptr t @-> t @-> double @-> returning void)
 
-  let bernoulli_ =
+  let stubs_bernoulli_ =
     foreign "atg_bernoulli_"
     (ptr t @-> t @-> t @-> returning void)
 
-  let bernoulli_1 =
+  let stubs_bernoulli_1 =
     foreign "atg_bernoulli_1"
     (ptr t @-> t @-> double @-> returning void)
 
-  let bernoulli_out =
+  let stubs_bernoulli_out =
     foreign "atg_bernoulli_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let bilinear =
+  let stubs_bilinear =
     foreign "atg_bilinear"
     (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
-  let binary_cross_entropy =
+  let stubs_binary_cross_entropy =
     foreign "atg_binary_cross_entropy"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let binary_cross_entropy_backward =
+  let stubs_binary_cross_entropy_backward =
     foreign "atg_binary_cross_entropy_backward"
     (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let binary_cross_entropy_backward_out =
+  let stubs_binary_cross_entropy_backward_out =
     foreign "atg_binary_cross_entropy_backward_out"
     (ptr t @-> t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let binary_cross_entropy_forward =
+  let stubs_binary_cross_entropy_forward =
     foreign "atg_binary_cross_entropy_forward"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let binary_cross_entropy_forward_out =
+  let stubs_binary_cross_entropy_forward_out =
     foreign "atg_binary_cross_entropy_forward_out"
     (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let binary_cross_entropy_out =
+  let stubs_binary_cross_entropy_out =
     foreign "atg_binary_cross_entropy_out"
     (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let blackman_window1 =
+  let stubs_binary_cross_entropy_with_logits =
+    foreign "atg_binary_cross_entropy_with_logits"
+    (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
+
+  let stubs_binary_cross_entropy_with_logits_backward =
+    foreign "atg_binary_cross_entropy_with_logits_backward"
+    (ptr t @-> t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
+
+  let stubs_bincount =
+    foreign "atg_bincount"
+    (ptr t @-> t @-> t @-> int64_t @-> returning void)
+
+  let stubs_blackman_window1 =
     foreign "atg_blackman_window1"
     (ptr t @-> int64_t @-> int @-> int @-> returning void)
 
-  let blackman_window2 =
+  let stubs_blackman_window2 =
     foreign "atg_blackman_window2"
     (ptr t @-> int64_t @-> int @-> int @-> int @-> returning void)
 
-  let bmm =
+  let stubs_bmm =
     foreign "atg_bmm"
     (ptr t @-> t @-> t @-> returning void)
 
-  let bmm_out =
+  let stubs_bmm_out =
     foreign "atg_bmm_out"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let cat =
+  let stubs_btrifact =
+    foreign "atg_btrifact"
+    (ptr t @-> t @-> int @-> returning void)
+
+  let stubs_btrifact_out =
+    foreign "atg_btrifact_out"
+    (ptr t @-> t @-> t @-> t @-> int @-> returning void)
+
+  let stubs_btrifact_with_info =
+    foreign "atg_btrifact_with_info"
+    (ptr t @-> t @-> int @-> returning void)
+
+  let stubs_btrifact_with_info_out =
+    foreign "atg_btrifact_with_info_out"
+    (ptr t @-> t @-> t @-> t @-> t @-> int @-> returning void)
+
+  let stubs_btrisolve =
+    foreign "atg_btrisolve"
+    (ptr t @-> t @-> t @-> t @-> returning void)
+
+  let stubs_btrisolve_out =
+    foreign "atg_btrisolve_out"
+    (ptr t @-> t @-> t @-> t @-> t @-> returning void)
+
+  let stubs_cat =
     foreign "atg_cat"
     (ptr t @-> ptr t @-> int @-> int64_t @-> returning void)
 
-  let cat_out =
+  let stubs_cat_out =
     foreign "atg_cat_out"
     (ptr t @-> t @-> ptr t @-> int @-> int64_t @-> returning void)
 
-  let cauchy_ =
+  let stubs_cauchy_ =
     foreign "atg_cauchy_"
     (ptr t @-> t @-> double @-> double @-> returning void)
 
-  let ceil =
+  let stubs_ceil =
     foreign "atg_ceil"
     (ptr t @-> t @-> returning void)
 
-  let ceil_ =
+  let stubs_ceil_ =
     foreign "atg_ceil_"
     (ptr t @-> t @-> returning void)
 
-  let ceil_out =
+  let stubs_ceil_out =
     foreign "atg_ceil_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let celu =
+  let stubs_celu =
     foreign "atg_celu"
     (ptr t @-> t @-> returning void)
 
-  let celu_ =
+  let stubs_celu_ =
     foreign "atg_celu_"
     (ptr t @-> t @-> returning void)
 
-  let clamp =
+  let stubs_chain_matmul =
+    foreign "atg_chain_matmul"
+    (ptr t @-> ptr t @-> int @-> returning void)
+
+  let stubs_cholesky =
+    foreign "atg_cholesky"
+    (ptr t @-> t @-> int @-> returning void)
+
+  let stubs_cholesky_out =
+    foreign "atg_cholesky_out"
+    (ptr t @-> t @-> t @-> int @-> returning void)
+
+  let stubs_clamp =
     foreign "atg_clamp"
-    (ptr t @-> t @-> scalar @-> scalar @-> returning void)
+    (ptr t @-> t @-> returning void)
 
-  let clamp_ =
+  let stubs_clamp_ =
     foreign "atg_clamp_"
-    (ptr t @-> t @-> scalar @-> scalar @-> returning void)
+    (ptr t @-> t @-> returning void)
 
-  let clamp_max =
+  let stubs_clamp_max =
     foreign "atg_clamp_max"
     (ptr t @-> t @-> scalar @-> returning void)
 
-  let clamp_max_ =
+  let stubs_clamp_max_ =
     foreign "atg_clamp_max_"
     (ptr t @-> t @-> scalar @-> returning void)
 
-  let clamp_max_out =
+  let stubs_clamp_max_out =
     foreign "atg_clamp_max_out"
     (ptr t @-> t @-> t @-> scalar @-> returning void)
 
-  let clamp_min =
+  let stubs_clamp_min =
     foreign "atg_clamp_min"
     (ptr t @-> t @-> scalar @-> returning void)
 
-  let clamp_min_ =
+  let stubs_clamp_min_ =
     foreign "atg_clamp_min_"
     (ptr t @-> t @-> scalar @-> returning void)
 
-  let clamp_min_out =
+  let stubs_clamp_min_out =
     foreign "atg_clamp_min_out"
     (ptr t @-> t @-> t @-> scalar @-> returning void)
 
-  let clamp_out =
+  let stubs_clamp_out =
     foreign "atg_clamp_out"
-    (ptr t @-> t @-> t @-> scalar @-> scalar @-> returning void)
+    (ptr t @-> t @-> t @-> returning void)
 
-  let clone =
+  let stubs_clone =
     foreign "atg_clone"
     (ptr t @-> t @-> returning void)
 
-  let coalesce =
+  let stubs_coalesce =
     foreign "atg_coalesce"
     (ptr t @-> t @-> returning void)
 
-  let contiguous =
+  let stubs_constant_pad_nd =
+    foreign "atg_constant_pad_nd"
+    (ptr t @-> t @-> ptr long @-> int @-> returning void)
+
+  let stubs_contiguous =
     foreign "atg_contiguous"
     (ptr t @-> t @-> returning void)
 
-  let conv1d =
+  let stubs_conv1d =
     foreign "atg_conv1d"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> returning void)
 
-  let conv2d =
+  let stubs_conv2d =
     foreign "atg_conv2d"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> returning void)
 
-  let conv3d =
+  let stubs_conv3d =
     foreign "atg_conv3d"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> returning void)
 
-  let conv_tbc =
+  let stubs_conv_tbc =
     foreign "atg_conv_tbc"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let conv_tbc_backward =
+  let stubs_conv_tbc_backward =
     foreign "atg_conv_tbc_backward"
     (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let conv_transpose1d =
+  let stubs_conv_transpose1d =
     foreign "atg_conv_transpose1d"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> ptr long @-> int @-> returning void)
 
-  let conv_transpose2d =
+  let stubs_conv_transpose2d =
     foreign "atg_conv_transpose2d"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> ptr long @-> int @-> returning void)
 
-  let conv_transpose3d =
+  let stubs_conv_transpose3d =
     foreign "atg_conv_transpose3d"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> ptr long @-> int @-> returning void)
 
-  let convolution =
+  let stubs_convolution =
     foreign "atg_convolution"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> ptr long @-> int @-> int64_t @-> returning void)
 
-  let copy_sparse_to_sparse_ =
+  let stubs_copy_sparse_to_sparse_ =
     foreign "atg_copy_sparse_to_sparse_"
     (ptr t @-> t @-> t @-> int @-> returning void)
 
-  let cos =
+  let stubs_cos =
     foreign "atg_cos"
     (ptr t @-> t @-> returning void)
 
-  let cos_ =
+  let stubs_cos_ =
     foreign "atg_cos_"
     (ptr t @-> t @-> returning void)
 
-  let cos_out =
+  let stubs_cos_out =
     foreign "atg_cos_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let cosh =
+  let stubs_cosh =
     foreign "atg_cosh"
     (ptr t @-> t @-> returning void)
 
-  let cosh_ =
+  let stubs_cosh_ =
     foreign "atg_cosh_"
     (ptr t @-> t @-> returning void)
 
-  let cosh_out =
+  let stubs_cosh_out =
     foreign "atg_cosh_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let cosine_embedding_loss =
+  let stubs_cosine_embedding_loss =
     foreign "atg_cosine_embedding_loss"
     (ptr t @-> t @-> t @-> t @-> double @-> int64_t @-> returning void)
 
-  let cross =
+  let stubs_cross =
     foreign "atg_cross"
     (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
-  let cross_out =
+  let stubs_cross_out =
     foreign "atg_cross_out"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let ctc_loss1 =
+  let stubs_ctc_loss1 =
     foreign "atg_ctc_loss1"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int64_t @-> returning void)
 
-  let ctc_loss2 =
+  let stubs_ctc_loss2 =
     foreign "atg_ctc_loss2"
     (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
 
-  let cudnn_affine_grid_generator =
+  let stubs_cudnn_affine_grid_generator =
     foreign "atg_cudnn_affine_grid_generator"
     (ptr t @-> t @-> int64_t @-> int64_t @-> int64_t @-> int64_t @-> returning void)
 
-  let cudnn_affine_grid_generator_backward =
+  let stubs_cudnn_affine_grid_generator_backward =
     foreign "atg_cudnn_affine_grid_generator_backward"
     (ptr t @-> t @-> int64_t @-> int64_t @-> int64_t @-> int64_t @-> returning void)
 
-  let cudnn_batch_norm =
+  let stubs_cudnn_batch_norm =
     foreign "atg_cudnn_batch_norm"
     (ptr t @-> t @-> t @-> t @-> t @-> t @-> int @-> double @-> double @-> returning void)
 
-  let cudnn_batch_norm_backward =
+  let stubs_cudnn_batch_norm_backward =
     foreign "atg_cudnn_batch_norm_backward"
     (ptr t @-> t @-> t @-> t @-> t @-> t @-> t @-> t @-> double @-> returning void)
 
-  let cudnn_convolution =
+  let stubs_cudnn_convolution =
     foreign "atg_cudnn_convolution"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning void)
 
-  let cudnn_convolution_backward_bias =
+  let stubs_cudnn_convolution_backward_bias =
     foreign "atg_cudnn_convolution_backward_bias"
     (ptr t @-> t @-> returning void)
 
-  let cudnn_convolution_backward_input =
+  let stubs_cudnn_convolution_backward_input =
     foreign "atg_cudnn_convolution_backward_input"
     (ptr t @-> ptr long @-> int @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning void)
 
-  let cudnn_convolution_backward_weight =
+  let stubs_cudnn_convolution_backward_weight =
     foreign "atg_cudnn_convolution_backward_weight"
     (ptr t @-> ptr long @-> int @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning void)
 
-  let cudnn_convolution_transpose =
+  let stubs_cudnn_convolution_transpose =
     foreign "atg_cudnn_convolution_transpose"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning void)
 
-  let cudnn_convolution_transpose_backward_bias =
+  let stubs_cudnn_convolution_transpose_backward_bias =
     foreign "atg_cudnn_convolution_transpose_backward_bias"
     (ptr t @-> t @-> returning void)
 
-  let cudnn_convolution_transpose_backward_input =
+  let stubs_cudnn_convolution_transpose_backward_input =
     foreign "atg_cudnn_convolution_transpose_backward_input"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning void)
 
-  let cudnn_convolution_transpose_backward_weight =
+  let stubs_cudnn_convolution_transpose_backward_weight =
     foreign "atg_cudnn_convolution_transpose_backward_weight"
     (ptr t @-> ptr long @-> int @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning void)
 
-  let cudnn_grid_sampler =
+  let stubs_cudnn_grid_sampler =
     foreign "atg_cudnn_grid_sampler"
     (ptr t @-> t @-> t @-> returning void)
 
-  let cudnn_grid_sampler_backward =
+  let stubs_cudnn_grid_sampler_backward =
     foreign "atg_cudnn_grid_sampler_backward"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let cumprod1 =
+  let stubs_cumprod1 =
     foreign "atg_cumprod1"
     (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
-  let cumprod2 =
+  let stubs_cumprod2 =
     foreign "atg_cumprod2"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let cumprod_out1 =
+  let stubs_cumprod_out1 =
     foreign "atg_cumprod_out1"
     (ptr t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
-  let cumprod_out2 =
+  let stubs_cumprod_out2 =
     foreign "atg_cumprod_out2"
     (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
-  let cumsum1 =
+  let stubs_cumsum1 =
     foreign "atg_cumsum1"
     (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
-  let cumsum2 =
+  let stubs_cumsum2 =
     foreign "atg_cumsum2"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let cumsum_out1 =
+  let stubs_cumsum_out1 =
     foreign "atg_cumsum_out1"
     (ptr t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
-  let cumsum_out2 =
+  let stubs_cumsum_out2 =
     foreign "atg_cumsum_out2"
     (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
-  let det =
+  let stubs_det =
     foreign "atg_det"
     (ptr t @-> t @-> returning void)
 
-  let detach =
+  let stubs_detach =
     foreign "atg_detach"
     (ptr t @-> t @-> returning void)
 
-  let detach_ =
+  let stubs_detach_ =
     foreign "atg_detach_"
     (ptr t @-> t @-> returning void)
 
-  let diag =
+  let stubs_diag =
     foreign "atg_diag"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let diag_out =
+  let stubs_diag_embed =
+    foreign "atg_diag_embed"
+    (ptr t @-> t @-> int64_t @-> int64_t @-> int64_t @-> returning void)
+
+  let stubs_diag_out =
     foreign "atg_diag_out"
     (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
-  let diagflat =
+  let stubs_diagflat =
     foreign "atg_diagflat"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let diagonal =
+  let stubs_diagonal =
     foreign "atg_diagonal"
     (ptr t @-> t @-> int64_t @-> int64_t @-> int64_t @-> returning void)
 
-  let digamma =
+  let stubs_digamma =
     foreign "atg_digamma"
     (ptr t @-> t @-> returning void)
 
-  let digamma_ =
+  let stubs_digamma_ =
     foreign "atg_digamma_"
     (ptr t @-> t @-> returning void)
 
-  let digamma_out =
+  let stubs_digamma_out =
     foreign "atg_digamma_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let div =
+  let stubs_dist =
+    foreign "atg_dist"
+    (ptr t @-> t @-> t @-> returning void)
+
+  let stubs_div =
     foreign "atg_div"
     (ptr t @-> t @-> t @-> returning void)
 
-  let div1 =
+  let stubs_div1 =
     foreign "atg_div1"
     (ptr t @-> t @-> scalar @-> returning void)
 
-  let div_ =
+  let stubs_div_ =
     foreign "atg_div_"
     (ptr t @-> t @-> t @-> returning void)
 
-  let div_1 =
+  let stubs_div_1 =
     foreign "atg_div_1"
     (ptr t @-> t @-> scalar @-> returning void)
 
-  let div_out =
+  let stubs_div_out =
     foreign "atg_div_out"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let dot =
+  let stubs_dot =
     foreign "atg_dot"
     (ptr t @-> t @-> t @-> returning void)
 
-  let dot_out =
+  let stubs_dot_out =
     foreign "atg_dot_out"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let dropout =
+  let stubs_dropout =
     foreign "atg_dropout"
     (ptr t @-> t @-> double @-> int @-> returning void)
 
-  let dropout_ =
+  let stubs_dropout_ =
     foreign "atg_dropout_"
     (ptr t @-> t @-> double @-> int @-> returning void)
 
-  let eig =
+  let stubs_eig =
     foreign "atg_eig"
     (ptr t @-> t @-> int @-> returning void)
 
-  let eig_out =
+  let stubs_eig_out =
     foreign "atg_eig_out"
     (ptr t @-> t @-> t @-> t @-> int @-> returning void)
 
-  let elu =
+  let stubs_elu =
     foreign "atg_elu"
     (ptr t @-> t @-> returning void)
 
-  let elu_ =
+  let stubs_elu_ =
     foreign "atg_elu_"
     (ptr t @-> t @-> returning void)
 
-  let elu_out =
+  let stubs_elu_out =
     foreign "atg_elu_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let embedding =
+  let stubs_embedding =
     foreign "atg_embedding"
     (ptr t @-> t @-> t @-> int64_t @-> int @-> int @-> returning void)
 
-  let embedding_backward =
+  let stubs_embedding_backward =
     foreign "atg_embedding_backward"
     (ptr t @-> t @-> t @-> int64_t @-> int64_t @-> int @-> int @-> returning void)
 
-  let embedding_bag =
+  let stubs_embedding_bag =
     foreign "atg_embedding_bag"
     (ptr t @-> t @-> t @-> t @-> int @-> int64_t @-> int @-> returning void)
 
-  let embedding_dense_backward =
+  let stubs_embedding_dense_backward =
     foreign "atg_embedding_dense_backward"
     (ptr t @-> t @-> t @-> int64_t @-> int64_t @-> int @-> returning void)
 
-  let embedding_renorm_ =
+  let stubs_embedding_renorm_ =
     foreign "atg_embedding_renorm_"
     (ptr t @-> t @-> t @-> double @-> double @-> returning void)
 
-  let embedding_sparse_backward =
+  let stubs_embedding_sparse_backward =
     foreign "atg_embedding_sparse_backward"
     (ptr t @-> t @-> t @-> int64_t @-> int64_t @-> int @-> returning void)
 
-  let empty =
+  let stubs_empty =
     foreign "atg_empty"
     (ptr t @-> ptr long @-> int @-> int @-> int @-> returning void)
 
-  let empty_like1 =
+  let stubs_empty_like1 =
     foreign "atg_empty_like1"
     (ptr t @-> t @-> returning void)
 
-  let empty_like2 =
+  let stubs_empty_like2 =
     foreign "atg_empty_like2"
     (ptr t @-> t @-> int @-> int @-> returning void)
 
-  let empty_out =
+  let stubs_empty_out =
     foreign "atg_empty_out"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let empty_strided =
+  let stubs_empty_strided =
     foreign "atg_empty_strided"
     (ptr t @-> ptr long @-> int @-> ptr long @-> int @-> int @-> int @-> returning void)
 
-  let eq =
+  let stubs_eq =
     foreign "atg_eq"
     (ptr t @-> t @-> t @-> returning void)
 
-  let eq_ =
+  let stubs_eq1 =
+    foreign "atg_eq1"
+    (ptr t @-> t @-> scalar @-> returning void)
+
+  let stubs_eq_ =
     foreign "atg_eq_"
     (ptr t @-> t @-> t @-> returning void)
 
-  let eq_out =
-    foreign "atg_eq_out"
+  let stubs_eq_1 =
+    foreign "atg_eq_1"
+    (ptr t @-> t @-> scalar @-> returning void)
+
+  let stubs_eq_out1 =
+    foreign "atg_eq_out1"
+    (ptr t @-> t @-> t @-> scalar @-> returning void)
+
+  let stubs_eq_out2 =
+    foreign "atg_eq_out2"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let erf =
+  let stubs_erf =
     foreign "atg_erf"
     (ptr t @-> t @-> returning void)
 
-  let erf_ =
+  let stubs_erf_ =
     foreign "atg_erf_"
     (ptr t @-> t @-> returning void)
 
-  let erf_out =
+  let stubs_erf_out =
     foreign "atg_erf_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let erfc =
+  let stubs_erfc =
     foreign "atg_erfc"
     (ptr t @-> t @-> returning void)
 
-  let erfc_ =
+  let stubs_erfc_ =
     foreign "atg_erfc_"
     (ptr t @-> t @-> returning void)
 
-  let erfc_out =
+  let stubs_erfc_out =
     foreign "atg_erfc_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let erfinv =
+  let stubs_erfinv =
     foreign "atg_erfinv"
     (ptr t @-> t @-> returning void)
 
-  let erfinv_ =
+  let stubs_erfinv_ =
     foreign "atg_erfinv_"
     (ptr t @-> t @-> returning void)
 
-  let erfinv_out =
+  let stubs_erfinv_out =
     foreign "atg_erfinv_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let exp =
+  let stubs_exp =
     foreign "atg_exp"
     (ptr t @-> t @-> returning void)
 
-  let exp_ =
+  let stubs_exp_ =
     foreign "atg_exp_"
     (ptr t @-> t @-> returning void)
 
-  let exp_out =
+  let stubs_exp_out =
     foreign "atg_exp_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let expand =
+  let stubs_expand =
     foreign "atg_expand"
     (ptr t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
-  let expand_as =
+  let stubs_expand_as =
     foreign "atg_expand_as"
     (ptr t @-> t @-> t @-> returning void)
 
-  let expm1 =
+  let stubs_expm1 =
     foreign "atg_expm1"
     (ptr t @-> t @-> returning void)
 
-  let expm1_ =
+  let stubs_expm1_ =
     foreign "atg_expm1_"
     (ptr t @-> t @-> returning void)
 
-  let expm1_out =
+  let stubs_expm1_out =
     foreign "atg_expm1_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let exponential_ =
+  let stubs_exponential_ =
     foreign "atg_exponential_"
     (ptr t @-> t @-> double @-> returning void)
 
-  let eye1 =
+  let stubs_eye1 =
     foreign "atg_eye1"
     (ptr t @-> int64_t @-> int @-> int @-> returning void)
 
-  let eye2 =
+  let stubs_eye2 =
     foreign "atg_eye2"
     (ptr t @-> int64_t @-> int64_t @-> int @-> int @-> returning void)
 
-  let eye_out1 =
+  let stubs_eye_out1 =
     foreign "atg_eye_out1"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let eye_out2 =
+  let stubs_eye_out2 =
     foreign "atg_eye_out2"
     (ptr t @-> t @-> int64_t @-> int64_t @-> returning void)
 
-  let feature_alpha_dropout =
+  let stubs_feature_alpha_dropout =
     foreign "atg_feature_alpha_dropout"
     (ptr t @-> t @-> double @-> int @-> returning void)
 
-  let feature_alpha_dropout_ =
+  let stubs_feature_alpha_dropout_ =
     foreign "atg_feature_alpha_dropout_"
     (ptr t @-> t @-> double @-> int @-> returning void)
 
-  let feature_dropout =
+  let stubs_feature_dropout =
     foreign "atg_feature_dropout"
     (ptr t @-> t @-> double @-> int @-> returning void)
 
-  let feature_dropout_ =
+  let stubs_feature_dropout_ =
     foreign "atg_feature_dropout_"
     (ptr t @-> t @-> double @-> int @-> returning void)
 
-  let fft =
+  let stubs_fft =
     foreign "atg_fft"
     (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
-  let fill_ =
+  let stubs_fill_ =
     foreign "atg_fill_"
     (ptr t @-> t @-> t @-> returning void)
 
-  let fill_1 =
+  let stubs_fill_1 =
     foreign "atg_fill_1"
     (ptr t @-> t @-> scalar @-> returning void)
 
-  let flatten =
+  let stubs_flatten =
     foreign "atg_flatten"
     (ptr t @-> t @-> int64_t @-> int64_t @-> returning void)
 
-  let flip =
+  let stubs_flip =
     foreign "atg_flip"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let floor =
+  let stubs_floor =
     foreign "atg_floor"
     (ptr t @-> t @-> returning void)
 
-  let floor_ =
+  let stubs_floor_ =
     foreign "atg_floor_"
     (ptr t @-> t @-> returning void)
 
-  let floor_out =
+  let stubs_floor_out =
     foreign "atg_floor_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let fmod =
+  let stubs_fmod =
     foreign "atg_fmod"
     (ptr t @-> t @-> t @-> returning void)
 
-  let fmod_ =
+  let stubs_fmod1 =
+    foreign "atg_fmod1"
+    (ptr t @-> t @-> scalar @-> returning void)
+
+  let stubs_fmod_ =
     foreign "atg_fmod_"
     (ptr t @-> t @-> t @-> returning void)
 
-  let fmod_out =
-    foreign "atg_fmod_out"
+  let stubs_fmod_1 =
+    foreign "atg_fmod_1"
+    (ptr t @-> t @-> scalar @-> returning void)
+
+  let stubs_fmod_out1 =
+    foreign "atg_fmod_out1"
+    (ptr t @-> t @-> t @-> scalar @-> returning void)
+
+  let stubs_fmod_out2 =
+    foreign "atg_fmod_out2"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let frac =
+  let stubs_frac =
     foreign "atg_frac"
     (ptr t @-> t @-> returning void)
 
-  let frac_ =
+  let stubs_frac_ =
     foreign "atg_frac_"
     (ptr t @-> t @-> returning void)
 
-  let frac_out =
+  let stubs_frac_out =
     foreign "atg_frac_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let fractional_max_pool2d =
+  let stubs_fractional_max_pool2d =
     foreign "atg_fractional_max_pool2d"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> t @-> returning void)
 
-  let fractional_max_pool2d_backward =
+  let stubs_fractional_max_pool2d_backward =
     foreign "atg_fractional_max_pool2d_backward"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> t @-> returning void)
 
-  let fractional_max_pool2d_backward_out =
+  let stubs_fractional_max_pool2d_backward_out =
     foreign "atg_fractional_max_pool2d_backward_out"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> t @-> returning void)
 
-  let fractional_max_pool2d_forward =
+  let stubs_fractional_max_pool2d_forward =
     foreign "atg_fractional_max_pool2d_forward"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> t @-> returning void)
 
-  let fractional_max_pool2d_forward_out =
+  let stubs_fractional_max_pool2d_forward_out =
     foreign "atg_fractional_max_pool2d_forward_out"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> t @-> returning void)
 
-  let fractional_max_pool2d_out =
+  let stubs_fractional_max_pool2d_out =
     foreign "atg_fractional_max_pool2d_out"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> t @-> returning void)
 
-  let frobenius_norm1 =
+  let stubs_frobenius_norm1 =
     foreign "atg_frobenius_norm1"
     (ptr t @-> t @-> returning void)
 
-  let frobenius_norm2 =
+  let stubs_frobenius_norm2 =
     foreign "atg_frobenius_norm2"
     (ptr t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
-  let frobenius_norm_out =
+  let stubs_frobenius_norm_out =
     foreign "atg_frobenius_norm_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
-  let full =
+  let stubs_full =
     foreign "atg_full"
     (ptr t @-> ptr long @-> int @-> scalar @-> int @-> int @-> returning void)
 
-  let full_like1 =
+  let stubs_full_like1 =
     foreign "atg_full_like1"
     (ptr t @-> t @-> scalar @-> returning void)
 
-  let full_like2 =
+  let stubs_full_like2 =
     foreign "atg_full_like2"
     (ptr t @-> t @-> scalar @-> int @-> int @-> returning void)
 
-  let full_out =
+  let stubs_full_out =
     foreign "atg_full_out"
     (ptr t @-> t @-> ptr long @-> int @-> scalar @-> returning void)
 
-  let gather =
+  let stubs_gather =
     foreign "atg_gather"
     (ptr t @-> t @-> int64_t @-> t @-> returning void)
 
-  let gather_out =
+  let stubs_gather_out =
     foreign "atg_gather_out"
     (ptr t @-> t @-> t @-> int64_t @-> t @-> returning void)
 
-  let ge =
+  let stubs_ge =
     foreign "atg_ge"
     (ptr t @-> t @-> t @-> returning void)
 
-  let ge_ =
+  let stubs_ge1 =
+    foreign "atg_ge1"
+    (ptr t @-> t @-> scalar @-> returning void)
+
+  let stubs_ge_ =
     foreign "atg_ge_"
     (ptr t @-> t @-> t @-> returning void)
 
-  let ge_out =
-    foreign "atg_ge_out"
+  let stubs_ge_1 =
+    foreign "atg_ge_1"
+    (ptr t @-> t @-> scalar @-> returning void)
+
+  let stubs_ge_out1 =
+    foreign "atg_ge_out1"
+    (ptr t @-> t @-> t @-> scalar @-> returning void)
+
+  let stubs_ge_out2 =
+    foreign "atg_ge_out2"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let gels =
+  let stubs_gels =
     foreign "atg_gels"
     (ptr t @-> t @-> t @-> returning void)
 
-  let gels_out =
+  let stubs_gels_out =
     foreign "atg_gels_out"
     (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
-  let geometric_ =
+  let stubs_geometric_ =
     foreign "atg_geometric_"
     (ptr t @-> t @-> double @-> returning void)
 
-  let geqrf =
+  let stubs_geqrf =
     foreign "atg_geqrf"
     (ptr t @-> t @-> returning void)
 
-  let geqrf_out =
+  let stubs_geqrf_out =
     foreign "atg_geqrf_out"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let ger =
+  let stubs_ger =
     foreign "atg_ger"
     (ptr t @-> t @-> t @-> returning void)
 
-  let ger_out =
+  let stubs_ger_out =
     foreign "atg_ger_out"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let gesv =
+  let stubs_gesv =
     foreign "atg_gesv"
     (ptr t @-> t @-> t @-> returning void)
 
-  let gesv_out =
+  let stubs_gesv_out =
     foreign "atg_gesv_out"
     (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
-  let glu =
+  let stubs_glu =
     foreign "atg_glu"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let glu_backward =
+  let stubs_glu_backward =
     foreign "atg_glu_backward"
     (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
-  let glu_backward_out =
+  let stubs_glu_backward_out =
     foreign "atg_glu_backward_out"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let glu_forward =
+  let stubs_glu_forward =
     foreign "atg_glu_forward"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let glu_forward_out =
+  let stubs_glu_forward_out =
     foreign "atg_glu_forward_out"
     (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
-  let glu_out =
+  let stubs_glu_out =
     foreign "atg_glu_out"
     (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
-  let grad =
+  let stubs_grad =
     foreign "atg_grad"
     (ptr t @-> t @-> returning void)
 
-  let grid_sampler =
+  let stubs_grid_sampler =
     foreign "atg_grid_sampler"
     (ptr t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
 
-  let grid_sampler_2d =
+  let stubs_grid_sampler_2d =
     foreign "atg_grid_sampler_2d"
     (ptr t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
 
-  let grid_sampler_2d_backward =
+  let stubs_grid_sampler_2d_backward =
     foreign "atg_grid_sampler_2d_backward"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
 
-  let grid_sampler_3d =
+  let stubs_grid_sampler_3d =
     foreign "atg_grid_sampler_3d"
     (ptr t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
 
-  let grid_sampler_3d_backward =
+  let stubs_grid_sampler_3d_backward =
     foreign "atg_grid_sampler_3d_backward"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
 
-  let gru1 =
+  let stubs_group_norm =
+    foreign "atg_group_norm"
+    (ptr t @-> t @-> int64_t @-> t @-> t @-> double @-> int @-> returning void)
+
+  let stubs_gru1 =
     foreign "atg_gru1"
     (ptr t @-> t @-> t @-> ptr t @-> int @-> int @-> int64_t @-> double @-> int @-> int @-> int @-> returning void)
 
-  let gru2 =
+  let stubs_gru2 =
     foreign "atg_gru2"
     (ptr t @-> t @-> t @-> t @-> ptr t @-> int @-> int @-> int64_t @-> double @-> int @-> int @-> returning void)
 
-  let gru_cell =
+  let stubs_gru_cell =
     foreign "atg_gru_cell"
     (ptr t @-> t @-> t @-> t @-> t @-> t @-> t @-> returning void)
 
-  let gt =
+  let stubs_gt =
     foreign "atg_gt"
     (ptr t @-> t @-> t @-> returning void)
 
-  let gt_ =
+  let stubs_gt1 =
+    foreign "atg_gt1"
+    (ptr t @-> t @-> scalar @-> returning void)
+
+  let stubs_gt_ =
     foreign "atg_gt_"
     (ptr t @-> t @-> t @-> returning void)
 
-  let gt_out =
-    foreign "atg_gt_out"
+  let stubs_gt_1 =
+    foreign "atg_gt_1"
+    (ptr t @-> t @-> scalar @-> returning void)
+
+  let stubs_gt_out1 =
+    foreign "atg_gt_out1"
+    (ptr t @-> t @-> t @-> scalar @-> returning void)
+
+  let stubs_gt_out2 =
+    foreign "atg_gt_out2"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let hamming_window1 =
+  let stubs_hamming_window1 =
     foreign "atg_hamming_window1"
     (ptr t @-> int64_t @-> int @-> int @-> returning void)
 
-  let hamming_window2 =
+  let stubs_hamming_window2 =
     foreign "atg_hamming_window2"
     (ptr t @-> int64_t @-> int @-> int @-> int @-> returning void)
 
-  let hamming_window3 =
+  let stubs_hamming_window3 =
     foreign "atg_hamming_window3"
     (ptr t @-> int64_t @-> int @-> double @-> int @-> int @-> returning void)
 
-  let hamming_window4 =
+  let stubs_hamming_window4 =
     foreign "atg_hamming_window4"
     (ptr t @-> int64_t @-> int @-> double @-> double @-> int @-> int @-> returning void)
 
-  let hann_window1 =
+  let stubs_hann_window1 =
     foreign "atg_hann_window1"
     (ptr t @-> int64_t @-> int @-> int @-> returning void)
 
-  let hann_window2 =
+  let stubs_hann_window2 =
     foreign "atg_hann_window2"
     (ptr t @-> int64_t @-> int @-> int @-> int @-> returning void)
 
-  let hardshrink =
+  let stubs_hardshrink =
     foreign "atg_hardshrink"
     (ptr t @-> t @-> returning void)
 
-  let hardshrink_backward =
+  let stubs_hardshrink_backward =
     foreign "atg_hardshrink_backward"
     (ptr t @-> t @-> t @-> scalar @-> returning void)
 
-  let hardtanh =
+  let stubs_hardtanh =
     foreign "atg_hardtanh"
     (ptr t @-> t @-> returning void)
 
-  let hardtanh_ =
+  let stubs_hardtanh_ =
     foreign "atg_hardtanh_"
     (ptr t @-> t @-> returning void)
 
-  let hardtanh_out =
+  let stubs_hardtanh_out =
     foreign "atg_hardtanh_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let hinge_embedding_loss =
+  let stubs_hinge_embedding_loss =
     foreign "atg_hinge_embedding_loss"
     (ptr t @-> t @-> t @-> double @-> int64_t @-> returning void)
 
-  let histc =
+  let stubs_histc =
     foreign "atg_histc"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let histc_out =
+  let stubs_histc_out =
     foreign "atg_histc_out"
     (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
-  let hspmm =
+  let stubs_hspmm =
     foreign "atg_hspmm"
     (ptr t @-> t @-> t @-> returning void)
 
-  let hspmm_out =
+  let stubs_hspmm_out =
     foreign "atg_hspmm_out"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let ifft =
+  let stubs_ifft =
     foreign "atg_ifft"
     (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
-  let index =
+  let stubs_index =
     foreign "atg_index"
     (ptr t @-> t @-> ptr t @-> int @-> returning void)
 
-  let index_add_ =
+  let stubs_index_add_ =
     foreign "atg_index_add_"
     (ptr t @-> t @-> int64_t @-> t @-> t @-> returning void)
 
-  let index_copy_ =
+  let stubs_index_copy_ =
     foreign "atg_index_copy_"
     (ptr t @-> t @-> int64_t @-> t @-> t @-> returning void)
 
-  let index_fill_ =
-    foreign "atg_index_fill_"
+  let stubs_index_fill_1 =
+    foreign "atg_index_fill_1"
+    (ptr t @-> t @-> int64_t @-> t @-> scalar @-> returning void)
+
+  let stubs_index_fill_2 =
+    foreign "atg_index_fill_2"
     (ptr t @-> t @-> int64_t @-> t @-> t @-> returning void)
 
-  let index_put =
+  let stubs_index_put =
     foreign "atg_index_put"
     (ptr t @-> t @-> ptr t @-> int @-> t @-> returning void)
 
-  let index_put_ =
+  let stubs_index_put_ =
     foreign "atg_index_put_"
     (ptr t @-> t @-> ptr t @-> int @-> t @-> returning void)
 
-  let index_select =
+  let stubs_index_select =
     foreign "atg_index_select"
     (ptr t @-> t @-> int64_t @-> t @-> returning void)
 
-  let index_select_out =
+  let stubs_index_select_out =
     foreign "atg_index_select_out"
     (ptr t @-> t @-> t @-> int64_t @-> t @-> returning void)
 
-  let instance_norm =
+  let stubs_indices =
+    foreign "atg_indices"
+    (ptr t @-> t @-> returning void)
+
+  let stubs_instance_norm =
     foreign "atg_instance_norm"
     (ptr t @-> t @-> t @-> t @-> t @-> t @-> int @-> double @-> double @-> int @-> returning void)
 
-  let inverse =
+  let stubs_inverse =
     foreign "atg_inverse"
     (ptr t @-> t @-> returning void)
 
-  let inverse_out =
+  let stubs_inverse_out =
     foreign "atg_inverse_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let irfft =
+  let stubs_irfft =
     foreign "atg_irfft"
     (ptr t @-> t @-> int64_t @-> int @-> int @-> ptr long @-> int @-> returning void)
 
-  let isclose =
+  let stubs_isclose =
     foreign "atg_isclose"
     (ptr t @-> t @-> t @-> double @-> double @-> int @-> returning void)
 
-  let kl_div =
+  let stubs_kl_div =
     foreign "atg_kl_div"
     (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
-  let kl_div_backward =
+  let stubs_kl_div_backward =
     foreign "atg_kl_div_backward"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let kthvalue =
+  let stubs_kthvalue =
     foreign "atg_kthvalue"
     (ptr t @-> t @-> int64_t @-> int64_t @-> int @-> returning void)
 
-  let kthvalue_out =
+  let stubs_kthvalue_out =
     foreign "atg_kthvalue_out"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> int @-> returning void)
 
-  let l1_loss =
+  let stubs_l1_loss =
     foreign "atg_l1_loss"
     (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
-  let l1_loss_backward =
+  let stubs_l1_loss_backward =
     foreign "atg_l1_loss_backward"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let l1_loss_backward_out =
+  let stubs_l1_loss_backward_out =
     foreign "atg_l1_loss_backward_out"
     (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let l1_loss_forward =
+  let stubs_l1_loss_forward =
     foreign "atg_l1_loss_forward"
     (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
-  let l1_loss_forward_out =
+  let stubs_l1_loss_forward_out =
     foreign "atg_l1_loss_forward_out"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let l1_loss_out =
+  let stubs_l1_loss_out =
     foreign "atg_l1_loss_out"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let le =
+  let stubs_layer_norm =
+    foreign "atg_layer_norm"
+    (ptr t @-> t @-> ptr long @-> int @-> t @-> t @-> double @-> int @-> returning void)
+
+  let stubs_le =
     foreign "atg_le"
     (ptr t @-> t @-> t @-> returning void)
 
-  let le_ =
+  let stubs_le1 =
+    foreign "atg_le1"
+    (ptr t @-> t @-> scalar @-> returning void)
+
+  let stubs_le_ =
     foreign "atg_le_"
     (ptr t @-> t @-> t @-> returning void)
 
-  let le_out =
-    foreign "atg_le_out"
+  let stubs_le_1 =
+    foreign "atg_le_1"
+    (ptr t @-> t @-> scalar @-> returning void)
+
+  let stubs_le_out1 =
+    foreign "atg_le_out1"
+    (ptr t @-> t @-> t @-> scalar @-> returning void)
+
+  let stubs_le_out2 =
+    foreign "atg_le_out2"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let leaky_relu =
+  let stubs_leaky_relu =
     foreign "atg_leaky_relu"
     (ptr t @-> t @-> returning void)
 
-  let leaky_relu_ =
+  let stubs_leaky_relu_ =
     foreign "atg_leaky_relu_"
     (ptr t @-> t @-> returning void)
 
-  let leaky_relu_out =
+  let stubs_leaky_relu_out =
     foreign "atg_leaky_relu_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let lgamma =
+  let stubs_lerp =
+    foreign "atg_lerp"
+    (ptr t @-> t @-> t @-> scalar @-> returning void)
+
+  let stubs_lerp_ =
+    foreign "atg_lerp_"
+    (ptr t @-> t @-> t @-> scalar @-> returning void)
+
+  let stubs_lerp_out =
+    foreign "atg_lerp_out"
+    (ptr t @-> t @-> t @-> t @-> scalar @-> returning void)
+
+  let stubs_lgamma =
     foreign "atg_lgamma"
     (ptr t @-> t @-> returning void)
 
-  let lgamma_ =
+  let stubs_lgamma_ =
     foreign "atg_lgamma_"
     (ptr t @-> t @-> returning void)
 
-  let lgamma_out =
+  let stubs_lgamma_out =
     foreign "atg_lgamma_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let linear =
+  let stubs_linear =
     foreign "atg_linear"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let linspace1 =
+  let stubs_linspace1 =
     foreign "atg_linspace1"
     (ptr t @-> scalar @-> scalar @-> int @-> int @-> returning void)
 
-  let linspace2 =
+  let stubs_linspace2 =
     foreign "atg_linspace2"
     (ptr t @-> scalar @-> scalar @-> int64_t @-> int @-> int @-> returning void)
 
-  let linspace_out1 =
+  let stubs_linspace_out1 =
     foreign "atg_linspace_out1"
     (ptr t @-> t @-> scalar @-> scalar @-> returning void)
 
-  let linspace_out2 =
+  let stubs_linspace_out2 =
     foreign "atg_linspace_out2"
     (ptr t @-> t @-> scalar @-> scalar @-> int64_t @-> returning void)
 
-  let log =
+  let stubs_log =
     foreign "atg_log"
     (ptr t @-> t @-> returning void)
 
-  let log10 =
+  let stubs_log10 =
     foreign "atg_log10"
     (ptr t @-> t @-> returning void)
 
-  let log10_ =
+  let stubs_log10_ =
     foreign "atg_log10_"
     (ptr t @-> t @-> returning void)
 
-  let log10_out =
+  let stubs_log10_out =
     foreign "atg_log10_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let log1p =
+  let stubs_log1p =
     foreign "atg_log1p"
     (ptr t @-> t @-> returning void)
 
-  let log1p_ =
+  let stubs_log1p_ =
     foreign "atg_log1p_"
     (ptr t @-> t @-> returning void)
 
-  let log1p_out =
+  let stubs_log1p_out =
     foreign "atg_log1p_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let log2 =
+  let stubs_log2 =
     foreign "atg_log2"
     (ptr t @-> t @-> returning void)
 
-  let log2_ =
+  let stubs_log2_ =
     foreign "atg_log2_"
     (ptr t @-> t @-> returning void)
 
-  let log2_out =
+  let stubs_log2_out =
     foreign "atg_log2_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let log_ =
+  let stubs_log_ =
     foreign "atg_log_"
     (ptr t @-> t @-> returning void)
 
-  let log_normal_ =
+  let stubs_log_normal_ =
     foreign "atg_log_normal_"
     (ptr t @-> t @-> double @-> double @-> returning void)
 
-  let log_out =
+  let stubs_log_out =
     foreign "atg_log_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let log_sigmoid =
+  let stubs_log_sigmoid =
     foreign "atg_log_sigmoid"
     (ptr t @-> t @-> returning void)
 
-  let log_sigmoid_backward =
+  let stubs_log_sigmoid_backward =
     foreign "atg_log_sigmoid_backward"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let log_sigmoid_backward_out =
+  let stubs_log_sigmoid_backward_out =
     foreign "atg_log_sigmoid_backward_out"
     (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
-  let log_sigmoid_forward =
+  let stubs_log_sigmoid_forward =
     foreign "atg_log_sigmoid_forward"
     (ptr t @-> t @-> returning void)
 
-  let log_sigmoid_forward_out =
+  let stubs_log_sigmoid_forward_out =
     foreign "atg_log_sigmoid_forward_out"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let log_sigmoid_out =
+  let stubs_log_sigmoid_out =
     foreign "atg_log_sigmoid_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let log_softmax =
-    foreign "atg_log_softmax"
+  let stubs_log_softmax1 =
+    foreign "atg_log_softmax1"
+    (ptr t @-> t @-> int64_t @-> int @-> returning void)
+
+  let stubs_log_softmax2 =
+    foreign "atg_log_softmax2"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let logdet =
+  let stubs_logdet =
     foreign "atg_logdet"
     (ptr t @-> t @-> returning void)
 
-  let logspace1 =
+  let stubs_logspace1 =
     foreign "atg_logspace1"
     (ptr t @-> scalar @-> scalar @-> int @-> int @-> returning void)
 
-  let logspace2 =
+  let stubs_logspace2 =
     foreign "atg_logspace2"
     (ptr t @-> scalar @-> scalar @-> int64_t @-> int @-> int @-> returning void)
 
-  let logspace_out1 =
+  let stubs_logspace_out1 =
     foreign "atg_logspace_out1"
     (ptr t @-> t @-> scalar @-> scalar @-> returning void)
 
-  let logspace_out2 =
+  let stubs_logspace_out2 =
     foreign "atg_logspace_out2"
     (ptr t @-> t @-> scalar @-> scalar @-> int64_t @-> returning void)
 
-  let logsumexp =
+  let stubs_logsumexp =
     foreign "atg_logsumexp"
     (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
-  let logsumexp_out =
+  let stubs_logsumexp_out =
     foreign "atg_logsumexp_out"
     (ptr t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
-  let lstm1 =
+  let stubs_lstm1 =
     foreign "atg_lstm1"
     (ptr t @-> t @-> ptr t @-> int @-> ptr t @-> int @-> int @-> int64_t @-> double @-> int @-> int @-> int @-> returning void)
 
-  let lstm2 =
+  let stubs_lstm2 =
     foreign "atg_lstm2"
     (ptr t @-> t @-> t @-> ptr t @-> int @-> ptr t @-> int @-> int @-> int64_t @-> double @-> int @-> int @-> returning void)
 
-  let lstm_cell =
+  let stubs_lstm_cell =
     foreign "atg_lstm_cell"
     (ptr t @-> t @-> ptr t @-> int @-> t @-> t @-> t @-> t @-> returning void)
 
-  let lt =
+  let stubs_lt =
     foreign "atg_lt"
     (ptr t @-> t @-> t @-> returning void)
 
-  let lt_ =
+  let stubs_lt1 =
+    foreign "atg_lt1"
+    (ptr t @-> t @-> scalar @-> returning void)
+
+  let stubs_lt_ =
     foreign "atg_lt_"
     (ptr t @-> t @-> t @-> returning void)
 
-  let lt_out =
-    foreign "atg_lt_out"
+  let stubs_lt_1 =
+    foreign "atg_lt_1"
+    (ptr t @-> t @-> scalar @-> returning void)
+
+  let stubs_lt_out1 =
+    foreign "atg_lt_out1"
+    (ptr t @-> t @-> t @-> scalar @-> returning void)
+
+  let stubs_lt_out2 =
+    foreign "atg_lt_out2"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let margin_ranking_loss =
+  let stubs_margin_ranking_loss =
     foreign "atg_margin_ranking_loss"
     (ptr t @-> t @-> t @-> t @-> double @-> int64_t @-> returning void)
 
-  let masked_fill_ =
-    foreign "atg_masked_fill_"
+  let stubs_masked_fill_1 =
+    foreign "atg_masked_fill_1"
+    (ptr t @-> t @-> t @-> scalar @-> returning void)
+
+  let stubs_masked_fill_2 =
+    foreign "atg_masked_fill_2"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let masked_scatter_ =
+  let stubs_masked_scatter_ =
     foreign "atg_masked_scatter_"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let masked_select =
+  let stubs_masked_select =
     foreign "atg_masked_select"
     (ptr t @-> t @-> t @-> returning void)
 
-  let masked_select_out =
+  let stubs_masked_select_out =
     foreign "atg_masked_select_out"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let matmul =
+  let stubs_matmul =
     foreign "atg_matmul"
     (ptr t @-> t @-> t @-> returning void)
 
-  let matmul_out =
+  let stubs_matmul_out =
     foreign "atg_matmul_out"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let matrix_power =
+  let stubs_matrix_power =
     foreign "atg_matrix_power"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let matrix_rank1 =
+  let stubs_matrix_rank1 =
     foreign "atg_matrix_rank1"
     (ptr t @-> t @-> double @-> int @-> returning void)
 
-  let matrix_rank2 =
+  let stubs_matrix_rank2 =
     foreign "atg_matrix_rank2"
     (ptr t @-> t @-> int @-> returning void)
 
-  let max =
+  let stubs_max =
     foreign "atg_max"
     (ptr t @-> t @-> t @-> returning void)
 
-  let max1 =
+  let stubs_max1 =
     foreign "atg_max1"
     (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
-  let max_out1 =
-    foreign "atg_max_out1"
-    (ptr t @-> t @-> t @-> t @-> returning void)
+  let stubs_max2 =
+    foreign "atg_max2"
+    (ptr t @-> t @-> returning void)
 
-  let max_out2 =
-    foreign "atg_max_out2"
+  let stubs_max_out1 =
+    foreign "atg_max_out1"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
-  let max_pool1d =
+  let stubs_max_out2 =
+    foreign "atg_max_out2"
+    (ptr t @-> t @-> t @-> t @-> returning void)
+
+  let stubs_max_pool1d =
     foreign "atg_max_pool1d"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
-  let max_pool1d_with_indices =
+  let stubs_max_pool1d_with_indices =
     foreign "atg_max_pool1d_with_indices"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
-  let max_pool2d =
+  let stubs_max_pool2d =
     foreign "atg_max_pool2d"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
-  let max_pool2d_with_indices =
+  let stubs_max_pool2d_with_indices =
     foreign "atg_max_pool2d_with_indices"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
-  let max_pool2d_with_indices_backward =
+  let stubs_max_pool2d_with_indices_backward =
     foreign "atg_max_pool2d_with_indices_backward"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> t @-> returning void)
 
-  let max_pool2d_with_indices_backward_out =
+  let stubs_max_pool2d_with_indices_backward_out =
     foreign "atg_max_pool2d_with_indices_backward_out"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> t @-> returning void)
 
-  let max_pool2d_with_indices_forward =
+  let stubs_max_pool2d_with_indices_forward =
     foreign "atg_max_pool2d_with_indices_forward"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
-  let max_pool2d_with_indices_forward_out =
+  let stubs_max_pool2d_with_indices_forward_out =
     foreign "atg_max_pool2d_with_indices_forward_out"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
-  let max_pool2d_with_indices_out =
+  let stubs_max_pool2d_with_indices_out =
     foreign "atg_max_pool2d_with_indices_out"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
-  let max_pool3d =
+  let stubs_max_pool3d =
     foreign "atg_max_pool3d"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
-  let max_pool3d_with_indices =
+  let stubs_max_pool3d_with_indices =
     foreign "atg_max_pool3d_with_indices"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
-  let max_pool3d_with_indices_backward =
+  let stubs_max_pool3d_with_indices_backward =
     foreign "atg_max_pool3d_with_indices_backward"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> t @-> returning void)
 
-  let max_pool3d_with_indices_backward_out =
+  let stubs_max_pool3d_with_indices_backward_out =
     foreign "atg_max_pool3d_with_indices_backward_out"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> t @-> returning void)
 
-  let max_pool3d_with_indices_forward =
+  let stubs_max_pool3d_with_indices_forward =
     foreign "atg_max_pool3d_with_indices_forward"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
-  let max_pool3d_with_indices_forward_out =
+  let stubs_max_pool3d_with_indices_forward_out =
     foreign "atg_max_pool3d_with_indices_forward_out"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
-  let max_pool3d_with_indices_out =
+  let stubs_max_pool3d_with_indices_out =
     foreign "atg_max_pool3d_with_indices_out"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
-  let max_unpool2d =
+  let stubs_max_unpool2d =
     foreign "atg_max_unpool2d"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let max_unpool2d_backward =
+  let stubs_max_unpool2d_backward =
     foreign "atg_max_unpool2d_backward"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let max_unpool2d_backward_out =
+  let stubs_max_unpool2d_backward_out =
     foreign "atg_max_unpool2d_backward_out"
     (ptr t @-> t @-> t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let max_unpool2d_forward =
+  let stubs_max_unpool2d_forward =
     foreign "atg_max_unpool2d_forward"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let max_unpool2d_forward_out =
+  let stubs_max_unpool2d_forward_out =
     foreign "atg_max_unpool2d_forward_out"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let max_unpool2d_out =
+  let stubs_max_unpool2d_out =
     foreign "atg_max_unpool2d_out"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let max_unpool3d =
+  let stubs_max_unpool3d =
     foreign "atg_max_unpool3d"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
-  let max_unpool3d_backward =
+  let stubs_max_unpool3d_backward =
     foreign "atg_max_unpool3d_backward"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
-  let max_unpool3d_backward_out =
+  let stubs_max_unpool3d_backward_out =
     foreign "atg_max_unpool3d_backward_out"
     (ptr t @-> t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
-  let max_unpool3d_forward =
+  let stubs_max_unpool3d_forward =
     foreign "atg_max_unpool3d_forward"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
-  let max_unpool3d_forward_out =
+  let stubs_max_unpool3d_forward_out =
     foreign "atg_max_unpool3d_forward_out"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
-  let max_unpool3d_out =
+  let stubs_max_unpool3d_out =
     foreign "atg_max_unpool3d_out"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
-  let max_values =
+  let stubs_max_values =
     foreign "atg_max_values"
     (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
-  let mean1 =
+  let stubs_mean1 =
     foreign "atg_mean1"
     (ptr t @-> t @-> int @-> returning void)
 
-  let mean2 =
+  let stubs_mean2 =
     foreign "atg_mean2"
     (ptr t @-> t @-> returning void)
 
-  let mean3 =
+  let stubs_mean3 =
     foreign "atg_mean3"
     (ptr t @-> t @-> int64_t @-> int @-> int @-> returning void)
 
-  let mean4 =
+  let stubs_mean4 =
     foreign "atg_mean4"
     (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
-  let mean5 =
+  let stubs_mean5 =
     foreign "atg_mean5"
     (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
-  let mean_out1 =
+  let stubs_mean_out1 =
     foreign "atg_mean_out1"
     (ptr t @-> t @-> t @-> int64_t @-> int @-> int @-> returning void)
 
-  let mean_out2 =
+  let stubs_mean_out2 =
     foreign "atg_mean_out2"
     (ptr t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
-  let mean_out3 =
+  let stubs_mean_out3 =
     foreign "atg_mean_out3"
     (ptr t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
-  let median =
-    foreign "atg_median"
+  let stubs_median1 =
+    foreign "atg_median1"
     (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
-  let median_out =
+  let stubs_median2 =
+    foreign "atg_median2"
+    (ptr t @-> t @-> returning void)
+
+  let stubs_median_out =
     foreign "atg_median_out"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
-  let min =
+  let stubs_min =
     foreign "atg_min"
     (ptr t @-> t @-> t @-> returning void)
 
-  let min1 =
+  let stubs_min1 =
     foreign "atg_min1"
     (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
-  let min_out1 =
-    foreign "atg_min_out1"
-    (ptr t @-> t @-> t @-> t @-> returning void)
+  let stubs_min2 =
+    foreign "atg_min2"
+    (ptr t @-> t @-> returning void)
 
-  let min_out2 =
-    foreign "atg_min_out2"
+  let stubs_min_out1 =
+    foreign "atg_min_out1"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
-  let min_values =
+  let stubs_min_out2 =
+    foreign "atg_min_out2"
+    (ptr t @-> t @-> t @-> t @-> returning void)
+
+  let stubs_min_values =
     foreign "atg_min_values"
     (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
-  let miopen_batch_norm =
+  let stubs_miopen_batch_norm =
     foreign "atg_miopen_batch_norm"
     (ptr t @-> t @-> t @-> t @-> t @-> t @-> int @-> double @-> double @-> returning void)
 
-  let miopen_batch_norm_backward =
+  let stubs_miopen_batch_norm_backward =
     foreign "atg_miopen_batch_norm_backward"
     (ptr t @-> t @-> t @-> t @-> t @-> t @-> t @-> t @-> double @-> returning void)
 
-  let miopen_convolution =
+  let stubs_miopen_convolution =
     foreign "atg_miopen_convolution"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning void)
 
-  let miopen_convolution_backward_bias =
+  let stubs_miopen_convolution_backward_bias =
     foreign "atg_miopen_convolution_backward_bias"
     (ptr t @-> t @-> returning void)
 
-  let miopen_convolution_backward_input =
+  let stubs_miopen_convolution_backward_input =
     foreign "atg_miopen_convolution_backward_input"
     (ptr t @-> ptr long @-> int @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning void)
 
-  let miopen_convolution_backward_weight =
+  let stubs_miopen_convolution_backward_weight =
     foreign "atg_miopen_convolution_backward_weight"
     (ptr t @-> ptr long @-> int @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning void)
 
-  let miopen_convolution_transpose =
+  let stubs_miopen_convolution_transpose =
     foreign "atg_miopen_convolution_transpose"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning void)
 
-  let miopen_convolution_transpose_backward_input =
+  let stubs_miopen_convolution_transpose_backward_input =
     foreign "atg_miopen_convolution_transpose_backward_input"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning void)
 
-  let miopen_convolution_transpose_backward_weight =
+  let stubs_miopen_convolution_transpose_backward_weight =
     foreign "atg_miopen_convolution_transpose_backward_weight"
     (ptr t @-> ptr long @-> int @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> int @-> returning void)
 
-  let mkldnn_convolution =
+  let stubs_mkldnn_convolution =
     foreign "atg_mkldnn_convolution"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> returning void)
 
-  let mkldnn_convolution_backward_input =
+  let stubs_mkldnn_convolution_backward_input =
     foreign "atg_mkldnn_convolution_backward_input"
     (ptr t @-> ptr long @-> int @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> returning void)
 
-  let mkldnn_convolution_backward_weights =
+  let stubs_mkldnn_convolution_backward_weights =
     foreign "atg_mkldnn_convolution_backward_weights"
     (ptr t @-> ptr long @-> int @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> ptr long @-> int @-> int64_t @-> int @-> returning void)
 
-  let mm =
+  let stubs_mm =
     foreign "atg_mm"
     (ptr t @-> t @-> t @-> returning void)
 
-  let mm_out =
+  let stubs_mm_out =
     foreign "atg_mm_out"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let mode =
+  let stubs_mode =
     foreign "atg_mode"
     (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
-  let mode_out =
+  let stubs_mode_out =
     foreign "atg_mode_out"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
-  let mse_loss =
+  let stubs_mse_loss =
     foreign "atg_mse_loss"
     (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
-  let mse_loss_backward =
+  let stubs_mse_loss_backward =
     foreign "atg_mse_loss_backward"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let mse_loss_backward_out =
+  let stubs_mse_loss_backward_out =
     foreign "atg_mse_loss_backward_out"
     (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let mse_loss_forward =
+  let stubs_mse_loss_forward =
     foreign "atg_mse_loss_forward"
     (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
-  let mse_loss_forward_out =
+  let stubs_mse_loss_forward_out =
     foreign "atg_mse_loss_forward_out"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let mse_loss_out =
+  let stubs_mse_loss_out =
     foreign "atg_mse_loss_out"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let mul =
+  let stubs_mul =
     foreign "atg_mul"
     (ptr t @-> t @-> t @-> returning void)
 
-  let mul1 =
+  let stubs_mul1 =
     foreign "atg_mul1"
     (ptr t @-> t @-> scalar @-> returning void)
 
-  let mul_ =
+  let stubs_mul_ =
     foreign "atg_mul_"
     (ptr t @-> t @-> t @-> returning void)
 
-  let mul_1 =
+  let stubs_mul_1 =
     foreign "atg_mul_1"
     (ptr t @-> t @-> scalar @-> returning void)
 
-  let mul_out =
+  let stubs_mul_out =
     foreign "atg_mul_out"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let multilabel_margin_loss =
+  let stubs_multilabel_margin_loss =
     foreign "atg_multilabel_margin_loss"
     (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
-  let multilabel_margin_loss_backward =
+  let stubs_multilabel_margin_loss_backward =
     foreign "atg_multilabel_margin_loss_backward"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> t @-> returning void)
 
-  let multilabel_margin_loss_backward_out =
+  let stubs_multilabel_margin_loss_backward_out =
     foreign "atg_multilabel_margin_loss_backward_out"
     (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> t @-> returning void)
 
-  let multilabel_margin_loss_forward =
+  let stubs_multilabel_margin_loss_forward =
     foreign "atg_multilabel_margin_loss_forward"
     (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
-  let multilabel_margin_loss_forward_out =
+  let stubs_multilabel_margin_loss_forward_out =
     foreign "atg_multilabel_margin_loss_forward_out"
     (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let multilabel_margin_loss_out =
+  let stubs_multilabel_margin_loss_out =
     foreign "atg_multilabel_margin_loss_out"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let multinomial =
+  let stubs_multinomial =
     foreign "atg_multinomial"
     (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
-  let multinomial_out =
+  let stubs_multinomial_out =
     foreign "atg_multinomial_out"
     (ptr t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
-  let mv =
+  let stubs_mv =
     foreign "atg_mv"
     (ptr t @-> t @-> t @-> returning void)
 
-  let mv_out =
+  let stubs_mv_out =
     foreign "atg_mv_out"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let mvlgamma =
+  let stubs_mvlgamma =
     foreign "atg_mvlgamma"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let mvlgamma_ =
+  let stubs_mvlgamma_ =
     foreign "atg_mvlgamma_"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let narrow =
+  let stubs_narrow =
     foreign "atg_narrow"
     (ptr t @-> t @-> int64_t @-> int64_t @-> int64_t @-> returning void)
 
-  let narrow_copy =
+  let stubs_narrow_copy =
     foreign "atg_narrow_copy"
     (ptr t @-> t @-> int64_t @-> int64_t @-> int64_t @-> returning void)
 
-  let native_clone =
+  let stubs_native_batch_norm =
+    foreign "atg_native_batch_norm"
+    (ptr t @-> t @-> t @-> t @-> t @-> t @-> int @-> double @-> double @-> returning void)
+
+  let stubs_native_clone =
     foreign "atg_native_clone"
     (ptr t @-> t @-> returning void)
 
-  let native_norm =
+  let stubs_native_norm =
     foreign "atg_native_norm"
     (ptr t @-> t @-> returning void)
 
-  let native_pow =
+  let stubs_native_pow =
     foreign "atg_native_pow"
     (ptr t @-> t @-> scalar @-> returning void)
 
-  let native_pow_out =
+  let stubs_native_pow_out =
     foreign "atg_native_pow_out"
     (ptr t @-> t @-> t @-> scalar @-> returning void)
 
-  let native_resize_as_ =
+  let stubs_native_resize_as_ =
     foreign "atg_native_resize_as_"
     (ptr t @-> t @-> t @-> returning void)
 
-  let native_zero_ =
+  let stubs_native_zero_ =
     foreign "atg_native_zero_"
     (ptr t @-> t @-> returning void)
 
-  let ne =
+  let stubs_ne =
     foreign "atg_ne"
     (ptr t @-> t @-> t @-> returning void)
 
-  let ne_ =
+  let stubs_ne1 =
+    foreign "atg_ne1"
+    (ptr t @-> t @-> scalar @-> returning void)
+
+  let stubs_ne_ =
     foreign "atg_ne_"
     (ptr t @-> t @-> t @-> returning void)
 
-  let ne_out =
-    foreign "atg_ne_out"
+  let stubs_ne_1 =
+    foreign "atg_ne_1"
+    (ptr t @-> t @-> scalar @-> returning void)
+
+  let stubs_ne_out1 =
+    foreign "atg_ne_out1"
+    (ptr t @-> t @-> t @-> scalar @-> returning void)
+
+  let stubs_ne_out2 =
+    foreign "atg_ne_out2"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let neg =
+  let stubs_neg =
     foreign "atg_neg"
     (ptr t @-> t @-> returning void)
 
-  let neg_ =
+  let stubs_neg_ =
     foreign "atg_neg_"
     (ptr t @-> t @-> returning void)
 
-  let neg_out =
+  let stubs_neg_out =
     foreign "atg_neg_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let nll_loss =
+  let stubs_nll_loss =
     foreign "atg_nll_loss"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
 
-  let nll_loss2d =
+  let stubs_nll_loss2d =
     foreign "atg_nll_loss2d"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
 
-  let nll_loss2d_backward =
+  let stubs_nll_loss2d_backward =
     foreign "atg_nll_loss2d_backward"
     (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> t @-> returning void)
 
-  let nll_loss2d_backward_out =
+  let stubs_nll_loss2d_backward_out =
     foreign "atg_nll_loss2d_backward_out"
     (ptr t @-> t @-> t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> t @-> returning void)
 
-  let nll_loss2d_forward =
+  let stubs_nll_loss2d_forward =
     foreign "atg_nll_loss2d_forward"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
 
-  let nll_loss2d_forward_out =
+  let stubs_nll_loss2d_forward_out =
     foreign "atg_nll_loss2d_forward_out"
     (ptr t @-> t @-> t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
 
-  let nll_loss2d_out =
+  let stubs_nll_loss2d_out =
     foreign "atg_nll_loss2d_out"
     (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
 
-  let nll_loss_backward =
+  let stubs_nll_loss_backward =
     foreign "atg_nll_loss_backward"
     (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> t @-> returning void)
 
-  let nll_loss_backward_out =
+  let stubs_nll_loss_backward_out =
     foreign "atg_nll_loss_backward_out"
     (ptr t @-> t @-> t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> t @-> returning void)
 
-  let nll_loss_forward =
+  let stubs_nll_loss_forward =
     foreign "atg_nll_loss_forward"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
 
-  let nll_loss_forward_out =
+  let stubs_nll_loss_forward_out =
     foreign "atg_nll_loss_forward_out"
     (ptr t @-> t @-> t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
 
-  let nll_loss_out =
+  let stubs_nll_loss_out =
     foreign "atg_nll_loss_out"
     (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> returning void)
 
-  let nonzero =
+  let stubs_nonzero =
     foreign "atg_nonzero"
     (ptr t @-> t @-> returning void)
 
-  let nonzero_out =
+  let stubs_nonzero_out =
     foreign "atg_nonzero_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let norm1 =
+  let stubs_norm1 =
     foreign "atg_norm1"
     (ptr t @-> t @-> returning void)
 
-  let norm2 =
+  let stubs_norm2 =
     foreign "atg_norm2"
     (ptr t @-> t @-> scalar @-> int64_t @-> int @-> returning void)
 
-  let norm_except_dim =
+  let stubs_norm_except_dim =
     foreign "atg_norm_except_dim"
     (ptr t @-> t @-> int64_t @-> int64_t @-> returning void)
 
-  let norm_out =
+  let stubs_norm_out =
     foreign "atg_norm_out"
     (ptr t @-> t @-> t @-> scalar @-> int64_t @-> int @-> returning void)
 
-  let normal =
+  let stubs_normal =
     foreign "atg_normal"
     (ptr t @-> t @-> t @-> returning void)
 
-  let normal1 =
+  let stubs_normal1 =
     foreign "atg_normal1"
     (ptr t @-> t @-> double @-> returning void)
 
-  let normal2 =
+  let stubs_normal2 =
     foreign "atg_normal2"
     (ptr t @-> double @-> t @-> returning void)
 
-  let normal_ =
+  let stubs_normal_ =
     foreign "atg_normal_"
     (ptr t @-> t @-> double @-> double @-> returning void)
 
-  let normal_out1 =
+  let stubs_normal_out1 =
     foreign "atg_normal_out1"
     (ptr t @-> t @-> t @-> double @-> returning void)
 
-  let normal_out2 =
+  let stubs_normal_out2 =
     foreign "atg_normal_out2"
     (ptr t @-> t @-> double @-> t @-> returning void)
 
-  let normal_out3 =
+  let stubs_normal_out3 =
     foreign "atg_normal_out3"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let nuclear_norm =
+  let stubs_nuclear_norm =
     foreign "atg_nuclear_norm"
     (ptr t @-> t @-> int @-> returning void)
 
-  let nuclear_norm_out =
+  let stubs_nuclear_norm_out =
     foreign "atg_nuclear_norm_out"
     (ptr t @-> t @-> t @-> int @-> returning void)
 
-  let ones =
+  let stubs_ones =
     foreign "atg_ones"
     (ptr t @-> ptr long @-> int @-> int @-> int @-> returning void)
 
-  let ones_like1 =
+  let stubs_ones_like1 =
     foreign "atg_ones_like1"
     (ptr t @-> t @-> returning void)
 
-  let ones_like2 =
+  let stubs_ones_like2 =
     foreign "atg_ones_like2"
     (ptr t @-> t @-> int @-> int @-> returning void)
 
-  let ones_out =
+  let stubs_ones_out =
     foreign "atg_ones_out"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let orgqr =
+  let stubs_orgqr =
     foreign "atg_orgqr"
     (ptr t @-> t @-> t @-> returning void)
 
-  let orgqr_out =
+  let stubs_orgqr_out =
     foreign "atg_orgqr_out"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let ormqr =
+  let stubs_ormqr =
     foreign "atg_ormqr"
     (ptr t @-> t @-> t @-> t @-> int @-> int @-> returning void)
 
-  let ormqr_out =
+  let stubs_ormqr_out =
     foreign "atg_ormqr_out"
     (ptr t @-> t @-> t @-> t @-> t @-> int @-> int @-> returning void)
 
-  let pairwise_distance =
+  let stubs_pairwise_distance =
     foreign "atg_pairwise_distance"
     (ptr t @-> t @-> t @-> double @-> double @-> int @-> returning void)
 
-  let pdist =
+  let stubs_pdist =
     foreign "atg_pdist"
     (ptr t @-> t @-> double @-> returning void)
 
-  let permute =
+  let stubs_permute =
     foreign "atg_permute"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let pin_memory =
+  let stubs_pin_memory =
     foreign "atg_pin_memory"
     (ptr t @-> t @-> returning void)
 
-  let pinverse =
+  let stubs_pinverse =
     foreign "atg_pinverse"
     (ptr t @-> t @-> double @-> returning void)
 
-  let pixel_shuffle =
+  let stubs_pixel_shuffle =
     foreign "atg_pixel_shuffle"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let poisson =
+  let stubs_poisson =
     foreign "atg_poisson"
     (ptr t @-> t @-> returning void)
 
-  let polygamma =
+  let stubs_polygamma =
     foreign "atg_polygamma"
     (ptr t @-> int64_t @-> t @-> returning void)
 
-  let polygamma_ =
+  let stubs_polygamma_ =
     foreign "atg_polygamma_"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let polygamma_out =
+  let stubs_polygamma_out =
     foreign "atg_polygamma_out"
     (ptr t @-> t @-> int64_t @-> t @-> returning void)
 
-  let potri =
+  let stubs_potri =
     foreign "atg_potri"
     (ptr t @-> t @-> int @-> returning void)
 
-  let potri_out =
+  let stubs_potri_out =
     foreign "atg_potri_out"
     (ptr t @-> t @-> t @-> int @-> returning void)
 
-  let potrs =
+  let stubs_potrs =
     foreign "atg_potrs"
     (ptr t @-> t @-> t @-> int @-> returning void)
 
-  let potrs_out =
+  let stubs_potrs_out =
     foreign "atg_potrs_out"
     (ptr t @-> t @-> t @-> t @-> int @-> returning void)
 
-  let pow =
+  let stubs_pow =
     foreign "atg_pow"
     (ptr t @-> t @-> t @-> returning void)
 
-  let pow1 =
+  let stubs_pow1 =
     foreign "atg_pow1"
     (ptr t @-> t @-> scalar @-> returning void)
 
-  let pow_ =
+  let stubs_pow2 =
+    foreign "atg_pow2"
+    (ptr t @-> scalar @-> t @-> returning void)
+
+  let stubs_pow_ =
     foreign "atg_pow_"
     (ptr t @-> t @-> t @-> returning void)
 
-  let pow_out1 =
-    foreign "atg_pow_out1"
-    (ptr t @-> t @-> t @-> t @-> returning void)
+  let stubs_pow_1 =
+    foreign "atg_pow_1"
+    (ptr t @-> t @-> scalar @-> returning void)
 
-  let pow_out2 =
-    foreign "atg_pow_out2"
+  let stubs_pow_out1 =
+    foreign "atg_pow_out1"
     (ptr t @-> t @-> t @-> scalar @-> returning void)
 
-  let prelu =
+  let stubs_pow_out2 =
+    foreign "atg_pow_out2"
+    (ptr t @-> t @-> t @-> t @-> returning void)
+
+  let stubs_pow_out3 =
+    foreign "atg_pow_out3"
+    (ptr t @-> t @-> scalar @-> t @-> returning void)
+
+  let stubs_prelu =
     foreign "atg_prelu"
     (ptr t @-> t @-> t @-> returning void)
 
-  let prelu_backward =
+  let stubs_prelu_backward =
     foreign "atg_prelu_backward"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let prod1 =
+  let stubs_prod1 =
     foreign "atg_prod1"
     (ptr t @-> t @-> int @-> returning void)
 
-  let prod2 =
+  let stubs_prod2 =
     foreign "atg_prod2"
     (ptr t @-> t @-> returning void)
 
-  let prod3 =
+  let stubs_prod3 =
     foreign "atg_prod3"
     (ptr t @-> t @-> int64_t @-> int @-> int @-> returning void)
 
-  let prod4 =
+  let stubs_prod4 =
     foreign "atg_prod4"
     (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
-  let prod5 =
+  let stubs_prod5 =
     foreign "atg_prod5"
     (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
-  let prod_out1 =
+  let stubs_prod_out1 =
     foreign "atg_prod_out1"
     (ptr t @-> t @-> t @-> int64_t @-> int @-> int @-> returning void)
 
-  let prod_out2 =
+  let stubs_prod_out2 =
     foreign "atg_prod_out2"
     (ptr t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
-  let prod_out3 =
+  let stubs_prod_out3 =
     foreign "atg_prod_out3"
     (ptr t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
-  let put_ =
+  let stubs_pstrf =
+    foreign "atg_pstrf"
+    (ptr t @-> t @-> int @-> returning void)
+
+  let stubs_pstrf_out =
+    foreign "atg_pstrf_out"
+    (ptr t @-> t @-> t @-> t @-> int @-> returning void)
+
+  let stubs_put_ =
     foreign "atg_put_"
     (ptr t @-> t @-> t @-> t @-> int @-> returning void)
 
-  let qr =
+  let stubs_qr =
     foreign "atg_qr"
     (ptr t @-> t @-> returning void)
 
-  let qr_out =
+  let stubs_qr_out =
     foreign "atg_qr_out"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let rand =
+  let stubs_rand =
     foreign "atg_rand"
     (ptr t @-> ptr long @-> int @-> int @-> int @-> returning void)
 
-  let rand_like1 =
+  let stubs_rand_like1 =
     foreign "atg_rand_like1"
     (ptr t @-> t @-> returning void)
 
-  let rand_like2 =
+  let stubs_rand_like2 =
     foreign "atg_rand_like2"
     (ptr t @-> t @-> int @-> int @-> returning void)
 
-  let rand_out =
+  let stubs_rand_out =
     foreign "atg_rand_out"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let randint1 =
+  let stubs_randint1 =
     foreign "atg_randint1"
     (ptr t @-> int64_t @-> ptr long @-> int @-> int @-> int @-> returning void)
 
-  let randint2 =
+  let stubs_randint2 =
     foreign "atg_randint2"
     (ptr t @-> int64_t @-> int64_t @-> ptr long @-> int @-> int @-> int @-> returning void)
 
-  let randint_like1 =
+  let stubs_randint_like1 =
     foreign "atg_randint_like1"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let randint_like2 =
+  let stubs_randint_like2 =
     foreign "atg_randint_like2"
     (ptr t @-> t @-> int64_t @-> int64_t @-> returning void)
 
-  let randint_like3 =
+  let stubs_randint_like3 =
     foreign "atg_randint_like3"
     (ptr t @-> t @-> int64_t @-> int @-> int @-> returning void)
 
-  let randint_like4 =
+  let stubs_randint_like4 =
     foreign "atg_randint_like4"
     (ptr t @-> t @-> int64_t @-> int64_t @-> int @-> int @-> returning void)
 
-  let randint_out1 =
+  let stubs_randint_out1 =
     foreign "atg_randint_out1"
     (ptr t @-> t @-> int64_t @-> ptr long @-> int @-> returning void)
 
-  let randint_out2 =
+  let stubs_randint_out2 =
     foreign "atg_randint_out2"
     (ptr t @-> t @-> int64_t @-> int64_t @-> ptr long @-> int @-> returning void)
 
-  let randn =
+  let stubs_randn =
     foreign "atg_randn"
     (ptr t @-> ptr long @-> int @-> int @-> int @-> returning void)
 
-  let randn_like1 =
+  let stubs_randn_like1 =
     foreign "atg_randn_like1"
     (ptr t @-> t @-> returning void)
 
-  let randn_like2 =
+  let stubs_randn_like2 =
     foreign "atg_randn_like2"
     (ptr t @-> t @-> int @-> int @-> returning void)
 
-  let randn_out =
+  let stubs_randn_out =
     foreign "atg_randn_out"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let random_1 =
+  let stubs_random_1 =
     foreign "atg_random_1"
     (ptr t @-> t @-> int64_t @-> int64_t @-> returning void)
 
-  let random_2 =
+  let stubs_random_2 =
     foreign "atg_random_2"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let random_3 =
+  let stubs_random_3 =
     foreign "atg_random_3"
     (ptr t @-> t @-> returning void)
 
-  let randperm =
+  let stubs_randperm =
     foreign "atg_randperm"
     (ptr t @-> int64_t @-> int @-> int @-> returning void)
 
-  let randperm_out =
+  let stubs_randperm_out =
     foreign "atg_randperm_out"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let range1 =
+  let stubs_range1 =
     foreign "atg_range1"
     (ptr t @-> scalar @-> scalar @-> int @-> int @-> returning void)
 
-  let range2 =
+  let stubs_range2 =
     foreign "atg_range2"
     (ptr t @-> scalar @-> scalar @-> scalar @-> int @-> int @-> returning void)
 
-  let range_out1 =
+  let stubs_range_out1 =
     foreign "atg_range_out1"
     (ptr t @-> t @-> scalar @-> scalar @-> returning void)
 
-  let range_out2 =
+  let stubs_range_out2 =
     foreign "atg_range_out2"
     (ptr t @-> t @-> scalar @-> scalar @-> scalar @-> returning void)
 
-  let reciprocal =
+  let stubs_reciprocal =
     foreign "atg_reciprocal"
     (ptr t @-> t @-> returning void)
 
-  let reciprocal_ =
+  let stubs_reciprocal_ =
     foreign "atg_reciprocal_"
     (ptr t @-> t @-> returning void)
 
-  let reciprocal_out =
+  let stubs_reciprocal_out =
     foreign "atg_reciprocal_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let reflection_pad1d =
+  let stubs_reflection_pad1d =
     foreign "atg_reflection_pad1d"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let reflection_pad1d_backward =
+  let stubs_reflection_pad1d_backward =
     foreign "atg_reflection_pad1d_backward"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let reflection_pad1d_backward_out =
+  let stubs_reflection_pad1d_backward_out =
     foreign "atg_reflection_pad1d_backward_out"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let reflection_pad1d_forward =
+  let stubs_reflection_pad1d_forward =
     foreign "atg_reflection_pad1d_forward"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let reflection_pad1d_forward_out =
+  let stubs_reflection_pad1d_forward_out =
     foreign "atg_reflection_pad1d_forward_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let reflection_pad1d_out =
+  let stubs_reflection_pad1d_out =
     foreign "atg_reflection_pad1d_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let reflection_pad2d =
+  let stubs_reflection_pad2d =
     foreign "atg_reflection_pad2d"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let reflection_pad2d_backward =
+  let stubs_reflection_pad2d_backward =
     foreign "atg_reflection_pad2d_backward"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let reflection_pad2d_backward_out =
+  let stubs_reflection_pad2d_backward_out =
     foreign "atg_reflection_pad2d_backward_out"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let reflection_pad2d_forward =
+  let stubs_reflection_pad2d_forward =
     foreign "atg_reflection_pad2d_forward"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let reflection_pad2d_forward_out =
+  let stubs_reflection_pad2d_forward_out =
     foreign "atg_reflection_pad2d_forward_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let reflection_pad2d_out =
+  let stubs_reflection_pad2d_out =
     foreign "atg_reflection_pad2d_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let relu =
+  let stubs_relu =
     foreign "atg_relu"
     (ptr t @-> t @-> returning void)
 
-  let relu_ =
+  let stubs_relu_ =
     foreign "atg_relu_"
     (ptr t @-> t @-> returning void)
 
-  let remainder =
+  let stubs_remainder =
     foreign "atg_remainder"
     (ptr t @-> t @-> t @-> returning void)
 
-  let remainder_ =
+  let stubs_remainder1 =
+    foreign "atg_remainder1"
+    (ptr t @-> t @-> scalar @-> returning void)
+
+  let stubs_remainder_ =
     foreign "atg_remainder_"
     (ptr t @-> t @-> t @-> returning void)
 
-  let remainder_out =
-    foreign "atg_remainder_out"
+  let stubs_remainder_1 =
+    foreign "atg_remainder_1"
+    (ptr t @-> t @-> scalar @-> returning void)
+
+  let stubs_remainder_out1 =
+    foreign "atg_remainder_out1"
+    (ptr t @-> t @-> t @-> scalar @-> returning void)
+
+  let stubs_remainder_out2 =
+    foreign "atg_remainder_out2"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let repeat =
+  let stubs_renorm =
+    foreign "atg_renorm"
+    (ptr t @-> t @-> scalar @-> int64_t @-> scalar @-> returning void)
+
+  let stubs_renorm_ =
+    foreign "atg_renorm_"
+    (ptr t @-> t @-> scalar @-> int64_t @-> scalar @-> returning void)
+
+  let stubs_renorm_out =
+    foreign "atg_renorm_out"
+    (ptr t @-> t @-> t @-> scalar @-> int64_t @-> scalar @-> returning void)
+
+  let stubs_repeat =
     foreign "atg_repeat"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let replication_pad1d =
+  let stubs_replication_pad1d =
     foreign "atg_replication_pad1d"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let replication_pad1d_backward =
+  let stubs_replication_pad1d_backward =
     foreign "atg_replication_pad1d_backward"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let replication_pad1d_backward_out =
+  let stubs_replication_pad1d_backward_out =
     foreign "atg_replication_pad1d_backward_out"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let replication_pad1d_forward =
+  let stubs_replication_pad1d_forward =
     foreign "atg_replication_pad1d_forward"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let replication_pad1d_forward_out =
+  let stubs_replication_pad1d_forward_out =
     foreign "atg_replication_pad1d_forward_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let replication_pad1d_out =
+  let stubs_replication_pad1d_out =
     foreign "atg_replication_pad1d_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let replication_pad2d =
+  let stubs_replication_pad2d =
     foreign "atg_replication_pad2d"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let replication_pad2d_backward =
+  let stubs_replication_pad2d_backward =
     foreign "atg_replication_pad2d_backward"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let replication_pad2d_backward_out =
+  let stubs_replication_pad2d_backward_out =
     foreign "atg_replication_pad2d_backward_out"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let replication_pad2d_forward =
+  let stubs_replication_pad2d_forward =
     foreign "atg_replication_pad2d_forward"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let replication_pad2d_forward_out =
+  let stubs_replication_pad2d_forward_out =
     foreign "atg_replication_pad2d_forward_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let replication_pad2d_out =
+  let stubs_replication_pad2d_out =
     foreign "atg_replication_pad2d_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let replication_pad3d =
+  let stubs_replication_pad3d =
     foreign "atg_replication_pad3d"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let replication_pad3d_backward =
+  let stubs_replication_pad3d_backward =
     foreign "atg_replication_pad3d_backward"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let replication_pad3d_backward_out =
+  let stubs_replication_pad3d_backward_out =
     foreign "atg_replication_pad3d_backward_out"
     (ptr t @-> t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let replication_pad3d_forward =
+  let stubs_replication_pad3d_forward =
     foreign "atg_replication_pad3d_forward"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let replication_pad3d_forward_out =
+  let stubs_replication_pad3d_forward_out =
     foreign "atg_replication_pad3d_forward_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let replication_pad3d_out =
+  let stubs_replication_pad3d_out =
     foreign "atg_replication_pad3d_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let reshape =
+  let stubs_reshape =
     foreign "atg_reshape"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let reshape_as =
+  let stubs_reshape_as =
     foreign "atg_reshape_as"
     (ptr t @-> t @-> t @-> returning void)
 
-  let resize_ =
+  let stubs_resize_ =
     foreign "atg_resize_"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let resize_as_ =
+  let stubs_resize_as_ =
     foreign "atg_resize_as_"
     (ptr t @-> t @-> t @-> returning void)
 
-  let rfft =
+  let stubs_rfft =
     foreign "atg_rfft"
     (ptr t @-> t @-> int64_t @-> int @-> int @-> returning void)
 
-  let rnn_relu1 =
+  let stubs_rnn_relu1 =
     foreign "atg_rnn_relu1"
     (ptr t @-> t @-> t @-> ptr t @-> int @-> int @-> int64_t @-> double @-> int @-> int @-> int @-> returning void)
 
-  let rnn_relu2 =
+  let stubs_rnn_relu2 =
     foreign "atg_rnn_relu2"
     (ptr t @-> t @-> t @-> t @-> ptr t @-> int @-> int @-> int64_t @-> double @-> int @-> int @-> returning void)
 
-  let rnn_relu_cell =
+  let stubs_rnn_relu_cell =
     foreign "atg_rnn_relu_cell"
     (ptr t @-> t @-> t @-> t @-> t @-> t @-> t @-> returning void)
 
-  let rnn_tanh1 =
+  let stubs_rnn_tanh1 =
     foreign "atg_rnn_tanh1"
     (ptr t @-> t @-> t @-> ptr t @-> int @-> int @-> int64_t @-> double @-> int @-> int @-> int @-> returning void)
 
-  let rnn_tanh2 =
+  let stubs_rnn_tanh2 =
     foreign "atg_rnn_tanh2"
     (ptr t @-> t @-> t @-> t @-> ptr t @-> int @-> int @-> int64_t @-> double @-> int @-> int @-> returning void)
 
-  let rnn_tanh_cell =
+  let stubs_rnn_tanh_cell =
     foreign "atg_rnn_tanh_cell"
     (ptr t @-> t @-> t @-> t @-> t @-> t @-> t @-> returning void)
 
-  let roipooling2d_backward =
+  let stubs_roipooling2d_backward =
     foreign "atg_roipooling2d_backward"
     (ptr t @-> t @-> t @-> int64_t @-> int64_t @-> double @-> t @-> t @-> returning void)
 
-  let roipooling2d_forward =
+  let stubs_roipooling2d_forward =
     foreign "atg_roipooling2d_forward"
     (ptr t @-> t @-> t @-> int64_t @-> int64_t @-> double @-> returning void)
 
-  let round =
+  let stubs_roll =
+    foreign "atg_roll"
+    (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
+
+  let stubs_rot90 =
+    foreign "atg_rot90"
+    (ptr t @-> t @-> int64_t @-> ptr long @-> int @-> returning void)
+
+  let stubs_round =
     foreign "atg_round"
     (ptr t @-> t @-> returning void)
 
-  let round_ =
+  let stubs_round_ =
     foreign "atg_round_"
     (ptr t @-> t @-> returning void)
 
-  let round_out =
+  let stubs_round_out =
     foreign "atg_round_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let rrelu =
+  let stubs_rrelu =
     foreign "atg_rrelu"
     (ptr t @-> t @-> int @-> returning void)
 
-  let rrelu_ =
+  let stubs_rrelu_ =
     foreign "atg_rrelu_"
     (ptr t @-> t @-> int @-> returning void)
 
-  let rrelu_with_noise =
+  let stubs_rrelu_with_noise =
     foreign "atg_rrelu_with_noise"
     (ptr t @-> t @-> t @-> int @-> returning void)
 
-  let rrelu_with_noise_ =
+  let stubs_rrelu_with_noise_ =
     foreign "atg_rrelu_with_noise_"
     (ptr t @-> t @-> t @-> int @-> returning void)
 
-  let rrelu_with_noise_out =
+  let stubs_rrelu_with_noise_out =
     foreign "atg_rrelu_with_noise_out"
     (ptr t @-> t @-> t @-> t @-> int @-> returning void)
 
-  let rsqrt =
+  let stubs_rsqrt =
     foreign "atg_rsqrt"
     (ptr t @-> t @-> returning void)
 
-  let rsqrt_ =
+  let stubs_rsqrt_ =
     foreign "atg_rsqrt_"
     (ptr t @-> t @-> returning void)
 
-  let rsqrt_out =
+  let stubs_rsqrt_out =
     foreign "atg_rsqrt_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let s_native_addmm =
+  let stubs_rsub =
+    foreign "atg_rsub"
+    (ptr t @-> t @-> t @-> returning void)
+
+  let stubs_rsub1 =
+    foreign "atg_rsub1"
+    (ptr t @-> t @-> scalar @-> returning void)
+
+  let stubs_s_native_addmm =
     foreign "atg_s_native_addmm"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let s_native_addmm_ =
+  let stubs_s_native_addmm_ =
     foreign "atg_s_native_addmm_"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let s_native_addmm_out =
+  let stubs_s_native_addmm_out =
     foreign "atg_s_native_addmm_out"
     (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
-  let scatter_ =
-    foreign "atg_scatter_"
+  let stubs_scatter_1 =
+    foreign "atg_scatter_1"
     (ptr t @-> t @-> int64_t @-> t @-> t @-> returning void)
 
-  let scatter_add_ =
+  let stubs_scatter_2 =
+    foreign "atg_scatter_2"
+    (ptr t @-> t @-> int64_t @-> t @-> scalar @-> returning void)
+
+  let stubs_scatter_add_ =
     foreign "atg_scatter_add_"
     (ptr t @-> t @-> int64_t @-> t @-> t @-> returning void)
 
-  let select =
+  let stubs_select =
     foreign "atg_select"
     (ptr t @-> t @-> int64_t @-> int64_t @-> returning void)
 
-  let selu =
+  let stubs_selu =
     foreign "atg_selu"
     (ptr t @-> t @-> returning void)
 
-  let selu_ =
+  let stubs_selu_ =
     foreign "atg_selu_"
     (ptr t @-> t @-> returning void)
 
-  let set_ =
+  let stubs_set_ =
     foreign "atg_set_"
     (ptr t @-> t @-> t @-> returning void)
 
-  let set_1 =
+  let stubs_set_1 =
     foreign "atg_set_1"
     (ptr t @-> t @-> returning void)
 
-  let set_requires_grad =
+  let stubs_set_requires_grad =
     foreign "atg_set_requires_grad"
     (ptr t @-> t @-> int @-> returning void)
 
-  let sigmoid =
+  let stubs_sigmoid =
     foreign "atg_sigmoid"
     (ptr t @-> t @-> returning void)
 
-  let sigmoid_ =
+  let stubs_sigmoid_ =
     foreign "atg_sigmoid_"
     (ptr t @-> t @-> returning void)
 
-  let sigmoid_out =
+  let stubs_sigmoid_out =
     foreign "atg_sigmoid_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let sign =
+  let stubs_sign =
     foreign "atg_sign"
     (ptr t @-> t @-> returning void)
 
-  let sign_ =
+  let stubs_sign_ =
     foreign "atg_sign_"
     (ptr t @-> t @-> returning void)
 
-  let sign_out =
+  let stubs_sign_out =
     foreign "atg_sign_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let sin =
+  let stubs_sin =
     foreign "atg_sin"
     (ptr t @-> t @-> returning void)
 
-  let sin_ =
+  let stubs_sin_ =
     foreign "atg_sin_"
     (ptr t @-> t @-> returning void)
 
-  let sin_out =
+  let stubs_sin_out =
     foreign "atg_sin_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let sinh =
+  let stubs_sinh =
     foreign "atg_sinh"
     (ptr t @-> t @-> returning void)
 
-  let sinh_ =
+  let stubs_sinh_ =
     foreign "atg_sinh_"
     (ptr t @-> t @-> returning void)
 
-  let sinh_out =
+  let stubs_sinh_out =
     foreign "atg_sinh_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let slice =
+  let stubs_slice =
     foreign "atg_slice"
     (ptr t @-> t @-> int64_t @-> int64_t @-> int64_t @-> int64_t @-> returning void)
 
-  let slogdet =
+  let stubs_slogdet =
     foreign "atg_slogdet"
     (ptr t @-> t @-> returning void)
 
-  let smm =
+  let stubs_smm =
     foreign "atg_smm"
     (ptr t @-> t @-> t @-> returning void)
 
-  let smooth_l1_loss =
+  let stubs_smooth_l1_loss =
     foreign "atg_smooth_l1_loss"
     (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
-  let smooth_l1_loss_backward =
+  let stubs_smooth_l1_loss_backward =
     foreign "atg_smooth_l1_loss_backward"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let smooth_l1_loss_backward_out =
+  let stubs_smooth_l1_loss_backward_out =
     foreign "atg_smooth_l1_loss_backward_out"
     (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let smooth_l1_loss_forward =
+  let stubs_smooth_l1_loss_forward =
     foreign "atg_smooth_l1_loss_forward"
     (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
-  let smooth_l1_loss_forward_out =
+  let stubs_smooth_l1_loss_forward_out =
     foreign "atg_smooth_l1_loss_forward_out"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let smooth_l1_loss_out =
+  let stubs_smooth_l1_loss_out =
     foreign "atg_smooth_l1_loss_out"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let soft_margin_loss =
+  let stubs_soft_margin_loss =
     foreign "atg_soft_margin_loss"
     (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
-  let soft_margin_loss_backward =
+  let stubs_soft_margin_loss_backward =
     foreign "atg_soft_margin_loss_backward"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let soft_margin_loss_backward_out =
+  let stubs_soft_margin_loss_backward_out =
     foreign "atg_soft_margin_loss_backward_out"
     (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let soft_margin_loss_forward =
+  let stubs_soft_margin_loss_forward =
     foreign "atg_soft_margin_loss_forward"
     (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
-  let soft_margin_loss_forward_out =
+  let stubs_soft_margin_loss_forward_out =
     foreign "atg_soft_margin_loss_forward_out"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let soft_margin_loss_out =
+  let stubs_soft_margin_loss_out =
     foreign "atg_soft_margin_loss_out"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
 
-  let softmax =
-    foreign "atg_softmax"
+  let stubs_softmax1 =
+    foreign "atg_softmax1"
+    (ptr t @-> t @-> int64_t @-> int @-> returning void)
+
+  let stubs_softmax2 =
+    foreign "atg_softmax2"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let softplus =
+  let stubs_softplus =
     foreign "atg_softplus"
     (ptr t @-> t @-> returning void)
 
-  let softplus_out =
+  let stubs_softplus_out =
     foreign "atg_softplus_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let softshrink =
+  let stubs_softshrink =
     foreign "atg_softshrink"
     (ptr t @-> t @-> returning void)
 
-  let softshrink_out =
+  let stubs_softshrink_out =
     foreign "atg_softshrink_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let sort =
+  let stubs_sort =
     foreign "atg_sort"
     (ptr t @-> t @-> int64_t @-> int @-> returning void)
 
-  let sort_out =
+  let stubs_sort_out =
     foreign "atg_sort_out"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
-  let sparse_resize_ =
+  let stubs_sparse_coo_tensor1 =
+    foreign "atg_sparse_coo_tensor1"
+    (ptr t @-> ptr long @-> int @-> int @-> int @-> returning void)
+
+  let stubs_sparse_coo_tensor2 =
+    foreign "atg_sparse_coo_tensor2"
+    (ptr t @-> t @-> t @-> int @-> int @-> returning void)
+
+  let stubs_sparse_coo_tensor3 =
+    foreign "atg_sparse_coo_tensor3"
+    (ptr t @-> t @-> t @-> ptr long @-> int @-> int @-> int @-> returning void)
+
+  let stubs_sparse_resize_ =
     foreign "atg_sparse_resize_"
     (ptr t @-> t @-> ptr long @-> int @-> int64_t @-> int64_t @-> returning void)
 
-  let sparse_resize_and_clear_ =
+  let stubs_sparse_resize_and_clear_ =
     foreign "atg_sparse_resize_and_clear_"
     (ptr t @-> t @-> ptr long @-> int @-> int64_t @-> int64_t @-> returning void)
 
-  let sqrt =
+  let stubs_sqrt =
     foreign "atg_sqrt"
     (ptr t @-> t @-> returning void)
 
-  let sqrt_ =
+  let stubs_sqrt_ =
     foreign "atg_sqrt_"
     (ptr t @-> t @-> returning void)
 
-  let sqrt_out =
+  let stubs_sqrt_out =
     foreign "atg_sqrt_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let squeeze1 =
+  let stubs_squeeze1 =
     foreign "atg_squeeze1"
     (ptr t @-> t @-> returning void)
 
-  let squeeze2 =
+  let stubs_squeeze2 =
     foreign "atg_squeeze2"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let squeeze_1 =
+  let stubs_squeeze_1 =
     foreign "atg_squeeze_1"
     (ptr t @-> t @-> returning void)
 
-  let squeeze_2 =
+  let stubs_squeeze_2 =
     foreign "atg_squeeze_2"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let sspaddmm =
+  let stubs_sspaddmm =
     foreign "atg_sspaddmm"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let sspaddmm_out =
+  let stubs_sspaddmm_out =
     foreign "atg_sspaddmm_out"
     (ptr t @-> t @-> t @-> t @-> t @-> returning void)
 
-  let stack =
+  let stubs_stack =
     foreign "atg_stack"
     (ptr t @-> ptr t @-> int @-> int64_t @-> returning void)
 
-  let stack_out =
+  let stubs_stack_out =
     foreign "atg_stack_out"
     (ptr t @-> t @-> ptr t @-> int @-> int64_t @-> returning void)
 
-  let std1 =
+  let stubs_std1 =
     foreign "atg_std1"
     (ptr t @-> t @-> int @-> returning void)
 
-  let std2 =
+  let stubs_std2 =
     foreign "atg_std2"
     (ptr t @-> t @-> int64_t @-> int @-> int @-> returning void)
 
-  let std_out =
+  let stubs_std_out =
     foreign "atg_std_out"
     (ptr t @-> t @-> t @-> int64_t @-> int @-> int @-> returning void)
 
-  let sub =
+  let stubs_stft =
+    foreign "atg_stft"
+    (ptr t @-> t @-> int64_t @-> int64_t @-> int64_t @-> t @-> int @-> int @-> returning void)
+
+  let stubs_sub =
     foreign "atg_sub"
     (ptr t @-> t @-> t @-> returning void)
 
-  let sub1 =
+  let stubs_sub1 =
     foreign "atg_sub1"
     (ptr t @-> t @-> scalar @-> returning void)
 
-  let sub_ =
+  let stubs_sub_ =
     foreign "atg_sub_"
     (ptr t @-> t @-> t @-> returning void)
 
-  let sub_1 =
+  let stubs_sub_1 =
     foreign "atg_sub_1"
     (ptr t @-> t @-> scalar @-> returning void)
 
-  let sub_out =
+  let stubs_sub_out =
     foreign "atg_sub_out"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let sum1 =
+  let stubs_sum1 =
     foreign "atg_sum1"
     (ptr t @-> t @-> int @-> returning void)
 
-  let sum2 =
+  let stubs_sum2 =
     foreign "atg_sum2"
     (ptr t @-> t @-> returning void)
 
-  let sum3 =
+  let stubs_sum3 =
     foreign "atg_sum3"
     (ptr t @-> t @-> ptr long @-> int @-> int @-> int @-> returning void)
 
-  let sum4 =
+  let stubs_sum4 =
     foreign "atg_sum4"
     (ptr t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
-  let sum5 =
+  let stubs_sum5 =
     foreign "atg_sum5"
     (ptr t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
-  let sum_out1 =
+  let stubs_sum_out1 =
     foreign "atg_sum_out1"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> int @-> int @-> returning void)
 
-  let sum_out2 =
+  let stubs_sum_out2 =
     foreign "atg_sum_out2"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
-  let sum_out3 =
+  let stubs_sum_out3 =
     foreign "atg_sum_out3"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
-  let svd =
+  let stubs_svd =
     foreign "atg_svd"
-    (ptr t @-> t @-> int @-> returning void)
+    (ptr t @-> t @-> int @-> int @-> returning void)
 
-  let svd_out =
+  let stubs_svd_out =
     foreign "atg_svd_out"
-    (ptr t @-> t @-> t @-> t @-> t @-> int @-> returning void)
+    (ptr t @-> t @-> t @-> t @-> t @-> int @-> int @-> returning void)
 
-  let symeig =
+  let stubs_symeig =
     foreign "atg_symeig"
     (ptr t @-> t @-> int @-> int @-> returning void)
 
-  let symeig_out =
+  let stubs_symeig_out =
     foreign "atg_symeig_out"
     (ptr t @-> t @-> t @-> t @-> int @-> int @-> returning void)
 
-  let tr =
+  let stubs_tr =
     foreign "atg_t"
     (ptr t @-> t @-> returning void)
 
-  let t_ =
+  let stubs_t_ =
     foreign "atg_t_"
     (ptr t @-> t @-> returning void)
 
-  let take =
+  let stubs_take =
     foreign "atg_take"
     (ptr t @-> t @-> t @-> returning void)
 
-  let take_out =
+  let stubs_take_out =
     foreign "atg_take_out"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let tan =
+  let stubs_tan =
     foreign "atg_tan"
     (ptr t @-> t @-> returning void)
 
-  let tan_ =
+  let stubs_tan_ =
     foreign "atg_tan_"
     (ptr t @-> t @-> returning void)
 
-  let tan_out =
+  let stubs_tan_out =
     foreign "atg_tan_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let tanh =
+  let stubs_tanh =
     foreign "atg_tanh"
     (ptr t @-> t @-> returning void)
 
-  let tanh_ =
+  let stubs_tanh_ =
     foreign "atg_tanh_"
     (ptr t @-> t @-> returning void)
 
-  let tanh_out =
+  let stubs_tanh_out =
     foreign "atg_tanh_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let tensordot =
+  let stubs_tensordot =
     foreign "atg_tensordot"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
-  let to1 =
+  let stubs_threshold =
+    foreign "atg_threshold"
+    (ptr t @-> t @-> scalar @-> scalar @-> returning void)
+
+  let stubs_threshold_ =
+    foreign "atg_threshold_"
+    (ptr t @-> t @-> scalar @-> scalar @-> returning void)
+
+  let stubs_threshold_backward =
+    foreign "atg_threshold_backward"
+    (ptr t @-> t @-> t @-> scalar @-> returning void)
+
+  let stubs_threshold_out =
+    foreign "atg_threshold_out"
+    (ptr t @-> t @-> t @-> scalar @-> scalar @-> returning void)
+
+  let stubs_to1 =
     foreign "atg_to1"
     (ptr t @-> t @-> int @-> returning void)
 
-  let to2 =
+  let stubs_to2 =
     foreign "atg_to2"
+    (ptr t @-> t @-> int @-> int @-> int @-> int @-> returning void)
+
+  let stubs_to3 =
+    foreign "atg_to3"
+    (ptr t @-> t @-> int @-> int @-> int @-> int @-> returning void)
+
+  let stubs_to4 =
+    foreign "atg_to4"
     (ptr t @-> t @-> int @-> int @-> int @-> returning void)
 
-  let to3 =
-    foreign "atg_to3"
-    (ptr t @-> t @-> int @-> int @-> returning void)
-
-  let to4 =
-    foreign "atg_to4"
-    (ptr t @-> t @-> int @-> int @-> returning void)
-
-  let to5 =
+  let stubs_to5 =
     foreign "atg_to5"
-    (ptr t @-> t @-> t @-> int @-> returning void)
+    (ptr t @-> t @-> t @-> int @-> int @-> returning void)
 
-  let to_dense =
+  let stubs_to_dense =
     foreign "atg_to_dense"
     (ptr t @-> t @-> returning void)
 
-  let topk =
+  let stubs_to_sparse1 =
+    foreign "atg_to_sparse1"
+    (ptr t @-> t @-> int64_t @-> returning void)
+
+  let stubs_to_sparse2 =
+    foreign "atg_to_sparse2"
+    (ptr t @-> t @-> returning void)
+
+  let stubs_topk =
     foreign "atg_topk"
     (ptr t @-> t @-> int64_t @-> int64_t @-> int @-> int @-> returning void)
 
-  let topk_out =
+  let stubs_topk_out =
     foreign "atg_topk_out"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> int64_t @-> int @-> int @-> returning void)
 
-  let totype =
+  let stubs_totype =
     foreign "atg_totype"
     (ptr t @-> t @-> int @-> returning void)
 
-  let transpose =
+  let stubs_trace =
+    foreign "atg_trace"
+    (ptr t @-> t @-> returning void)
+
+  let stubs_transpose =
     foreign "atg_transpose"
     (ptr t @-> t @-> int64_t @-> int64_t @-> returning void)
 
-  let transpose_ =
+  let stubs_transpose_ =
     foreign "atg_transpose_"
     (ptr t @-> t @-> int64_t @-> int64_t @-> returning void)
 
-  let tril =
+  let stubs_tril =
     foreign "atg_tril"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let tril_ =
+  let stubs_tril_ =
     foreign "atg_tril_"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let tril_out =
+  let stubs_tril_out =
     foreign "atg_tril_out"
     (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
-  let triplet_margin_loss =
+  let stubs_triplet_margin_loss =
     foreign "atg_triplet_margin_loss"
     (ptr t @-> t @-> t @-> t @-> double @-> double @-> double @-> int @-> int64_t @-> returning void)
 
-  let triu =
+  let stubs_triu =
     foreign "atg_triu"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let triu_ =
+  let stubs_triu_ =
     foreign "atg_triu_"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let triu_out =
+  let stubs_triu_out =
     foreign "atg_triu_out"
     (ptr t @-> t @-> t @-> int64_t @-> returning void)
 
-  let trtrs =
+  let stubs_trtrs =
     foreign "atg_trtrs"
     (ptr t @-> t @-> t @-> int @-> int @-> int @-> returning void)
 
-  let trtrs_out =
+  let stubs_trtrs_out =
     foreign "atg_trtrs_out"
     (ptr t @-> t @-> t @-> t @-> t @-> int @-> int @-> int @-> returning void)
 
-  let trunc =
+  let stubs_trunc =
     foreign "atg_trunc"
     (ptr t @-> t @-> returning void)
 
-  let trunc_ =
+  let stubs_trunc_ =
     foreign "atg_trunc_"
     (ptr t @-> t @-> returning void)
 
-  let trunc_out =
+  let stubs_trunc_out =
     foreign "atg_trunc_out"
     (ptr t @-> t @-> t @-> returning void)
 
-  let type_as =
+  let stubs_type_as =
     foreign "atg_type_as"
     (ptr t @-> t @-> t @-> returning void)
 
-  let unfold =
+  let stubs_unfold =
     foreign "atg_unfold"
     (ptr t @-> t @-> int64_t @-> int64_t @-> int64_t @-> returning void)
 
-  let uniform_ =
+  let stubs_uniform_ =
     foreign "atg_uniform_"
     (ptr t @-> t @-> double @-> double @-> returning void)
 
-  let unsqueeze =
+  let stubs_unsqueeze =
     foreign "atg_unsqueeze"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let unsqueeze_ =
+  let stubs_unsqueeze_ =
     foreign "atg_unsqueeze_"
     (ptr t @-> t @-> int64_t @-> returning void)
 
-  let upsample_bilinear2d =
+  let stubs_upsample_bilinear2d =
     foreign "atg_upsample_bilinear2d"
     (ptr t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
-  let upsample_bilinear2d_backward =
+  let stubs_upsample_bilinear2d_backward =
     foreign "atg_upsample_bilinear2d_backward"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
-  let upsample_bilinear2d_backward_out =
+  let stubs_upsample_bilinear2d_backward_out =
     foreign "atg_upsample_bilinear2d_backward_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
-  let upsample_bilinear2d_forward =
+  let stubs_upsample_bilinear2d_forward =
     foreign "atg_upsample_bilinear2d_forward"
     (ptr t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
-  let upsample_bilinear2d_forward_out =
+  let stubs_upsample_bilinear2d_forward_out =
     foreign "atg_upsample_bilinear2d_forward_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
-  let upsample_bilinear2d_out =
+  let stubs_upsample_bilinear2d_out =
     foreign "atg_upsample_bilinear2d_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
-  let upsample_linear1d =
+  let stubs_upsample_linear1d =
     foreign "atg_upsample_linear1d"
     (ptr t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
-  let upsample_linear1d_backward =
+  let stubs_upsample_linear1d_backward =
     foreign "atg_upsample_linear1d_backward"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
-  let upsample_linear1d_backward_out =
+  let stubs_upsample_linear1d_backward_out =
     foreign "atg_upsample_linear1d_backward_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
-  let upsample_linear1d_forward =
+  let stubs_upsample_linear1d_forward =
     foreign "atg_upsample_linear1d_forward"
     (ptr t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
-  let upsample_linear1d_forward_out =
+  let stubs_upsample_linear1d_forward_out =
     foreign "atg_upsample_linear1d_forward_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
-  let upsample_linear1d_out =
+  let stubs_upsample_linear1d_out =
     foreign "atg_upsample_linear1d_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
-  let upsample_nearest1d =
+  let stubs_upsample_nearest1d =
     foreign "atg_upsample_nearest1d"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let upsample_nearest1d_backward =
+  let stubs_upsample_nearest1d_backward =
     foreign "atg_upsample_nearest1d_backward"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
-  let upsample_nearest1d_backward_out =
+  let stubs_upsample_nearest1d_backward_out =
     foreign "atg_upsample_nearest1d_backward_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
-  let upsample_nearest1d_forward =
+  let stubs_upsample_nearest1d_forward =
     foreign "atg_upsample_nearest1d_forward"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let upsample_nearest1d_forward_out =
+  let stubs_upsample_nearest1d_forward_out =
     foreign "atg_upsample_nearest1d_forward_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let upsample_nearest1d_out =
+  let stubs_upsample_nearest1d_out =
     foreign "atg_upsample_nearest1d_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let upsample_nearest2d =
+  let stubs_upsample_nearest2d =
     foreign "atg_upsample_nearest2d"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let upsample_nearest2d_backward =
+  let stubs_upsample_nearest2d_backward =
     foreign "atg_upsample_nearest2d_backward"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
-  let upsample_nearest2d_backward_out =
+  let stubs_upsample_nearest2d_backward_out =
     foreign "atg_upsample_nearest2d_backward_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
-  let upsample_nearest2d_forward =
+  let stubs_upsample_nearest2d_forward =
     foreign "atg_upsample_nearest2d_forward"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let upsample_nearest2d_forward_out =
+  let stubs_upsample_nearest2d_forward_out =
     foreign "atg_upsample_nearest2d_forward_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let upsample_nearest2d_out =
+  let stubs_upsample_nearest2d_out =
     foreign "atg_upsample_nearest2d_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let upsample_nearest3d =
+  let stubs_upsample_nearest3d =
     foreign "atg_upsample_nearest3d"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let upsample_nearest3d_backward =
+  let stubs_upsample_nearest3d_backward =
     foreign "atg_upsample_nearest3d_backward"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
-  let upsample_nearest3d_backward_out =
+  let stubs_upsample_nearest3d_backward_out =
     foreign "atg_upsample_nearest3d_backward_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> returning void)
 
-  let upsample_nearest3d_forward =
+  let stubs_upsample_nearest3d_forward =
     foreign "atg_upsample_nearest3d_forward"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let upsample_nearest3d_forward_out =
+  let stubs_upsample_nearest3d_forward_out =
     foreign "atg_upsample_nearest3d_forward_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let upsample_nearest3d_out =
+  let stubs_upsample_nearest3d_out =
     foreign "atg_upsample_nearest3d_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> returning void)
 
-  let upsample_trilinear3d =
+  let stubs_upsample_trilinear3d =
     foreign "atg_upsample_trilinear3d"
     (ptr t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
-  let upsample_trilinear3d_backward =
+  let stubs_upsample_trilinear3d_backward =
     foreign "atg_upsample_trilinear3d_backward"
     (ptr t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
-  let upsample_trilinear3d_backward_out =
+  let stubs_upsample_trilinear3d_backward_out =
     foreign "atg_upsample_trilinear3d_backward_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> ptr long @-> int @-> int @-> returning void)
 
-  let upsample_trilinear3d_forward =
+  let stubs_upsample_trilinear3d_forward =
     foreign "atg_upsample_trilinear3d_forward"
     (ptr t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
-  let upsample_trilinear3d_forward_out =
+  let stubs_upsample_trilinear3d_forward_out =
     foreign "atg_upsample_trilinear3d_forward_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
-  let upsample_trilinear3d_out =
+  let stubs_upsample_trilinear3d_out =
     foreign "atg_upsample_trilinear3d_out"
     (ptr t @-> t @-> t @-> ptr long @-> int @-> int @-> returning void)
 
-  let var1 =
+  let stubs_values =
+    foreign "atg_values"
+    (ptr t @-> t @-> returning void)
+
+  let stubs_var1 =
     foreign "atg_var1"
     (ptr t @-> t @-> int @-> returning void)
 
-  let var2 =
+  let stubs_var2 =
     foreign "atg_var2"
     (ptr t @-> t @-> int64_t @-> int @-> int @-> returning void)
 
-  let var_out =
+  let stubs_var_out =
     foreign "atg_var_out"
     (ptr t @-> t @-> t @-> int64_t @-> int @-> int @-> returning void)
 
-  let view =
+  let stubs_view =
     foreign "atg_view"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 
-  let view_as =
+  let stubs_view_as =
     foreign "atg_view_as"
     (ptr t @-> t @-> t @-> returning void)
 
-  let where =
+  let stubs_where =
     foreign "atg_where"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let zero_ =
+  let stubs_zero_ =
     foreign "atg_zero_"
     (ptr t @-> t @-> returning void)
 
-  let zeros =
+  let stubs_zeros =
     foreign "atg_zeros"
     (ptr t @-> ptr long @-> int @-> int @-> int @-> returning void)
 
-  let zeros_like1 =
+  let stubs_zeros_like1 =
     foreign "atg_zeros_like1"
     (ptr t @-> t @-> returning void)
 
-  let zeros_like2 =
+  let stubs_zeros_like2 =
     foreign "atg_zeros_like2"
     (ptr t @-> t @-> int @-> int @-> returning void)
 
-  let zeros_out =
+  let stubs_zeros_out =
     foreign "atg_zeros_out"
     (ptr t @-> t @-> ptr long @-> int @-> returning void)
 

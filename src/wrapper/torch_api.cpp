@@ -159,7 +159,7 @@ void at_load_callback(char *filename, void (*f)(char *, tensor)) {
     if (module == nullptr)
       caml_failwith("torch::jit::load returned a nullptr");
     for (const auto &p : module->get_parameters()) {
-      f((char*)p.key.c_str(), new torch::Tensor(*p.value.slot()));
+      f((char*)p.key().c_str(), new torch::Tensor(*p.value().slot()));
     }
   )
 }

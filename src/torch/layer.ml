@@ -12,6 +12,10 @@ let set_training t_with_training ~is_training =
   let apply xs = t_with_training.apply_with_training xs ~is_training in
   { apply }
 
+let with_training t =
+  let apply_with_training xs ~is_training:_ = t.apply xs in
+  { apply_with_training }
+
 type activation =
   | Relu
   | Softmax
@@ -35,7 +39,7 @@ let kaiming_uniform vs ~name ~shape ~a =
 let apply ?activation ys =
   match activation with
   | Some Relu -> Tensor.relu ys
-  | Some Softmax -> Tensor.softmax ys
+  | Some Softmax -> Tensor.softmax ys ~dim:(-1)
   | Some Log_softmax -> Tensor.log_softmax ys ~dim:(-1)
   | Some Tanh -> Tensor.tanh ys
   | Some Sigmoid -> Tensor.sigmoid ys

@@ -3,6 +3,7 @@ open Base
 type t
 type t_with_training
 val set_training : t_with_training -> is_training:bool -> t
+val with_training : t -> t_with_training
 
 type activation =
   | Relu
