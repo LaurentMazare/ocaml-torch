@@ -23,7 +23,8 @@ let () =
     match Sys.argv with
     | [| _; "densenet" |] -> Densenet.model vs
     | [| _; "resnet" |] -> Resnet.model vs
-    | [| _; "preactresnet" |] | _ -> Preactresnet.model vs
+    | [| _; "fast-resnet" |] -> Fast_resnet.model vs
+    | [| _; "preact-resnet" |] | _ -> Preact_resnet.model vs
   in
   let sgd =
     Optimizer.sgd vs ~learning_rate:0.  ~momentum:0.9 ~weight_decay:5e-4 ~nesterov:true
@@ -31,6 +32,7 @@ let () =
   let train_model xs = Layer.apply_ model xs ~is_training:true in
   let test_model xs = Layer.apply_ model xs ~is_training:false in
   let batches_per_epoch = Dataset_helper.batches_per_epoch cifar ~batch_size in
+  Stdio.printf "Training %s for %d epochs.\n%!" model_name epochs;
   Checkpointing.loop ~start_index:1 ~end_index:epochs
     ~var_stores:[ vs ]
     ~checkpoint_base:(model_name ^ ".ot")
