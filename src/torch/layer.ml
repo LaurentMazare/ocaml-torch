@@ -134,10 +134,10 @@ let conv_transpose2d_ ?n vs ~ksize ~stride ?activation ?(padding = 0) ?(output_p
     ~input_dim
     output_dim
 
-let batch_norm2d ?n vs ?(eps=1e-5) ?(momentum=0.1) output_dim =
+let batch_norm2d ?n vs ?(w_init=Var_store.Init.Uniform (0., 1.)) ?(eps=1e-5) ?(momentum=0.1) output_dim =
   let name = Var_store.default_name vs n "batch_norm2d" in
   let w =
-    Var_store.new_var vs ~shape:[ output_dim ] ~init:(Uniform (0., 1.))
+    Var_store.new_var vs ~shape:[ output_dim ] ~init:w_init
       ~name:N.(name / "weight")
   in
   let b =

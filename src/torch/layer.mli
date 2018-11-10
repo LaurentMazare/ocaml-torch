@@ -73,6 +73,7 @@ val conv_transpose2d_
 val batch_norm2d
   :  ?n:N.t
   -> Var_store.t
+  -> ?w_init:Var_store.Init.t
   -> ?eps:float
   -> ?momentum:float
   -> int

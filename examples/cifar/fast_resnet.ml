@@ -19,7 +19,7 @@ let conv_bn vs ~c_in ~c_out =
   let open Layer in
   fold_
     [ conv2d_ vs ~ksize:3 ~stride:1 ~padding:1 ~use_bias:false ~input_dim:c_in c_out |> with_training
-    ; batch_norm2d vs c_out
+    ; batch_norm2d vs c_out ~w_init:Ones
     ; of_fn_ (fun xs ~is_training:_ -> Tensor.relu_ xs)
     ]
 

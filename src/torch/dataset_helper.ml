@@ -75,7 +75,7 @@ let random_cutout t ~size =
   | [ batch_size; _; dim_h; dim_w ] as shape ->
     if size > dim_h || size > dim_w
     then
-      Printf.failwithf "cutout %d is to large for image dimensions %d %d"
+      Printf.failwithf "cutout %d is too large for image dimensions %d %d"
         size dim_w dim_h ();
     let output = Tensor.zeros shape in
     Tensor.copy_ output ~src:t;
