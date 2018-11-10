@@ -106,7 +106,7 @@ let () =
       Optimizer.set_learning_rate sgd ~learning_rate:(learning_rate ~epoch_idx);
       let start_time = Unix.gettimeofday () in
       let sum_loss = ref 0. in
-      Dataset_helper.iter cifar ~augmentation:(`flip_and_crop_with_pad 4) ~device ~batch_size
+      Dataset_helper.iter cifar ~augmentation:[`flip; `crop_with_pad 4] ~device ~batch_size
         ~f:(fun batch_idx ~batch_images ~batch_labels ->
           Optimizer.zero_grad sgd;
           let predicted = train_model batch_images in

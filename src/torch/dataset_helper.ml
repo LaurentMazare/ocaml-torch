@@ -35,10 +35,8 @@ let read_with_cache ~cache_file ~read =
     t
 
 let unexpected_shape ~shape =
-  List.map shape ~f:Int.to_string
-  |> String.concat ~sep:", "
-  |> Printf.sprintf "Unexpected tensor shape (%s)"
-  |> failwith
+  Printf.failwithf "Unexpected tensor shape (%s)"
+    (List.map shape ~f:Int.to_string |> String.concat ~sep:", ") ()
 
 let random_flip t =
   match Tensor.shape t with
@@ -72,18 +70,38 @@ let random_crop t ~pad =
     output
   | shape -> unexpected_shape ~shape
 
-let train_batch ?device ?augmentation t ~batch_size ~batch_idx =
+let random_cutout t ~size =
+  match Tensor.shape t with
+  | [ batch_size; _; dim_h; dim_w ] as shape ->
+    if size > dim_h || size > dim_w
+    then
+      Printf.failwithf "cutout %d is to large for image dimensions %d %d"
+        size dim_w dim_h ();
+    let output = Tensor.zeros shape in
+    Tensor.copy_ output ~src:t;
+    for batch_index = 0 to batch_size - 1 do
+      let start_w = Random.int (dim_w - size + 1) in
+      let start_h = Random.int (dim_h - size + 1) in
+      Tensor.narrow output ~dim:0 ~start:batch_index ~length:1
+      |> Tensor.narrow ~dim:2 ~start:start_h ~length:size
+      |> Tensor.narrow ~dim:3 ~start:start_w ~length:size
+      |> fun t -> Tensor.fill_float t 0.
+    done;
+    output
+  | shape -> unexpected_shape ~shape
+
+let train_batch ?device ?(augmentation=[]) t ~batch_size ~batch_idx =
   let { train_images; train_labels; _ } = t in
   let train_size = Tensor.shape train_images |> List.hd_exn in
   let start = Int.(%) (batch_size * batch_idx) (train_size - batch_size) in
   let batch_images = Tensor.narrow train_images ~dim:0 ~start ~length:batch_size in
   let batch_labels = Tensor.narrow train_labels ~dim:0 ~start ~length:batch_size in
   let batch_images =
-    match augmentation with
-    | None -> batch_images
-    | Some `flip -> random_flip batch_images
-    | Some `crop_with_pad pad -> random_crop batch_images ~pad
-    | Some `flip_and_crop_with_pad pad -> random_flip batch_images |> random_crop ~pad
+    List.fold augmentation ~init:batch_images ~f:(fun batch_images augmentation ->
+      match augmentation with
+      | `flip -> random_flip batch_images
+      | `crop_with_pad pad -> random_crop batch_images ~pad
+      | `cutout size -> random_cutout batch_images ~size)
   in
   Tensor.to_device batch_images ?device, Tensor.to_device batch_labels ?device
 

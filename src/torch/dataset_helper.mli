@@ -16,7 +16,7 @@ type t =
 *)
 val train_batch
   :  ?device:Torch_core.Device.t
-  -> ?augmentation:[ `flip | `crop_with_pad of int | `flip_and_crop_with_pad of int ]
+  -> ?augmentation:[ `flip | `crop_with_pad of int | `cutout of int ] list
   -> t
   -> batch_size:int
   -> batch_idx:int
@@ -54,7 +54,7 @@ val batches_per_epoch : t -> batch_size:int -> int
 *)
 val iter
   :  ?device:Torch_core.Device.t
-  -> ?augmentation:[ `flip | `crop_with_pad of int | `flip_and_crop_with_pad of int ]
+  -> ?augmentation:[ `flip | `crop_with_pad of int | `cutout of int ] list
   -> ?shuffle:bool
   -> t
   -> f:(int -> batch_images:Tensor.t -> batch_labels:Tensor.t -> unit)
