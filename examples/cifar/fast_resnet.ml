@@ -6,14 +6,14 @@ open Torch
 
 let batch_size = 512
 let epochs = 24
-let lr_schedule ~batch_idx ~batches_per_epoch ~epoch_idx =
-  let epoch_idx =
-    Float.of_int (epoch_idx - 1)
-    +. Float.of_int batch_idx /. Float.of_int batches_per_epoch
-  in
-  if Float.(<=) epoch_idx 5.
-  then 0.4 *. epoch_idx /. 5.
-  else 0.4 *. (Float.of_int epochs -. epoch_idx) /. Float.of_int (epochs - 5)
+let lr_schedule =
+  let schedule = Optimizer.Linear_interpolation.create [ 0., 0.; 5., 0.4; 24., 0. ] in
+  fun ~batch_idx ~batches_per_epoch ~epoch_idx ->
+    let epoch_idx =
+      Float.of_int (epoch_idx - 1)
+      +. Float.of_int batch_idx /. Float.of_int batches_per_epoch
+    in
+    Optimizer.Linear_interpolation.eval schedule epoch_idx
 
 let conv_bn vs ~c_in ~c_out =
   let open Layer in

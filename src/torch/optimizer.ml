@@ -90,3 +90,41 @@ let backward_step ?clip_grad_norm2 t ~loss =
 
 let set_learning_rate t ~learning_rate =
   Optimizer.set_learning_rate t.optimizer learning_rate
+
+module Linear_interpolation = struct
+  type t =
+    { xs : float array
+    ; ys : float array
+    }
+
+  let create vs =
+    if List.is_empty vs
+    then failwith "empty knot list";
+    if not (List.is_sorted vs ~compare:(fun (x1, _) (x2, _) -> Float.compare x1 x2))
+    then failwith "the input knots are not sorted";
+    let _ =
+      List.fold vs ~init:None ~f:(fun acc (x, _) ->
+        Option.iter acc ~f:(fun prev_x ->
+          if Float.(=) x prev_x
+          then Printf.failwithf "duplicate key %f" x ());
+        Some x)
+    in
+    let xs, ys = List.unzip vs in
+    { xs = Array.of_list xs; ys = Array.of_list ys }
+
+  let eval t x =
+    (* [t] has at least one element. *)
+    if Float.(<=) x t.xs.(0)
+    then t.ys.(0)
+    else if Float.(<=) t.xs.(Array.length t.xs - 1) x
+    then t.ys.(Array.length t.xs - 1)
+    else
+      let index =
+        Array.binary_search t.xs `First_greater_than_or_equal_to x
+          ~compare:Float.compare
+      in
+      let index = Option.value_exn index in
+      let prev_x, prev_y = t.xs.(index-1), t.ys.(index-1) in
+      let next_x, next_y = t.xs.(index), t.ys.(index) in
+      (prev_y *. (next_x -. x) +. next_y *. (x -. prev_x)) /. (next_x -. prev_x)
+end
