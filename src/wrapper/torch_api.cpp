@@ -6,6 +6,10 @@
 
 using namespace std;
 
+void at_manual_seed(int64_t seed) {
+  torch::manual_seed(seed);
+}
+
 vector<torch::Tensor> of_carray_tensor(torch::Tensor **vs, int len) {
   vector<torch::Tensor> result;
   for (int i = 0; i < len; ++i) result.push_back(*(vs[i]));

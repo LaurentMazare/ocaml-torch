@@ -1,3 +1,4 @@
+val manual_seed : int -> unit
 module Scalar : sig
   type t
   val int : int -> t

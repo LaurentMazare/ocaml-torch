@@ -2,6 +2,7 @@ open Ctypes
 
 module C(F: Cstubs.FOREIGN) = struct
   open F
+  let manual_seed = foreign "at_manual_seed" (int64_t @-> returning void)
   module Tensor = struct
     type t = unit ptr
     let t : t typ = ptr void
@@ -78,7 +79,6 @@ module C(F: Cstubs.FOREIGN) = struct
     let float = foreign "ats_float" (float @-> returning t)
     let free = foreign "ats_free" (t @-> returning void)
   end
-
 
   module Serialize = struct
     let t = Tensor.t

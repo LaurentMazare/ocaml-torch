@@ -231,3 +231,5 @@ module Cuda = struct
   let cudnn_is_available () = cudnn_is_available () <> 0
   let set_benchmark_cudnn b = set_benchmark_cudnn (if b then 1 else 0)
 end
+
+let manual_seed seed = Wrapper_generated.C.manual_seed (Int64.of_int seed)
