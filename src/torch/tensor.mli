@@ -55,6 +55,26 @@ val float_vec
 val to_type : t -> type_:Kind.t -> t
 val to_device : ?device:Device.t -> t -> t
 
+val to_float0 : t -> float option
+val to_float1 : t -> float array option
+val to_float2 : t -> float array array option
+val to_float3 : t -> float array array array option
+
+val to_float0_exn : t -> float
+val to_float1_exn : t -> float array
+val to_float2_exn : t -> float array array
+val to_float3_exn : t -> float array array array
+
+val to_int0 : t -> int option
+val to_int1 : t -> int array option
+val to_int2 : t -> int array array option
+val to_int3 : t -> int array array array option
+
+val to_int0_exn : t -> int
+val to_int1_exn : t -> int array
+val to_int2_exn : t -> int array array
+val to_int3_exn : t -> int array array array
+
 val conv2d
   :  ?padding:int*int
   -> ?dilation:int*int

@@ -183,3 +183,79 @@ let print_shape ?(name="") t =
   List.map (shape t) ~f:Int.to_string
   |> String.concat ~sep:", "
   |> Stdio.printf "%s<%s>\n%!" name
+
+let bigarray_to_array1 bigarray ~f =
+  try
+    let bigarray = Bigarray.array1_of_genarray bigarray in
+    Array.init (Bigarray.Array1.dim bigarray) ~f:(fun i ->
+        f bigarray.{i})
+    |> Option.some
+  with Invalid_argument _ -> None
+
+let bigarray_to_array2 bigarray ~f =
+  try
+    let bigarray = Bigarray.array2_of_genarray bigarray in
+    Array.init (Bigarray.Array2.dim1 bigarray) ~f:(fun i ->
+        Array.init (Bigarray.Array2.dim2 bigarray) ~f:(fun j ->
+            f bigarray.{i, j}))
+    |> Option.some
+  with Invalid_argument _ -> None
+
+let bigarray_to_array3 bigarray ~f =
+  try
+    let bigarray = Bigarray.array3_of_genarray bigarray in
+    Array.init (Bigarray.Array3.dim1 bigarray) ~f:(fun i ->
+        Array.init (Bigarray.Array3.dim2 bigarray) ~f:(fun j ->
+            Array.init (Bigarray.Array3.dim3 bigarray) ~f:(fun k ->
+                f bigarray.{i, j, k})))
+    |> Option.some
+  with Invalid_argument _ -> None
+
+let to_float1 t =
+  match kind t with
+  | Float -> to_bigarray t ~kind:Bigarray.float32 |> bigarray_to_array1 ~f:Fn.id
+  | Double -> to_bigarray t ~kind:Bigarray.float64 |> bigarray_to_array1 ~f:Fn.id
+  | _ -> None
+
+let to_float2 t =
+  match kind t with
+  | Float -> to_bigarray t ~kind:Bigarray.float32 |> bigarray_to_array2 ~f:Fn.id
+  | Double -> to_bigarray t ~kind:Bigarray.float64 |> bigarray_to_array2 ~f:Fn.id
+  | _ -> None
+
+let to_float3 t =
+  match kind t with
+  | Float -> to_bigarray t ~kind:Bigarray.float32 |> bigarray_to_array3 ~f:Fn.id
+  | Double -> to_bigarray t ~kind:Bigarray.float64 |> bigarray_to_array3 ~f:Fn.id
+  | _ -> None
+
+let to_int1 t =
+  match kind t with
+  | Int -> to_bigarray t ~kind:Bigarray.int32 |> bigarray_to_array1 ~f:Int32.to_int_exn
+  | Int64 -> to_bigarray t ~kind:Bigarray.int64 |> bigarray_to_array1 ~f:Int64.to_int_exn
+  | _ -> None
+
+let to_int2 t =
+  match kind t with
+  | Int -> to_bigarray t ~kind:Bigarray.int32 |> bigarray_to_array2 ~f:Int32.to_int_exn
+  | Int64 -> to_bigarray t ~kind:Bigarray.int64 |> bigarray_to_array2 ~f:Int64.to_int_exn
+  | _ -> None
+
+let to_int3 t =
+  match kind t with
+  | Int -> to_bigarray t ~kind:Bigarray.int32 |> bigarray_to_array3 ~f:Int32.to_int_exn
+  | Int64 -> to_bigarray t ~kind:Bigarray.int64 |> bigarray_to_array3 ~f:Int64.to_int_exn
+  | _ -> None
+
+let to_int1_exn t = Option.value_exn (to_int1 t)
+let to_int2_exn t = Option.value_exn (to_int2 t)
+let to_int3_exn t = Option.value_exn (to_int3 t)
+
+let to_float1_exn t = Option.value_exn (to_float1 t)
+let to_float2_exn t = Option.value_exn (to_float2 t)
+let to_float3_exn t = Option.value_exn (to_float3 t)
+
+let to_float0_exn = float_value
+let to_float0 t = try float_value t |> Option.some with _ -> None
+let to_int0_exn = int_value
+let to_int0 t = try int_value t |> Option.some with _ -> None
