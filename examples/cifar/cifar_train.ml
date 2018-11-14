@@ -61,7 +61,7 @@ let () =
       let test_accuracy =
         Dataset_helper.batch_accuracy cifar `test ~device ~batch_size ~predict:test_model
       in
-      Stdio.printf "%d %.0fs %f %.2f%%\n%!"
+      Stdio.printf "%d %.2fs %f %.2f%%\n%!"
         epoch_idx
         (Unix.gettimeofday () -. start_time)
         (!sum_loss /. Float.of_int batches_per_epoch)

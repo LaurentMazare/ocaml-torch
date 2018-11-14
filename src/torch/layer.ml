@@ -66,15 +66,15 @@ let linear ?n vs ?activation ?(use_bias=true) ~input_dim output_dim =
   { apply }
 
 let conv2d
-      ?n
-      vs
-      ~ksize:(k1, k2)
-      ~stride
-      ?activation
-      ?(use_bias=true)
-      ?(padding=0, 0)
-      ~input_dim
-      output_dim
+    ?n
+    vs
+    ~ksize:(k1, k2)
+    ~stride
+    ?activation
+    ?(use_bias=true)
+    ?(padding=0, 0)
+    ~input_dim
+    output_dim
   =
   let name = Var_store.default_name vs n "conv2d" in
   let w =
@@ -134,7 +134,15 @@ let conv_transpose2d_ ?n vs ~ksize ~stride ?activation ?(padding = 0) ?(output_p
     ~input_dim
     output_dim
 
-let batch_norm2d ?n vs ?(w_init=Var_store.Init.Uniform (0., 1.)) ?(eps=1e-5) ?(momentum=0.1) output_dim =
+let batch_norm2d
+      ?n
+      vs
+      ?(w_init=Var_store.Init.Uniform (0., 1.))
+      ?(cudnn_enabled=true)
+      ?(eps=1e-5)
+      ?(momentum=0.1)
+      output_dim
+  =
   let name = Var_store.default_name vs n "batch_norm2d" in
   let w =
     Var_store.new_var vs ~shape:[ output_dim ] ~init:w_init
@@ -161,7 +169,7 @@ let batch_norm2d ?n vs ?(w_init=Var_store.Init.Uniform (0., 1.)) ?(eps=1e-5) ?(m
       ~training:is_training
       ~momentum
       ~eps
-      ~cudnn_enabled:false
+      ~cudnn_enabled
   in
   { apply_with_training }
 
