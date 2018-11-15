@@ -115,6 +115,7 @@ module C(F: Cstubs.FOREIGN) = struct
     let add_parameters =
       foreign "ato_add_parameters" (t @-> ptr Tensor.t @-> int @-> returning void)
     let set_learning_rate = foreign "ato_set_learning_rate" (t @-> float @-> returning void)
+    let set_momentum = foreign "ato_set_momentum" (t @-> float @-> returning void)
     let zero_grad = foreign "ato_zero_grad" (t @-> returning void)
     let step = foreign "ato_step" (t @-> returning void)
     let free = foreign "ato_free" (t @-> returning void)

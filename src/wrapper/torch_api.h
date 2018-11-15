@@ -64,6 +64,7 @@ optimizer ato_sgd(double learning_rate,
                   int nesterov);
 void ato_add_parameters(optimizer, tensor *, int ntensors);
 void ato_set_learning_rate(optimizer, double learning_rate);
+void ato_set_momentum(optimizer, double momentum);
 void ato_zero_grad(optimizer);
 void ato_step(optimizer);
 void ato_free(optimizer);

@@ -236,6 +236,17 @@ void ato_set_learning_rate(optimizer t, double learning_rate) {
   )
 }
 
+void ato_set_momentum(optimizer t, double momentum) {
+  PROTECT(
+    if (auto adam = dynamic_cast<torch::optim::Adam*>(t))
+      adam->options.beta1_ = momentum;
+    else if (auto sgd = dynamic_cast<torch::optim::SGD*>(t))
+      sgd->options.momentum_ = momentum;
+    else
+     caml_invalid_argument("unexpected optimizer");
+  )
+}
+
 void ato_zero_grad(optimizer t) {
   PROTECT(t->zero_grad();)
 }

@@ -124,7 +124,7 @@ let batch_accuracy ?device ?samples t train_or_test ~batch_size ~predict =
     Option.value_map samples ~default:dataset_samples ~f:(Int.min dataset_samples)
   in
   let rec loop start_index sum_accuracy =
-    Caml.Gc.compact ();
+    Caml.Gc.full_major ();
     if samples <= start_index
     then sum_accuracy /. Float.of_int samples
     else

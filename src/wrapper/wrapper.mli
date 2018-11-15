@@ -65,10 +65,9 @@ module Optimizer : sig
     -> nesterov:bool
     -> t
 
-  val set_learning_rate
-    :  t
-    -> float
-    -> unit
+  val set_learning_rate : t -> float -> unit
+
+  val set_momentum : t -> float -> unit
 
   val add_parameters : t -> Tensor.t list -> unit
   val zero_grad : t -> unit

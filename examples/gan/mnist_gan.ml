@@ -81,7 +81,7 @@ let () =
         batch_idx
         (Tensor.float_value discriminator_loss)
         (Tensor.float_value generator_loss);
-    Caml.Gc.compact ();
+    Caml.Gc.full_major ();
     if batch_idx % 100000 = 0 || (batch_idx < 100000 && batch_idx % 25000 = 0)
     then
       write_samples (generator fixed_noise)
