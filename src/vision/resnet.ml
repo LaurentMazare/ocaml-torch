@@ -89,7 +89,7 @@ let resnet ?num_classes vs ~block ~layers:(c1, c2, c3, c4) =
     |> Layer.apply_ layer2 ~is_training
     |> Layer.apply_ layer3 ~is_training
     |> Layer.apply_ layer4 ~is_training
-    |> Tensor.avg_pool2d ~stride:(1, 1) ~ksize:(7, 7)
+    |> Tensor.adaptive_avg_pool2d ~output_size:[1; 1]
     |> Tensor.view ~size:[ batch_size; -1 ]
     |> Layer.apply fc)
 
