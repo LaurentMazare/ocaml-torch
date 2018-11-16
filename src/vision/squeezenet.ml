@@ -30,7 +30,7 @@ let squeezenet vs ~version ~num_classes =
       Layer.fold
         [ Layer.conv2d_ vs ~n:(n 0) ~ksize:7 ~stride:2 ~input_dim:3 96
         ; Layer.of_fn Tensor.relu_
-        ; Layer.of_fn (Tensor.max_pool2d ~ceil_mode:true ~ksize:(7, 7) ~stride:(2, 2))
+        ; Layer.of_fn (Tensor.max_pool2d ~ceil_mode:true ~ksize:(3, 3) ~stride:(2, 2))
         ; fire vs ~n:(n 3) 96 16 64 64
         ; fire vs ~n:(n 4) 128 16 64 64
         ; fire vs ~n:(n 5) 128 32 128 128
