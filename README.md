@@ -3,13 +3,16 @@ __ocaml-torch__ provides some ocaml bindings for the [PyTorch](https://pytorch.o
 This brings to OCaml NumPy-like tensor computations with GPU acceleration and tape-based automatic
 differentiation.
 These bindings use the [PyTorch C++ API](https://pytorch.org/cppdocs/) and are mostly automatically generated.
-
-
-The libtorch library can be downloaded from the [PyTorch website](https://pytorch.org/resources) ([latest cpu version](https://download.pytorch.org/libtorch/nightly/cpu/libtorch-shared-with-deps-latest.zip)).
 Note that until PyTorch reaches 1.0 there are no stable releases for libtorch so there
 may be some compilation issues.
 
-## Usage
+## Installation
+
+### Using pre-built Binaries
+The libtorch library can be downloaded from the [PyTorch
+website](https://pytorch.org/resources) ([latest cpu
+version](https://download.pytorch.org/libtorch/nightly/cpu/libtorch-shared-with-deps-latest.zip)).
+
 Download and extract the libtorch library then to build all the examples run:
 
 ```bash
@@ -17,7 +20,18 @@ export LIBTORCH=/path/to/libtorch
 make all
 ```
 
-You can then test that everything works well with the simplest example:
+### Using Conda
+Conda packages for PyTorch 1.0 (preview release) can be used via the following command.
+```bash
+conda create -n torch
+source activate torch
+conda install pytorch-nightly-cpu=1.0.0.dev20181116 -c pytorch
+# Or for the CUDA version
+# conda install pytorch-nightly=1.0.0.dev20181116 -c pytorch
+make all
+```
+
+You can then test that everything works well with the following example:
 ```bash
 ./_build/default/examples/basics/torch_tensor.exe
 ```

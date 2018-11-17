@@ -12,25 +12,53 @@ let extract_flags c ~package =
     in
     cuda_cxx_flags, cuda_c_library_flags
 
+let torch_flags () =
+  let libroot_include, libroot_lib =
+    try
+      let libtorch = Caml.Sys.getenv "LIBTORCH" in
+      if String.is_empty libtorch
+      then raise Caml.Not_found;
+      libtorch ^ "/include", libtorch ^ "/lib"
+    with
+    | _ ->
+      let conda_prefix =
+        try
+          Caml.Sys.getenv "CONDA_PREFIX"
+        with | _ -> failwith "One of LIBTORCH or CONDA_PREFIX must be set!"
+      in
+      let conda_prefix = conda_prefix ^ "/lib" in
+      Caml.Sys.readdir conda_prefix
+      |> Array.to_list
+      |> List.filter_map ~f:(fun filename ->
+          if String.is_prefix filename ~prefix:"python"
+          then
+            let libdir =
+              Printf.sprintf "%s/%s/site-packages/torch/lib" conda_prefix filename
+            in
+            if Caml.Sys.file_exists libdir && Caml.Sys.is_directory libdir
+            then Some libdir
+            else None
+          else None)
+      |> function
+      | [] -> Printf.failwithf "no python directory with torch found in %s" conda_prefix ()
+      | libdir :: _ -> libdir ^ "/include", libdir
+  in
+  let cxx_flags =
+    [ "-isystem" ; Printf.sprintf "%s" libroot_include
+    ; "-isystem"; Printf.sprintf "%s/torch/csrc/api/include" libroot_include
+    ]
+  in
+  let c_library_flags =
+    [ Printf.sprintf "-Wl,-R%s" libroot_lib
+    ; Printf.sprintf "-L%s" libroot_lib
+    ; "-lc10"; "-lcaffe2"; "-ltorch"
+    ]
+  in
+  cxx_flags, c_library_flags
+
 let () =
   C.main ~name:"torch-config" (fun c ->
-      let libroot =
-        try
-          Caml.Sys.getenv "LIBTORCH"
-        with
-        | _ -> failwith "The LIBTORCH environment variable is not set!"
-      in
-      let cxx_flags =
-        [ "-isystem" ; Printf.sprintf "%s/include" libroot
-        ; "-isystem"; Printf.sprintf "%s/include/torch/csrc/api/include" libroot
-        ]
-      in
-      let c_library_flags =
-        [ Printf.sprintf "-Wl,-R/%s/lib" libroot
-        ; Printf.sprintf "-L/%s/lib" libroot
-        ; "-lc10"; "-lcaffe2"; "-ltorch"
-        ]
-      in
+      let cxx_flags, c_library_flags = torch_flags () in
       let cuda_cxx_flags, cuda_c_library_flags = extract_flags c ~package:"cuda" in
       let nvrtc_cxx_flags, nvrtc_c_library_flags = extract_flags c ~package:"nvrtc" in
       C.Flags.write_sexp "cxx_flags.sexp"
