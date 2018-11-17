@@ -8,7 +8,18 @@ may be some compilation issues.
 
 ## Installation
 
-### Using pre-built Binaries
+### Option 1: Using PyTorch Conda package (Recommended)
+Conda packages for PyTorch 1.0 (preview release) can be used via the following command.
+```bash
+conda create -n torch
+source activate torch
+conda install pytorch-nightly-cpu=1.0.0.dev20181116 -c pytorch
+# Or for the CUDA version
+# conda install pytorch-nightly=1.0.0.dev20181116 -c pytorch
+make all
+```
+
+### Option 2: Using PyTorch pre-built Binaries
 The libtorch library can be downloaded from the [PyTorch
 website](https://pytorch.org/resources) ([latest cpu
 version](https://download.pytorch.org/libtorch/nightly/cpu/libtorch-shared-with-deps-latest.zip)).
@@ -17,17 +28,6 @@ Download and extract the libtorch library then to build all the examples run:
 
 ```bash
 export LIBTORCH=/path/to/libtorch
-make all
-```
-
-### Using Conda
-Conda packages for PyTorch 1.0 (preview release) can be used via the following command.
-```bash
-conda create -n torch
-source activate torch
-conda install pytorch-nightly-cpu=1.0.0.dev20181116 -c pytorch
-# Or for the CUDA version
-# conda install pytorch-nightly=1.0.0.dev20181116 -c pytorch
 make all
 ```
 

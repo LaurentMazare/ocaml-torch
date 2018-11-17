@@ -21,11 +21,7 @@ let torch_flags () =
       libtorch ^ "/include", libtorch ^ "/lib"
     with
     | _ ->
-      let conda_prefix =
-        try
-          Caml.Sys.getenv "CONDA_PREFIX"
-        with | _ -> failwith "One of LIBTORCH or CONDA_PREFIX must be set!"
-      in
+      let conda_prefix = Caml.Sys.getenv "CONDA_PREFIX" in
       let conda_prefix = conda_prefix ^ "/lib" in
       Caml.Sys.readdir conda_prefix
       |> Array.to_list
@@ -58,7 +54,12 @@ let torch_flags () =
 
 let () =
   C.main ~name:"torch-config" (fun c ->
-      let cxx_flags, c_library_flags = torch_flags () in
+      let cxx_flags, c_library_flags =
+        try
+          torch_flags ()
+        with
+        | _ -> [], []
+      in
       let cuda_cxx_flags, cuda_c_library_flags = extract_flags c ~package:"cuda" in
       let nvrtc_cxx_flags, nvrtc_c_library_flags = extract_flags c ~package:"nvrtc" in
       C.Flags.write_sexp "cxx_flags.sexp"
