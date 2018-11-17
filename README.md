@@ -10,18 +10,15 @@ Note that until PyTorch reaches 1.0 there are no stable releases for libtorch so
 may be some compilation issues.
 
 ## Usage
-Extract the libtorch library in a `LIBTORCH` directory then to build examples run:
+Download and extract the libtorch library then to build the examples run:
 
 ```bash
-LD_LIBRARY_PATH=$LIBTORCH/lib:$LD_LIBRARY_PATH \
-LIBRARY_PATH=$LIBTORCH/lib:$LIBRARY_PATH \
-CPATH=$LIBTORCH/include:$LIBTORCH/include/torch/csrc/api/include:$CPATH \
+export LIBTORCH=/path/to/libtorch
 make all
 ```
 
 After that examples can be run with:
 ```bash
-LD_LIBRARY_PATH=$LIBTORCH/lib:$LD_LIBRARY_PATH \
 ./_build/default/examples/basics/torch_tensor.exe
 ```
 
