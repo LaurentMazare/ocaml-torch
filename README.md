@@ -10,14 +10,14 @@ Note that until PyTorch reaches 1.0 there are no stable releases for libtorch so
 may be some compilation issues.
 
 ## Usage
-Download and extract the libtorch library then to build the examples run:
+Download and extract the libtorch library then to build all the examples run:
 
 ```bash
 export LIBTORCH=/path/to/libtorch
 make all
 ```
 
-After that examples can be run with:
+You can then test that everything works well with the simplest example:
 ```bash
 ./_build/default/examples/basics/torch_tensor.exe
 ```
@@ -60,6 +60,28 @@ code](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/mnist/li
   illustrating character level language modeling using Recurrent Neural Networks.
 * [Generative Adverserial Networks](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/gan).
 * [Finetuning a ResNet-18 model](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/pretrained/finetuning.ml).
+
+## Models and Weights
+
+Various pre-trained computer vision models are implemented in the
+[vision library](https://github.com/LaurentMazare/ocaml-torch/tree/master/src/vision).
+The weight files can be downloaded at the following links:
+
+* ResNet-18 [weights](https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/resnet18.ot).
+* DenseNet-121 [weights](https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/densenet121.ot).
+* SqueezeNet 1.0 [weights](https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/squeezenet1_0.ot).
+* SqueezeNet 1.1 [weights](https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/squeezenet1_1.ot).
+* VGG-11/13/16/19.
+
+Running the pre-trained models on some sample images can the easily be done via the following commands.
+```bash
+make all
+_build/default/examples/pretrained/predict.exe path/to/resnet18.ot tiger.jpg
+```
+
+## Interactive Mode
+
+__ocaml-torch__ works well with utop and jupyter, just run `make utop` or `make jupyter`.
 
 ## TODO
 
