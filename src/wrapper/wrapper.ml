@@ -10,7 +10,7 @@ let ptr_of_string str =
 let ptr_of_strings strings =
   let strings = List.map ptr_of_string strings in
   let start = CArray.(of_list (ptr char) strings |> start) in
-  Gc.finalise (fun _ -> ignore (Sys.opaque_identity start : _ pointer)) start;
+  Gc.finalise (fun _ -> ignore (Sys.opaque_identity strings : _ list)) start;
   start
 
 module Tensor = struct

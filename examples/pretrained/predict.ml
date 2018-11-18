@@ -29,6 +29,7 @@ let () =
     | "densenet121.ot" -> Densenet.densenet121 vs ~num_classes:1000
     | "resnet34.ot" -> Resnet.resnet34 vs ~num_classes:1000
     | "resnet50.ot" -> Resnet.resnet50 vs ~num_classes:1000
+    | "resnet101.ot" -> Resnet.resnet101 vs ~num_classes:1000
     | "resnet18.ot" | _ -> Resnet.resnet18 vs ~num_classes:1000
   in
   Stdio.printf "Loading weights from %s\n%!" Sys.argv.(1);
