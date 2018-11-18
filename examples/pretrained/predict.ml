@@ -21,6 +21,7 @@ let () =
   let vs = Var_store.create ~name:"rn" ~device () in
   let model =
     match Caml.Filename.basename Sys.argv.(1) with
+    | "vgg16.ot" -> Vgg.vgg16 vs ~num_classes:1000
     | "squeezenet1_0.ot" -> Squeezenet.squeezenet1_0 vs ~num_classes:1000
     | "squeezenet1_1.ot" -> Squeezenet.squeezenet1_1 vs ~num_classes:1000
     | "densenet121.ot" -> Densenet.densenet121 vs ~num_classes:1000

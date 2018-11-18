@@ -27,9 +27,10 @@ let layers_cfg = function
     ]
 
 let make_layers vs cfg ~n ~batch_norm =
-  let n str = N.(n / str) in
+  let n index = N.(n / Int.to_string index) in
   let _output_dim, layers =
-    List.foldi (layers_cfg cfg) ~init:(3, []) ~f:(fun idx (input_dim, acc) v ->
+    List.fold (layers_cfg cfg) ~init:(3, []) ~f:(fun (input_dim, acc) v ->
+        let idx = List.length acc in
         let layer, output_dim =
           match v with
           | M ->
@@ -37,14 +38,12 @@ let make_layers vs cfg ~n ~batch_norm =
             input_dim
           | C output_dim ->
             let conv2d =
-              let n = n (Printf.sprintf "conv2d%d" idx) in
-              Layer.conv2d_ vs ~n ~ksize:2 ~stride:2 ~input_dim output_dim
+              Layer.conv2d_ vs ~n:(n idx) ~ksize:3 ~stride:1 ~padding:1 ~input_dim output_dim
               |> Layer.with_training
             in
             if batch_norm
             then
-              let n = n (Printf.sprintf "bn%d" idx) in
-              let batch_norm = Layer.batch_norm2d vs ~n output_dim in
+              let batch_norm = Layer.batch_norm2d vs ~n:(n (idx+1)) output_dim in
               [ conv2d; batch_norm; relu_ ], output_dim
             else [ conv2d; relu_ ], output_dim
         in
@@ -54,10 +53,11 @@ let make_layers vs cfg ~n ~batch_norm =
 
 let vgg ~num_classes vs cfg ~batch_norm =
   let n str = N.(root / str) in
-  let layers = make_layers vs cfg ~n:(n "layers") ~batch_norm in
-  let fc1 = Layer.linear vs ~n:(n "fc1") ~input_dim:(512 * 7 * 7) 4096 in
-  let fc2 = Layer.linear vs ~n:(n "fc2") ~input_dim:4096 4096 in
-  let fc3 = Layer.linear vs ~n:(n "fc3") ~input_dim:4096 num_classes in
+  let cls i = N.(root / "classifier" / Int.to_string i) in
+  let layers = make_layers vs cfg ~n:(n "features") ~batch_norm in
+  let fc1 = Layer.linear vs ~n:(cls 0) ~input_dim:(512 * 7 * 7) 4096 in
+  let fc2 = Layer.linear vs ~n:(cls 3) ~input_dim:4096 4096 in
+  let fc3 = Layer.linear vs ~n:(cls 6) ~input_dim:4096 num_classes in
   Layer.of_fn_ (fun xs ~is_training ->
     let batch_size = Tensor.shape xs |> List.hd_exn in
     Layer.apply_ layers xs ~is_training
