@@ -16,6 +16,9 @@ source activate torch
 conda install pytorch-nightly-cpu=1.0.0.dev20181116 -c pytorch
 # Or for the CUDA version
 # conda install pytorch-nightly=1.0.0.dev20181116 -c pytorch
+
+git clone https://github.com/LaurentMazare/ocaml-torch.git
+cd ocaml-torch
 make all
 ```
 
@@ -28,6 +31,8 @@ Download and extract the libtorch library then to build all the examples run:
 
 ```bash
 export LIBTORCH=/path/to/libtorch
+git clone https://github.com/LaurentMazare/ocaml-torch.git
+cd ocaml-torch
 make all
 ```
 
