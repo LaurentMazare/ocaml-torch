@@ -28,28 +28,24 @@ let layers_cfg = function
 
 let make_layers vs cfg ~n ~batch_norm =
   let n index = N.(n / Int.to_string index) in
-  let _output_dim, layers =
-    List.fold (layers_cfg cfg) ~init:(3, []) ~f:(fun (input_dim, acc) v ->
-        let idx = List.length acc in
-        let layer, output_dim =
-          match v with
-          | M ->
-            [ Layer.of_fn (Tensor.max_pool2d ~ksize:(2, 2)) |> Layer.with_training ],
-            input_dim
-          | C output_dim ->
-            let conv2d =
-              Layer.conv2d_ vs ~n:(n idx) ~ksize:3 ~stride:1 ~padding:1 ~input_dim output_dim
-              |> Layer.with_training
-            in
-            if batch_norm
-            then
-              let batch_norm = Layer.batch_norm2d vs ~n:(n (idx+1)) output_dim in
-              [ conv2d; batch_norm; relu_ ], output_dim
-            else [ conv2d; relu_ ], output_dim
-        in
-        output_dim, layer @ acc)
+  let (_output_dim, _output_idx), layers =
+    List.fold_map (layers_cfg cfg) ~init:(3, 0) ~f:(fun (input_dim, idx) v ->
+        match v with
+        | M ->
+          (input_dim, idx+1),
+          [ Layer.of_fn (Tensor.max_pool2d ~ksize:(2, 2)) |> Layer.with_training ]
+        | C output_dim ->
+          let conv2d =
+            Layer.conv2d_ vs ~n:(n idx) ~ksize:3 ~stride:1 ~padding:1 ~input_dim output_dim
+            |> Layer.with_training
+          in
+          if batch_norm
+          then
+            let batch_norm = Layer.batch_norm2d vs ~n:(n (idx+1)) output_dim in
+            (output_dim, idx+3), [ conv2d; batch_norm; relu_ ]
+          else (output_dim, idx+2), [ conv2d; relu_ ])
   in
-  List.rev layers |> Layer.fold_
+  List.concat layers |> Layer.fold_
 
 let vgg ~num_classes vs cfg ~batch_norm =
   let n str = N.(root / str) in

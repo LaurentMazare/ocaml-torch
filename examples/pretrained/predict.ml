@@ -21,10 +21,14 @@ let () =
   let vs = Var_store.create ~name:"rn" ~device () in
   let model =
     match Caml.Filename.basename Sys.argv.(1) with
+    | "vgg11.ot" -> Vgg.vgg11 vs ~num_classes:1000
+    | "vgg13.ot" -> Vgg.vgg13 vs ~num_classes:1000
     | "vgg16.ot" -> Vgg.vgg16 vs ~num_classes:1000
     | "squeezenet1_0.ot" -> Squeezenet.squeezenet1_0 vs ~num_classes:1000
     | "squeezenet1_1.ot" -> Squeezenet.squeezenet1_1 vs ~num_classes:1000
     | "densenet121.ot" -> Densenet.densenet121 vs ~num_classes:1000
+    | "resnet34.ot" -> Resnet.resnet34 vs ~num_classes:1000
+    | "resnet50.ot" -> Resnet.resnet50 vs ~num_classes:1000
     | "resnet18.ot" | _ -> Resnet.resnet18 vs ~num_classes:1000
   in
   Stdio.printf "Loading weights from %s\n%!" Sys.argv.(1);
