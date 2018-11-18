@@ -30,7 +30,10 @@ let () =
     | "resnet34.ot" -> Resnet.resnet34 vs ~num_classes:1000
     | "resnet50.ot" -> Resnet.resnet50 vs ~num_classes:1000
     | "resnet101.ot" -> Resnet.resnet101 vs ~num_classes:1000
-    | "resnet18.ot" | _ -> Resnet.resnet18 vs ~num_classes:1000
+    | "resnet152.ot" -> Resnet.resnet152 vs ~num_classes:1000
+    | "resnet18.ot" -> Resnet.resnet18 vs ~num_classes:1000
+    | otherwise ->
+      Printf.failwithf "unsupported model %s, try with resnet18.ot" otherwise ()
   in
   Stdio.printf "Loading weights from %s\n%!" Sys.argv.(1);
   Serialize.load_multi_ ~named_tensors:(Var_store.all_vars vs) ~filename:Sys.argv.(1);
