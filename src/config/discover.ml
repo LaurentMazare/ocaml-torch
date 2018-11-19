@@ -11,15 +11,26 @@ let extract_flags c ~package =
   Option.bind (C.Pkg_config.get c) ~f:(C.Pkg_config.query ~package)
 
 let torch_flags () =
-  let libroot_include, libroot_lib =
-    try
-      let libtorch = Caml.Sys.getenv "LIBTORCH" in
-      if String.is_empty libtorch
-      then raise Caml.Not_found;
-      libtorch ^ "/include", libtorch ^ "/lib"
-    with
-    | _ ->
-      let conda_prefix = Caml.Sys.getenv "CONDA_PREFIX" in
+  let config ~include_dir ~lib_dir =
+    let cflags =
+      [ "-isystem" ; Printf.sprintf "%s" include_dir
+      ; "-isystem"; Printf.sprintf "%s/torch/csrc/api/include" include_dir
+      ]
+    in
+    let libs =
+      [ Printf.sprintf "-Wl,-R%s" lib_dir
+      ; Printf.sprintf "-L%s" lib_dir
+      ; "-lc10"; "-lcaffe2"; "-ltorch"
+      ]
+    in
+    { C.Pkg_config.cflags; libs }
+  in
+  match Caml.Sys.getenv_opt "LIBTORCH" with
+  | Some l -> config ~include_dir:(l ^ "/include") ~lib_dir:(l ^ "/lib")
+  | None ->
+    match Caml.Sys.getenv_opt "CONDA_PREFIX" with
+    | None -> empty_flags
+    | Some conda_prefix ->
       let conda_prefix = conda_prefix ^ "/lib" in
       Caml.Sys.readdir conda_prefix
       |> Array.to_list
@@ -34,21 +45,8 @@ let torch_flags () =
             else None
           else None)
       |> function
-      | [] -> Printf.failwithf "no python directory with torch found in %s" conda_prefix ()
-      | libdir :: _ -> libdir ^ "/include", libdir
-  in
-  let cflags =
-    [ "-isystem" ; Printf.sprintf "%s" libroot_include
-    ; "-isystem"; Printf.sprintf "%s/torch/csrc/api/include" libroot_include
-    ]
-  in
-  let libs =
-    [ Printf.sprintf "-Wl,-R%s" libroot_lib
-    ; Printf.sprintf "-L%s" libroot_lib
-    ; "-lc10"; "-lcaffe2"; "-ltorch"
-    ]
-  in
-  { C.Pkg_config.cflags; libs }
+      | [] -> empty_flags
+      | lib_dir :: _ -> config ~include_dir:(lib_dir ^ "/include") ~lib_dir
 
 let libcuda_flags ~lcuda ~lnvrtc =
   let cudadir = "/usr/local/cuda/lib64" in
@@ -83,5 +81,9 @@ let () =
           combine nvrtc_flags (libcuda_flags ~lcuda:true ~lnvrtc:false)
         | Some cuda_flags, Some nvrtc_flags -> combine cuda_flags nvrtc_flags
       in
+      let conda_libs =
+        Option.value_map (Caml.Sys.getenv_opt "CONDA_PREFIX") ~f:(fun conda_prefix ->
+            [ Printf.sprintf "-Wl,-R%s/lib" conda_prefix ]) ~default:[]
+      in
       C.Flags.write_sexp "cxx_flags.sexp" (torch_flags.cflags @ cuda_flags.cflags);
-      C.Flags.write_sexp "c_library_flags.sexp" (torch_flags.libs @ cuda_flags.libs))
+      C.Flags.write_sexp "c_library_flags.sexp" (torch_flags.libs @ conda_libs @ cuda_flags.libs))
