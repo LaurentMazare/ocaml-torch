@@ -27,6 +27,8 @@ let () =
     | "squeezenet1_0.ot" -> Squeezenet.squeezenet1_0 vs ~num_classes:1000
     | "squeezenet1_1.ot" -> Squeezenet.squeezenet1_1 vs ~num_classes:1000
     | "densenet121.ot" -> Densenet.densenet121 vs ~num_classes:1000
+    | "densenet161.ot" -> Densenet.densenet161 vs ~num_classes:1000
+    | "densenet169.ot" -> Densenet.densenet169 vs ~num_classes:1000
     | "resnet34.ot" -> Resnet.resnet34 vs ~num_classes:1000
     | "resnet50.ot" -> Resnet.resnet50 vs ~num_classes:1000
     | "resnet101.ot" -> Resnet.resnet101 vs ~num_classes:1000
