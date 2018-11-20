@@ -89,6 +89,14 @@ int at_requires_grad(tensor t) {
   PROTECT(return t->requires_grad();)
 }
 
+int at_grad_set_enabled(int b) {
+  PROTECT(
+    bool is_enabled = torch::autograd::GradMode::is_enabled();
+    torch::autograd::GradMode::set_enabled(b);
+    return is_enabled;
+  )
+}
+
 tensor at_get(tensor t, int index) {
   PROTECT(return new torch::Tensor((*t)[index]);)
 }

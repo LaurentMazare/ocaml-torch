@@ -27,6 +27,7 @@ module Tensor : sig
   val shape : t -> int list
   val kind : t -> Kind.t
   val requires_grad : t -> bool
+  val grad_set_enabled : bool -> bool (* returns the previous state. *)
   val get : t -> int -> t
   val select : t -> dim:int -> index:int -> t
 

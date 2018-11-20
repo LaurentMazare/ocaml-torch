@@ -1,4 +1,3 @@
-(* The readers implemented here are very inefficient as they read bytes one at a time. *)
 open Base
 module In_channel = Stdio.In_channel
 

@@ -12,14 +12,17 @@ let get_float1 t i = float_value (get t i)
 let get_int2 t i j = int_value (get (get t i) j)
 let get_int1 t i = int_value (get t i)
 
-let no_grad t ~f =
+let no_grad_ t ~f =
   if requires_grad t
   then
     let t = set_requires_grad t ~r:false in
-    let result = f t in
-    ignore (set_requires_grad t ~r:true : t);
-    result
+    Exn.protect ~f:(fun () -> f t)
+      ~finally:(fun () -> ignore (set_requires_grad t ~r:true : t))
   else f t
+
+let no_grad f =
+  let prev = grad_set_enabled false in
+  Exn.protect ~f ~finally:(fun () -> ignore (grad_set_enabled prev : bool))
 
 let zero_grad t =
   let grad = grad t in

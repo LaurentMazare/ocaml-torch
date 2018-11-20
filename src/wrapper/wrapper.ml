@@ -96,6 +96,9 @@ module Tensor = struct
     then true
     else false
 
+  let grad_set_enabled b =
+    grad_set_enabled (if b then 1 else 0) <> 0
+
   let get t index =
     let t = get t index in
     Gc.finalise free t;

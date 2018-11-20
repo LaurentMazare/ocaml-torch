@@ -60,6 +60,8 @@ module C(F: Cstubs.FOREIGN) = struct
     let backward = foreign "at_backward" (t @-> returning void)
     let requires_grad =
       foreign "at_requires_grad" (t @-> returning int)
+    let grad_set_enabled =
+      foreign "at_grad_set_enabled" (int @-> returning int)
 
     let get = foreign "at_get" (t @-> int @-> returning t)
     let double_value = foreign "at_double_value" (t @-> returning float)

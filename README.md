@@ -59,8 +59,9 @@ code](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/mnist/li
     Tensor.backward loss;
 
     (* Apply gradient descent, disable gradient tracking for these. *)
-    Tensor.(no_grad ws ~f:(fun ws -> ws -= grad ws *f learning_rate));
-    Tensor.(no_grad bs ~f:(fun bs -> bs -= grad bs *f learning_rate));
+    Tensor.(no_grad (fun () ->
+        ws -= grad ws * f learning_rate;
+        bs -= grad bs * f learning_rate));
 
     (* Compute the validation error. *)
     let test_accuracy =

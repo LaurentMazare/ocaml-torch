@@ -33,6 +33,7 @@ int at_scalar_type(tensor);
 
 void at_backward(tensor);
 int at_requires_grad(tensor);
+int at_grad_set_enabled(int);
 
 tensor at_get(tensor, int index);
 double at_double_value(tensor);
