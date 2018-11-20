@@ -59,6 +59,7 @@ module Tensor = struct
       | Bigarray.Float64 -> Double
       | Bigarray.Int8_signed -> Int8
       | Bigarray.Int8_unsigned -> Uint8
+      | Bigarray.Char -> Uint8
       | Bigarray.Int16_signed -> Int16
       | Bigarray.Int32 -> Int
       | Bigarray.Int64 -> Int64

@@ -1,6 +1,5 @@
 (* The readers implemented here are very inefficient as they read bytes one at a time. *)
 open Base
-module I = Stdio.In_channel
 
 let image_w = 32
 let image_h = 32
@@ -23,36 +22,37 @@ let labels =
 
 let samples_per_file = 10_000
 
-let read_byte in_channel =
-  Option.value_exn (I.input_byte in_channel)
+let read_char_tensor filename =
+  let fd = Unix.openfile filename [ Unix.O_RDONLY ] 0o640 in
+  let len = Unix.lseek fd 0 Unix.SEEK_END in
+  ignore(Unix.lseek fd 0 Unix.SEEK_SET : int);
+  let ba =
+    Unix.map_file fd Bigarray.char Bigarray.c_layout false [| len |]
+      ~pos:(Int64.of_int 0)
+  in
+  Unix.close fd;
+  Tensor.of_bigarray ba
 
 let read_file filename =
-  let in_channel = I.create filename in
-  let data =
-    Bigarray.Genarray.create Float32 C_layout
-      [| samples_per_file; image_c; image_w; image_h |]
-  in
-  let labels = Bigarray.Array1.create Int64 C_layout samples_per_file in
+  let content = read_char_tensor filename in
+  let images = Tensor.zeros [ samples_per_file; image_c; image_w; image_h ] ~kind:Uint8 in
+  let labels = Tensor.zeros [ samples_per_file ] ~kind:Uint8 in
   for sample = 0 to 9999 do
-    labels.{sample} <- read_byte in_channel |> Int64.of_int;
-    for c = 0 to image_c - 1 do
-      for w = 0 to image_w - 1 do
-        for h = 0 to image_h - 1 do
-          4. *. (Float.of_int (read_byte in_channel) /. 255. -. 0.5)
-          |> Bigarray.Genarray.set data [| sample; c; w; h |]
-        done
-      done
-    done
+    let content_offset = 3073 * sample in
+    Tensor.copy_
+      (Tensor.narrow labels ~dim:0 ~start:sample ~length:1)
+      ~src:(Tensor.narrow content ~dim:0 ~start:content_offset ~length:1);
+    Tensor.copy_
+      (Tensor.narrow images ~dim:0 ~start:sample ~length:1)
+      ~src:(Tensor.narrow content ~dim:0 ~start:(content_offset + 1) ~length:3072
+            |> Tensor.view ~size:[ 1; image_c; image_w; image_h ]);
   done;
-  I.close in_channel;
-  data, Bigarray.genarray_of_array1 labels
+  Tensor.((to_type images ~type_:Float / f 255. - f 0.5) * f 4.),
+  Tensor.to_type labels ~type_:Int64
 
 let read_files ?(dirname = "data") ?(with_caching = false) () =
+  let read_one filename = Caml.Filename.concat dirname filename |> read_file in
   let read () =
-    let read_one filename =
-      let images, labels = Caml.Filename.concat dirname filename |> read_file in
-      Tensor.of_bigarray images, Tensor.of_bigarray labels
-    in
     let train_images, train_labels =
       [ "data_batch_1.bin"
       ; "data_batch_2.bin"
