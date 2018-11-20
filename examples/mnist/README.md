@@ -51,9 +51,10 @@ such as `nn.ml` or `conv.ml` use an Adam optimizer.
     (* Compute the gradients via backpropagation. *)
     Tensor.backward loss;
 
-    (* Apply gradient descent, [no_grad w ~f] runs [f] on [w] with gradient tracking disabled. *)
-    Tensor.(no_grad ws ~f:(fun ws -> ws -= grad ws * learning_rate));
-    Tensor.(no_grad bs ~f:(fun bs -> bs -= grad bs * learning_rate));
+    (* Apply gradient descent, disable gradient tracking for these. *)
+    Tensor.(no_grad (fun () ->
+        ws -= grad ws * learning_rate;
+        bs -= grad bs * learning_rate));
     Tensor.zero_grad ws;
     Tensor.zero_grad bs;
 ```
