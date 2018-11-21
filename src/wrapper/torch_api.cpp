@@ -101,12 +101,42 @@ tensor at_get(tensor t, int index) {
   PROTECT(return new torch::Tensor((*t)[index]);)
 }
 
-double at_double_value(tensor t) {
-  PROTECT(return t->item<double>();)
+template<typename T>
+T at_value_at_indexes(tensor t, int *indexes, int indexes_len) {
+  PROTECT(
+    torch::Tensor tensor = *t;
+    for (int i = 0; i < indexes_len; ++i) {
+      tensor = tensor[indexes[i]];
+    }
+    return tensor.item<T>();
+  )
 }
 
-int64_t at_int64_value(tensor t) {
-  PROTECT(return t->item<int64_t>();)
+double at_double_value_at_indexes(tensor t, int *indexes, int indexes_len) {
+  return at_value_at_indexes<double>(t, indexes, indexes_len);
+}
+
+int64_t at_int64_value_at_indexes(tensor t, int *indexes, int indexes_len) {
+  return at_value_at_indexes<int64_t>(t, indexes, indexes_len);
+}
+
+template<typename T>
+void at_set_value_at_indexes(tensor t, int *indexes, int indexes_len, T v) {
+  PROTECT(
+    torch::Tensor tensor = *t;
+    for (int i = 0; i < indexes_len; ++i) {
+      tensor = tensor[indexes[i]];
+    }
+    tensor.fill_(v);
+  )
+}
+
+void at_set_double_value_at_indexes(tensor t, int *indexes, int indexes_len, double v) {
+  at_set_value_at_indexes<double>(t, indexes, indexes_len, v);
+}
+
+void at_set_int64_value_at_indexes(tensor t, int *indexes, int indexes_len, int64_t v) {
+  at_set_value_at_indexes<int64_t>(t, indexes, indexes_len, v);
 }
 
 void at_fill_double(tensor t, double v) {

@@ -104,8 +104,31 @@ module Tensor = struct
     Gc.finalise free t;
     t
 
-  let float_value t = double_value t
-  let int_value t = int64_value t |> Int64.to_int
+  let float_value t =
+    double_value t (from_voidp int null) 0
+
+  let int_value t =
+    int64_value t (from_voidp int null) 0 |> Int64.to_int
+
+  let float_get t indexes =
+    double_value t
+      (CArray.of_list int indexes |> CArray.start) (List.length indexes)
+
+  let int_get t indexes =
+    int64_value t
+      (CArray.of_list int indexes |> CArray.start) (List.length indexes)
+    |> Int64.to_int
+
+  let float_set t indexes v =
+    double_value_set t
+      (CArray.of_list int indexes |> CArray.start) (List.length indexes) v
+
+  let int_set t indexes v =
+    int64_value_set t
+      (CArray.of_list int indexes |> CArray.start)
+      (List.length indexes)
+      (Int64.of_int v)
+
   let fill_float t v = fill_double t v
   let fill_int t i = fill_int64 t (Int64.of_int i)
 

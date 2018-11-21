@@ -15,6 +15,12 @@ val get_float1 : t -> int -> float
 val get_int2 : t -> int -> int -> int
 val get_int1 : t -> int -> int
 
+val ( .%{} ) : t -> int list -> int
+val ( .%{}<- ) : t -> int list -> int -> unit
+val ( .%.{} ) : t -> int list -> float
+val ( .%.{}<- ) : t -> int list -> float -> unit
+
+
 (* [no_grad_ t ~f] runs [f] on [t] without tracking gradients for t. *)
 val no_grad_ : t -> f:(t -> 'a) -> 'a
 val no_grad : (unit -> 'a) -> 'a

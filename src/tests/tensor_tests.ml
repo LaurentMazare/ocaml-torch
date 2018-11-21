@@ -16,3 +16,18 @@ let%expect_test _ =
   [%expect{|
         (2.5 43.5 1338.5)
       |}]
+
+let%expect_test _ =
+  let open Tensor in
+  let t = zeros [4; 2] in
+  t.%.{[1; 1]} <- 42.0;
+  t.%.{[3; 0]} <- 1.337;
+  for i = 0 to 3 do
+    Stdio.printf "%f %f\n" t.%.{[i; 0]} t.%.{[i; 1]};
+  done;
+  [%expect{|
+        0.000000 0.000000
+        0.000000 42.000000
+        0.000000 0.000000
+        1.337000 0.000000
+      |}]

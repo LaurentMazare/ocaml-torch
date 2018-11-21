@@ -33,6 +33,10 @@ module Tensor : sig
 
   val float_value : t -> float
   val int_value : t -> int
+  val float_get : t -> int list -> float
+  val int_get : t -> int list -> int
+  val float_set : t -> int list -> float -> unit
+  val int_set : t -> int list -> int -> unit
   val fill_float : t -> float -> unit
   val fill_int : t -> int -> unit
 

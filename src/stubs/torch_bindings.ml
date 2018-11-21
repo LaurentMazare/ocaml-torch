@@ -64,8 +64,26 @@ module C(F: Cstubs.FOREIGN) = struct
       foreign "at_grad_set_enabled" (int @-> returning int)
 
     let get = foreign "at_get" (t @-> int @-> returning t)
-    let double_value = foreign "at_double_value" (t @-> returning float)
-    let int64_value = foreign "at_int64_value" (t @-> returning int64_t)
+    let double_value =
+      foreign
+        "at_double_value_at_indexes"
+        (t @-> ptr int @-> int @-> returning float)
+
+    let int64_value =
+      foreign
+        "at_int64_value_at_indexes"
+        (t @-> ptr int @-> int @-> returning int64_t)
+
+    let double_value_set =
+      foreign
+        "at_set_double_value_at_indexes"
+        (t @-> ptr int @-> int @-> float @-> returning void)
+
+    let int64_value_set =
+      foreign
+        "at_set_int64_value_at_indexes"
+        (t @-> ptr int @-> int @-> int64_t @-> returning void)
+
     let fill_double = foreign "at_fill_double" (t @-> float @-> returning void)
     let fill_int64 = foreign "at_fill_int64" (t @-> int64_t @-> returning void)
 
