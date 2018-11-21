@@ -8,7 +8,7 @@ may be some compilation issues.
 
 ## Installation
 
-### Option 1: Using PyTorch Conda package (Recommended)
+### Option 1: Using PyTorch Conda package (recommended)
 Conda packages for PyTorch 1.0 (preview release) can be used via the following command.
 ```bash
 conda create -n torch
@@ -51,10 +51,12 @@ code](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/mnist/li
   let ws = Tensor.zeros [image_dim; label_count] ~requires_grad:true in
   let bs = Tensor.zeros [label_count] ~requires_grad:true in
 
-  let model xs = Tensor.(softmax (mm xs ws + bs)) in
+  let model xs = Tensor.(mm xs ws + bs) in
   for index = 1 to 100 do
     (* Compute the cross-entropy loss. *)
-    let loss = Tensor.(mean (- train_labels * log (model train_images +f 1e-6))) in
+    let loss =
+      Tensor.cross_entropy_for_logits (model train_images) ~targets:train_labels
+    in
 
     Tensor.backward loss;
 
@@ -65,7 +67,7 @@ code](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/mnist/li
 
     (* Compute the validation error. *)
     let test_accuracy =
-      Tensor.(sum (argmax (model test_images) = argmax test_labels) |> float_value)
+      Tensor.(sum (argmax (model test_images) = test_labels) |> float_value)
       |> fun sum -> sum /. test_samples
     in
     printf "%d %f %.2f%%\n%!" index (Tensor.float_value loss) (100. *. test_accuracy);
