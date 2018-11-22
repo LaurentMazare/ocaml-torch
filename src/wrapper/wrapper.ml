@@ -89,6 +89,30 @@ module Tensor = struct
     shape t (CArray.start carray);
     CArray.to_list carray
 
+  let unexpected_shape shape =
+    let shape = String.concat ", " (List.map string_of_int shape) in
+    Printf.sprintf "unexpected shape <%s>" shape |> failwith
+
+  let shape1_exn t =
+    match shape t with
+    | [ s1 ] -> s1
+    | shape -> unexpected_shape shape
+
+  let shape2_exn t =
+    match shape t with
+    | [ s1; s2 ] -> s1, s2
+    | shape -> unexpected_shape shape
+
+  let shape3_exn t =
+    match shape t with
+    | [ s1; s2; s3 ] -> s1, s2, s3
+    | shape -> unexpected_shape shape
+
+  let shape4_exn t =
+    match shape t with
+    | [ s1; s2; s3; s4 ] -> s1, s2, s3, s4
+    | shape -> unexpected_shape shape
+
   let kind t = scalar_type t |> Kind.of_int_exn
 
   let requires_grad t =

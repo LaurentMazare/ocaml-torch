@@ -1,6 +1,7 @@
 open Base
 open Torch
 
+let relu = Layer.of_fn_ (fun xs ~is_training:_ -> Tensor.relu xs)
 let relu_ = Layer.of_fn_ (fun xs ~is_training:_ -> Tensor.relu_ xs)
 
 type t =
@@ -26,7 +27,8 @@ let layers_cfg = function
     ; C 512; C 512; C 512; C 512; M
     ]
 
-let make_layers vs cfg ~n ~batch_norm =
+let make_layers vs cfg ~n ~batch_norm ~in_place_relu =
+  let relu = if in_place_relu then relu_ else relu in
   let n index = N.(n / Int.to_string index) in
   let (_output_dim, _output_idx), layers =
     List.fold_map (layers_cfg cfg) ~init:(3, 0) ~f:(fun (input_dim, idx) v ->
@@ -42,15 +44,18 @@ let make_layers vs cfg ~n ~batch_norm =
           if batch_norm
           then
             let batch_norm = Layer.batch_norm2d vs ~n:(n (idx+1)) output_dim in
-            (output_dim, idx+3), [ conv2d; batch_norm; relu_ ]
-          else (output_dim, idx+2), [ conv2d; relu_ ])
+            (output_dim, idx+3), [ conv2d; batch_norm; relu ]
+          else (output_dim, idx+2), [ conv2d; relu ])
   in
-  List.concat layers |> Layer.fold_
+  List.concat layers
 
 let vgg ~num_classes vs cfg ~batch_norm =
   let n str = N.(root / str) in
   let cls i = N.(root / "classifier" / Int.to_string i) in
-  let layers = make_layers vs cfg ~n:(n "features") ~batch_norm in
+  let layers =
+    make_layers vs cfg ~n:(n "features") ~batch_norm ~in_place_relu:true
+    |> Layer.fold_
+  in
   let fc1 = Layer.linear vs ~n:(cls 0) ~input_dim:(512 * 7 * 7) 4096 in
   let fc2 = Layer.linear vs ~n:(cls 3) ~input_dim:4096 4096 in
   let fc3 = Layer.linear vs ~n:(cls 6) ~input_dim:4096 num_classes in
@@ -74,3 +79,14 @@ let vgg16 vs ~num_classes = vgg ~num_classes vs `D ~batch_norm:false
 let vgg16_bn vs ~num_classes = vgg ~num_classes vs `D ~batch_norm:true
 let vgg19 vs ~num_classes = vgg ~num_classes vs `E ~batch_norm:false
 let vgg19_bn vs ~num_classes = vgg ~num_classes vs `E ~batch_norm:true
+
+let vgg16_layers vs ~batch_norm =
+  let n str = N.(root / str) in
+  let layers = make_layers vs `D ~n:(n "features") ~batch_norm ~in_place_relu:false in
+  (* [Staged.stage] just indicates that the [vs] and [~indexes] parameters should
+     only be applied on the first call to this function. *)
+  Staged.stage (fun xs ->
+      List.fold_mapi layers ~init:xs ~f:(fun i xs layer ->
+          let xs = Layer.apply_ layer xs ~is_training:false in
+          xs, (i, xs))
+      |> fun (_, indexed_layers) -> Map.of_alist_exn (module Int) indexed_layers)
