@@ -61,8 +61,9 @@ let () =
     Tensor.backward loss;
     Optimizer.step optimizer;
     Tensor.no_grad (fun () ->
-        (* TODO: clamp to 0/1. *)
-        ());
+        Tensor.clamp_min_ input_var ~min:(Scalar.float 0.)
+        |> Tensor.clamp_max_ ~max:(Scalar.float 1.)
+        |> fun (_:Tensor.t) -> ());
     Stdio.printf "%d %.4f %.4f\n"
       step_idx (Tensor.float_value style_loss) (Tensor.float_value content_loss);
     Caml.Gc.full_major ();
