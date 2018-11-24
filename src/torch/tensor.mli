@@ -142,6 +142,12 @@ val bce_loss
   -> targets:t
   -> t
 
+val mse_loss
+  :  ?reduction:Torch_core.Reduction.t
+  -> t
+  -> t
+  -> t
+
 val undefined : t Lazy.t
 
 val pp : Format.formatter -> t -> unit

@@ -166,6 +166,14 @@ let bce_loss ?(reduction=Torch_core.Reduction.Elementwise_mean) t ~targets =
     ~weight:(Lazy.force undefined)
     ~reduction:(Torch_core.Reduction.to_int reduction)
 
+let mse_loss ?(reduction=Torch_core.Reduction.Elementwise_mean) t1 t2 =
+  let diff = t1 - t2 in
+  let square_error = diff * diff in
+  match reduction with
+  | None -> square_error
+  | Elementwise_mean -> mean square_error
+  | Sum -> sum square_error
+
 let pp formatter t =
   let shape = shape t in
   let element_count = List.fold shape ~init:1 ~f:Int.( * ) in

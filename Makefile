@@ -7,6 +7,7 @@ ALL = examples/basics/torch_basics.exe \
       examples/gan/mnist_dcgan.exe \
       examples/cifar/cifar_train.exe \
       examples/char_rnn/char_rnn.exe \
+      examples/neural_transfer/neural_transfer.exe \
       examples/pretrained/finetuning.exe \
       examples/pretrained/predict.exe \
       bin/tensor_tools.exe

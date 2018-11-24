@@ -1,0 +1,3 @@
+(executables
+  (names neural_transfer)
+  (libraries base torch_core torch torch_vision stdio))
