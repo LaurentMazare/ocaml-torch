@@ -8,6 +8,8 @@ val load_dataset
   -> with_cache:string option
   -> Dataset_helper.t
 
+val write_image : Tensor.t -> filename:string -> unit
+
 module Classes : sig
   val count : int
   val names : string array

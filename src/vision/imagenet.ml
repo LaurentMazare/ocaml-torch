@@ -23,18 +23,18 @@ let resize_and_crop image_file ~f =
     ~f:(fun () -> f tmp_file)
     ~finally:(fun () -> Unix.unlink tmp_file)
 
+let imagenet_mean_and_std = function
+  | `red -> 0.485, 0.229
+  | `green -> 0.456, 0.224
+  | `blue -> 0.406, 0.225
+
 let load_image_ image_file =
   let image = ImageLib.openfile image_file in
   Stdio.printf "%s: %dx%d (%d)\n%!" image_file image.width image.height image.max_val;
   match image.pixels with
   | RGB (Pix8 red, Pix8 green, Pix8 blue) ->
     let convert pixels kind =
-      let imagenet_mean, imagenet_std =
-        match kind with
-        | `red -> 0.485, 0.229
-        | `green -> 0.456, 0.224
-        | `blue -> 0.406, 0.225
-      in
+      let imagenet_mean, imagenet_std = imagenet_mean_and_std kind in
       Bigarray.genarray_of_array2 pixels
       |> Tensor.of_bigarray
       (* Crop/resize to 224x224 or use adaptive pooling ? *)
@@ -1111,3 +1111,30 @@ module Classes = struct
       let class_index = Tensor.get_int1 indexes i in
       names.(class_index), Tensor.get_float1 vs class_index)
 end
+
+let write_image tensor ~filename =
+  let tensor, height, width =
+    match Tensor.shape tensor with
+    | [ 1; a; b; c ] -> Tensor.reshape tensor ~shape:[ a; b; c ], b, c
+    | [ _; b; c ] -> tensor, b, c
+    | shape ->
+      Printf.failwithf "unexpected shape %s"
+        (List.map shape ~f:Int.to_string |> String.concat ~sep:", ") ()
+  in
+  let tensor = Tensor.transpose tensor ~dim0:1 ~dim1:2 in
+  let extract index_ kind =
+    let imagenet_mean, imagenet_std = imagenet_mean_and_std kind in
+    Tensor.((get tensor index_ * f imagenet_std + f imagenet_mean) * f 255.)
+    |> Tensor.to_type ~type_:Uint8
+    |> Tensor.to_bigarray ~kind:Int8_unsigned
+    |> Bigarray.array2_of_genarray
+  in
+  let red = extract 0 `red in
+  let green = extract 1 `green in
+  let blue = extract 2 `blue in
+  ImageLib.writefile filename
+    { width
+    ; height
+    ; max_val = 255
+    ; pixels = RGB (Pix8 red, Pix8 green, Pix8 blue)
+    }

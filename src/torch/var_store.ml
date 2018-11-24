@@ -49,6 +49,7 @@ module Init = struct
     | Const of float
     | Normal_with_stdev of float
     | Uniform of float * float
+    | Copy of Tensor.t
 end
 
 let new_var ?(trainable=true) t ~shape ~init ~name =
@@ -64,6 +65,7 @@ let new_var ?(trainable=true) t ~shape ~init ~name =
       Tensor.zeros shape ~device
       |> Tensor.uniform_ ~from ~to_
       |> Tensor.set_requires_grad ~r:requires_grad
+    | Copy src -> Tensor.copy src
   in
   let name = N.to_string name in
   if Hashtbl.mem t.all_tensors_by_name name
@@ -74,3 +76,6 @@ let new_var ?(trainable=true) t ~shape ~init ~name =
     t.trainable_tensors <- tensor :: t.trainable_tensors
   end;
   tensor
+
+let new_var_copy ?trainable t ~src ~name =
+  new_var ?trainable t ~shape:(Tensor.shape src) ~init:(Copy src) ~name

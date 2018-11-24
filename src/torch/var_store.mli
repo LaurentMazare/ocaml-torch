@@ -17,6 +17,7 @@ module Init : sig
     | Const of float
     | Normal_with_stdev of float
     | Uniform of float * float
+    | Copy of Tensor.t
 end
 
 val new_var
@@ -24,6 +25,13 @@ val new_var
   -> t
   -> shape:int list
   -> init:Init.t
+  -> name:N.t
+  -> Tensor.t
+
+val new_var_copy
+  :  ?trainable:bool
+  -> t
+  -> src:Tensor.t
   -> name:N.t
   -> Tensor.t
 
