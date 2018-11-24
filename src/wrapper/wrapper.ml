@@ -161,9 +161,6 @@ module Tensor = struct
   let to_string t ~line_size = to_string t line_size
   let sum = sum2
   let mean = mean2
-  let softmax = softmax2
-  let log_softmax = log_softmax2
-  let scatter_ = scatter_1
 
   let argmax t = argmax1 t ~dim:(-1) ~keepdim:false
 

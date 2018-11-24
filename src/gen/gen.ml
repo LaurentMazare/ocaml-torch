@@ -7,9 +7,13 @@ open Stdio
 
 let excluded_functions =
   Set.of_list (module String)
-    [ "multi_margin_loss"; "multi_margin_loss_out" ]
+    [ "multi_margin_loss"; "multi_margin_loss_out"
+    ; "potrf"; "potrf_out"
+    ; "log_softmax_backward_data"; "softmax_backward_data"
+    ]
 
 let excluded_prefixes = [ "_"; "thnn_"; "th_" ]
+let excluded_suffixes = [ "_forward"; "_forward_out" ]
 
 let yaml_error yaml ~msg =
   Printf.failwithf "%s, %s" msg (Yaml.to_string_exn yaml) ()
@@ -247,6 +251,7 @@ let read_yaml filename =
     in
     if not deprecated
     && not (List.exists excluded_prefixes ~f:(fun prefix -> String.is_prefix name ~prefix))
+    && not (List.exists excluded_suffixes ~f:(fun suffix -> String.is_suffix name ~suffix))
     && not (Set.mem excluded_functions name)
     then
       Option.both returns kind
