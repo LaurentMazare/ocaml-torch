@@ -35,8 +35,8 @@ let () =
       Printf.failwithf "usage: %s style_img.png content_img.png vgg16.ot" Sys.argv.(0) ()
   in
   let model = load_pretrained_vgg ~filename in
-  let style_img = Imagenet.load_image style_img in
-  let content_img = Imagenet.load_image content_img in
+  let style_img = Imagenet.load_image_no_resize_and_crop style_img in
+  let content_img = Imagenet.load_image_no_resize_and_crop content_img in
   let style_layers, content_layers =
     Tensor.no_grad (fun () -> model style_img, model content_img)
   in
@@ -61,15 +61,14 @@ let () =
     let loss = Tensor.(style_loss * f style_weight + content_loss) in
     Tensor.backward loss;
     Optimizer.step optimizer;
-    (* Tensor.no_grad (fun () ->
-        Tensor.clamp_min_ input_var ~min:(Scalar.float 0.)
-        |> Tensor.clamp_max_ ~max:(Scalar.float 1.)
-        |> fun (_:Tensor.t) -> ()); *)
+    Tensor.no_grad (fun () -> ignore(Imagenet.clamp_ input_var : Tensor.t));
     Stdio.printf "%d %.4f %.4f %.4f\n%!"
       step_idx
       (Tensor.float_value loss)
       (Tensor.float_value style_loss)
       (Tensor.float_value content_loss);
     Caml.Gc.full_major ();
+    if step_idx % 10 = 0
+    then Imagenet.write_image input_var ~filename:(Printf.sprintf "out%d.png" step_idx)
   done;
   Imagenet.write_image input_var ~filename:"out.png"

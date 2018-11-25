@@ -28,7 +28,25 @@ let imagenet_mean_and_std = function
   | `green -> 0.456, 0.224
   | `blue -> 0.406, 0.225
 
-let load_image_ image_file =
+let clamp_ =
+  let normalize kind x =
+    let mean, std = imagenet_mean_and_std kind in
+    (x -. mean) /. std
+  in
+  let min_max kind = normalize kind 0., normalize kind 1. in
+  fun tensor ->
+    let clamp_ kind index =
+      let min, max = min_max kind in
+      Tensor.narrow tensor ~dim:1 ~start:index ~length:1
+      |> Tensor.clamp_ ~min:(Scalar.float min) ~max:(Scalar.float max)
+      |> fun (_:Tensor.t) -> ()
+    in
+    clamp_ `red 0;
+    clamp_ `green 1;
+    clamp_ `blue 2;
+    tensor
+
+let load_image_no_resize_and_crop image_file =
   let image = ImageLib.openfile image_file in
   Stdio.printf "%s: %dx%d (%d)\n%!" image_file image.width image.height image.max_val;
   match image.pixels with
@@ -48,7 +66,7 @@ let load_image_ image_file =
     Tensor.view image ~size:(1 :: Tensor.shape image)
   | _ -> failwith "unexpected pixmaps"
 
-let load_image image_file = resize_and_crop image_file ~f:load_image_
+let load_image image_file = resize_and_crop image_file ~f:load_image_no_resize_and_crop
 
 let image_suffixes = [ ".jpg"; ".png" ]
 
@@ -1125,6 +1143,7 @@ let write_image tensor ~filename =
   let extract index_ kind =
     let imagenet_mean, imagenet_std = imagenet_mean_and_std kind in
     Tensor.((get tensor index_ * f imagenet_std + f imagenet_mean) * f 255.)
+    |> Tensor.clamp_ ~min:(Scalar.float 0.) ~max:(Scalar.float 255.)
     |> Tensor.to_type ~type_:Uint8
     |> Tensor.to_bigarray ~kind:Int8_unsigned
     |> Bigarray.array2_of_genarray
