@@ -6,7 +6,7 @@ open Torch
 open Torch_vision
 
 let style_weight = 1e6
-let learning_rate = 1e-2
+let learning_rate = 1e-1
 let total_steps = 3000
 
 let style_indexes = [ 0; 2; 5; 7; 10 ]
@@ -23,7 +23,10 @@ let style_loss m1 m2 =
 
 let load_pretrained_vgg ~filename ~device =
   let vs = Var_store.create ~name:"vgg" ~device () in
-  let model = Vgg.vgg16_layers vs ~batch_norm:false |> Staged.unstage in
+  let max_layer =
+    1 + List.reduce_exn (style_indexes @ content_indexes) ~f:Int.max
+  in
+  let model = Vgg.vgg16_layers vs ~max_layer ~batch_norm:false |> Staged.unstage in
   Stdio.printf "Loading weights from %s\n%!" filename;
   Serialize.load_multi_ ~named_tensors:(Var_store.all_vars vs) ~filename;
   Var_store.freeze vs;
@@ -34,7 +37,6 @@ let () =
     if Cuda.is_available ()
     then begin
       Stdio.printf "Using cuda, devices: %d\n%!" (Cuda.device_count ());
-      Cuda.set_benchmark_cudnn true;
       Torch_core.Device.Cuda
     end else Torch_core.Device.Cpu
   in

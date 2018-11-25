@@ -80,9 +80,13 @@ let vgg16_bn vs ~num_classes = vgg ~num_classes vs `D ~batch_norm:true
 let vgg19 vs ~num_classes = vgg ~num_classes vs `E ~batch_norm:false
 let vgg19_bn vs ~num_classes = vgg ~num_classes vs `E ~batch_norm:true
 
-let vgg16_layers vs ~batch_norm =
+let vgg16_layers ?(max_layer=Int.max_value) vs ~batch_norm =
   let n str = N.(root / str) in
-  let layers = make_layers vs `D ~n:(n "features") ~batch_norm ~in_place_relu:false in
+  let layers =
+    List.take
+      (make_layers vs `D ~n:(n "features") ~batch_norm ~in_place_relu:false)
+      max_layer
+  in
   (* [Staged.stage] just indicates that the [vs] and [~indexes] parameters should
      only be applied on the first call to this function. *)
   Staged.stage (fun xs ->
