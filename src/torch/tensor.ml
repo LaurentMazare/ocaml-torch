@@ -143,7 +143,7 @@ let const_batch_norm ?(momentum=0.1) ?(eps=1e-5) input =
 
 let to_bigarray t ~kind =
   let bigarray = Bigarray.Genarray.create kind C_layout (shape t |> Array.of_list) in
-  copy_to_bigarray t bigarray;
+  copy_to_bigarray (to_device t ~device:Cpu) bigarray;
   bigarray
 
 let undefined = lazy (new_tensor ())
