@@ -6,6 +6,7 @@ open Torch
 open Torch_vision
 
 let style_weight = 1e6
+let learning_rate = 1e-2
 
 let style_indexes = [ 0; 2; 5; 7; 10 ]
 let content_indexes = [ 7 ]
@@ -36,12 +37,12 @@ let () =
   let model = load_pretrained_vgg ~filename in
   let style_img = Imagenet.load_image style_img in
   let content_img = Imagenet.load_image content_img in
-  let style_layers = model style_img in
-  let content_layers = model content_img in
-
+  let style_layers, content_layers =
+    Tensor.no_grad (fun () -> model style_img, model content_img)
+  in
   let vs = Var_store.create ~name:"optim" () in
   let input_var = Var_store.new_var_copy vs ~src:content_img ~name:N.(root / "in") in
-  let optimizer = Optimizer.adam vs ~learning_rate:1e-4 in
+  let optimizer = Optimizer.adam vs ~learning_rate in
   for step_idx = 1 to 300 do
     Optimizer.zero_grad optimizer;
     let input_layers = model input_var in
@@ -60,12 +61,15 @@ let () =
     let loss = Tensor.(style_loss * f style_weight + content_loss) in
     Tensor.backward loss;
     Optimizer.step optimizer;
-    Tensor.no_grad (fun () ->
+    (* Tensor.no_grad (fun () ->
         Tensor.clamp_min_ input_var ~min:(Scalar.float 0.)
         |> Tensor.clamp_max_ ~max:(Scalar.float 1.)
-        |> fun (_:Tensor.t) -> ());
-    Stdio.printf "%d %.4f %.4f\n"
-      step_idx (Tensor.float_value style_loss) (Tensor.float_value content_loss);
+        |> fun (_:Tensor.t) -> ()); *)
+    Stdio.printf "%d %.4f %.4f %.4f\n%!"
+      step_idx
+      (Tensor.float_value loss)
+      (Tensor.float_value style_loss)
+      (Tensor.float_value content_loss);
     Caml.Gc.full_major ();
   done;
   Imagenet.write_image input_var ~filename:"out.png"

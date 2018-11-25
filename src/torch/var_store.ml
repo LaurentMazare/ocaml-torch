@@ -65,7 +65,7 @@ let new_var ?(trainable=true) t ~shape ~init ~name =
       Tensor.zeros shape ~device
       |> Tensor.uniform_ ~from ~to_
       |> Tensor.set_requires_grad ~r:requires_grad
-    | Copy src -> Tensor.copy src
+    | Copy src -> Tensor.copy src |> Tensor.set_requires_grad ~r:requires_grad
   in
   let name = N.to_string name in
   if Hashtbl.mem t.all_tensors_by_name name
