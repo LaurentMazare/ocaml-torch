@@ -31,3 +31,12 @@ let%expect_test _ =
         0.000000 0.000000
         1.337000 0.000000
       |}]
+
+let%expect_test _ =
+  let open Tensor in
+  let t = zeros [5; 2] in
+  t += f 1.;
+  narrow t ~dim:0 ~start:1 ~length:3 += f 2.;
+  narrow t ~dim:1 ~start:1 ~length:1 -= f 3.;
+  Stdio.printf !"%{sexp:float array array}\n" (Tensor.to_float2_exn t);
+  [%expect{| ((1 -2) (3 0) (3 0) (3 0) (1 -2)) |}]
