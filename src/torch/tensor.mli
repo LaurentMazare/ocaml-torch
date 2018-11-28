@@ -20,6 +20,10 @@ val ( .%{}<- ) : t -> int list -> int -> unit
 val ( .%.{} ) : t -> int list -> float
 val ( .%.{}<- ) : t -> int list -> float -> unit
 
+val ( .%[] ) : t -> int -> int
+val ( .%[]<- ) : t -> int -> int -> unit
+val ( .%.[] ) : t -> int -> float
+val ( .%.[]<- ) : t -> int -> float -> unit
 
 (* [no_grad_ t ~f] runs [f] on [t] without tracking gradients for t. *)
 val no_grad_ : t -> f:(t -> 'a) -> 'a

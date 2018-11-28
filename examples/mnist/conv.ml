@@ -14,7 +14,7 @@ let () =
       Some Torch_core.Device.Cuda
     end else None
   in
-  let mnist = Mnist_helper.read_files ~with_caching:true () in
+  let mnist = Mnist_helper.read_files () in
   let vs = Var_store.create ~name:"cnn" ?device () in
   let conv2d1 = Layer.conv2d_ vs ~ksize:5 ~stride:1 ~input_dim:1 32 in
   let conv2d2 = Layer.conv2d_ vs ~ksize:5 ~stride:1 ~input_dim:32 64 in

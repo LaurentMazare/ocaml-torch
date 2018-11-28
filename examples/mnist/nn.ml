@@ -7,7 +7,7 @@ let epochs = 1000
 let learning_rate = 1e-3
 
 let () =
-  let mnist = Mnist_helper.read_files ~with_caching:true () in
+  let mnist = Mnist_helper.read_files () in
   let { Dataset_helper.train_images; train_labels; _ } = mnist in
   let vs = Var_store.create ~name:"nn" () in
   let linear1 =

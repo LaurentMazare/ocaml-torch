@@ -15,6 +15,10 @@ let ( .%{} ) = int_get
 let ( .%{}<- ) = int_set
 let ( .%.{} ) = float_get
 let ( .%.{}<- ) = float_set
+let ( .%[] ) = get_int1
+let ( .%[]<- ) = set_int1
+let ( .%.[] ) = get_float1
+let ( .%.[]<- ) = set_float1
 
 let no_grad_ t ~f =
   if requires_grad t

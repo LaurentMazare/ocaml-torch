@@ -56,7 +56,7 @@ let write_samples samples ~filename =
     Stdio.Out_channel.output_string channel "]\n")
 
 let () =
-  let mnist = Mnist_helper.read_files ~with_caching:true () in
+  let mnist = Mnist_helper.read_files () in
 
   let generator_vs = Var_store.create ~name:"gen" () in
   let generator = create_generator generator_vs in

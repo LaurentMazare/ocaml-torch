@@ -1,5 +1,16 @@
 open Base
 
+let read_char_tensor filename =
+  let fd = Unix.openfile filename [ Unix.O_RDONLY ] 0o640 in
+  let len = Unix.lseek fd 0 Unix.SEEK_END in
+  ignore(Unix.lseek fd 0 Unix.SEEK_SET : int);
+  let ba =
+    Unix.map_file fd Bigarray.char Bigarray.c_layout false [| len |]
+      ~pos:(Int64.of_int 0)
+  in
+  Unix.close fd;
+  Tensor.of_bigarray ba
+
 type t =
   { train_images : Tensor.t
   ; train_labels : Tensor.t

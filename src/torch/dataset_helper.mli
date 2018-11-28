@@ -83,3 +83,8 @@ val map
   -> t
 
 val print_summary : t -> unit
+
+(** [read_char_tensor filename] returns a tensor of char containing the specified
+    file.
+*)
+val read_char_tensor : string -> Tensor.t

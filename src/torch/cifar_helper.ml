@@ -22,19 +22,8 @@ let labels =
 
 let samples_per_file = 10_000
 
-let read_char_tensor filename =
-  let fd = Unix.openfile filename [ Unix.O_RDONLY ] 0o640 in
-  let len = Unix.lseek fd 0 Unix.SEEK_END in
-  ignore(Unix.lseek fd 0 Unix.SEEK_SET : int);
-  let ba =
-    Unix.map_file fd Bigarray.char Bigarray.c_layout false [| len |]
-      ~pos:(Int64.of_int 0)
-  in
-  Unix.close fd;
-  Tensor.of_bigarray ba
-
 let read_file filename =
-  let content = read_char_tensor filename in
+  let content = Dataset_helper.read_char_tensor filename in
   let images = Tensor.zeros [ samples_per_file; image_c; image_w; image_h ] ~kind:Uint8 in
   let labels = Tensor.zeros [ samples_per_file ] ~kind:Uint8 in
   for sample = 0 to 9999 do
