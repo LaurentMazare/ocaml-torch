@@ -64,6 +64,7 @@ val float_vec
   -> t
 
 val to_type : t -> type_:Kind.t -> t
+val type_ : t -> Kind.t
 val to_device : ?device:Device.t -> t -> t
 
 val to_float0 : t -> float option

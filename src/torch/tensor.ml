@@ -48,6 +48,7 @@ type create
   -> int list
   -> t
 
+let type_ = kind
 let to_type t ~type_ = totype t ~scalar_type:type_
 
 let to_device ?device t =

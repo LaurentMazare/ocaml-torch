@@ -42,6 +42,18 @@ let npz_to_pytorch npz_src pytorch_dst =
   in
   Serialize.save_multi ~named_tensors ~filename:pytorch_dst
 
+let image_to_tensor image_src pytorch_dst =
+  begin
+    if Caml.Sys.is_directory image_src
+    then Torch_vision.Image.load_images image_src
+    else Torch_vision.Image.load_image image_src
+  end
+  |> Serialize.save ~filename:pytorch_dst
+
+let images_to_tensor image_src pytorch_dst =
+  Torch_vision.Image.load_image image_src
+  |> Serialize.save ~filename:pytorch_dst
+
 let pytorch_to_npz pytorch_src npz_dst =
   let named_tensors = Serialize.load_all ~filename:pytorch_src in
   let npz_file = Npy.Npz.open_out npz_dst in
@@ -91,6 +103,20 @@ let () =
     Term.(const npz_to_pytorch $ npz_src $ pytorch_dst),
     Term.info "npz-to-pytorch" ~sdocs:"" ~doc ~man
   in
+  let image_to_tensor =
+    let image_src =
+      Arg.(required & pos 0 (some string) None & info [] ~docv:"SRC"
+               ~doc:"Image source file or directory")
+    in
+    let pytorch_dst =
+      Arg.(required & pos 1 (some string) None & info [] ~docv:"DEST"
+               ~doc:"PyTorch destination file")
+    in
+    let doc = "convert an image file to a PyTorch Tensor" in
+    let man = [ `S "DESCRIPTION" ; `P doc ] in
+    Term.(const image_to_tensor $ image_src $ pytorch_dst),
+    Term.info "image-to-tensor" ~sdocs:"" ~doc ~man
+  in
   let pytorch_to_npz_cmd =
     let pytorch_src =
       Arg.(required & pos 0 (some string) None & info [] ~docv:"SRC"
@@ -114,5 +140,11 @@ let () =
     Term.(ret (const (`Help (`Pager, None)))),
     Term.info "tensor_tools" ~version:"0.0.1" ~sdocs:"" ~doc
   in
-  let cmds = [ ls_cmd; npz_to_pytorch_cmd; pytorch_to_npz_cmd ] in
+  let cmds =
+    [ ls_cmd
+    ; npz_to_pytorch_cmd
+    ; pytorch_to_npz_cmd
+    ; image_to_tensor
+    ]
+  in
   Term.(exit @@ eval_choice default_cmd cmds)

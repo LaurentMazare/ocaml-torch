@@ -52,7 +52,7 @@ let load_image_no_resize_and_crop filename =
   |> normalize
 
 let load_images ~dir =
-  Image.load_images ~dir ~resize:(224, 224)
+  Image.load_images dir ~resize:(224, 224)
   |> normalize
 
 let load_dataset ~dir ~classes ~with_cache =

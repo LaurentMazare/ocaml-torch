@@ -5,7 +5,7 @@ val load_image
   -> string
   -> Tensor.t
 
-val load_images : dir:string -> resize:(int * int) -> Tensor.t
+val load_images : ?resize:(int * int) -> string -> Tensor.t
 val load_dataset
   :  dir:string
   -> classes:string list

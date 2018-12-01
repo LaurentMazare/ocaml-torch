@@ -47,7 +47,7 @@ let load_image ?resize image_file =
 
 let image_suffixes = [ ".jpg"; ".png" ]
 
-let load_images ~dir ~resize =
+let load_images ?resize dir =
   if not (Caml.Sys.is_directory dir)
   then Printf.failwithf "not a directory %s" dir ();
   Caml.Sys.readdir dir
@@ -56,14 +56,14 @@ let load_images ~dir ~resize =
     if List.exists image_suffixes ~f:(fun suffix -> String.is_suffix filename ~suffix)
     then begin
       Stdio.printf "<%s>\n%!" filename;
-      try Some (load_image (Caml.Filename.concat dir filename) ~resize)
+      try Some (load_image (Caml.Filename.concat dir filename) ?resize)
       with _ -> None
     end else None)
   |> Tensor.cat ~dim:0
 
 let load_dataset ~dir ~classes ~with_cache ~resize =
   let read () =
-    let load tv s = load_images ~dir:(Printf.sprintf "%s/%s/%s" dir tv s) ~resize in
+    let load tv s = load_images (Printf.sprintf "%s/%s/%s" dir tv s) ~resize in
     let load_tv tv =
       List.mapi classes ~f:(fun class_index class_dir ->
         let images = load tv class_dir in
