@@ -107,28 +107,34 @@ let conv2d_ ?n vs ~ksize ~stride ?activation ?use_bias ?(padding = 0) ~input_dim
     ~input_dim
     output_dim
 
-let conv_transpose2d ?n vs ~ksize:(k1, k2) ~stride ?activation ?(padding=0, 0) ?(output_padding=0, 0) ~input_dim output_dim =
+let conv_transpose2d ?n vs ~ksize:(k1, k2) ~stride ?activation ?(use_bias=true) ?(padding=0, 0) ?(output_padding=0, 0) ~input_dim output_dim =
   let name = Var_store.default_name vs n "conv_transpose2d" in
   let w =
     Var_store.new_var vs
       ~shape:[ input_dim; output_dim; k1; k2 ] ~init:(Normal_with_stdev 0.1)
       ~name:N.(name / "weight")
   in
-  let b =
-    Var_store.new_var vs ~shape:[ output_dim ] ~init:Zeros
-      ~name:N.(name / "bias")
-  in
-  let apply xs =
-    Tensor.conv_transpose2d xs w b ~output_padding ~padding ~stride |> apply ?activation
+  let apply =
+    let b =
+      if use_bias
+      then
+        Var_store.new_var vs ~shape:[ output_dim ] ~init:Zeros ~name:N.(name / "bias")
+      else
+        Tensor.zeros [ output_dim ] ~device:(Var_store.device vs)
+    in
+    fun xs ->
+      Tensor.conv_transpose2d xs w b ~output_padding ~padding ~stride
+      |> apply ?activation
   in
   { apply }
 
-let conv_transpose2d_ ?n vs ~ksize ~stride ?activation ?(padding = 0) ?(output_padding = 0) ~input_dim output_dim =
+let conv_transpose2d_ ?n vs ~ksize ~stride ?activation ?use_bias ?(padding = 0) ?(output_padding = 0) ~input_dim output_dim =
   conv_transpose2d vs
     ?n
     ~ksize:(ksize, ksize)
     ~stride:(stride, stride)
     ?activation
+    ?use_bias
     ~padding:(padding, padding)
     ~output_padding:(output_padding, output_padding)
     ~input_dim
