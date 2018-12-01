@@ -14,6 +14,7 @@ val loop
   -> end_index:int
   -> var_stores:Var_store.t list
   -> checkpoint_base:string
+  -> ?only_keep:int
   -> ?checkpoint_every:[ `iters of int | `seconds of float ] (* default : `second 600 *)
   -> (index:int -> unit)
   -> unit

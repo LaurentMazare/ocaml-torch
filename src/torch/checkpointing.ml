@@ -1,4 +1,3 @@
-(* TODO: add the possibility to only keep a fixed number of checkpoints. *)
 open Base
 
 let latest_index_and_filename ~checkpoint_base =
@@ -21,11 +20,15 @@ let loop
       ~end_index
       ~var_stores
       ~checkpoint_base
+      ?only_keep
       ?(checkpoint_every = `seconds 600.)
       f
   =
   if start_index < 0
-  then raise (Invalid_argument (Printf.sprintf "negative start_index %d" start_index));
+  then (Printf.invalid_argf "negative start_index %d" start_index ());
+  Option.iter only_keep ~f:(fun only_keep ->
+    if only_keep <= 0
+    then (Printf.invalid_argf "non-positive only_keep %d" only_keep ()));
   let temp_checkpoint = checkpoint_base ^ ".tmp" in
   let latest_index_and_filename = latest_index_and_filename ~checkpoint_base in
   let named_tensors =
@@ -46,11 +49,26 @@ let loop
     Option.value_map latest_index_and_filename ~default:start_index
       ~f:(fun (index, _) -> index + 1)
   in
+  let only_keep =
+    Option.map only_keep ~f:(fun only_keep -> only_keep, Linked_queue.create ())
+  in
   let save ~suffix =
     Serialize.save_multi ~named_tensors ~filename:temp_checkpoint;
     Unix.rename
       temp_checkpoint
       (Printf.sprintf "%s.%s" checkpoint_base suffix)
+  in
+  let save_index index =
+    save ~suffix:(Int.to_string index);
+    Option.iter only_keep ~f:(fun (only_keep, index_queue) ->
+      Linked_queue.enqueue index_queue index;
+      if Linked_queue.length index_queue > only_keep
+      then begin
+        Linked_queue.dequeue_exn index_queue
+        |> Int.to_string
+        |> Printf.sprintf "%s.%s" checkpoint_base
+        |> Unix.unlink
+      end)
   in
   let last_checkpoint_time = ref (Unix.time ()) in
   for index = start_index to end_index do
@@ -62,9 +80,8 @@ let loop
     in
     if should_checkpoint
     then begin
-      save ~suffix:(Int.to_string index);
+      save_index index;
       last_checkpoint_time := Unix.time ()
     end
   done;
   save ~suffix:"final"
-
