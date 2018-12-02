@@ -72,17 +72,24 @@ let write_samples samples ~filename =
   |> Tensor.cat ~dim:3
   |> Torch_vision.Image.write_image ~filename
 
-let square x = Tensor.(x * x)
-
 let () =
+  let device =
+    if Cuda.is_available ()
+    then begin
+      Stdio.printf "Using cuda, devices: %d\n%!" (Cuda.device_count ());
+      Cuda.set_benchmark_cudnn true;
+      Torch_core.Device.Cuda
+    end else Torch_core.Device.Cpu
+  in
+
   let images = Serialize.load ~filename:Sys.argv.(1) in
   let train_size = Tensor.shape images |> List.hd_exn in
 
-  let generator_vs = Var_store.create ~name:"gen" () in
+  let generator_vs = Var_store.create ~name:"gen" ~device () in
   let generator = create_generator generator_vs in
   let opt_g = Optimizer.adam generator_vs ~learning_rate in
 
-  let discriminator_vs = Var_store.create ~name:"disc" () in
+  let discriminator_vs = Var_store.create ~name:"disc" ~device () in
   let discriminator = create_discriminator discriminator_vs in
   let opt_d = Optimizer.adam discriminator_vs ~learning_rate in
 
@@ -97,22 +104,23 @@ let () =
          let start = Int.(%) (batch_size * batch_idx) (train_size - batch_size) in
          Tensor.narrow images ~dim:0 ~start ~length:batch_size
          |> Tensor.to_type ~type_:Float
+         |> Tensor.to_device ~device
          |> fun xs -> Tensor.(xs / f 255.)
        in
        let discriminator_loss =
          let y_pred = discriminator Tensor.(f 2. * batch_images - f 1.) in
          let y_pred_fake = rand () |> generator |> discriminator in
          Tensor.(+)
-           Tensor.((y_pred - mean y_pred_fake - f 1.) |> square |> mean)
-           Tensor.((y_pred_fake - mean y_pred + f 1.) |> square |> mean)
+           Tensor.(mse_loss y_pred (mean y_pred_fake + f 1.))
+           Tensor.(mse_loss y_pred_fake (mean y_pred - f 1.))
        in
        Optimizer.backward_step ~loss:discriminator_loss opt_d;
        let generator_loss =
          let y_pred = discriminator Tensor.(f 2. * batch_images - f 1.) in
          let y_pred_fake = rand () |> generator |> discriminator in
          Tensor.(+)
-           Tensor.((y_pred - mean y_pred_fake + f 1.) |> square |> mean)
-           Tensor.((y_pred_fake - mean y_pred - f 1.) |> square |> mean)
+           Tensor.(mse_loss y_pred (mean y_pred_fake - f 1.))
+           Tensor.(mse_loss y_pred_fake (mean y_pred + f 1.))
        in
        Optimizer.backward_step ~loss:generator_loss opt_g;
        if batch_idx % 100 = 0
@@ -124,7 +132,8 @@ let () =
        Caml.Gc.full_major ();
        if batch_idx % 25000 = 0 || (batch_idx < 100000 && batch_idx % 5000 = 0)
        then
-         write_samples
-           (generator fixed_noise |> Tensor.reshape ~shape:[ -1; 3; image_h; image_w ])
-           ~filename:(Printf.sprintf "out%d.png" batch_idx)
+         generator fixed_noise
+         |> Tensor.view ~size:[ -1; 3; image_h; image_w ]
+         |> Tensor.to_device ~device:Cpu
+         |> write_samples ~filename:(Printf.sprintf "out%d.png" batch_idx)
     )
