@@ -1,5 +1,10 @@
+open Base
 open Sexplib.Conv
 open Torch
+
+let array1_to_list ba =
+  let ba = Bigarray.array1_of_genarray ba in
+  List.init (Bigarray.Array1.dim ba) ~f:(Bigarray.Array1.get ba)
 
 let%expect_test _ =
   let t = Tensor.(f 41. + f 1.) in
@@ -40,3 +45,16 @@ let%expect_test _ =
   narrow t ~dim:1 ~start:1 ~length:1 -= f 3.;
   Stdio.printf !"%{sexp:float array array}\n" (Tensor.to_float2_exn t);
   [%expect{| ((1 -2) (3 0) (3 0) (3 0) (1 -2)) |}]
+
+let%expect_test _ =
+  let t = List.init 5 ~f:Float.of_int |> Tensor.float_vec in
+  let ba = Tensor.to_bigarray t ~kind:Float32 in
+  let ba_narrow =
+    Tensor.narrow t ~dim:0 ~start:1 ~length:3
+    |> Tensor.to_bigarray ~kind:Float32
+  in
+  Stdio.printf !"%{sexp:float list}\n" (array1_to_list ba);
+  Stdio.printf !"%{sexp:float list}\n" (array1_to_list ba_narrow);
+  [%expect{|
+    (0 1 2 3 4)
+    (0 1 2) |}]
