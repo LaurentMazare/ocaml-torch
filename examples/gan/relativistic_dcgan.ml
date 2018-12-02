@@ -45,7 +45,7 @@ let create_discriminator vs =
   let conv2 = conv2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:32 64 in
   let conv3 = conv2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:64 128 in
   let conv4 = conv2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:128 256 in
-  let conv5 = conv2d ~ksize:6 ~stride:1 ~padding:0 ~input_dim:256 1 in
+  let conv5 = conv2d ~ksize:4 ~stride:1 ~padding:0 ~input_dim:256 1 in
   fun xs ->
     Layer.apply conv1 xs
     |> Tensor.leaky_relu
