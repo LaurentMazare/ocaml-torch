@@ -199,10 +199,12 @@ let copy t =
   copy_ t_ ~src:t;
   t_
 
-let print_shape ?(name="") t =
+let shape_str t =
   List.map (shape t) ~f:Int.to_string
   |> String.concat ~sep:", "
-  |> Stdio.printf "%s<%s>\n%!" name
+
+let print_shape ?(name="") t =
+  Stdio.printf "%s<%s>\n%!" name (shape_str t)
 
 let bigarray_to_array1 bigarray ~f =
   try

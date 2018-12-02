@@ -3,8 +3,8 @@
 open Base
 open Torch
 
-let image_w = 96
-let image_h = 96
+let image_w = 64
+let image_h = 64
 
 let latent_dim = 128
 let batch_size = 32
@@ -16,11 +16,11 @@ let create_generator vs =
   let tr2d ~ksize ~stride ~padding ~input_dim n =
     Layer.conv_transpose2d_ vs ~ksize ~stride ~padding ~use_bias:false ~input_dim n
   in
-  let convt1 = tr2d ~ksize:4 ~stride:1 ~padding:0 ~input_dim:latent_dim 1024 in
-  let convt2 = tr2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:1024 512 in
-  let convt3 = tr2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:512 256 in
-  let convt4 = tr2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:256 128 in
-  let convt5 = tr2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:128 3 in
+  let convt1 = tr2d ~ksize:4 ~stride:1 ~padding:0 ~input_dim:latent_dim 256 in
+  let convt2 = tr2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:256 128 in
+  let convt3 = tr2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:128 64 in
+  let convt4 = tr2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:64 32 in
+  let convt5 = tr2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:32 3 in
   fun rand_input ->
     Layer.apply convt1 rand_input
     |> Tensor.const_batch_norm
@@ -41,11 +41,11 @@ let create_discriminator vs =
   let conv2d ~ksize ~stride ~padding ~input_dim n =
     Layer.conv2d_ vs ~ksize ~stride ~padding ~use_bias:false ~input_dim n
   in
-  let conv1 = conv2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:3 128 in
-  let conv2 = conv2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:128 256 in
-  let conv3 = conv2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:256 512 in
-  let conv4 = conv2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:512 1024 in
-  let conv5 = conv2d ~ksize:6 ~stride:1 ~padding:0 ~input_dim:1024 1 in
+  let conv1 = conv2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:3 32 in
+  let conv2 = conv2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:32 64 in
+  let conv3 = conv2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:64 128 in
+  let conv4 = conv2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:128 256 in
+  let conv5 = conv2d ~ksize:6 ~stride:1 ~padding:0 ~input_dim:256 1 in
   fun xs ->
     Layer.apply conv1 xs
     |> Tensor.leaky_relu

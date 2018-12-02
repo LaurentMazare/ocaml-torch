@@ -43,16 +43,13 @@ let npz_to_pytorch npz_src pytorch_dst =
   Serialize.save_multi ~named_tensors ~filename:pytorch_dst
 
 let image_to_tensor image_src pytorch_dst =
-  begin
+  let tensor =
     if Caml.Sys.is_directory image_src
     then Torch_vision.Image.load_images image_src
     else Torch_vision.Image.load_image image_src
-  end
-  |> Serialize.save ~filename:pytorch_dst
-
-let images_to_tensor image_src pytorch_dst =
-  Torch_vision.Image.load_image image_src
-  |> Serialize.save ~filename:pytorch_dst
+  in
+  Stdio.printf "Writing tensor with shape [%s].\n%!" (Tensor.shape_str tensor);
+  Serialize.save tensor ~filename:pytorch_dst
 
 let pytorch_to_npz pytorch_src npz_dst =
   let named_tensors = Serialize.load_all ~filename:pytorch_src in
