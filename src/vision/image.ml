@@ -95,15 +95,14 @@ let write_image tensor ~filename =
       Printf.failwithf "unexpected shape %s"
         (List.map shape ~f:Int.to_string |> String.concat ~sep:", ") ()
   in
-  let tensor = Tensor.transpose tensor ~dim0:1 ~dim1:2 in
-  let extract index_ =
-    Tensor.get tensor index_
+  let bigarray =
+    Tensor.transpose tensor ~dim0:1 ~dim1:2
     |> Tensor.to_bigarray ~kind:Int8_unsigned
-    |> Bigarray.array2_of_genarray
+    |> Bigarray.array3_of_genarray
   in
-  let red = extract 0 in
-  let green = extract 1 in
-  let blue = extract 2 in
+  let red = Bigarray.Array3.slice_left_2 bigarray 0 in
+  let green = Bigarray.Array3.slice_left_2 bigarray 1 in
+  let blue = Bigarray.Array3.slice_left_2 bigarray 2 in
   ImageLib.writefile filename
     { width
     ; height

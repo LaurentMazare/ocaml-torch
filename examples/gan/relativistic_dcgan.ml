@@ -13,16 +13,17 @@ let learning_rate = 1e-4
 let batches = 10**8
 
 let create_generator vs =
-  let tr2d ~ksize ~stride ~padding ~input_dim n =
-    Layer.conv_transpose2d_ vs ~ksize ~stride ~padding ~use_bias:false ~input_dim n
+  let tr2d ~stride ~padding ~input_dim n =
+    Layer.conv_transpose2d_ vs ~ksize:4 ~stride ~padding ~use_bias:false ~input_dim n
   in
-  let convt1 = tr2d ~ksize:4 ~stride:1 ~padding:0 ~input_dim:latent_dim 256 in
-  let convt2 = tr2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:256 128 in
-  let convt3 = tr2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:128 64 in
-  let convt4 = tr2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:64 32 in
-  let convt5 = tr2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:32 3 in
+  let convt1 = tr2d ~stride:1 ~padding:0 ~input_dim:latent_dim 256 in
+  let convt2 = tr2d ~stride:2 ~padding:1 ~input_dim:256 128 in
+  let convt3 = tr2d ~stride:2 ~padding:1 ~input_dim:128 64 in
+  let convt4 = tr2d ~stride:2 ~padding:1 ~input_dim:64 32 in
+  let convt5 = tr2d ~stride:2 ~padding:1 ~input_dim:32 3 in
   fun rand_input ->
-    Layer.apply convt1 rand_input
+    Tensor.to_device rand_input ~device:(Var_store.device vs)
+    |> Layer.apply convt1
     |> Tensor.const_batch_norm
     |> Tensor.relu
     |> Layer.apply convt2
@@ -38,16 +39,17 @@ let create_generator vs =
     |> Tensor.tanh
 
 let create_discriminator vs =
-  let conv2d ~ksize ~stride ~padding ~input_dim n =
-    Layer.conv2d_ vs ~ksize ~stride ~padding ~use_bias:false ~input_dim n
+  let conv2d ~stride ~padding ~input_dim n =
+    Layer.conv2d_ vs ~ksize:4 ~stride ~padding ~use_bias:false ~input_dim n
   in
-  let conv1 = conv2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:3 32 in
-  let conv2 = conv2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:32 64 in
-  let conv3 = conv2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:64 128 in
-  let conv4 = conv2d ~ksize:4 ~stride:2 ~padding:1 ~input_dim:128 256 in
-  let conv5 = conv2d ~ksize:4 ~stride:1 ~padding:0 ~input_dim:256 1 in
+  let conv1 = conv2d ~stride:2 ~padding:1 ~input_dim:3 32 in
+  let conv2 = conv2d ~stride:2 ~padding:1 ~input_dim:32 64 in
+  let conv3 = conv2d ~stride:2 ~padding:1 ~input_dim:64 128 in
+  let conv4 = conv2d ~stride:2 ~padding:1 ~input_dim:128 256 in
+  let conv5 = conv2d ~stride:1 ~padding:0 ~input_dim:256 1 in
   fun xs ->
-    Layer.apply conv1 xs
+    Tensor.to_device xs ~device:(Var_store.device vs)
+    |> Layer.apply conv1
     |> Tensor.leaky_relu
     |> Layer.apply conv2
     |> Tensor.const_batch_norm
@@ -104,7 +106,6 @@ let () =
          let start = Int.(%) (batch_size * batch_idx) (train_size - batch_size) in
          Tensor.narrow images ~dim:0 ~start ~length:batch_size
          |> Tensor.to_type ~type_:Float
-         |> Tensor.to_device ~device
          |> fun xs -> Tensor.(xs / f 255.)
        in
        let discriminator_loss =
@@ -135,5 +136,8 @@ let () =
          generator fixed_noise
          |> Tensor.view ~size:[ -1; 3; image_h; image_w ]
          |> Tensor.to_device ~device:Cpu
+         |> fun xs -> Tensor.((xs + f 1.) * f (255. /. 2.))
+         |> Tensor.clamp_ ~min:(Scalar.float 0.) ~max:(Scalar.float 255.)
+         |> Tensor.to_type ~type_:Uint8
          |> write_samples ~filename:(Printf.sprintf "out%d.png" batch_idx)
     )
