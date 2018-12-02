@@ -57,4 +57,4 @@ let%expect_test _ =
   Stdio.printf !"%{sexp:float list}\n" (array1_to_list ba_narrow);
   [%expect{|
     (0 1 2 3 4)
-    (0 1 2) |}]
+    (1 2 3) |}]

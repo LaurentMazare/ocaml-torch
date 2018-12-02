@@ -27,7 +27,7 @@ tensor at_tensor_of_data(void *vs, long int *dims, int ndims, int element_size_i
     torch::Tensor tensor = torch::zeros(torch::IntList(dims, ndims), torch::ScalarType(type));
     if (element_size_in_bytes != tensor.type().elementSizeInBytes())
       caml_failwith("incoherent element sizes in bytes");
-    void *tensor_data = tensor.storage().data_ptr().get();
+    void *tensor_data = tensor.data_ptr();
     memcpy(tensor_data, vs, tensor.numel() * element_size_in_bytes);
     return new torch::Tensor(tensor);
   )
@@ -39,7 +39,7 @@ void at_copy_data(tensor tensor, void *vs, int64_t numel, int element_size_in_by
       caml_failwith("incoherent element sizes in bytes");
     if (numel != tensor->numel())
       caml_failwith("incoherent number of elements");
-    void *tensor_data = tensor->storage().data_ptr().get();
+    void *tensor_data = tensor->data_ptr();
     memcpy(vs, tensor_data, numel * element_size_in_bytes);
   )
 }
