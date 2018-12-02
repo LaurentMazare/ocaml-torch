@@ -1,3 +1,9 @@
 (executables
-  (names mnist_gan mnist_cgan mnist_dcgan relativistic_dcgan)
+  (names relativistic_dcgan)
+  (modules relativistic_dcgan)
+  (libraries base torch_core torch stdio torch_vision))
+
+(executables
+  (names mnist_gan mnist_cgan mnist_dcgan)
+  (modules mnist_gan mnist_cgan mnist_dcgan)
   (libraries base torch_core torch stdio))

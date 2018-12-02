@@ -65,8 +65,12 @@ let create_discriminator vs =
 let rand () = Tensor.(f 2. * rand [ batch_size; latent_dim; 1; 1 ] - f 1.)
 
 let write_samples samples ~filename =
-  ignore (samples, filename);
-  failwith "TODO"
+  List.init 4 ~f:(fun i ->
+      List.init 4 ~f:(fun j ->
+          Tensor.narrow samples ~dim:0 ~start:(4*i + j) ~length:1)
+      |> Tensor.cat ~dim:2)
+  |> Tensor.cat ~dim:3
+  |> Torch_vision.Image.write_image ~filename
 
 let square x = Tensor.(x * x)
 
@@ -92,6 +96,8 @@ let () =
        let batch_images =
          let start = Int.(%) (batch_size * batch_idx) (train_size - batch_size) in
          Tensor.narrow images ~dim:0 ~start ~length:batch_size
+         |> Tensor.to_type ~type_:Float
+         |> fun xs -> Tensor.(xs / f 255.)
        in
        let discriminator_loss =
          let y_pred = discriminator Tensor.(f 2. * batch_images - f 1.) in
@@ -120,5 +126,5 @@ let () =
        then
          write_samples
            (generator fixed_noise |> Tensor.reshape ~shape:[ -1; 3; image_h; image_w ])
-           ~filename:(Printf.sprintf "out%d.txt" batch_idx)
+           ~filename:(Printf.sprintf "out%d.png" batch_idx)
     )
