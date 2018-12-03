@@ -42,11 +42,17 @@ let npz_to_pytorch npz_src pytorch_dst =
   in
   Serialize.save_multi ~named_tensors ~filename:pytorch_dst
 
-let image_to_tensor image_src pytorch_dst =
+let image_to_tensor image_src pytorch_dst resize =
+  let resize =
+    Option.map resize ~f:(fun resize ->
+        match String.split_on_chars resize ~on:[ 'x'; ',' ] with
+        | [ w; h ] -> Int.of_string w, Int.of_string h
+        | _ -> Printf.failwithf "resize should have format WxH, e.g. 64x64" ())
+  in
   let tensor =
     if Caml.Sys.is_directory image_src
-    then Torch_vision.Image.load_images image_src
-    else Torch_vision.Image.load_image image_src
+    then Torch_vision.Image.load_images image_src ?resize
+    else Torch_vision.Image.load_image image_src ?resize
   in
   Stdio.printf "Writing tensor with shape [%s].\n%!" (Tensor.shape_str tensor);
   Serialize.save tensor ~filename:pytorch_dst
@@ -101,6 +107,10 @@ let () =
     Term.info "npz-to-pytorch" ~sdocs:"" ~doc ~man
   in
   let image_to_tensor =
+		let resize =
+			Arg.(value & opt (some string) None & info ["resize"] ~docv:"SIZE"
+         ~doc:"Resize all the images to the given size, e.g. 64x64")
+		in
     let image_src =
       Arg.(required & pos 0 (some string) None & info [] ~docv:"SRC"
                ~doc:"Image source file or directory")
@@ -111,7 +121,7 @@ let () =
     in
     let doc = "convert an image file to a PyTorch Tensor" in
     let man = [ `S "DESCRIPTION" ; `P doc ] in
-    Term.(const image_to_tensor $ image_src $ pytorch_dst),
+    Term.(const image_to_tensor $ image_src $ pytorch_dst $ resize),
     Term.info "image-to-tensor" ~sdocs:"" ~doc ~man
   in
   let pytorch_to_npz_cmd =

@@ -61,7 +61,6 @@ let create_discriminator vs =
     |> Tensor.const_batch_norm
     |> Tensor.leaky_relu
     |> Layer.apply conv5
-    |> Tensor.sigmoid
     |> Tensor.view ~size:[-1]
 
 let rand () = Tensor.(f 2. * rand [ batch_size; latent_dim; 1; 1 ] - f 1.)
