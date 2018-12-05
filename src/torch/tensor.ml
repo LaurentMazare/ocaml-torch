@@ -281,3 +281,43 @@ let to_float0_exn = float_value
 let to_float0 t = try float_value t |> Option.some with _ -> None
 let to_int0_exn = int_value
 let to_int0 t = try int_value t |> Option.some with _ -> None
+
+let of_float0 f =
+  Bigarray.Array0.of_value Float32 C_layout f
+  |> Bigarray.genarray_of_array0
+  |> of_bigarray
+
+let of_float1 f =
+  Bigarray.Array1.of_array Float32 C_layout f
+  |> Bigarray.genarray_of_array1
+  |> of_bigarray
+
+let of_float2 f =
+  Bigarray.Array2.of_array Float32 C_layout f
+  |> Bigarray.genarray_of_array2
+  |> of_bigarray
+
+let of_float3 f =
+  Bigarray.Array3.of_array Float32 C_layout f
+  |> Bigarray.genarray_of_array3
+  |> of_bigarray
+
+let of_int0 f =
+  Bigarray.Array0.of_value Int C_layout f
+  |> Bigarray.genarray_of_array0
+  |> of_bigarray
+
+let of_int1 f =
+  Bigarray.Array1.of_array Int C_layout f
+  |> Bigarray.genarray_of_array1
+  |> of_bigarray
+
+let of_int2 f =
+  Bigarray.Array2.of_array Int C_layout f
+  |> Bigarray.genarray_of_array2
+  |> of_bigarray
+
+let of_int3 f =
+  Bigarray.Array3.of_array Int C_layout f
+  |> Bigarray.genarray_of_array3
+  |> of_bigarray

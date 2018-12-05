@@ -87,6 +87,16 @@ val to_int1_exn : t -> int array
 val to_int2_exn : t -> int array array
 val to_int3_exn : t -> int array array array
 
+val of_float0 : float -> t
+val of_float1 : float array -> t
+val of_float2 : float array array -> t
+val of_float3 : float array array array -> t
+
+val of_int0 : int -> t
+val of_int1 : int array -> t
+val of_int2 : int array array -> t
+val of_int3 : int array array array -> t
+
 val conv2d
   :  ?padding:int*int
   -> ?dilation:int*int

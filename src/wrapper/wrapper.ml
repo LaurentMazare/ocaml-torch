@@ -62,6 +62,7 @@ module Tensor = struct
       | Bigarray.Char -> Uint8
       | Bigarray.Int16_signed -> Int16
       | Bigarray.Int32 -> Int
+      | Bigarray.Int -> Int64
       | Bigarray.Int64 -> Int64
       | _ -> failwith "unsupported bigarray kind"
     in
