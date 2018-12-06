@@ -195,7 +195,7 @@ let pp formatter t =
   end
 
 let copy t =
-  let t_ = view t ~size:(shape t) in
+  let t_ = zeros (shape t) ~kind:(kind t) in
   copy_ t_ ~src:t;
   t_
 

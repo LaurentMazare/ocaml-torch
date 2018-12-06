@@ -2,10 +2,6 @@ open Base
 open Sexplib.Conv
 open Torch
 
-let array1_to_list ba =
-  let ba = Bigarray.array1_of_genarray ba in
-  List.init (Bigarray.Array1.dim ba) ~f:(Bigarray.Array1.get ba)
-
 let%expect_test _ =
   let t = Tensor.(f 41. + f 1.) in
   Stdio.printf !"%{sexp:float}\n" (Tensor.to_float0_exn t);
@@ -48,13 +44,33 @@ let%expect_test _ =
 
 let%expect_test _ =
   let t = List.init 5 ~f:Float.of_int |> Tensor.float_vec in
-  let ba = Tensor.to_bigarray t ~kind:Float32 in
-  let ba_narrow =
+  let array = Tensor.to_float1_exn t in
+  let array_narrow =
     Tensor.narrow t ~dim:0 ~start:1 ~length:3
-    |> Tensor.to_bigarray ~kind:Float32
+    |> Tensor.to_float1_exn
   in
-  Stdio.printf !"%{sexp:float list}\n" (array1_to_list ba);
-  Stdio.printf !"%{sexp:float list}\n" (array1_to_list ba_narrow);
+  Stdio.printf !"%{sexp:float array}\n" array;
+  Stdio.printf !"%{sexp:float array}\n" array_narrow;
   [%expect{|
     (0 1 2 3 4)
     (1 2 3) |}]
+
+let%expect_test _ =
+  let t = Tensor.of_int2 [| [| 3; 4; 5 |]; [| 2; 3; 4 |] |] in
+  Tensor.(narrow t ~dim:1 ~start:0 ~length:1 += of_int0 42);
+  Stdio.printf !"%{sexp:int array array}\n" (Tensor.to_int2_exn t);
+  [%expect{| ((45 4 5) (44 3 4)) |}]
+
+let%expect_test _ =
+  let t = Tensor.zeros [ 2; 3; 2 ] in
+  let u = Tensor.narrow t ~dim:1 ~start:1 ~length:2 in
+  let v = Tensor.get u 1 in
+  let w = Tensor.copy v in
+  Tensor.(w += f 1.);
+  Stdio.printf !"%{sexp:float array array}\n" (Tensor.to_float2_exn w);
+  [%expect{| ((1 1) (1 1)) |}];
+  Stdio.printf !"%{sexp:float array array array}\n" (Tensor.to_float3_exn t);
+  [%expect{| (((0 0) (0 0) (0 0)) ((0 0) (0 0) (0 0))) |}];
+  Tensor.(v += f 1.);
+  Stdio.printf !"%{sexp:float array array array}\n" (Tensor.to_float3_exn t);
+  [%expect{| (((0 0) (0 0) (0 0)) ((0 0) (1 1) (1 1))) |}]
