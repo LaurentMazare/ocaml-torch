@@ -44,7 +44,7 @@ module Tensor : sig
   val fill_float : t -> float -> unit
   val fill_int : t -> int -> unit
 
-  val backward : t -> unit
+  val backward : ?keep_graph:bool -> ?create_graph:bool -> t -> unit
 
   val print : t -> unit
   val to_string : t -> line_size:int -> string

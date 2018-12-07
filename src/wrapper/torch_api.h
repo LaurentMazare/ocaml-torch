@@ -31,7 +31,7 @@ int at_dim(tensor);
 void at_shape(tensor, int *);
 int at_scalar_type(tensor);
 
-void at_backward(tensor);
+void at_backward(tensor, int, int);
 int at_requires_grad(tensor);
 int at_grad_set_enabled(int);
 

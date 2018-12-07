@@ -157,7 +157,8 @@ module Tensor = struct
   let fill_float t v = fill_double t v
   let fill_int t i = fill_int64 t (Int64.of_int i)
 
-  let backward = backward
+  let backward ?(keep_graph=false) ?(create_graph=false) t =
+    backward t (if keep_graph then 1 else 0) (if create_graph then 1 else 0)
   let print = print
   let to_string t ~line_size = to_string t line_size
   let sum = sum2

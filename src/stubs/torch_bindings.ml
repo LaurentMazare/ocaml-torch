@@ -57,7 +57,7 @@ module C(F: Cstubs.FOREIGN) = struct
 
     let scalar_type = foreign "at_scalar_type" (t @-> returning int)
 
-    let backward = foreign "at_backward" (t @-> returning void)
+    let backward = foreign "at_backward" (t @-> int @-> int @-> returning void)
     let requires_grad =
       foreign "at_requires_grad" (t @-> returning int)
     let grad_set_enabled =

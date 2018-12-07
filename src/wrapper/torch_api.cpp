@@ -81,8 +81,8 @@ int at_scalar_type(tensor t) {
   )
 }
 
-void at_backward(tensor t) {
-  PROTECT(t->backward();)
+void at_backward(tensor t, int keep_graph, int create_graph) {
+  PROTECT(t->backward(c10::nullopt, keep_graph, create_graph);)
 }
 
 int at_requires_grad(tensor t) {
