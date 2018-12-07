@@ -10,8 +10,8 @@ mostly automatically generated. The current GitHub tip corresponds to PyTorch 1.
 
 ### Option 1: Using PyTorch pre-built Binaries
 The libtorch library can be downloaded from the [PyTorch
-website](https://pytorch.org/resources) ([latest cpu
-version](https://download.pytorch.org/libtorch/cpu/libtorch-shared-with-deps-latest.zip)).
+website](https://pytorch.org/resources) ([1.0.0 cpu
+version](https://download.pytorch.org/libtorch/cpu/libtorch-shared-with-deps-1.0.0.zip)).
 
 Download and extract the libtorch library then to build all the examples run:
 
