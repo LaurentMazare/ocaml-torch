@@ -2,30 +2,16 @@
 __ocaml-torch__ provides some ocaml bindings for the [PyTorch](https://pytorch.org) tensor library.
 This brings to OCaml NumPy-like tensor computations with GPU acceleration and tape-based automatic
 differentiation.
-These bindings use the [PyTorch C++ API](https://pytorch.org/cppdocs/) and are mostly automatically generated.
-Note that until PyTorch reaches 1.0 there are no stable releases for libtorch so there
-may be some compilation issues.
+
+These bindings use the [PyTorch C++ API](https://pytorch.org/cppdocs/) and are
+mostly automatically generated. The current GitHub tip corresponds to PyTorch 1.0.0.
 
 ## Installation
 
-### Option 1: Using PyTorch Conda package (recommended)
-Conda packages for PyTorch 1.0 (preview release) can be used via the following command.
-```bash
-conda create -n torch
-source activate torch
-conda install pytorch-nightly-cpu=1.0.0.dev20181116 -c pytorch
-# Or for the CUDA version
-# conda install pytorch-nightly=1.0.0.dev20181116 -c pytorch
-
-git clone https://github.com/LaurentMazare/ocaml-torch.git
-cd ocaml-torch
-make all
-```
-
-### Option 2: Using PyTorch pre-built Binaries
+### Option 1: Using PyTorch pre-built Binaries
 The libtorch library can be downloaded from the [PyTorch
 website](https://pytorch.org/resources) ([latest cpu
-version](https://download.pytorch.org/libtorch/nightly/cpu/libtorch-shared-with-deps-latest.zip)).
+version](https://download.pytorch.org/libtorch/cpu/libtorch-shared-with-deps-latest.zip)).
 
 Download and extract the libtorch library then to build all the examples run:
 
@@ -40,6 +26,21 @@ You can then test that everything works well with the following example:
 ```bash
 ./_build/default/examples/basics/torch_tensor.exe
 ```
+
+### Option 2: Using PyTorch Conda package
+Conda packages for PyTorch 1.0 can be used via the following command.
+```bash
+conda create -n torch
+source activate torch
+conda install pytorch-cpu=1.0.0 -c pytorch
+# Or for the CUDA version
+# conda install pytorch=1.0.0 -c pytorch
+
+git clone https://github.com/LaurentMazare/ocaml-torch.git
+cd ocaml-torch
+make all
+```
+
 
 ## Examples and Tutorials
 
