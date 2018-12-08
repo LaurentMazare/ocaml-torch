@@ -46,6 +46,17 @@ module Tensor : sig
 
   val backward : ?keep_graph:bool -> ?create_graph:bool -> t -> unit
 
+  (* Computes and returns the sum of gradients of outputs w.r.t. the inputs.
+     If [create_graph] is set to true, graph of the derivative will be constructed,
+     allowing to compute higher order derivative products.
+  *)
+  val run_backward
+    :  ?keep_graph:bool
+    -> ?create_graph:bool
+    -> t list
+    -> t list
+    -> t list
+
   val print : t -> unit
   val to_string : t -> line_size:int -> string
 

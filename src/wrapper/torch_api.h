@@ -61,6 +61,14 @@ void at_load_callback(char *filename, void (*f)(char *, tensor));
 
 void at_free(tensor);
 
+void at_run_backward(tensor *tensors,
+                      int ntensors,
+                      tensor *inputs,
+                      int ninputs,
+                      tensor *outputs,
+                      int keep_graph,
+                      int create_graph);
+
 optimizer ato_adam(double learning_rate);
 optimizer ato_sgd(double learning_rate,
                   double momentum,

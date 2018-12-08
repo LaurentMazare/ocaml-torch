@@ -90,6 +90,17 @@ module C(F: Cstubs.FOREIGN) = struct
     let print = foreign "at_print" (t @-> returning void)
     let to_string = foreign "at_to_string" (t @-> int @-> returning string)
     let free = foreign "at_free" (t @-> returning void)
+
+    let run_backward =
+      foreign "at_run_backward"
+        (   ptr t
+        @-> int
+        @-> ptr t
+        @-> int
+        @-> ptr t
+        @-> int
+        @-> int
+        @-> returning void)
   end
 
   module Scalar = struct

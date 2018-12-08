@@ -174,6 +174,25 @@ module Tensor = struct
     let t = new_tensor () in
     Gc.finalise free t;
     t
+
+  let run_backward ?keep_graph ?(create_graph=false) tensors inputs =
+    let keep_graph =
+      match keep_graph with
+      | None -> create_graph
+      | Some keep_graph -> keep_graph
+    in
+    let out_ = CArray.make t (List.length inputs) in
+    run_backward
+      (CArray.of_list t tensors |> CArray.start)
+      (List.length tensors)
+      (CArray.of_list t inputs |> CArray.start)
+      (List.length inputs)
+      (CArray.start out_)
+      (if keep_graph then 1 else 0)
+      (if create_graph then 1 else 0);
+    let out_ = CArray.to_list out_ in
+    List.iter (Gc.finalise free) out_;
+    out_
 end
 
 module Scalar = struct

@@ -1,3 +1,4 @@
+#include<torch/csrc/autograd/engine.h>
 #include<torch/torch.h>
 #include<torch/script.h>
 #include<vector>
@@ -233,6 +234,35 @@ tensor at_load(char *filename) {
 
 void at_free(tensor t) {
   delete(t);
+}
+
+void at_run_backward(tensor *tensors,
+                     int ntensors,
+                     tensor *inputs,
+                     int ninputs,
+                     tensor *outputs,
+                     int keep_graph,
+                     int create_graph) {
+  PROTECT(
+    torch::autograd::Engine engine;
+    vector<torch::autograd::Edge> roots;
+    for (int i = 0; i < ntensors; ++i)
+      roots.push_back(torch::autograd::as_variable_ref(*tensors[i]).gradient_edge());
+
+    vector<torch::autograd::Edge> inputs_;
+    for (int i = 0; i < ninputs; ++i)
+      inputs_.push_back(torch::autograd::as_variable_ref(*inputs[i]).gradient_edge());
+
+    vector<torch::autograd::Variable> grads;
+    for (int i = 0; i < ntensors; ++i)
+      grads.push_back(torch::ones_like(*tensors[i]));
+
+    auto vl = torch::autograd::Engine::get_default_engine().execute(roots, grads, keep_graph, create_graph, inputs_);
+    printf("%d\n", (int)vl.size());
+    for (int i = 0; i < ninputs; ++i) {
+      outputs[i] = static_cast<tensor>(new torch::autograd::Variable(vl[i]));
+    }
+  )
 }
 
 optimizer ato_adam(double learning_rate) {
