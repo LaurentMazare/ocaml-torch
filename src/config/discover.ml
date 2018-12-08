@@ -7,6 +7,9 @@ let combine (flags1 : C.Pkg_config.package_conf) (flags2 : C.Pkg_config.package_
   ; libs = flags1.libs @ flags2.libs
   }
 
+let (/^) = Caml.Filename.concat
+let file_exists = Caml.Sys.file_exists
+
 let extract_flags c ~package =
   Option.bind (C.Pkg_config.get c) ~f:(C.Pkg_config.query ~package)
 
@@ -25,32 +28,41 @@ let torch_flags () =
     in
     { C.Pkg_config.cflags; libs }
   in
+  let conda_config ~conda_prefix =
+    let conda_prefix = conda_prefix ^ "/lib" in
+    Caml.Sys.readdir conda_prefix
+    |> Array.to_list
+    |> List.filter_map ~f:(fun filename ->
+        if String.is_prefix filename ~prefix:"python"
+        then
+          let libdir =
+            Printf.sprintf "%s/%s/site-packages/torch/lib" conda_prefix filename
+          in
+          if file_exists libdir && Caml.Sys.is_directory libdir
+          then Some libdir
+          else None
+        else None)
+    |> function
+    | [] -> empty_flags
+    | lib_dir :: _ -> config ~include_dir:(lib_dir /^ "include") ~lib_dir
+  in
   match Caml.Sys.getenv_opt "LIBTORCH" with
-  | Some l -> config ~include_dir:(l ^ "/include") ~lib_dir:(l ^ "/lib")
+  | Some l -> config ~include_dir:(l /^ "include") ~lib_dir:(l /^ "lib")
   | None ->
     match Caml.Sys.getenv_opt "CONDA_PREFIX" with
-    | None -> empty_flags
-    | Some conda_prefix ->
-      let conda_prefix = conda_prefix ^ "/lib" in
-      Caml.Sys.readdir conda_prefix
-      |> Array.to_list
-      |> List.filter_map ~f:(fun filename ->
-          if String.is_prefix filename ~prefix:"python"
-          then
-            let libdir =
-              Printf.sprintf "%s/%s/site-packages/torch/lib" conda_prefix filename
-            in
-            if Caml.Sys.file_exists libdir && Caml.Sys.is_directory libdir
-            then Some libdir
-            else None
-          else None)
-      |> function
-      | [] -> empty_flags
-      | lib_dir :: _ -> config ~include_dir:(lib_dir ^ "/include") ~lib_dir
+    | Some conda_prefix -> conda_config ~conda_prefix
+    | None ->
+      match Caml.Sys.getenv_opt "OPAM_SWITCH_PREFIX" with
+      | Some prefix ->
+        let lib_dir = prefix /^ "lib" /^ "libtorch" in
+        if file_exists lib_dir
+        then config ~include_dir:(lib_dir ^ "/include") ~lib_dir:(lib_dir ^ "/lib")
+        else empty_flags
+      | None -> empty_flags
 
 let libcuda_flags ~lcuda ~lnvrtc =
   let cudadir = "/usr/local/cuda/lib64" in
-  if Caml.Sys.file_exists cudadir && Caml.Sys.is_directory cudadir
+  if file_exists cudadir && Caml.Sys.is_directory cudadir
   then
     let libs =
       [ Printf.sprintf "-Wl,-R%s" cudadir
