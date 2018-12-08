@@ -258,7 +258,6 @@ void at_run_backward(tensor *tensors,
       grads.push_back(torch::ones_like(*tensors[i]));
 
     auto vl = torch::autograd::Engine::get_default_engine().execute(roots, grads, keep_graph, create_graph, inputs_);
-    printf("%d\n", (int)vl.size());
     for (int i = 0; i < ninputs; ++i) {
       outputs[i] = static_cast<tensor>(new torch::autograd::Variable(vl[i]));
     }

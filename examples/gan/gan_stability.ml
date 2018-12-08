@@ -78,6 +78,7 @@ let write_samples samples ~filename =
 let grad2 d_out x_in =
   let grad_dout =
     Tensor.run_backward [ Tensor.sum d_out ] [ Tensor.set_requires_grad x_in ~r:true ]
+      ~create_graph:true
     |> List.hd_exn
   in
   let grad2 = Tensor.(grad_dout * grad_dout) in
