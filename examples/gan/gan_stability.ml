@@ -65,7 +65,7 @@ let create_discriminator vs =
     |> Layer.apply conv5
     |> Tensor.view ~size:[-1]
 
-let z_dist () = Tensor.randn [ batch_size; latent_dim ]
+let z_dist () = Tensor.randn [ batch_size; latent_dim; 1; 1 ]
 
 let write_samples samples ~filename =
   List.init 4 ~f:(fun i ->
@@ -77,13 +77,12 @@ let write_samples samples ~filename =
 
 let grad2 d_out x_in =
   let grad_dout =
-    Tensor.run_backward [ Tensor.sum d_out ] [ Tensor.set_requires_grad x_in ~r:true ]
-      ~create_graph:true
+    Tensor.run_backward [ Tensor.sum d_out ] [ x_in ] ~create_graph:true
     |> List.hd_exn
   in
-  let grad2 = Tensor.(grad_dout * grad_dout) in
-  Tensor.print_shape grad2;
-  grad2
+  Tensor.(grad_dout * grad_dout)
+  |> Tensor.view ~size:[ batch_size; -1 ]
+  |> Tensor.sum4 ~dim:[1] ~keepdim:false
 
 let () =
   let device =
@@ -93,6 +92,13 @@ let () =
       Cuda.set_benchmark_cudnn true;
       Torch_core.Device.Cuda
     end else Torch_core.Device.Cpu
+  in
+
+  if Array.length Sys.argv < 2
+  then Printf.failwithf "Usage: %s images.ot" Sys.argv.(0) ();
+
+  let bce_loss ys ~target =
+    Tensor.bce_loss (Tensor.sigmoid ys) ~targets:Tensor.(ones_like1 ys * f target)
   in
 
   let images = Serialize.load ~filename:Sys.argv.(1) in
@@ -121,14 +127,16 @@ let () =
        in
        let discriminator_loss =
          Optimizer.zero_grad opt_d;
+         let x_real = Tensor.set_requires_grad x_real ~r:true in
          let d_real = discriminator x_real in
-         let d_loss_real = Tensor.bce_loss d_real ~targets:(Tensor.f 1.) in
+         let d_loss_real = bce_loss d_real ~target:1. in
          Tensor.backward d_loss_real ~keep_graph:true;
          let reg = Tensor.(f reg_param * grad2 d_real x_real |> mean) in
          Tensor.backward reg;
          let x_fake = Tensor.no_grad (fun () -> z_dist () |> generator) in
+         let x_fake = Tensor.set_requires_grad x_fake ~r:true in
          let d_fake = discriminator x_fake in
-         let d_loss_fake = Tensor.bce_loss d_fake ~targets:(Tensor.f 0.) in
+         let d_loss_fake = bce_loss d_fake ~target:0. in
          Tensor.backward d_loss_fake ~keep_graph:true;
          let reg = Tensor.(f reg_param * grad2 d_fake x_fake |> mean) in
          Tensor.backward reg;
@@ -140,7 +148,7 @@ let () =
          let z = z_dist () in
          let x_fake = generator z in
          let d_fake = discriminator x_fake in
-         let g_loss = Tensor.bce_loss d_fake ~targets:(Tensor.f 1.) in
+         let g_loss = bce_loss d_fake ~target:1. in
          Tensor.backward g_loss;
          Optimizer.step opt_g;
          g_loss
