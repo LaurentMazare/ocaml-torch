@@ -27,7 +27,6 @@ depends: [
   "ppx_sexp_conv"
   "sexplib"
   "stdio"
-  "utop"
 ]
 
 depopts: [
