@@ -74,3 +74,31 @@ let%expect_test _ =
   Tensor.(v += f 1.);
   Stdio.printf !"%{sexp:float array array array}\n" (Tensor.to_float3_exn t);
   [%expect{| (((0 0) (0 0) (0 0)) ((0 0) (1 1) (1 1))) |}]
+
+let%expect_test _ =
+  let logits = Tensor.of_float1 [| -1.; 0.5; 0.25; 0.; 2.; 4.; -1. |] in
+  let eval_and_print ~target =
+    let bce1 =
+      Tensor.(bce_loss (sigmoid logits) ~targets:(ones_like1 logits * f target))
+    in
+    let bce2 =
+      Tensor.(bce_loss_with_logits logits ~targets:(ones_like1 logits * f target))
+    in
+    let bce3 =
+      Tensor.(
+        - f target * log (sigmoid logits)
+        - (f 1. - f target) * log (f 1. - sigmoid logits))
+      |> Tensor.mean
+    in
+    Stdio.printf !"%{sexp:float} %{sexp:float} %{sexp:float}\n"
+      (Tensor.to_float0_exn bce1)
+      (Tensor.to_float0_exn bce2)
+      (Tensor.to_float0_exn bce3)
+  in
+  eval_and_print ~target:0.;
+  [%expect{| 1.3235377073287964 1.3235379457473755 1.3235377073287964 |}];
+  eval_and_print ~target:0.5;
+  [%expect{| 0.98425197601318359 0.98425209522247314 0.98425191640853882 |}];
+  eval_and_print ~target:1.;
+  [%expect{| 0.64496642351150513 0.64496642351150513 0.64496642351150513 |}]
+

@@ -157,6 +157,12 @@ val bce_loss
   -> targets:t
   -> t
 
+val bce_loss_with_logits
+  :  ?reduction:Torch_core.Reduction.t
+  -> t
+  -> targets:t
+  -> t
+
 val mse_loss
   :  ?reduction:Torch_core.Reduction.t
   -> t

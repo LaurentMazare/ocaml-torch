@@ -179,6 +179,19 @@ let mse_loss ?(reduction=Torch_core.Reduction.Elementwise_mean) t1 t2 =
   | Elementwise_mean -> mean square_error
   | Sum -> sum square_error
 
+let bce_loss_with_logits ?(reduction=Torch_core.Reduction.Elementwise_mean) t ~targets =
+  let max_val = clamp_min_ (- t) ~min:(Scalar.float 0.) in
+  let one_minus_targets = ones_like1 targets - targets in
+  let bce =
+    add_
+      (add_ (mul_ one_minus_targets t) max_val)
+      (add_ (exp_ (- max_val)) (exp_ (- t - max_val)) |> log_)
+  in
+  match reduction with
+  | None -> bce
+  | Elementwise_mean -> mean bce
+  | Sum -> sum bce
+
 let pp formatter t =
   let shape = shape t in
   let element_count = List.fold shape ~init:1 ~f:Int.( * ) in
