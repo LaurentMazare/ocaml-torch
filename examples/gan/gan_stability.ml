@@ -14,6 +14,8 @@ let reg_param = 10.
 
 let batches = 10**8
 
+let leaky_relu xs = Tensor.(max xs (xs * f 0.2))
+
 let create_generator vs =
   let tr2d ~stride ~padding ~input_dim n =
     Layer.conv_transpose2d_ vs ~ksize:4 ~stride ~padding ~use_bias:false ~input_dim n
@@ -52,18 +54,18 @@ let create_discriminator vs =
   fun xs ->
     Tensor.to_device xs ~device:(Var_store.device vs)
     |> Layer.apply conv1
-    |> Tensor.leaky_relu
+    |> leaky_relu
     |> Layer.apply conv2
     |> Tensor.const_batch_norm
-    |> Tensor.leaky_relu
+    |> leaky_relu
     |> Layer.apply conv3
     |> Tensor.const_batch_norm
-    |> Tensor.leaky_relu
+    |> leaky_relu
     |> Layer.apply conv4
     |> Tensor.const_batch_norm
-    |> Tensor.leaky_relu
+    |> leaky_relu
     |> Layer.apply conv5
-    |> Tensor.view ~size:[-1]
+    |> Tensor.view ~size:[batch_size; 1]
 
 let z_dist () = Tensor.randn [ batch_size; latent_dim; 1; 1 ]
 
@@ -77,7 +79,8 @@ let write_samples samples ~filename =
 
 let grad2 d_out x_in =
   let grad_dout =
-    Tensor.run_backward [ Tensor.sum d_out ] [ x_in ] ~create_graph:true
+    Tensor.run_backward [ Tensor.sum d_out ] [ x_in ]
+      ~create_graph:true ~keep_graph:true
     |> List.hd_exn
   in
   Tensor.(grad_dout * grad_dout)
@@ -97,7 +100,7 @@ let () =
   if Array.length Sys.argv < 2
   then Printf.failwithf "Usage: %s images.ot" Sys.argv.(0) ();
 
-  let bce_loss ys ~target =
+  let bce_loss_with_logits ys ~target =
     Tensor.bce_loss (Tensor.sigmoid ys) ~targets:Tensor.(ones_like1 ys * f target)
   in
 
@@ -116,7 +119,7 @@ let () =
 
   Checkpointing.loop ~start_index:1 ~end_index:batches
     ~var_stores:[ generator_vs; discriminator_vs ]
-    ~checkpoint_base:"relgan.ot"
+    ~checkpoint_base:"gan-stability.ot"
     ~checkpoint_every:(`seconds 600.)
     (fun ~index:batch_idx ->
        let x_real =
@@ -126,29 +129,31 @@ let () =
          |> fun xs -> Tensor.(xs / f 127.5 - f 1.)
        in
        let discriminator_loss =
+         Var_store.freeze generator_vs;
+         Var_store.unfreeze discriminator_vs;
          Optimizer.zero_grad opt_d;
          let x_real = Tensor.set_requires_grad x_real ~r:true in
          let d_real = discriminator x_real in
-         let d_loss_real = bce_loss d_real ~target:1. in
+         let d_loss_real = bce_loss_with_logits d_real ~target:1. in
          Tensor.backward d_loss_real ~keep_graph:true;
          let reg = Tensor.(f reg_param * grad2 d_real x_real |> mean) in
          Tensor.backward reg;
          let x_fake = Tensor.no_grad (fun () -> z_dist () |> generator) in
          let x_fake = Tensor.set_requires_grad x_fake ~r:true in
          let d_fake = discriminator x_fake in
-         let d_loss_fake = bce_loss d_fake ~target:0. in
-         Tensor.backward d_loss_fake ~keep_graph:true;
-         let reg = Tensor.(f reg_param * grad2 d_fake x_fake |> mean) in
-         Tensor.backward reg;
+         let d_loss_fake = bce_loss_with_logits d_fake ~target:0. in
+         Tensor.backward d_loss_fake;
          Optimizer.step opt_d;
          Tensor.(+) d_loss_real d_loss_fake
        in
        let generator_loss =
+         Var_store.unfreeze generator_vs;
+         Var_store.freeze discriminator_vs;
          Optimizer.zero_grad opt_g;
          let z = z_dist () in
          let x_fake = generator z in
          let d_fake = discriminator x_fake in
-         let g_loss = bce_loss d_fake ~target:1. in
+         let g_loss = bce_loss_with_logits d_fake ~target:1. in
          Tensor.backward g_loss;
          Optimizer.step opt_g;
          g_loss
@@ -164,6 +169,7 @@ let () =
        then
          Tensor.no_grad (fun () -> generator z_test)
          |> Tensor.view ~size:[ -1; 3; image_h; image_w ]
+         |> Tensor.transpose ~dim0:2 ~dim1:3
          |> Tensor.to_device ~device:Cpu
          |> fun xs -> Tensor.((xs + f 1.) * f 127.5)
          |> Tensor.clamp_ ~min:(Scalar.float 0.) ~max:(Scalar.float 255.)
