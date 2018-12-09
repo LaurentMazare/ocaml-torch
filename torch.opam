@@ -14,14 +14,20 @@ remove:  []
 
 depends: [
   "base" {>= "0.11.0"}
-  "ppx_custom_printf"
-  "ppx_sexp_conv"
-  "ppx_expect"
-  "stdio"
+  "cmdliner"
   "ctypes" {>= "0.5"}
   "ctypes-foreign"
-  "ocaml-compiler-libs"
   "dune" {build}
+  "imagelib"
+  "npy"
+  "ocaml" {>= "4.06"}
+  "ocaml-compiler-libs"
+  "ppx_custom_printf"
+  "ppx_expect"
+  "ppx_sexp_conv"
+  "sexplib"
+  "stdio"
+  "utop"
 ]
 
 depopts: [
@@ -29,5 +35,3 @@ depopts: [
 
 conflicts: [
 ]
-
-available: [ ocaml-version >= "4.06" ]
