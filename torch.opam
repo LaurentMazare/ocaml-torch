@@ -35,3 +35,10 @@ depopts: [
 
 conflicts: [
 ]
+
+synopsis: "PyTorch bindings for OCaml"
+description: """
+The ocaml-torch project provides some OCaml bindings for the PyTorch library.
+This brings to OCaml NumPy-like tensor computations with GPU acceleration and
+tape-based automatic differentiation.
+"""
