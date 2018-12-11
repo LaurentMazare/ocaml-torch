@@ -8,7 +8,7 @@ authors:      [ "Laurent Mazare" ]
 
 version: "dev"
 
-build: [["dune" "build" "--only-packages" "torch" "--root" "." "-j" jobs "@install"]]
+build: [["dune" "build" "-p" name "-j" jobs]]
 install: []
 remove:  []
 
@@ -17,8 +17,9 @@ depends: [
   "cmdliner"
   "ctypes" {>= "0.5"}
   "ctypes-foreign"
-  "dune" {build}
+  "dune" {>= "1.3.0" build}
   "imagelib"
+  "libtorch"
   "npy"
   "ocaml" {>= "4.06"}
   "ocaml-compiler-libs"

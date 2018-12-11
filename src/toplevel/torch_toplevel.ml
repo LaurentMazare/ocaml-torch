@@ -10,8 +10,5 @@ let register_pp str =
 let register_all_pps () =
   register_pp "Torch.Tensor.pp"
 
-let toplevel_start () =
-  Toploop.initialize_toplevel_env ();
-  parse_and_execute "#use \"topfind\";;";
-  parse_and_execute "#require \"torch\";;";
+let () =
   register_all_pps ()

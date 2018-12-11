@@ -25,9 +25,7 @@ gen: .FORCE
 	./_build/default/src/gen/gen.exe
 
 utop: .FORCE
-	dune build @install
-	dune build bin/utop_torch.bc
-	dune exec bin/utop_torch.bc
+	dune utop
 
 jupyter: .FORCE
 	dune build @install

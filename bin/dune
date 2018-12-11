@@ -1,11 +1,4 @@
 (executable
- (name utop_torch)
- (link_flags (-linkall))
- (modules utop_torch)
- (modes byte)
- (libraries torch_core torch torch_toplevel utop))
-
-(executable
  (name tensor_tools)
  (modules tensor_tools)
  (libraries base cmdliner npy torch_core torch torch_vision))
