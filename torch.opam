@@ -36,6 +36,8 @@ depopts: [
 conflicts: [
 ]
 
+available: [ os = "linux" ]
+
 synopsis: "PyTorch bindings for OCaml"
 description: """
 The ocaml-torch project provides some OCaml bindings for the PyTorch library.
