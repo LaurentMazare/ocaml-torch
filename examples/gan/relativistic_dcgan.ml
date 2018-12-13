@@ -97,20 +97,25 @@ let () =
 
   let fixed_noise = rand () in
 
+  let next_batch_images =
+    let batch_idx = ref 0 in
+    fun () ->
+      let start = Int.(%) (batch_size * !batch_idx) (train_size - batch_size) in
+      batch_idx := Int.(%) (!batch_idx + 1) (train_size - batch_size);
+      Tensor.narrow images ~dim:0 ~start ~length:batch_size
+      |> Tensor.to_type ~type_:Float
+      |> fun xs -> Tensor.(xs / f 127.5 - f 1.)
+  in
+
   Checkpointing.loop ~start_index:1 ~end_index:batches
     ~var_stores:[ generator_vs; discriminator_vs ]
     ~checkpoint_base:"relgan.ot"
     ~checkpoint_every:(`seconds 600.)
-    (fun ~index:batch_idx ->
-       let batch_images =
-         let start = Int.(%) (batch_size * batch_idx) (train_size - batch_size) in
-         Tensor.narrow images ~dim:0 ~start ~length:batch_size
-         |> Tensor.to_type ~type_:Float
-         |> fun xs -> Tensor.(xs / f 127.5 - f 1.)
-       in
+    (fun ~index ->
        Var_store.unfreeze discriminator_vs;
        Var_store.freeze generator_vs;
        let discriminator_loss =
+         let batch_images = next_batch_images () in
          let y_pred = discriminator batch_images in
          let y_pred_fake =
            rand () |> generator |> Tensor.copy |> Tensor.detach |> discriminator
@@ -123,6 +128,7 @@ let () =
        Var_store.freeze discriminator_vs;
        Var_store.unfreeze generator_vs;
        let generator_loss =
+         let batch_images = next_batch_images () in
          let y_pred = discriminator batch_images in
          let y_pred_fake = rand () |> generator |> discriminator in
          Tensor.(+)
@@ -130,20 +136,20 @@ let () =
            Tensor.(mse_loss y_pred_fake (mean y_pred + f 1.))
        in
        Optimizer.backward_step ~loss:generator_loss opt_g;
-       if batch_idx % 100 = 0
+       if index % 100 = 0
        then
          Stdio.printf "batch %4d    d-loss: %12.6f    g-loss: %12.6f\n%!"
-           batch_idx
+           index
            (Tensor.float_value discriminator_loss)
            (Tensor.float_value generator_loss);
        Caml.Gc.full_major ();
-       if batch_idx % 25000 = 0 || (batch_idx < 100000 && batch_idx % 5000 = 0)
+       if index % 25000 = 0 || (index < 100000 && index % 5000 = 0)
        then
          generator fixed_noise
          |> Tensor.view ~size:[ -1; 3; image_h; image_w ]
          |> Tensor.to_device ~device:Cpu
-         |> fun xs -> Tensor.((xs + f 1.) * f (255. /. 2.))
+         |> fun xs -> Tensor.((xs + f 1.) * f 127.5)
          |> Tensor.clamp_ ~min:(Scalar.float 0.) ~max:(Scalar.float 255.)
          |> Tensor.to_type ~type_:Uint8
-         |> write_samples ~filename:(Printf.sprintf "out%d.png" batch_idx)
+         |> write_samples ~filename:(Printf.sprintf "relout%d.png" index)
     )
