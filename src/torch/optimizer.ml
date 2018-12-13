@@ -29,8 +29,8 @@ let create optimizer ~vs =
   add_missing_parameters t;
   t
 
-let adam vs ~learning_rate =
-  Optimizer.adam ~learning_rate
+let adam ?(beta1=0.9) ?(beta2=0.999) ?(weight_decay=0.) vs ~learning_rate =
+  Optimizer.adam ~learning_rate ~beta1 ~beta2 ~weight_decay
   |> create ~vs
 
 let sgd

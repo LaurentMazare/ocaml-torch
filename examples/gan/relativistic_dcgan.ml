@@ -25,16 +25,16 @@ let create_generator vs =
     Tensor.to_device rand_input ~device:(Var_store.device vs)
     |> Layer.apply convt1
     |> Tensor.const_batch_norm
-    |> Tensor.relu
+    |> Tensor.relu_
     |> Layer.apply convt2
     |> Tensor.const_batch_norm
-    |> Tensor.relu
+    |> Tensor.relu_
     |> Layer.apply convt3
     |> Tensor.const_batch_norm
-    |> Tensor.relu
+    |> Tensor.relu_
     |> Layer.apply convt4
     |> Tensor.const_batch_norm
-    |> Tensor.relu
+    |> Tensor.relu_
     |> Layer.apply convt5
     |> Tensor.tanh
 
@@ -42,6 +42,7 @@ let create_discriminator vs =
   let conv2d ~stride ~padding ~input_dim n =
     Layer.conv2d_ vs ~ksize:4 ~stride ~padding ~use_bias:false ~input_dim n
   in
+  let leaky_relu xs = Tensor.(max xs (xs * f 0.2)) in
   let conv1 = conv2d ~stride:2 ~padding:1 ~input_dim:3 32 in
   let conv2 = conv2d ~stride:2 ~padding:1 ~input_dim:32 64 in
   let conv3 = conv2d ~stride:2 ~padding:1 ~input_dim:64 128 in
@@ -50,18 +51,18 @@ let create_discriminator vs =
   fun xs ->
     Tensor.to_device xs ~device:(Var_store.device vs)
     |> Layer.apply conv1
-    |> Tensor.leaky_relu
+    |> leaky_relu
     |> Layer.apply conv2
     |> Tensor.const_batch_norm
-    |> Tensor.leaky_relu
+    |> leaky_relu
     |> Layer.apply conv3
     |> Tensor.const_batch_norm
-    |> Tensor.leaky_relu
+    |> leaky_relu
     |> Layer.apply conv4
     |> Tensor.const_batch_norm
-    |> Tensor.leaky_relu
+    |> leaky_relu
     |> Layer.apply conv5
-    |> Tensor.view ~size:[-1]
+    |> Tensor.view ~size:[ batch_size ]
 
 let rand () = Tensor.(f 2. * rand [ batch_size; latent_dim; 1; 1 ] - f 1.)
 
@@ -88,11 +89,11 @@ let () =
 
   let generator_vs = Var_store.create ~name:"gen" ~device () in
   let generator = create_generator generator_vs in
-  let opt_g = Optimizer.adam generator_vs ~learning_rate in
+  let opt_g = Optimizer.adam generator_vs ~learning_rate ~beta1:0.5 in
 
   let discriminator_vs = Var_store.create ~name:"disc" ~device () in
   let discriminator = create_discriminator discriminator_vs in
-  let opt_d = Optimizer.adam discriminator_vs ~learning_rate in
+  let opt_d = Optimizer.adam discriminator_vs ~learning_rate ~beta1:0.5 in
 
   let fixed_noise = rand () in
 
@@ -105,18 +106,24 @@ let () =
          let start = Int.(%) (batch_size * batch_idx) (train_size - batch_size) in
          Tensor.narrow images ~dim:0 ~start ~length:batch_size
          |> Tensor.to_type ~type_:Float
-         |> fun xs -> Tensor.(xs / f 255.)
+         |> fun xs -> Tensor.(xs / f 127.5 - f 1.)
        in
+       Var_store.unfreeze discriminator_vs;
+       Var_store.freeze generator_vs;
        let discriminator_loss =
-         let y_pred = discriminator Tensor.(f 2. * batch_images - f 1.) in
-         let y_pred_fake = rand () |> generator |> discriminator in
+         let y_pred = discriminator batch_images in
+         let y_pred_fake =
+           rand () |> generator |> Tensor.copy |> Tensor.detach |> discriminator
+         in
          Tensor.(+)
            Tensor.(mse_loss y_pred (mean y_pred_fake + f 1.))
            Tensor.(mse_loss y_pred_fake (mean y_pred - f 1.))
        in
        Optimizer.backward_step ~loss:discriminator_loss opt_d;
+       Var_store.freeze discriminator_vs;
+       Var_store.unfreeze generator_vs;
        let generator_loss =
-         let y_pred = discriminator Tensor.(f 2. * batch_images - f 1.) in
+         let y_pred = discriminator batch_images in
          let y_pred_fake = rand () |> generator |> discriminator in
          Tensor.(+)
            Tensor.(mse_loss y_pred (mean y_pred_fake - f 1.))

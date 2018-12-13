@@ -264,9 +264,17 @@ void at_run_backward(tensor *tensors,
   )
 }
 
-optimizer ato_adam(double learning_rate) {
+optimizer ato_adam(double learning_rate,
+                   double beta1,
+                   double beta2,
+                   double weight_decay) {
   PROTECT(
-    return new torch::optim::Adam(vector<torch::Tensor>(), learning_rate);
+    auto options =
+      torch::optim::AdamOptions(learning_rate)
+        .beta1(beta1)
+        .beta2(beta2)
+        .weight_decay(weight_decay);
+    return new torch::optim::Adam(vector<torch::Tensor>(), options);
   )
 }
 

@@ -1,6 +1,12 @@
 type t
 
-val adam : Var_store.t -> learning_rate:float -> t
+val adam
+  :  ?beta1:float
+  -> ?beta2:float
+  -> ?weight_decay:float
+  -> Var_store.t
+  -> learning_rate:float
+  -> t
 
 val sgd
   :  ?momentum:float

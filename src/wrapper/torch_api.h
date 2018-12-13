@@ -69,7 +69,10 @@ void at_run_backward(tensor *tensors,
                       int keep_graph,
                       int create_graph);
 
-optimizer ato_adam(double learning_rate);
+optimizer ato_adam(double learning_rate,
+                   double beta1,
+                   double beta2,
+                   double weight_decay);
 optimizer ato_sgd(double learning_rate,
                   double momentum,
                   double dampening,
