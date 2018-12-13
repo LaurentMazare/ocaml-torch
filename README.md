@@ -6,41 +6,48 @@ differentiation.
 These bindings use the [PyTorch C++ API](https://pytorch.org/cppdocs/) and are
 mostly automatically generated. The current GitHub tip corresponds to PyTorch 1.0.0.
 
-## Installation
+## Opam Installation
 
-### Option 1: Using PyTorch pre-built Binaries
-The libtorch library can be downloaded from the [PyTorch
-website](https://pytorch.org/resources) ([1.0.0 cpu
-version](https://download.pytorch.org/libtorch/cpu/libtorch-shared-with-deps-1.0.0.zip)).
-
-Download and extract the libtorch library then to build all the examples run:
+The [opam](https://opam.ocaml.org/) package can be installed using the following command.
+This automatically installs the CPU version of libtorch.
 
 ```bash
-export LIBTORCH=/path/to/libtorch
-git clone https://github.com/LaurentMazare/ocaml-torch.git
-cd ocaml-torch
-make all
+opam install torch
 ```
 
-You can then test that everything works well with the following example:
-```bash
-./_build/default/examples/basics/torch_tensor.exe
+You can then compile some sample code, see some instructions below.
+__ocaml-torch__ can also be used in interactive mode via
+[utop](https://github.com/ocaml-community/utop) or
+[ocaml-jupyter](https://github.com/akabe/ocaml-jupyter).
+
+Here is a sample utop session.
+
+![utop](./images/utop.png)
+
+
+### Build a Simple Example
+
+To build a first torch program, create a file `example.ml` with the
+following content.
+
+```ocaml
+open Torch
+
+let () =
+  let tensor = Tensor.randn [ 4; 2 ] in
+  Tensor.print tensor
 ```
 
-### Option 2: Using PyTorch Conda package
-Conda packages for PyTorch 1.0 can be used via the following command.
-```bash
-conda create -n torch
-source activate torch
-conda install pytorch-cpu=1.0.0 -c pytorch
-# Or for the CUDA version
-# conda install pytorch=1.0.0 -c pytorch
+Then create a `dune` file with the following content:
 
-git clone https://github.com/LaurentMazare/ocaml-torch.git
-cd ocaml-torch
-make all
+```ocaml
+(executables
+  (names example)
+  (libraries torch))
 ```
 
+Run `dune build example.exe` to compile the program and
+`_build/default/example.exe` to run it!
 
 ## Examples and Tutorials
 
@@ -111,12 +118,45 @@ make all
 _build/default/examples/pretrained/predict.exe path/to/resnet18.ot tiger.jpg
 ```
 
-## Interactive Mode
+## Alternative Installation Options
 
-__ocaml-torch__ works well with utop and jupyter, just run `make utop` or `make jupyter`.
+These alternative ways to install __ocaml-torch__ could be useful to run with GPU
+acceleration enabled.
+
+### Option 1: Using PyTorch pre-built Binaries
+The libtorch library can be downloaded from the [PyTorch
+website](https://pytorch.org/resources) ([1.0.0 cpu
+version](https://download.pytorch.org/libtorch/cpu/libtorch-shared-with-deps-1.0.0.zip)).
+
+Download and extract the libtorch library then to build all the examples run:
+
+```bash
+export LIBTORCH=/path/to/libtorch
+git clone https://github.com/LaurentMazare/ocaml-torch.git
+cd ocaml-torch
+make all
+```
+
+You can then test that everything works well with the following example:
+```bash
+./_build/default/examples/basics/torch_tensor.exe
+```
+
+### Option 2: Using PyTorch Conda package
+Conda packages for PyTorch 1.0 can be used via the following command.
+```bash
+conda create -n torch
+source activate torch
+conda install pytorch-cpu=1.0.0 -c pytorch
+# Or for the CUDA version
+# conda install pytorch=1.0.0 -c pytorch
+
+git clone https://github.com/LaurentMazare/ocaml-torch.git
+cd ocaml-torch
+make all
+```
 
 ## TODO
 
 * Use a GADT to add type constraints to tensor elements.
 * Make it easier to use/import datasets.
-* Add an opam package (this may have to wait until libtorch has stable releases).
