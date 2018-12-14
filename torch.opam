@@ -12,6 +12,10 @@ build: [["dune" "build" "-p" name "-j" jobs]]
 install: []
 remove:  []
 
+run-test: [
+  ["dune" "runtest" "-p" name "-j" jobs]
+]
+
 depends: [
   "base" {>= "0.11.0"}
   "cmdliner"
