@@ -16,24 +16,29 @@ let create_generator vs =
   let tr2d ~stride ~padding ~input_dim n =
     Layer.conv_transpose2d_ vs ~ksize:4 ~stride ~padding ~use_bias:false ~input_dim n
   in
+  let batch_norm2d dim = Layer.batch_norm2d vs dim ~w_init:Ones in
   let convt1 = tr2d ~stride:1 ~padding:0 ~input_dim:latent_dim 256 in
+  let bn1 = batch_norm2d 256 in
   let convt2 = tr2d ~stride:2 ~padding:1 ~input_dim:256 128 in
+  let bn2 = batch_norm2d 128 in
   let convt3 = tr2d ~stride:2 ~padding:1 ~input_dim:128 64 in
+  let bn3 = batch_norm2d 64 in
   let convt4 = tr2d ~stride:2 ~padding:1 ~input_dim:64 32 in
+  let bn4 = batch_norm2d 32 in
   let convt5 = tr2d ~stride:2 ~padding:1 ~input_dim:32 3 in
   fun rand_input ->
     Tensor.to_device rand_input ~device:(Var_store.device vs)
     |> Layer.apply convt1
-    |> Tensor.const_batch_norm
+    |> Layer.apply_ bn1 ~is_training:true
     |> Tensor.relu_
     |> Layer.apply convt2
-    |> Tensor.const_batch_norm
+    |> Layer.apply_ bn2 ~is_training:true
     |> Tensor.relu_
     |> Layer.apply convt3
-    |> Tensor.const_batch_norm
+    |> Layer.apply_ bn3 ~is_training:true
     |> Tensor.relu_
     |> Layer.apply convt4
-    |> Tensor.const_batch_norm
+    |> Layer.apply_ bn4 ~is_training:true
     |> Tensor.relu_
     |> Layer.apply convt5
     |> Tensor.tanh
@@ -42,24 +47,28 @@ let create_discriminator vs =
   let conv2d ~stride ~padding ~input_dim n =
     Layer.conv2d_ vs ~ksize:4 ~stride ~padding ~use_bias:false ~input_dim n
   in
+  let batch_norm2d dim = Layer.batch_norm2d vs dim ~w_init:Ones in
   let leaky_relu xs = Tensor.(max xs (xs * f 0.2)) in
   let conv1 = conv2d ~stride:2 ~padding:1 ~input_dim:3 32 in
   let conv2 = conv2d ~stride:2 ~padding:1 ~input_dim:32 64 in
+  let bn2 = batch_norm2d 64 in
   let conv3 = conv2d ~stride:2 ~padding:1 ~input_dim:64 128 in
+  let bn3 = batch_norm2d 128 in
   let conv4 = conv2d ~stride:2 ~padding:1 ~input_dim:128 256 in
+  let bn4 = batch_norm2d 256 in
   let conv5 = conv2d ~stride:1 ~padding:0 ~input_dim:256 1 in
   fun xs ->
     Tensor.to_device xs ~device:(Var_store.device vs)
     |> Layer.apply conv1
     |> leaky_relu
     |> Layer.apply conv2
-    |> Tensor.const_batch_norm
+    |> Layer.apply_ bn2 ~is_training:true
     |> leaky_relu
     |> Layer.apply conv3
-    |> Tensor.const_batch_norm
+    |> Layer.apply_ bn3 ~is_training:true
     |> leaky_relu
     |> Layer.apply conv4
-    |> Tensor.const_batch_norm
+    |> Layer.apply_ bn4 ~is_training:true
     |> leaky_relu
     |> Layer.apply conv5
     |> Tensor.view ~size:[ batch_size ]
@@ -124,6 +133,7 @@ let () =
            Tensor.(mse_loss y_pred (mean y_pred_fake + f 1.))
            Tensor.(mse_loss y_pred_fake (mean y_pred - f 1.))
        in
+       let discriminator_loss = Tensor.(discriminator_loss / f 2.) in
        Optimizer.backward_step ~loss:discriminator_loss opt_d;
        Var_store.freeze discriminator_vs;
        Var_store.unfreeze generator_vs;
@@ -135,6 +145,7 @@ let () =
            Tensor.(mse_loss y_pred (mean y_pred_fake - f 1.))
            Tensor.(mse_loss y_pred_fake (mean y_pred + f 1.))
        in
+       let generator_loss = Tensor.(generator_loss / f 2.) in
        Optimizer.backward_step ~loss:generator_loss opt_g;
        if index % 100 = 0
        then
