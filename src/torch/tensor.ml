@@ -334,3 +334,6 @@ let of_int3 f =
   Bigarray.Array3.of_array Int C_layout f
   |> Bigarray.genarray_of_array3
   |> of_bigarray
+
+let minimum t = view t ~size:[ -1 ] |> min_values ~dim:0 ~keepdim:false
+let maximum t = view t ~size:[ -1 ] |> max_values ~dim:0 ~keepdim:false

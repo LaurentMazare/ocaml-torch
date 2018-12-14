@@ -175,3 +175,6 @@ val pp : Format.formatter -> t -> unit
 val copy : t -> t
 val shape_str : t -> string
 val print_shape : ?name:string -> t -> unit
+
+val minimum : t -> t
+val maximum : t -> t
