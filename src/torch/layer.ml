@@ -46,11 +46,14 @@ let apply ?activation ys =
   | Some Leaky_relu -> Tensor.leaky_relu ys
   | None -> ys
 
-let linear ?n vs ?activation ?(use_bias=true) ~input_dim output_dim =
+let linear ?n vs ?activation ?(use_bias=true) ?w_init ~input_dim output_dim =
   let name = Var_store.default_name vs n "linear" in
   let w =
-    kaiming_uniform vs ~shape:[ output_dim; input_dim ] ~a:(Float.sqrt 5.)
-      ~name:N.(name / "weight")
+    let shape = [ output_dim; input_dim ] in
+    let name = N.(name / "weight") in
+    match w_init with
+    | None -> kaiming_uniform vs ~shape ~a:(Float.sqrt 5.) ~name
+    | Some init -> Var_store.new_var vs ~shape ~init ~name
   in
   let apply =
     if use_bias
@@ -72,15 +75,18 @@ let conv2d
     ~stride
     ?activation
     ?(use_bias=true)
+    ?w_init
     ?(padding=0, 0)
     ~input_dim
     output_dim
   =
   let name = Var_store.default_name vs n "conv2d" in
   let w =
-    kaiming_uniform vs
-      ~shape:[ output_dim; input_dim; k1; k2 ] ~a:(Float.sqrt 5.)
-      ~name:N.(name / "weight")
+    let shape = [ output_dim; input_dim; k1; k2 ] in
+    let name = N.(name / "weight") in
+    match w_init with
+    | None -> kaiming_uniform vs ~shape ~a:(Float.sqrt 5.) ~name
+    | Some init -> Var_store.new_var vs ~shape ~init ~name
   in
   let apply =
     if use_bias
@@ -96,13 +102,14 @@ let conv2d
   in
   { apply }
 
-let conv2d_ ?n vs ~ksize ~stride ?activation ?use_bias ?(padding = 0) ~input_dim output_dim =
+let conv2d_ ?n vs ~ksize ~stride ?activation ?use_bias ?w_init ?(padding = 0) ~input_dim output_dim =
   conv2d vs
     ?n
     ~ksize:(ksize, ksize)
     ~stride:(stride, stride)
     ?use_bias
     ?activation
+    ?w_init
     ~padding:(padding, padding)
     ~input_dim
     output_dim

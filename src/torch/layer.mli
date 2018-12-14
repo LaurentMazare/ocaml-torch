@@ -18,6 +18,7 @@ val linear
   -> Var_store.t
   -> ?activation:activation (* default: no activation *)
   -> ?use_bias:bool (* default: true *)
+  -> ?w_init:Var_store.Init.t
   -> input_dim:int
   -> int
   -> t
@@ -29,6 +30,7 @@ val conv2d
   -> stride:int * int
   -> ?activation:activation (* default: no activation *)
   -> ?use_bias:bool (* default: true *)
+  -> ?w_init:Var_store.Init.t
   -> ?padding:int * int
   -> input_dim:int
   -> int
@@ -41,6 +43,7 @@ val conv2d_
   -> stride:int
   -> ?activation:activation (* default: no activation *)
   -> ?use_bias:bool (* default: true *)
+  -> ?w_init:Var_store.Init.t
   -> ?padding:int
   -> input_dim:int
   -> int

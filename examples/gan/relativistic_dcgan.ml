@@ -15,7 +15,7 @@ let batches = 10**8
 let create_generator vs =
   let tr2d ~stride ~padding ~input_dim n =
     Layer.conv_transpose2d_ vs ~ksize:4 ~stride ~padding ~use_bias:false ~input_dim n
-      ~w_init:(Normal_with_stdev 0.01)
+      ~w_init:(Normal_with_stdev 0.02)
   in
   let batch_norm2d dim = Layer.batch_norm2d vs dim ~w_init:Ones in
   let convt1 = tr2d ~stride:1 ~padding:0 ~input_dim:latent_dim 1024 in
@@ -47,6 +47,7 @@ let create_generator vs =
 let create_discriminator vs =
   let conv2d ~stride ~padding ~input_dim n =
     Layer.conv2d_ vs ~ksize:4 ~stride ~padding ~use_bias:false ~input_dim n
+      ~w_init:(Normal_with_stdev 0.02)
   in
   let batch_norm2d dim = Layer.batch_norm2d vs dim ~w_init:Ones in
   let leaky_relu xs = Tensor.(max xs (xs * f 0.2)) in
