@@ -212,8 +212,8 @@ end
 module Optimizer = struct
   include Wrapper_generated.C.Optimizer
 
-  let adam ~learning_rate =
-    let t = adam learning_rate in
+  let adam ~learning_rate ~beta1 ~beta2 ~weight_decay =
+    let t = adam learning_rate beta1 beta2 weight_decay in
     Gc.finalise free t;
     t
 

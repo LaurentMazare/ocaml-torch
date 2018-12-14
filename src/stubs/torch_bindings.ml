@@ -134,7 +134,7 @@ module C(F: Cstubs.FOREIGN) = struct
     let t : t typ = ptr void
 
     let adam =
-      foreign "ato_adam" (float @-> returning t)
+      foreign "ato_adam" (float @-> float @-> float @-> float @-> returning t)
     let sgd =
       foreign "ato_sgd"
         (   float (* learning rate *)
