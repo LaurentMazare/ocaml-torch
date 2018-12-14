@@ -15,17 +15,18 @@ let batches = 10**8
 let create_generator vs =
   let tr2d ~stride ~padding ~input_dim n =
     Layer.conv_transpose2d_ vs ~ksize:4 ~stride ~padding ~use_bias:false ~input_dim n
+      ~w_init:(Normal_with_stdev 0.01)
   in
   let batch_norm2d dim = Layer.batch_norm2d vs dim ~w_init:Ones in
-  let convt1 = tr2d ~stride:1 ~padding:0 ~input_dim:latent_dim 256 in
-  let bn1 = batch_norm2d 256 in
-  let convt2 = tr2d ~stride:2 ~padding:1 ~input_dim:256 128 in
-  let bn2 = batch_norm2d 128 in
-  let convt3 = tr2d ~stride:2 ~padding:1 ~input_dim:128 64 in
-  let bn3 = batch_norm2d 64 in
-  let convt4 = tr2d ~stride:2 ~padding:1 ~input_dim:64 32 in
-  let bn4 = batch_norm2d 32 in
-  let convt5 = tr2d ~stride:2 ~padding:1 ~input_dim:32 3 in
+  let convt1 = tr2d ~stride:1 ~padding:0 ~input_dim:latent_dim 1024 in
+  let bn1 = batch_norm2d 1024 in
+  let convt2 = tr2d ~stride:2 ~padding:1 ~input_dim:1024 512 in
+  let bn2 = batch_norm2d 512 in
+  let convt3 = tr2d ~stride:2 ~padding:1 ~input_dim:512 256 in
+  let bn3 = batch_norm2d 256 in
+  let convt4 = tr2d ~stride:2 ~padding:1 ~input_dim:256 128 in
+  let bn4 = batch_norm2d 128 in
+  let convt5 = tr2d ~stride:2 ~padding:1 ~input_dim:128 3 in
   fun rand_input ->
     Tensor.to_device rand_input ~device:(Var_store.device vs)
     |> Layer.apply convt1
@@ -49,14 +50,14 @@ let create_discriminator vs =
   in
   let batch_norm2d dim = Layer.batch_norm2d vs dim ~w_init:Ones in
   let leaky_relu xs = Tensor.(max xs (xs * f 0.2)) in
-  let conv1 = conv2d ~stride:2 ~padding:1 ~input_dim:3 32 in
-  let conv2 = conv2d ~stride:2 ~padding:1 ~input_dim:32 64 in
-  let bn2 = batch_norm2d 64 in
-  let conv3 = conv2d ~stride:2 ~padding:1 ~input_dim:64 128 in
-  let bn3 = batch_norm2d 128 in
-  let conv4 = conv2d ~stride:2 ~padding:1 ~input_dim:128 256 in
-  let bn4 = batch_norm2d 256 in
-  let conv5 = conv2d ~stride:1 ~padding:0 ~input_dim:256 1 in
+  let conv1 = conv2d ~stride:2 ~padding:1 ~input_dim:3 128 in
+  let conv2 = conv2d ~stride:2 ~padding:1 ~input_dim:128 256 in
+  let bn2 = batch_norm2d 256 in
+  let conv3 = conv2d ~stride:2 ~padding:1 ~input_dim:256 512 in
+  let bn3 = batch_norm2d 512 in
+  let conv4 = conv2d ~stride:2 ~padding:1 ~input_dim:512 1024 in
+  let bn4 = batch_norm2d 1024 in
+  let conv5 = conv2d ~stride:1 ~padding:0 ~input_dim:1024 1 in
   fun xs ->
     Tensor.to_device xs ~device:(Var_store.device vs)
     |> Layer.apply conv1
@@ -106,14 +107,11 @@ let () =
 
   let fixed_noise = rand () in
 
-  let next_batch_images =
-    let batch_idx = ref 0 in
-    fun () ->
-      let start = Int.(%) (batch_size * !batch_idx) (train_size - batch_size) in
-      batch_idx := Int.(%) (!batch_idx + 1) (train_size - batch_size);
-      Tensor.narrow images ~dim:0 ~start ~length:batch_size
-      |> Tensor.to_type ~type_:Float
-      |> fun xs -> Tensor.(xs / f 127.5 - f 1.)
+  let next_batch_images () =
+    let index = Tensor.randint1 ~high:train_size ~size:[ batch_size ] ~options:(Int64, Cpu) in
+    Tensor.index_select images ~dim:0 ~index
+    |> Tensor.to_type ~type_:Float
+    |> fun xs -> Tensor.(xs / f 127.5 - f 1.)
   in
 
   Checkpointing.loop ~start_index:1 ~end_index:batches

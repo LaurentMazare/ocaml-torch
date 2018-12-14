@@ -53,6 +53,7 @@ val conv_transpose2d
   -> stride:int * int
   -> ?activation:activation (* default: no activation *)
   -> ?use_bias:bool (* default: true *)
+  -> ?w_init:Var_store.Init.t
   -> ?padding:int * int
   -> ?output_padding:int * int
   -> input_dim:int
@@ -66,6 +67,7 @@ val conv_transpose2d_
   -> stride:int
   -> ?activation:activation (* default: no activation *)
   -> ?use_bias:bool (* default: true *)
+  -> ?w_init:Var_store.Init.t
   -> ?padding:int
   -> ?output_padding:int
   -> input_dim:int
