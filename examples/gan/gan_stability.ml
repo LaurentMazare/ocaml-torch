@@ -4,70 +4,124 @@
 open Base
 open Torch
 
-let image_w = 64
-let image_h = 64
-
+let img_size = 128
 let latent_dim = 128
-let batch_size = 32
+let batch_size = 16
 let learning_rate = 1e-4
 let reg_param = 10.
+let nf = 32
 
 let batches = 10**8
 
 let leaky_relu xs = Tensor.(max xs (xs * f 0.2))
+let conv2d = Layer.conv2d_ ~stride:1
+let upsample xs =
+  let _, _, x, y = Tensor.shape4_exn xs in
+  Tensor.upsample_nearest2d xs ~output_size:[ 2*x; 2*y ]
+let avg_pool2d =
+  Tensor.avg_pool2d ~ksize:(3, 3) ~stride:(2, 2) ~padding:(1, 1)
+
+(* Use the resnet2 model similar to:
+   https://github.com/LMescheder/GAN_stability/blob/master/gan_training/models/resnet2.py
+*)
+let resnet_block vs ~input_dim output_dim =
+  let hidden_dim = Int.min input_dim output_dim in
+  let c0 = conv2d vs ~ksize:3 ~padding:1 ~input_dim hidden_dim in
+  let c1 = conv2d vs ~ksize:3 ~padding:1 ~input_dim:hidden_dim output_dim in
+  let shortcut =
+    if input_dim = output_dim
+    then Layer.id
+    else conv2d vs ~ksize:1 ~padding:0 ~use_bias:false ~input_dim output_dim
+  in
+  Layer.of_fn (fun xs ->
+      leaky_relu xs
+      |> Layer.apply c0
+      |> leaky_relu
+      |> Layer.apply c1
+      |> fun ys -> Tensor.(Layer.apply shortcut xs + ys * f 0.1))
 
 let create_generator vs =
-  let tr2d ~stride ~padding ~input_dim n =
-    Layer.conv_transpose2d_ vs ~ksize:4 ~stride ~padding ~use_bias:false ~input_dim n
-  in
-  let convt1 = tr2d ~stride:1 ~padding:0 ~input_dim:latent_dim 256 in
-  let convt2 = tr2d ~stride:2 ~padding:1 ~input_dim:256 128 in
-  let convt3 = tr2d ~stride:2 ~padding:1 ~input_dim:128 64 in
-  let convt4 = tr2d ~stride:2 ~padding:1 ~input_dim:64 32 in
-  let convt5 = tr2d ~stride:2 ~padding:1 ~input_dim:32 3 in
+  let s0 = img_size / 32 in
+  let fc = Layer.linear vs ~input_dim:latent_dim (16 * nf * s0 * s0) in
+  let rn00 = resnet_block vs ~input_dim:(16*nf) (16*nf) in
+  let rn01 = resnet_block vs ~input_dim:(16*nf) (16*nf) in
+  let rn10 = resnet_block vs ~input_dim:(16*nf) (16*nf) in
+  let rn11 = resnet_block vs ~input_dim:(16*nf) (16*nf) in
+  let rn20 = resnet_block vs ~input_dim:(16*nf) ( 8*nf) in
+  let rn21 = resnet_block vs ~input_dim:( 8*nf) ( 8*nf) in
+  let rn30 = resnet_block vs ~input_dim:( 8*nf) ( 4*nf) in
+  let rn31 = resnet_block vs ~input_dim:( 4*nf) ( 4*nf) in
+  let rn40 = resnet_block vs ~input_dim:( 4*nf) ( 2*nf) in
+  let rn41 = resnet_block vs ~input_dim:( 2*nf) ( 2*nf) in
+  let rn50 = resnet_block vs ~input_dim:( 2*nf) ( 1*nf) in
+  let rn51 = resnet_block vs ~input_dim:( 1*nf) ( 1*nf) in
+  let conv = conv2d vs ~ksize:3 ~padding:1 ~input_dim:nf 3 in
   fun rand_input ->
     Tensor.to_device rand_input ~device:(Var_store.device vs)
-    |> Layer.apply convt1
-    |> Tensor.const_batch_norm
-    |> Tensor.relu
-    |> Layer.apply convt2
-    |> Tensor.const_batch_norm
-    |> Tensor.relu
-    |> Layer.apply convt3
-    |> Tensor.const_batch_norm
-    |> Tensor.relu
-    |> Layer.apply convt4
-    |> Tensor.const_batch_norm
-    |> Tensor.relu
-    |> Layer.apply convt5
+    |> Layer.apply fc
+    |> Tensor.view ~size:[ batch_size; 16*nf; s0; s0 ]
+    |> Layer.apply rn00
+    |> Layer.apply rn01
+    |> upsample
+    |> Layer.apply rn10
+    |> Layer.apply rn11
+    |> upsample
+    |> Layer.apply rn20
+    |> Layer.apply rn21
+    |> upsample
+    |> Layer.apply rn30
+    |> Layer.apply rn31
+    |> upsample
+    |> Layer.apply rn40
+    |> Layer.apply rn41
+    |> upsample
+    |> Layer.apply rn50
+    |> Layer.apply rn51
+    |> leaky_relu
+    |> Layer.apply conv
     |> Tensor.tanh
 
 let create_discriminator vs =
-  let conv2d ~stride ~padding ~input_dim n =
-    Layer.conv2d_ vs ~ksize:4 ~stride ~padding ~use_bias:false ~input_dim n
-  in
-  let conv1 = conv2d ~stride:2 ~padding:1 ~input_dim:3 32 in
-  let conv2 = conv2d ~stride:2 ~padding:1 ~input_dim:32 64 in
-  let conv3 = conv2d ~stride:2 ~padding:1 ~input_dim:64 128 in
-  let conv4 = conv2d ~stride:2 ~padding:1 ~input_dim:128 256 in
-  let conv5 = conv2d ~stride:1 ~padding:0 ~input_dim:256 1 in
+  let s0 = img_size / 32 in
+  let conv = conv2d vs ~ksize:3 ~padding:1 ~input_dim:3 nf in
+  let rn00 = resnet_block vs ~input_dim:( 1*nf) ( 1*nf) in
+  let rn01 = resnet_block vs ~input_dim:( 1*nf) ( 2*nf) in
+  let rn10 = resnet_block vs ~input_dim:( 2*nf) ( 2*nf) in
+  let rn11 = resnet_block vs ~input_dim:( 2*nf) ( 4*nf) in
+  let rn20 = resnet_block vs ~input_dim:( 4*nf) ( 4*nf) in
+  let rn21 = resnet_block vs ~input_dim:( 4*nf) ( 8*nf) in
+  let rn30 = resnet_block vs ~input_dim:( 8*nf) ( 8*nf) in
+  let rn31 = resnet_block vs ~input_dim:( 8*nf) (16*nf) in
+  let rn40 = resnet_block vs ~input_dim:(16*nf) (16*nf) in
+  let rn41 = resnet_block vs ~input_dim:(16*nf) (16*nf) in
+  let rn50 = resnet_block vs ~input_dim:(16*nf) (16*nf) in
+  let rn51 = resnet_block vs ~input_dim:(16*nf) (16*nf) in
+  let fc = Layer.linear vs ~input_dim:(16 * nf * s0 * s0) 1 in
   fun xs ->
     Tensor.to_device xs ~device:(Var_store.device vs)
-    |> Layer.apply conv1
+    |> Layer.apply conv
+    |> Layer.apply rn00
+    |> Layer.apply rn01
+    |> avg_pool2d
+    |> Layer.apply rn10
+    |> Layer.apply rn11
+    |> avg_pool2d
+    |> Layer.apply rn20
+    |> Layer.apply rn21
+    |> avg_pool2d
+    |> Layer.apply rn30
+    |> Layer.apply rn31
+    |> avg_pool2d
+    |> Layer.apply rn40
+    |> Layer.apply rn41
+    |> avg_pool2d
+    |> Layer.apply rn50
+    |> Layer.apply rn51
+    |> Tensor.view ~size:[ batch_size; 16*nf*s0*s0 ]
     |> leaky_relu
-    |> Layer.apply conv2
-    |> Tensor.const_batch_norm
-    |> leaky_relu
-    |> Layer.apply conv3
-    |> Tensor.const_batch_norm
-    |> leaky_relu
-    |> Layer.apply conv4
-    |> Tensor.const_batch_norm
-    |> leaky_relu
-    |> Layer.apply conv5
-    |> Tensor.view ~size:[batch_size; 1]
+    |> Layer.apply fc
 
-let z_dist () = Tensor.randn [ batch_size; latent_dim; 1; 1 ]
+let z_dist () = Tensor.randn [ batch_size; latent_dim ]
 
 let write_samples samples ~filename =
   List.init 4 ~f:(fun i ->
@@ -116,15 +170,14 @@ let () =
   let opt_d = Optimizer.adam discriminator_vs ~learning_rate in
 
   let z_test = z_dist () in
-
   Checkpointing.loop ~start_index:1 ~end_index:batches
     ~var_stores:[ generator_vs; discriminator_vs ]
     ~checkpoint_base:"gan-stability.ot"
     ~checkpoint_every:(`seconds 600.)
     (fun ~index:batch_idx ->
        let x_real =
-         let start = Int.(%) (batch_size * batch_idx) (train_size - batch_size) in
-         Tensor.narrow images ~dim:0 ~start ~length:batch_size
+         let index = Tensor.randint1 ~high:train_size ~size:[ batch_size ] ~options:(Int64, Cpu) in
+         Tensor.index_select images ~dim:0 ~index
          |> Tensor.to_type ~type_:Float
          |> fun xs -> Tensor.(xs / f 127.5 - f 1.)
        in
@@ -168,7 +221,7 @@ let () =
        if batch_idx % 25000 = 0 || (batch_idx < 100000 && batch_idx % 5000 = 0)
        then
          Tensor.no_grad (fun () -> generator z_test)
-         |> Tensor.view ~size:[ -1; 3; image_h; image_w ]
+         |> Tensor.view ~size:[ batch_size; 3; img_size; img_size ]
          |> Tensor.transpose ~dim0:2 ~dim1:3
          |> Tensor.to_device ~device:Cpu
          |> fun xs -> Tensor.((xs + f 1.) * f 127.5)
