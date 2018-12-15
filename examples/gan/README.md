@@ -160,18 +160,30 @@ a given class.
 
 ![cGAN samples](output_mnist_cgan.gif)
 
+# Relativistic GANs
+Relativistic GANs provide some variations of the GAN loss function<sup>[4](#bib4)</sup>. 
+Here are some samples in 64x64 and 128x128 on the anime faces dataset.
+![ralsgan64](samples/ralsgan-anime-64.png)
+
+![ralsgan128](samples/ralsgan-anime-128.png)
+
 # Bibliography
 <a name="bib1">1</a>: 
 Generative Adversarial Networks.
 Ian J. Goodfellow, Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley, Sherjil Ozair, Aaron Courville, Yoshua Bengio.
 [arXiv:1406.2661](https://arxiv.org/abs/1406.2661) 2014.
 
-<a name="bib2">1</a>: 
+<a name="bib2">2</a>: 
 Conditional Generative Adversarial Nets.
 Mehdi Mirza, Simon Osindero.
 [arXiv:1411.1784](https://arxiv.org/abs/1411.1784) 2014.
 
-<a name="bib3">1</a>: 
+<a name="bib3">3</a>: 
 Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks.
 Alec Radford, Luke Metz, Soumith Chintala.
-[arXv:1511.06434](https://arxiv.org/abs/1511.06434) 2015
+[arXiv:1511.06434](https://arxiv.org/abs/1511.06434) 2015.
+
+<a name="bib4">4</a>: 
+The relativistic discriminator: a key element missing from standard GAN.
+Alexia Jolicoeur-Martineau.
+[arXiv:1087.00734](https://arxiv.org/abs/1807.00734) 2018.
