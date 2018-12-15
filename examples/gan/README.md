@@ -163,6 +163,7 @@ a given class.
 # Relativistic GANs
 Relativistic GANs provide some variations of the GAN loss function<sup>[4](#bib4)</sup>. 
 Here are some samples in 64x64 and 128x128 on the anime faces dataset.
+
 ![ralsgan64](samples/ralsgan-anime-64.png)
 
 ![ralsgan128](samples/ralsgan-anime-128.png)
