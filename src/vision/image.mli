@@ -1,11 +1,13 @@
+open Base
 open Torch
 
 val load_image
   :  ?resize:(int * int)
   -> string
-  -> Tensor.t
+  -> Tensor.t Or_error.t
 
 val load_images : ?resize:(int * int) -> string -> Tensor.t
+
 val load_dataset
   :  dir:string
   -> classes:string list

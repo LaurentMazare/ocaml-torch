@@ -11,33 +11,23 @@ let resize_and_crop image_file ~f ~width ~height =
     ]
   in
   let command = Printf.sprintf "convert %s" (String.concat args ~sep:" ") in
-  begin
-    match Unix.system command with
-    | WEXITED 0 -> ()
-    | WEXITED i ->
-      Printf.failwithf "%s returns a non-zero exit code %d" command i ()
-    | WSIGNALED i -> Printf.failwithf "%s killed by signal %d" command i ()
-    | WSTOPPED i -> Printf.failwithf "%s stopped %d" command i ()
-  end;
-  Exn.protect
-    ~f:(fun () -> f tmp_file)
-    ~finally:(fun () -> Unix.unlink tmp_file)
+  match Unix.system command with
+  | WEXITED 0 ->
+    Exn.protect
+      ~f:(fun () -> f tmp_file)
+      ~finally:(fun () -> Unix.unlink tmp_file)
+  | WEXITED i -> Or_error.errorf "%s returns a non-zero exit code %d" command i
+  | WSIGNALED i -> Or_error.errorf "%s killed by signal %d" command i
+  | WSTOPPED i -> Or_error.errorf "%s stopped %d" command i
 
 let load_image_no_resize_and_crop image_file =
-  let image = ImageLib.openfile image_file in
-  Stdio.printf "%s: %dx%d (%d)\n%!" image_file image.width image.height image.max_val;
-  match image.pixels with
-  | RGB (Pix8 red, Pix8 green, Pix8 blue) ->
-    let convert pixels =
-      Bigarray.genarray_of_array2 pixels
-      |> Tensor.of_bigarray
-    in
-    let image =
-      Tensor.stack [ convert red; convert green; convert blue ] ~dim:0
-      |> Tensor.transpose ~dim0:1 ~dim1:2
-    in
-    Tensor.view image ~size:(1 :: Tensor.shape image)
-  | _ -> failwith "unexpected pixmaps"
+  Stb_image.load ~channels:3 image_file
+  |> Result.map ~f:(fun (image : _ Stb_image.t) ->
+    Stdio.printf "%s: %dx%d\n%!" image_file image.width image.height;
+    Tensor.of_bigarray (Bigarray.genarray_of_array1 image.data)
+    |> Tensor.view ~size:[ image.height; image.width; image.channels ]
+    |> Tensor.permute ~dims:[ 2; 0; 1 ])
+  |> Result.map_error ~f:(fun (`Msg msg) -> Error.of_string msg)
 
 let load_image ?resize image_file =
   match resize with
@@ -50,14 +40,15 @@ let image_suffixes = [ ".jpg"; ".png" ]
 let load_images ?resize dir =
   if not (Caml.Sys.is_directory dir)
   then Printf.failwithf "not a directory %s" dir ();
-  Caml.Sys.readdir dir
-  |> Array.to_list
-  |> List.filter_map ~f:(fun filename ->
+  let files = Caml.Sys.readdir dir |> Array.to_list in
+  Stdio.printf "%d files found in %s\n%!" (List.length files) dir;
+  List.filter_map files ~f:(fun filename ->
     if List.exists image_suffixes ~f:(fun suffix -> String.is_suffix filename ~suffix)
     then begin
       Stdio.printf "<%s>\n%!" filename;
-      try Some (load_image (Caml.Filename.concat dir filename) ?resize)
-      with _ -> None
+      match load_image (Caml.Filename.concat dir filename) ?resize with
+      | Ok image -> Some image
+      | Error msg -> Stdio.printf "%s\n%!" (Error.to_string_hum msg); None
     end else None)
   |> Tensor.cat ~dim:0
 
@@ -89,23 +80,13 @@ let load_dataset ~dir ~classes ~with_cache ~resize =
 let write_image tensor ~filename =
   let tensor, height, width =
     match Tensor.shape tensor with
-    | [ 1; a; b; c ] -> Tensor.reshape tensor ~shape:[ a; b; c ], b, c
-    | [ _; b; c ] -> tensor, b, c
+    | [ 1; 3; b; c ] -> Tensor.reshape tensor ~shape:[ 3; b; c ], b, c
+    | [ 3; b; c ] -> tensor, b, c
     | shape ->
       Printf.failwithf "unexpected shape %s"
         (List.map shape ~f:Int.to_string |> String.concat ~sep:", ") ()
   in
-  let bigarray =
-    Tensor.transpose tensor ~dim0:1 ~dim1:2
-    |> Tensor.to_bigarray ~kind:Int8_unsigned
-    |> Bigarray.array3_of_genarray
-  in
-  let red = Bigarray.Array3.slice_left_2 bigarray 0 in
-  let green = Bigarray.Array3.slice_left_2 bigarray 1 in
-  let blue = Bigarray.Array3.slice_left_2 bigarray 2 in
-  ImageLib.writefile filename
-    { width
-    ; height
-    ; max_val = 255
-    ; pixels = RGB (Pix8 red, Pix8 green, Pix8 blue)
-    }
+  Tensor.permute tensor ~dims:[ 1; 2; 0 ]
+  |> Tensor.to_bigarray ~kind:Int8_unsigned
+  |> Bigarray.array1_of_genarray
+  |> Stb_image_write.png filename ~w:width ~h:height ~c:3

@@ -45,10 +45,12 @@ let unnormalize tensor =
 
 let load_image filename =
   Image.load_image filename ~resize:(224, 224)
+  |> Or_error.ok_exn
   |> normalize
 
 let load_image_no_resize_and_crop filename =
   Image.load_image filename
+  |> Or_error.ok_exn
   |> normalize
 
 let load_images ~dir =

@@ -52,7 +52,7 @@ let image_to_tensor image_src pytorch_dst resize =
   let tensor =
     if Caml.Sys.is_directory image_src
     then Torch_vision.Image.load_images image_src ?resize
-    else Torch_vision.Image.load_image image_src ?resize
+    else Torch_vision.Image.load_image image_src ?resize |> Or_error.ok_exn
   in
   Stdio.printf "Writing tensor with shape [%s].\n%!" (Tensor.shape_str tensor);
   Serialize.save tensor ~filename:pytorch_dst
