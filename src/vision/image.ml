@@ -86,8 +86,15 @@ let write_image tensor ~filename =
       Printf.failwithf "unexpected shape %s"
         (List.map shape ~f:Int.to_string |> String.concat ~sep:", ") ()
   in
-  Tensor.permute tensor ~dims:[ 1; 2; 0 ]
-  |> Tensor.view ~size:[ 3 * height * width ]
-  |> Tensor.to_bigarray ~kind:Int8_unsigned
-  |> Bigarray.array1_of_genarray
-  |> Stb_image_write.png filename ~w:width ~h:height ~c:3
+  let bigarray =
+    Tensor.permute tensor ~dims:[ 1; 2; 0 ]
+    |> Tensor.view ~size:[ 3 * height * width ]
+    |> Tensor.to_bigarray ~kind:Int8_unsigned
+    |> Bigarray.array1_of_genarray
+  in
+  match String.rsplit2 filename ~on:'.' with
+  | Some (_, "jpg") -> failwith "writing jpg images is not supported"
+  | Some (_, "tga") -> Stb_image_write.tga filename bigarray ~w:width ~h:height ~c:3
+  | Some (_, "bmp") -> Stb_image_write.bmp filename bigarray ~w:width ~h:height ~c:3
+  | Some (_, "png") -> Stb_image_write.png filename bigarray ~w:width ~h:height ~c:3
+  | Some _ | None -> Stb_image_write.png (filename ^ ".png") bigarray ~w:width ~h:height ~c:3
