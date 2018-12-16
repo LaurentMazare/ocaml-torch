@@ -25,8 +25,8 @@ let load_image_no_resize_and_crop image_file =
   |> Result.map ~f:(fun (image : _ Stb_image.t) ->
     Stdio.printf "%s: %dx%d\n%!" image_file image.width image.height;
     Tensor.of_bigarray (Bigarray.genarray_of_array1 image.data)
-    |> Tensor.view ~size:[ image.height; image.width; image.channels ]
-    |> Tensor.permute ~dims:[ 2; 0; 1 ])
+    |> Tensor.view ~size:[ 1; image.height; image.width; image.channels ]
+    |> Tensor.permute ~dims:[ 0; 3; 1; 2 ])
   |> Result.map_error ~f:(fun (`Msg msg) -> Error.of_string msg)
 
 let load_image ?resize image_file =
@@ -87,6 +87,7 @@ let write_image tensor ~filename =
         (List.map shape ~f:Int.to_string |> String.concat ~sep:", ") ()
   in
   Tensor.permute tensor ~dims:[ 1; 2; 0 ]
+  |> Tensor.view ~size:[ 3 * height * width ]
   |> Tensor.to_bigarray ~kind:Int8_unsigned
   |> Bigarray.array1_of_genarray
   |> Stb_image_write.png filename ~w:width ~h:height ~c:3
