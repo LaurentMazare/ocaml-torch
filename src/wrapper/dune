@@ -3,7 +3,7 @@
   (public_name torch.core)
   (c_names torch_stubs)
   (cxx_names torch_api)
-  (cxx_flags -std=c++11 (:include cxx_flags.sexp) -D_GLIBCXX_USE_CXX11_ABI=1)
+  (cxx_flags -std=c++11 (:include cxx_flags.sexp) -D_GLIBCXX_USE_CXX11_ABI=0)
   (c_library_flags :standard -lstdc++ (:include c_library_flags.sexp))
   (libraries bigarray ctypes.foreign ctypes.stubs ctypes))
 
