@@ -1079,9 +1079,7 @@ module Classes = struct
       match Tensor.shape vs with
       | [ 1000 ] -> vs
       | [ 1; 1000 ] | [ 1; 1; 1000 ] -> Tensor.view vs ~size:[ 1000 ]
-      | shape ->
-        Printf.failwithf "unexpected shape %s"
-            (List.map shape ~f:Int.to_string |> String.concat ~sep:", ") ()
+      | _ -> Printf.failwithf "unexpected shape %s" (Tensor.shape_str vs) ()
     in
     let _, indexes = Tensor.topk vs ~k ~dim:0 ~largest:true ~sorted:true in
     List.init k ~f:(fun i ->

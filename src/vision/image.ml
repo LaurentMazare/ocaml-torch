@@ -21,9 +21,8 @@ let resize_and_crop image_file ~f ~width ~height =
   | WSTOPPED i -> Or_error.errorf "%s stopped %d" command i
 
 let load_image_no_resize_and_crop image_file =
-  Stb_image.load ~channels:3 image_file
+  Stb_image.load image_file
   |> Result.map ~f:(fun (image : _ Stb_image.t) ->
-    Stdio.printf "%s: %dx%d\n%!" image_file image.width image.height;
     Tensor.of_bigarray (Bigarray.genarray_of_array1 image.data)
     |> Tensor.view ~size:[ 1; image.height; image.width; image.channels ]
     |> Tensor.permute ~dims:[ 0; 3; 1; 2 ])
@@ -78,23 +77,25 @@ let load_dataset ~dir ~classes ~with_cache ~resize =
   | Some cache_file -> Dataset_helper.read_with_cache ~cache_file ~read
 
 let write_image tensor ~filename =
-  let tensor, height, width =
+  let tensor, height, width, channels =
     match Tensor.shape tensor with
-    | [ 1; 3; b; c ] -> Tensor.reshape tensor ~shape:[ 3; b; c ], b, c
-    | [ 3; b; c ] -> tensor, b, c
-    | shape ->
-      Printf.failwithf "unexpected shape %s"
-        (List.map shape ~f:Int.to_string |> String.concat ~sep:", ") ()
+    | [ 1; channels; b; c ] when channels = 1 || channels = 3 ->
+        Tensor.reshape tensor ~shape:[ channels; b; c ], b, c, channels
+    | [ channels; b; c ] when channels = 1 || channels = 3 -> tensor, b, c, channels
+    | _ -> Printf.failwithf "unexpected shape %s" (Tensor.shape_str tensor) ()
   in
   let bigarray =
     Tensor.permute tensor ~dims:[ 1; 2; 0 ]
-    |> Tensor.view ~size:[ 3 * height * width ]
+    |> Tensor.contiguous
+    |> Tensor.view ~size:[ channels * height * width ]
+    |> Tensor.to_type ~type_:Uint8
     |> Tensor.to_bigarray ~kind:Int8_unsigned
     |> Bigarray.array1_of_genarray
   in
   match String.rsplit2 filename ~on:'.' with
   | Some (_, "jpg") -> failwith "writing jpg images is not supported"
-  | Some (_, "tga") -> Stb_image_write.tga filename bigarray ~w:width ~h:height ~c:3
-  | Some (_, "bmp") -> Stb_image_write.bmp filename bigarray ~w:width ~h:height ~c:3
-  | Some (_, "png") -> Stb_image_write.png filename bigarray ~w:width ~h:height ~c:3
-  | Some _ | None -> Stb_image_write.png (filename ^ ".png") bigarray ~w:width ~h:height ~c:3
+  | Some (_, "tga") -> Stb_image_write.tga filename bigarray ~w:width ~h:height ~c:channels
+  | Some (_, "bmp") -> Stb_image_write.bmp filename bigarray ~w:width ~h:height ~c:channels
+  | Some (_, "png") -> Stb_image_write.png filename bigarray ~w:width ~h:height ~c:channels
+  | Some _
+  | None -> Stb_image_write.png (filename ^ ".png") bigarray ~w:width ~h:height ~c:channels
