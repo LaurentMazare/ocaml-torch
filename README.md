@@ -49,7 +49,12 @@ Then create a `dune` file with the following content:
 Run `dune build example.exe` to compile the program and
 `_build/default/example.exe` to run it!
 
-## Examples and Tutorials
+## Tutorials
+
+* [MNIST tutorial](https://github.com/LaurentMazare/ocaml-torch/tree/master/examples/mnist).
+* [Finetuning a ResNet-18 model](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/pretrained/).
+
+## Examples
 
 Below is an example of a linear model trained on the MNIST dataset ([full
 code](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/mnist/linear.ml)).
@@ -83,7 +88,6 @@ code](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/mnist/li
 
 ```
 
-* A more detailed [MNIST tutorial](https://github.com/LaurentMazare/ocaml-torch/tree/master/examples/mnist).
 * Some [ResNet examples on CIFAR-10](https://github.com/LaurentMazare/ocaml-torch/tree/master/examples/cifar).
 * A simplified version of
   [char-rnn](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/char_rnn)
@@ -91,7 +95,6 @@ code](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/mnist/li
 * [Generative Adverserial Networks](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/gan).
 * [Neural Style Transfer](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/neural_transfer)
   applies the style of an image to the content of another image. This uses some deep Convolutional Neural Network.
-* [Finetuning a ResNet-18 model](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/pretrained/).
 
 ## Models and Weights
 
