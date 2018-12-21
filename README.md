@@ -91,7 +91,7 @@ code](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/mnist/li
 * [Generative Adverserial Networks](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/gan).
 * [Neural Style Transfer](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/neural_transfer)
   applies the style of an image to the content of another image. This uses some deep Convolutional Neural Network.
-* [Finetuning a ResNet-18 model](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/pretrained/finetuning.ml).
+* [Finetuning a ResNet-18 model](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/pretrained/).
 
 ## Models and Weights
 

@@ -3,22 +3,24 @@
 This tutorial follows the lines of the
 [PyTorch Transfer Learning Tutorial](https://github.com/LaurentMazare/ocaml-torch.git).
 
-We will use transfer learning to leverage pretrained ResNet model on a small dataset.
-This dataset is made of 224x224 images of ants and bees, there are roughly 240 training
-images and 150 validation images hence training even the simplest convolutional neural
-network on such a small dataset would be very difficult.
+We will use transfer learning to leverage a pretrained ResNet model on a small dataset.
+This dataset is made of images of ants and bees that we want to classify,
+there are roughly 240 training images and 150 validation images each of them of size
+224x224. The dataset is so small that training even the simplest convolutional neural
+network on it would be very difficult.
 
-Instead the original tutorial proposes two alternatives to train a classifier in this setting.
+Instead the original tutorial proposes two alternatives to train the classifier.
 
 - *Finetuning the pretrained model.* We start from a ResNet-18 model pretrained on imagenet
 1000 categories, replace the last layer by a binary classifier and train the resulting model
 as usual.
 - *Using a pretrained model as feature extractor.* The pretrained model weights are frozen and
-we run this model and store the outputs of the last layer before the final classifiers.
+we run this model and store the outputs of the last layer before the final classifier.
 We then train a binary classifier on the resulting features.
 
-We will focus on the second alternative but first we need to get the code building and running
-and we also have to download the dataset and pretrained weights.
+We will focus on the second alternative but first we need to get the code
+building and running and we also have to download the dataset and pretrained
+weights.
 
 ## Installation Instructions
 Run the following commands to download the latest ocaml-torch version
@@ -97,28 +99,51 @@ This snippet performs the following steps:
 Now that we have precomputed the output of the ResNet model on our training and
 testing images we will train a linear binary classifier to recognize ants vs bees.
 
+We start by defining a model, for this we need a variable store to hold the
+trainable variables.
+
 ```ocaml
   let train_vs = Var_store.create ~name:"rn-vs" () in
   let fc1 = Layer.linear train_vs ~input_dim:512 (List.length classes) in
   let model xs = Layer.apply fc1 xs in
+```
 
+We will use stochastic gradient descent to minimize the cross-entropy loss
+on the classification task. To do this we create a `sgd` optimizer and then
+iterate on the training dataset. After each epoch the accuracy is computed
+on the testing set and printed.
+
+```ocaml
   let sgd = Optimizer.sgd train_vs ~learning_rate:0.001 ~momentum:0.9 in
   for epoch_idx = 1 to 20 do
-    let sum_loss = ref 0. in
     Dataset_helper.iter dataset ~batch_size ~f:(fun _ ~batch_images ~batch_labels ->
-      let predicted = model batch_images in
-      (* Compute the cross-entropy loss. *)
-      let loss = Tensor.cross_entropy_for_logits predicted ~targets:batch_labels in
-      sum_loss := !sum_loss +. Tensor.float_value loss;
-      Optimizer.backward_step sgd ~loss);
+      (* Perform a training step. *)
+    );
+    (* Compute and print the validation accuracy. *)
+  done
+```
 
-    (* Compute the validation error. *)
+On each training step the model output is computed through a forward pass. The
+cross-entropy loss is then evaluated on the resulting logits using the training labels.
+The backward pass then evaluates gradients for the trainable variables of our
+model and these variables are updated by the optimizer.
+```ocaml
+      (* Perform a training step. *)
+      let predicted = model batch_images in
+      let loss = Tensor.cross_entropy_for_logits predicted ~targets:batch_labels in
+      Optimizer.backward_step sgd ~loss);
+```
+
+After each epoch the accuracy is evaluated on the testing set and printed out.
+```ocaml
+    (* Compute and print the validation accuracy. *)
     let test_accuracy =
       Dataset_helper.batch_accuracy dataset `test ~batch_size ~predict:model
     in
-    Stdio.printf "%3d   train loss: %f   test accuracy: %.2f%%\n%!"
+    Stdio.printf "%3d   test accuracy: %.2f%%\n%!"
       epoch_idx
-      (!sum_loss /. Float.of_int (Dataset_helper.batches_per_epoch dataset ~batch_size))
       (100. *. test_accuracy);
-  done
 ```
+
+This should result in a `94%` accuracy on the testing set.
+The whole code for this example can be found in [finetune.ml](finetune.ml).
