@@ -10,10 +10,12 @@ At the end of each training epoch, some sample text is generated and stored in a
 Any text file can be used as an input, as long as it's large enough for training.
 A typical example would be the
 [tiny Shakespeare dataset](https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tinyshakespeare/input.txt).
+The training text file should be stored in `data/input.txt`.
 
-Compiling the example is done via the following command line:
+Compiling and running the example is done via the following command lines:
 ```bash
 dune build examples/char_rnn/char_rnn.exe
+dune exec examples/char_rnn/char_rnn.exe
 ```
 Here is an example of generated data when training on the Shakespeare dataset after a couple epochs. 
 ```
