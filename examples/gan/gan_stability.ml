@@ -222,7 +222,6 @@ let () =
        then
          Tensor.no_grad (fun () -> generator z_test)
          |> Tensor.view ~size:[ batch_size; 3; img_size; img_size ]
-         |> Tensor.transpose ~dim0:2 ~dim1:3
          |> Tensor.to_device ~device:Cpu
          |> fun xs -> Tensor.((xs + f 1.) * f 127.5)
          |> Tensor.clamp_ ~min:(Scalar.float 0.) ~max:(Scalar.float 255.)
