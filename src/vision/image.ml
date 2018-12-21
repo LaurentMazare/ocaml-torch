@@ -22,10 +22,14 @@ let resize_and_crop image_file ~f ~width ~height =
 
 let load_image_no_resize_and_crop image_file =
   Stb_image.load image_file
-  |> Result.map ~f:(fun (image : _ Stb_image.t) ->
-    Tensor.of_bigarray (Bigarray.genarray_of_array1 image.data)
-    |> Tensor.view ~size:[ 1; image.height; image.width; image.channels ]
-    |> Tensor.permute ~dims:[ 0; 3; 1; 2 ])
+  |> Result.bind ~f:(fun (image : _ Stb_image.t) ->
+    if image.channels = 3
+    then
+      Tensor.of_bigarray (Bigarray.genarray_of_array1 image.data)
+      |> Tensor.view ~size:[ 1; image.height; image.width; image.channels ]
+      |> Tensor.permute ~dims:[ 0; 3; 1; 2 ]
+      |> Result.return
+    else Error (`Msg (Printf.sprintf "%d channels <> 3" image.channels)))
   |> Result.map_error ~f:(fun (`Msg msg) -> Error.of_string msg)
 
 let load_image ?resize image_file =
@@ -44,10 +48,9 @@ let load_images ?resize dir =
   List.filter_map files ~f:(fun filename ->
     if List.exists image_suffixes ~f:(fun suffix -> String.is_suffix filename ~suffix)
     then begin
-      Stdio.printf "<%s>\n%!" filename;
       match load_image (Caml.Filename.concat dir filename) ?resize with
       | Ok image -> Some image
-      | Error msg -> Stdio.printf "%s\n%!" (Error.to_string_hum msg); None
+      | Error msg -> Stdio.printf "%s: %s\n%!" filename (Error.to_string_hum msg); None
     end else None)
   |> Tensor.cat ~dim:0
 

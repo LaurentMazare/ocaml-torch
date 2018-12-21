@@ -57,7 +57,7 @@ let load_images ~dir =
   Image.load_images dir ~resize:(224, 224)
   |> normalize
 
-let load_dataset ~dir ~classes ~with_cache =
+let load_dataset ~dir ~classes ?with_cache () =
   let dataset = Image.load_dataset ~dir ~classes ~with_cache ~resize:(224, 224) in
   { dataset with Dataset_helper.
     train_images = normalize dataset.train_images

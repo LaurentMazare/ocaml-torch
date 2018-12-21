@@ -7,7 +7,8 @@ val clamp_ : Tensor.t -> Tensor.t
 val load_dataset
   :  dir:string
   -> classes:string list
-  -> with_cache:string option
+  -> ?with_cache:string
+  -> unit
   -> Dataset_helper.t
 
 val write_image : Tensor.t -> filename:string -> unit

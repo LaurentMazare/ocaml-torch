@@ -18,13 +18,13 @@ let batch_size = 8
 
 let precompute_activations dataset ~model_path =
   (* Precompute the last layer of the pre-trained model on the whole dataset. *)
-  Stdio.printf "Precomputing activations, this can take a minute...\n%!";
   let dataset =
     let frozen_vs = Var_store.create ~frozen:true ~name:"rn" () in
     let pretrained_model = Resnet.resnet18 frozen_vs in
-    Stdio.printf "Loading weights from %s\n%!" model_path;
+    Stdio.printf "Loading weights from %s.\n%!" model_path;
     Serialize.load_multi_
       ~named_tensors:(Var_store.all_vars frozen_vs) ~filename:model_path;
+    Stdio.printf "Precomputing activations, this can take a minute...\n%!";
     Dataset_helper.map dataset ~batch_size:4 ~f:(fun _ ~batch_images ~batch_labels ->
       let activations = Layer.apply_ pretrained_model batch_images ~is_training:false in
       Tensor.copy activations, batch_labels)
@@ -35,10 +35,7 @@ let precompute_activations dataset ~model_path =
 let () =
   if Array.length Sys.argv <> 3
   then Printf.failwithf "usage: %s resnet18.ot dataset-path" Sys.argv.(0) ();
-  let dataset =
-    Imagenet.load_dataset ~dir:Sys.argv.(2) ~classes:[ "ants"; "bees" ]
-      ~with_cache:(Some (Caml.Filename.concat Sys.argv.(2) "cache.ot"))
-  in
+  let dataset = Imagenet.load_dataset ~dir:Sys.argv.(2) ~classes:[ "ants"; "bees" ] () in
   Dataset_helper.print_summary dataset;
   let dataset = precompute_activations dataset ~model_path:Sys.argv.(1) in
 
