@@ -216,6 +216,11 @@ module Optimizer = struct
     let t = adam learning_rate beta1 beta2 weight_decay in
     Gc.finalise free t;
     t
+  let rmsprop ~learning_rate ~alpha ~eps ~weight_decay ~momentum ~centered =
+    let centered = if centered then 1 else 0 in
+    let t = rmsprop learning_rate alpha eps weight_decay momentum centered in
+    Gc.finalise free t;
+    t
 
   let sgd ~learning_rate ~momentum ~dampening ~weight_decay ~nesterov =
     let t =

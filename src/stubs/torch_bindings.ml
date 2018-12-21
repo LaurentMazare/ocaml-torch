@@ -135,6 +135,16 @@ module C(F: Cstubs.FOREIGN) = struct
 
     let adam =
       foreign "ato_adam" (float @-> float @-> float @-> float @-> returning t)
+    let rmsprop =
+      foreign "ato_rmsprop"
+        (   float (* learning rate *)
+        @-> float (* alpha *)
+        @-> float (* eps *)
+        @-> float (* weight decay *)
+        @-> float (* momentum *)
+        @-> int   (* centered *)
+        @-> returning t)
+
     let sgd =
       foreign "ato_sgd"
         (   float (* learning rate *)

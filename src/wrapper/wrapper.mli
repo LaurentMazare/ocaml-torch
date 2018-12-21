@@ -79,6 +79,15 @@ module Optimizer : sig
     -> weight_decay:float
     -> t
 
+  val rmsprop
+    :  learning_rate:float
+    -> alpha:float
+    -> eps:float
+    -> weight_decay:float
+    -> momentum:float
+    -> centered:bool
+    -> t
+
   val sgd
     :  learning_rate:float
     -> momentum:float

@@ -8,6 +8,16 @@ val adam
   -> learning_rate:float
   -> t
 
+val rmsprop
+  :  ?alpha:float
+  -> ?eps:float
+  -> ?weight_decay:float
+  -> ?momentum:float
+  -> ?centered:bool
+  -> Var_store.t
+  -> learning_rate:float
+  -> t
+
 val sgd
   :  ?momentum:float
   -> ?dampening:float

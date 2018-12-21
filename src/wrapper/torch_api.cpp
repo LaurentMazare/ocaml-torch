@@ -278,6 +278,24 @@ optimizer ato_adam(double learning_rate,
   )
 }
 
+optimizer ato_rmsprop(double learning_rate,
+                      double alpha,
+                      double eps,
+                      double weight_decay,
+                      double momentum,
+                      int centered) {
+  PROTECT(
+    auto options =
+      torch::optim::RMSpropOptions(learning_rate)
+        .alpha(alpha)
+        .eps(eps)
+        .weight_decay(weight_decay)
+        .momentum(momentum)
+        .centered(centered != 0);
+      return new torch::optim::RMSprop(vector<torch::Tensor>(), options);
+    )
+}
+
 optimizer ato_sgd(double learning_rate,
                   double momentum,
                   double dampening,
@@ -304,6 +322,8 @@ void ato_set_learning_rate(optimizer t, double learning_rate) {
   PROTECT(
     if (auto adam = dynamic_cast<torch::optim::Adam*>(t))
       adam->options.learning_rate_ = learning_rate;
+    else if (auto rms = dynamic_cast<torch::optim::RMSprop*>(t))
+      rms->options.learning_rate_ = learning_rate;
     else if (auto sgd = dynamic_cast<torch::optim::SGD*>(t))
       sgd->options.learning_rate_ = learning_rate;
     else
@@ -315,6 +335,8 @@ void ato_set_momentum(optimizer t, double momentum) {
   PROTECT(
     if (auto adam = dynamic_cast<torch::optim::Adam*>(t))
       adam->options.beta1_ = momentum;
+    else if (auto rms = dynamic_cast<torch::optim::RMSprop*>(t))
+      rms->options.momentum_ = momentum;
     else if (auto sgd = dynamic_cast<torch::optim::SGD*>(t))
       sgd->options.momentum_ = momentum;
     else
