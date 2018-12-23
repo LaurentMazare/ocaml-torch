@@ -5,6 +5,7 @@ ALL = examples/basics/torch_basics.exe \
       examples/gan/mnist_gan.exe \
       examples/gan/mnist_cgan.exe \
       examples/gan/mnist_dcgan.exe \
+      examples/gan/progressive_growing_gan.exe \
       examples/gan/relativistic_dcgan.exe \
       examples/gan/gan_stability.exe \
       examples/cifar/cifar_train.exe \

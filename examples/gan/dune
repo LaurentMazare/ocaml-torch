@@ -1,6 +1,6 @@
 (executables
-  (names relativistic_dcgan gan_stability)
-  (modules relativistic_dcgan gan_stability)
+  (names progressive_growing_gan relativistic_dcgan gan_stability)
+  (modules progressive_growing_gan relativistic_dcgan gan_stability)
   (libraries base torch_core torch stdio torch_vision))
 
 (executables
