@@ -14,25 +14,35 @@ let leaky_relu xs = Tensor.(max xs (xs * f 0.2))
 let pixel_norm xs =
   Tensor.(xs / (sqrt (mean4 (xs * xs) ~dim:1 ~keepdim:true) + f 1e-8))
 
-let w_scale_layer _vs ~size =
-  let scale = Tensor.randn [ 1 ] in
-  let b = Tensor.randn [ size ] |> Tensor.view ~size:[ 1; size; 1; 1 ] in
+let w_scale_layer vs ~n ~size =
+  let name s = N.(n / "wscale" / s) in
+  let scale = Var_store.new_var vs ~shape:[ 1 ] ~init:Zeros ~name:(name "scale") in
+  let b =
+    Var_store.new_var vs ~shape:[ size ] ~init:Zeros ~name:(name "b")
+    |> Tensor.view ~size:[ 1; size; 1; 1 ]
+  in
   Layer.of_fn (fun xs ->
       let x0, _, x2, x3 = Tensor.shape4_exn xs in
       Tensor.(xs * scale + expand b ~implicit:true ~size:[ x0; size; x2; x3 ]))
 
-let norm_conv_block vs ~ksize ~padding ~input_dim n =
-  let conv = Layer.conv2d_ vs ~ksize ~stride:1 ~padding ~use_bias:false ~input_dim n in
-  let wscale = w_scale_layer vs ~size:n in
+let norm_conv_block vs ~n ~ksize ~padding ~input_dim dim =
+  let conv =
+    Layer.conv2d_ vs
+      ~n:N.(n / "conv") ~ksize ~stride:1 ~padding ~use_bias:false ~input_dim dim
+  in
+  let wscale = w_scale_layer vs ~n ~size:dim in
   Layer.of_fn (fun xs ->
       pixel_norm xs
       |> Layer.apply conv
       |> Layer.apply wscale
       |> leaky_relu)
 
-let norm_upscale_conv_block vs ~ksize ~padding ~input_dim n =
-  let conv = Layer.conv2d_ vs ~ksize ~stride:1 ~padding ~use_bias:false ~input_dim n in
-  let wscale = w_scale_layer vs ~size:n in
+let norm_upscale_conv_block vs ~n ~ksize ~padding ~input_dim dim =
+  let conv =
+    Layer.conv2d_ vs
+      ~n:N.(n / "conv") ~ksize ~stride:1 ~padding ~use_bias:false ~input_dim dim
+  in
+  let wscale = w_scale_layer vs ~n ~size:dim in
   Layer.of_fn (fun xs ->
       let _, _, h, w = Tensor.shape4_exn xs in
       pixel_norm xs
@@ -43,7 +53,7 @@ let norm_upscale_conv_block vs ~ksize ~padding ~input_dim n =
 
 let create_generator vs =
   let features =
-    Layer.fold
+    List.mapi ~f:(fun i l -> l ~n:N.(root / "features" / Int.to_string i))
       [ norm_conv_block vs ~ksize:4 ~padding:3 ~input_dim:512 512
       ; norm_conv_block vs ~ksize:3 ~padding:1 ~input_dim:512 512
       ; norm_upscale_conv_block vs ~ksize:3 ~padding:1 ~input_dim:512 512
@@ -63,11 +73,14 @@ let create_generator vs =
       ; norm_upscale_conv_block vs ~ksize:3 ~padding:1 ~input_dim:32 16
       ; norm_conv_block vs ~ksize:3 ~padding:1 ~input_dim:16 16
       ]
+    |> Layer.fold
   in
   let conv =
-    Layer.conv2d_ vs ~ksize:1 ~stride:1 ~padding:0 ~use_bias:false ~input_dim:16 3
+    Layer.conv2d_ vs
+      ~n:N.(root / "output" / "conv")
+      ~ksize:1 ~stride:1 ~padding:0 ~use_bias:false ~input_dim:16 3
   in
-  let wscale = w_scale_layer vs ~size:3 in
+  let wscale = w_scale_layer vs ~n:N.(root / "output") ~size:3 in
   Layer.of_fn (fun xs ->
       Layer.apply features xs
       |> pixel_norm
@@ -79,5 +92,6 @@ let () =
   then Printf.failwithf "usage: %s weights.ot" Sys.argv.(0) ();
   let vs = Var_store.create ~name:"vs" () in
   let generator = create_generator vs in
+  Serialize.load_multi_ ~named_tensors:(Var_store.all_vars vs) ~filename:Sys.argv.(1);
   let image = Tensor.randn [ 1; 512; 1; 1 ] |> Layer.apply generator in
   Torch_vision.Image.write_image image ~filename:"out.png"
