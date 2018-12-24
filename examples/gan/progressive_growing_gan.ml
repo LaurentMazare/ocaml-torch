@@ -17,13 +17,11 @@ let pixel_norm xs =
 let w_scale_layer vs ~n ~size =
   let name s = N.(n / "wscale" / s) in
   let scale = Var_store.new_var vs ~shape:[ 1 ] ~init:Zeros ~name:(name "scale") in
-  let b =
-    Var_store.new_var vs ~shape:[ size ] ~init:Zeros ~name:(name "b")
-    |> Tensor.view ~size:[ 1; size; 1; 1 ]
-  in
+  let b = Var_store.new_var vs ~shape:[ size ] ~init:Zeros ~name:(name "b") in
   Layer.of_fn (fun xs ->
+      let b = Tensor.view b ~size:[ 1; size; 1; 1 ] in
       let x0, _, x2, x3 = Tensor.shape4_exn xs in
-      Tensor.(xs * scale + expand b ~implicit:true ~size:[ x0; size; x2; x3 ]))
+      Tensor.(xs * scale + expand b ~implicit:false ~size:[ x0; size; x2; x3 ]))
 
 let norm_conv_block vs ~n ~ksize ~padding ~input_dim dim =
   let conv =
@@ -89,9 +87,11 @@ let create_generator vs =
 
 let () =
   if Array.length Sys.argv <> 2
-  then Printf.failwithf "usage: %s weights.ot" Sys.argv.(0) ();
+  then Printf.failwithf "usage: %s prog-gan.ot" Sys.argv.(0) ();
   let vs = Var_store.create ~name:"vs" () in
   let generator = create_generator vs in
   Serialize.load_multi_ ~named_tensors:(Var_store.all_vars vs) ~filename:Sys.argv.(1);
-  let image = Tensor.randn [ 1; 512; 1; 1 ] |> Layer.apply generator in
+  let image = Tensor.(randn [ 1; 512; 1; 1 ]) |> Layer.apply generator in
+  let image = Tensor.(image - minimum image) in
+  let image = Tensor.(image / maximum image * f 255.) in
   Torch_vision.Image.write_image image ~filename:"out.png"
