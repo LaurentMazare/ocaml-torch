@@ -168,6 +168,22 @@ Here are some samples in 64x64 and 128x128 on the anime faces dataset.
 
 ![ralsgan128](samples/ralsgan-anime-128.png)
 
+# Progressive Growing of GANs (inference only)
+
+The `progressive_growing_gan.ml` file contains an ocaml-torch implementation
+of the generator used in the [progressive growing of GANs github repo](https://github.com/tkarras/progressive_growing_of_gans).
+
+Pre-trained weights can be found here: [prog-gan.ot](https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/prog-gan.ot).
+These have been trained on the CelebA-HQ dataset. Using these
+the following command generate samples of size 1024x1024 as illustrated below.
+
+```bash
+dune build examples/gan/progressive_growing_gan.exe
+dune exec examples/gan/progressive_growing_gan.exe prog-gan.ot
+```
+
+![prog-gan](samples/prog-gan1.jpg)
+
 # Bibliography
 <a name="bib1">1</a>: 
 Generative Adversarial Networks.
