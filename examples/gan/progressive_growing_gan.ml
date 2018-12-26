@@ -88,10 +88,15 @@ let create_generator vs =
 let () =
   if Array.length Sys.argv <> 2
   then Printf.failwithf "usage: %s prog-gan.ot" Sys.argv.(0) ();
+  Torch_core.Wrapper.manual_seed 42;
+
   let vs = Var_store.create ~name:"vs" () in
   let generator = create_generator vs in
   Serialize.load_multi_ ~named_tensors:(Var_store.all_vars vs) ~filename:Sys.argv.(1);
-  let image = Tensor.(randn [ 1; 512; 1; 1 ]) |> Layer.apply generator in
-  let image = Tensor.(image - minimum image) in
-  let image = Tensor.(image / maximum image * f 255.) in
-  Torch_vision.Image.write_image image ~filename:"out.png"
+  for i = 1 to 50 do
+    let image = Tensor.(randn [ 1; 512; 1; 1 ]) |> Layer.apply generator in
+    let image = Tensor.(image - minimum image) in
+    let image = Tensor.(image / maximum image * f 255.) in
+    Torch_vision.Image.write_image image ~filename:(Printf.sprintf "out%d.png" i);
+    Caml.Gc.full_major ()
+  done
