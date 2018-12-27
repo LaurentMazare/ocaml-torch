@@ -394,7 +394,7 @@ tensor atm_forward(module m, tensor *tensors, int ntensors) {
   PROTECT(
     std::vector<torch::jit::IValue> inputs;
     for (int i = 0; i < ntensors; ++i)
-      inputs.push_back(tensors[i]);
+      inputs.push_back(*(tensors[i]));
     return new torch::Tensor((*m)->forward(inputs).toTensor());
   )
 }
