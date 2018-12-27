@@ -169,5 +169,13 @@ module C(F: Cstubs.FOREIGN) = struct
     let set_benchmark_cudnn = foreign "atc_set_benchmark_cudnn" (int @-> returning void)
   end
 
+  module Module = struct
+    type t = unit ptr
+    let t : t typ = ptr void
+    let load = foreign "atm_load" (string @-> returning t)
+    let forward = foreign "atm_forward" (t @-> ptr Tensor.t @-> int @-> returning Tensor.t)
+    let free = foreign "atm_free" (t @-> returning void)
+  end
+
   module TensorG = Torch_bindings_generated.C(F)
 end

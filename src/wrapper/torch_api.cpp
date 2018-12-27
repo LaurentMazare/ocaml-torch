@@ -384,4 +384,23 @@ void atc_set_benchmark_cudnn(int b) {
   at::globalContext().setBenchmarkCuDNN(b);
 }
 
+module atm_load(char *filename) {
+  PROTECT(
+    return new std::shared_ptr<torch::jit::script::Module>(torch::jit::load(filename));
+  )
+}
+
+tensor atm_forward(module m, tensor *tensors, int ntensors) {
+  PROTECT(
+    std::vector<torch::jit::IValue> inputs;
+    for (int i = 0; i < ntensors; ++i)
+      inputs.push_back(tensors[i]);
+    return new torch::Tensor((*m)->forward(inputs).toTensor());
+  )
+}
+
+void atm_free(module m) {
+  delete(m);
+}
+
 #include "torch_api_generated.cpp.h"

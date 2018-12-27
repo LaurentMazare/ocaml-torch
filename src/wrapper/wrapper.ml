@@ -306,4 +306,23 @@ module Cuda = struct
   let set_benchmark_cudnn b = set_benchmark_cudnn (if b then 1 else 0)
 end
 
+module Module = struct
+  include Wrapper_generated.C.Module
+
+  let forward t tensors =
+    let tensor =
+      forward
+        t
+        CArray.(of_list Wrapper_generated.C.Tensor.t tensors |> start)
+        (List.length tensors)
+    in
+    Gc.finalise Wrapper_generated.C.Tensor.free tensor;
+    tensor
+
+  let load filename =
+    let m = load filename in
+    Gc.finalise free m;
+    m
+end
+
 let manual_seed seed = Wrapper_generated.C.manual_seed (Int64.of_int seed)

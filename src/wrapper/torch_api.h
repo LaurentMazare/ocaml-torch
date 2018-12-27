@@ -7,6 +7,7 @@ extern "C" {
 typedef torch::Tensor *tensor;
 typedef torch::Scalar *scalar;
 typedef torch::optim::Optimizer *optimizer;
+typedef std::shared_ptr<torch::jit::script::Module> *module;
 #define PROTECT(x) \
   try { \
     x \
@@ -17,6 +18,7 @@ typedef torch::optim::Optimizer *optimizer;
 typedef void *tensor;
 typedef void *optimizer;
 typedef void *scalar;
+typedef void *module;
 #endif
 
 void at_manual_seed(int64_t);
@@ -99,6 +101,10 @@ int atc_cuda_device_count();
 int atc_cuda_is_available();
 int atc_cudnn_is_available();
 void atc_set_benchmark_cudnn(int b);
+
+module atm_load(char *);
+tensor atm_forward(module, tensor *tensors, int ntensors);
+void atm_free(module);
 
 #include "torch_api_generated.h"
 

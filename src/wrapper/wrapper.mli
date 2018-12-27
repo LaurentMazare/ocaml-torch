@@ -120,3 +120,9 @@ module Cuda : sig
   val cudnn_is_available : unit -> bool
   val set_benchmark_cudnn : bool -> unit
 end
+
+module Module : sig
+  type t
+  val load : string -> t
+  val forward : t -> Tensor.t list -> Tensor.t
+end
