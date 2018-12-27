@@ -1,0 +1,3 @@
+(executables
+  (names load_and_run)
+  (libraries torch torch_vision))

@@ -22,5 +22,5 @@ let%expect_test _ =
   Stdio.printf "%f %f\n%!"
     Tensor.(minimum (image_tensor - loaded_tensor) |> float_value)
     Tensor.(maximum (image_tensor - loaded_tensor) |> float_value);
-  [%expect{| 0.000000 0.998047 |}]
-
+  [%expect{| 0.000000 0.998047 |}];
+  Unix.unlink filename
