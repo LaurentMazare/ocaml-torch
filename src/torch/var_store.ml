@@ -47,7 +47,7 @@ module Init = struct
     | Zeros
     | Ones
     | Const of float
-    | Normal_with_stdev of float
+    | Normal of { mean : float; stdev : float }
     | Uniform of float * float
     | Copy of Tensor.t
 end
@@ -60,7 +60,12 @@ let new_var ?(trainable=true) t ~shape ~init ~name =
     | Zeros -> Tensor.zeros shape ~requires_grad ~device
     | Ones -> Tensor.ones shape ~requires_grad ~device
     | Const scale -> Tensor.ones shape ~requires_grad ~device ~scale
-    | Normal_with_stdev stdev -> Tensor.randn shape ~scale:stdev ~requires_grad ~device
+    | Normal { mean = 0.; stdev } ->
+        Tensor.randn shape ~scale:stdev ~requires_grad ~device
+    | Normal { mean; stdev } ->
+      Tensor.(+)
+        (Tensor.randn shape ~scale:stdev ~requires_grad ~device)
+        (Tensor.f mean)
     | Uniform (from, to_) ->
       Tensor.zeros shape ~device
       |> Tensor.uniform_ ~from ~to_

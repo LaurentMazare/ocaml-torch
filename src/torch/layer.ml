@@ -121,7 +121,7 @@ let conv_transpose2d
     ~stride
     ?activation
     ?(use_bias=true)
-    ?(w_init=Var_store.Init.Normal_with_stdev 0.1)
+    ?(w_init=Var_store.Init.Normal { mean = 0.; stdev = 0.1 })
     ?(padding=0, 0)
     ?(output_padding=0, 0)
     ~input_dim

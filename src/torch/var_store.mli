@@ -15,7 +15,7 @@ module Init : sig
     | Zeros
     | Ones
     | Const of float
-    | Normal_with_stdev of float
+    | Normal of { mean : float; stdev : float }
     | Uniform of float * float
     | Copy of Tensor.t
 end
