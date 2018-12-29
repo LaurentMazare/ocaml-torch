@@ -149,6 +149,7 @@ let () =
          Tensor.index_select images ~dim:0 ~index
          |> Tensor.to_type ~type_:Float
          |> fun xs -> Tensor.(xs / f 127.5 - f 1.)
+         |> Tensor.to_device ~device
        in
        let discriminator_loss, real_loss_d, fake_loss_d =
          Var_store.freeze generator_vs;
@@ -159,7 +160,8 @@ let () =
          let outputs_d_x = Layer.apply discriminator x_real in
          let real_loss_d = Tensor.(abs (outputs_d_x - x_real) |> mean) in
          let fake_loss_d = Tensor.(abs (outputs_d_z - gen_z) |> mean) in
-         let loss_d = Tensor.(real_loss_d - f !k * fake_loss_d) in
+         let k = Tensor.f !k |> Tensor.to_device ~device in
+         let loss_d = Tensor.(real_loss_d - k * fake_loss_d) in
          Tensor.backward loss_d;
          Optimizer.step opt_d;
          loss_d, real_loss_d, fake_loss_d
