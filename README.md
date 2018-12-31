@@ -141,11 +141,6 @@ cd ocaml-torch
 make all
 ```
 
-You can then test that everything works well with the following example:
-```bash
-./_build/default/examples/basics/torch_tensor.exe
-```
-
 ### Option 2: Using PyTorch Conda package
 Conda packages for PyTorch 1.0 can be used via the following command.
 ```bash

@@ -1,3 +1,0 @@
-(executables
-  (names torch_basics)
-  (libraries torch))
