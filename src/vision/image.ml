@@ -1,42 +1,68 @@
 open Base
 open Torch
 
-let resize_and_crop image_file ~f ~width ~height =
-  let tmp_file = Caml.Filename.temp_file "imagenet-resize-crop" ".jpg" in
-  let args =
-    [ "-resize"; Printf.sprintf "%dx%d^" width height
-    ; "-gravity"; "center"
-    ; "-crop"; Printf.sprintf "%dx%d+0+0" width height
-    ; Printf.sprintf "\"%s\"" image_file; tmp_file
-    ]
-  in
-  let command = Printf.sprintf "convert %s" (String.concat args ~sep:" ") in
-  match Unix.system command with
-  | WEXITED 0 ->
-    Exn.protect
-      ~f:(fun () -> f tmp_file)
-      ~finally:(fun () -> Unix.unlink tmp_file)
-  | WEXITED i -> Or_error.errorf "%s returns a non-zero exit code %d" command i
-  | WSIGNALED i -> Or_error.errorf "%s killed by signal %d" command i
-  | WSTOPPED i -> Or_error.errorf "%s stopped %d" command i
+type buffer = (int, Bigarray.int8_unsigned_elt, Bigarray.c_layout) Bigarray.Array1.t
 
-let load_image_no_resize_and_crop image_file =
+external resize_
+  :  in_data:buffer
+  -> in_w:int
+  -> in_h:int
+  -> out_data:buffer
+  -> out_w:int
+  -> out_h:int
+  -> nchannels:int
+  -> int = "ml_stbir_resize_bytecode" "ml_stbir_resize"
+
+let tensor_of_data ~data ~width ~height =
+  Tensor.of_bigarray (Bigarray.genarray_of_array1 data)
+  |> Tensor.view ~size:[ 1; height; width; 3 ]
+  |> Tensor.permute ~dims:[ 0; 3; 1; 2 ]
+
+let maybe_crop tensor ~dim ~length ~target_length =
+  assert (target_length <= length);
+  if length = target_length
+  then tensor
+  else
+    Tensor.narrow tensor ~dim ~start:((length - target_length) / 2) ~length:target_length
+
+let load_image ?resize image_file =
   Stb_image.load image_file
   |> Result.bind ~f:(fun (image : _ Stb_image.t) ->
     if image.channels = 3
     then
-      Tensor.of_bigarray (Bigarray.genarray_of_array1 image.data)
-      |> Tensor.view ~size:[ 1; image.height; image.width; image.channels ]
-      |> Tensor.permute ~dims:[ 0; 3; 1; 2 ]
+      begin
+        match resize with
+        | None -> tensor_of_data ~data:image.data ~width:image.width ~height:image.height
+        | Some (target_width, target_height) ->
+          (* First resize the image while preserving the ratio. *)
+          let resize_width, resize_height =
+            let ratio_w = Float.of_int target_width /. Float.of_int image.width in
+            let ratio_h = Float.of_int target_height /. Float.of_int image.height in
+            let ratio = Float.max ratio_w ratio_h in
+            Float.to_int (ratio *. Float.of_int image.width),
+            Float.to_int (ratio *. Float.of_int image.height)
+          in
+          let out_data =
+            Bigarray.Array1.create Int8_unsigned C_layout (resize_width * resize_height * 3)
+          in
+          let status =
+            resize_
+              ~in_data:image.data ~in_w:image.width ~in_h:image.height
+              ~out_data ~out_w:resize_width ~out_h:resize_height
+              ~nchannels:3
+          in
+          if status = 0
+          then Printf.failwithf "error when resizing %s" image_file ();
+          let tensor =
+            tensor_of_data ~data:out_data ~width:resize_width ~height:resize_height
+          in
+          (* Then take a center crop. *)
+          maybe_crop tensor ~dim:3 ~length:resize_width ~target_length:target_width
+          |> maybe_crop ~dim:2 ~length:resize_height ~target_length:target_height
+      end
       |> Result.return
     else Error (`Msg (Printf.sprintf "%d channels <> 3" image.channels)))
   |> Result.map_error ~f:(fun (`Msg msg) -> Error.of_string msg)
-
-let load_image ?resize image_file =
-  match resize with
-  | Some (width, height) ->
-    resize_and_crop image_file ~f:load_image_no_resize_and_crop ~width ~height
-  | None -> load_image_no_resize_and_crop image_file
 
 let image_suffixes = [ ".jpg"; ".png" ]
 
