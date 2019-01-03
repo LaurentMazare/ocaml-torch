@@ -54,7 +54,7 @@ let to_type t ~type_ = totype t ~scalar_type:type_
 let to_device ?device t =
   match device with
   | None -> t
-  | Some device -> to1 t ~device
+  | Some device -> to_ t ~device
 
 let float_vec ?kind ?device dims =
   float_vec ?kind dims |> to_device ?device
@@ -181,7 +181,7 @@ let mse_loss ?(reduction=Torch_core.Reduction.Elementwise_mean) t1 t2 =
 
 let bce_loss_with_logits ?(reduction=Torch_core.Reduction.Elementwise_mean) t ~targets =
   let max_val = clamp_min_ (- t) ~min:(Scalar.float 0.) in
-  let one_minus_targets = ones_like1 targets - targets in
+  let one_minus_targets = ones_like targets - targets in
   let bce =
     add_
       (add_ (mul_ one_minus_targets t) max_val)

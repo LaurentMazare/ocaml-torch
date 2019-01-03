@@ -79,10 +79,10 @@ let%expect_test _ =
   let logits = Tensor.of_float1 [| -1.; 0.5; 0.25; 0.; 2.; 4.; -1. |] in
   let eval_and_print ~target =
     let bce1 =
-      Tensor.(bce_loss (sigmoid logits) ~targets:(ones_like1 logits * f target))
+      Tensor.(bce_loss (sigmoid logits) ~targets:(ones_like logits * f target))
     in
     let bce2 =
-      Tensor.(bce_loss_with_logits logits ~targets:(ones_like1 logits * f target))
+      Tensor.(bce_loss_with_logits logits ~targets:(ones_like logits * f target))
     in
     let bce3 =
       Tensor.(

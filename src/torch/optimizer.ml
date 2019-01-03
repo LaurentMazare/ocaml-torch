@@ -68,7 +68,7 @@ let clip_grad_norm2_ t ~max_norm2 =
       let grad = Tensor.grad tensor in
       let grad_norm =
         if Tensor.defined grad
-        then Tensor.norm1 grad |> Tensor.float_value
+        then Tensor.norm grad |> Tensor.float_value
         else 0.
       in
       acc +. grad_norm)

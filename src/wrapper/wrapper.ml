@@ -161,8 +161,6 @@ module Tensor = struct
     backward t (if keep_graph then 1 else 0) (if create_graph then 1 else 0)
   let print = print
   let to_string t ~line_size = to_string t line_size
-  let sum = sum2
-  let mean = mean2
 
   let argmax t = argmax1 t ~dim:(-1) ~keepdim:false
 

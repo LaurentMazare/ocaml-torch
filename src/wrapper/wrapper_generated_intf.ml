@@ -316,6 +316,11 @@ module type S = sig
     keepdim:bool ->
     t
 
+  val arange :
+    end_:scalar ->
+    options:Kind.t * Device.t ->
+    t
+
   val arange1 :
     start:scalar ->
     end_:scalar ->
@@ -329,9 +334,9 @@ module type S = sig
     options:Kind.t * Device.t ->
     t
 
-  val arange3 :
+  val arange_out :
+    t ->
     end_:scalar ->
-    options:Kind.t * Device.t ->
     t
 
   val arange_out1 :
@@ -347,9 +352,8 @@ module type S = sig
     step:scalar ->
     t
 
-  val arange_out3 :
+  val argmax :
     t ->
-    end_:scalar ->
     t
 
   val argmax1 :
@@ -358,7 +362,7 @@ module type S = sig
     keepdim:bool ->
     t
 
-  val argmax2 :
+  val argmin :
     t ->
     t
 
@@ -368,30 +372,26 @@ module type S = sig
     keepdim:bool ->
     t
 
-  val argmin2 :
+  val as_strided :
     t ->
+    size:int list ->
+    stride:int list ->
     t
 
   val as_strided1 :
     t ->
     size:int list ->
     stride:int list ->
-    t
-
-  val as_strided2 :
-    t ->
-    size:int list ->
-    stride:int list ->
     storage_offset:int ->
     t
 
-  val as_strided_1 :
+  val as_strided_ :
     t ->
     size:int list ->
     stride:int list ->
     t
 
-  val as_strided_2 :
+  val as_strided_1 :
     t ->
     size:int list ->
     stride:int list ->
@@ -548,12 +548,12 @@ module type S = sig
     batch2:t ->
     t
 
-  val bartlett_window1 :
+  val bartlett_window :
     window_length:int ->
     options:Kind.t * Device.t ->
     t
 
-  val bartlett_window2 :
+  val bartlett_window1 :
     window_length:int ->
     periodic:bool ->
     options:Kind.t * Device.t ->
@@ -571,11 +571,11 @@ module type S = sig
     cudnn_enabled:bool ->
     t
 
-  val bernoulli1 :
+  val bernoulli :
     t ->
     t
 
-  val bernoulli2 :
+  val bernoulli1 :
     t ->
     p:float ->
     t
@@ -640,12 +640,12 @@ module type S = sig
     minlength:int ->
     t
 
-  val blackman_window1 :
+  val blackman_window :
     window_length:int ->
     options:Kind.t * Device.t ->
     t
 
-  val blackman_window2 :
+  val blackman_window1 :
     window_length:int ->
     periodic:bool ->
     options:Kind.t * Device.t ->
@@ -906,7 +906,7 @@ module type S = sig
     dim:int ->
     t
 
-  val ctc_loss1 :
+  val ctc_loss :
     log_probs:t ->
     targets:t ->
     input_lengths:int list ->
@@ -915,7 +915,7 @@ module type S = sig
     reduction:int ->
     t
 
-  val ctc_loss2 :
+  val ctc_loss1 :
     log_probs:t ->
     targets:t ->
     input_lengths:t ->
@@ -1053,13 +1053,19 @@ module type S = sig
     grad_output:t ->
     t * t
 
+  val cumprod :
+    t ->
+    dim:int ->
+    t
+
   val cumprod1 :
     t ->
     dim:int ->
     dtype:Kind.t ->
     t
 
-  val cumprod2 :
+  val cumprod_out :
+    t ->
     t ->
     dim:int ->
     t
@@ -1071,8 +1077,7 @@ module type S = sig
     dtype:Kind.t ->
     t
 
-  val cumprod_out2 :
-    t ->
+  val cumsum :
     t ->
     dim:int ->
     t
@@ -1083,7 +1088,8 @@ module type S = sig
     dtype:Kind.t ->
     t
 
-  val cumsum2 :
+  val cumsum_out :
+    t ->
     t ->
     dim:int ->
     t
@@ -1093,12 +1099,6 @@ module type S = sig
     t ->
     dim:int ->
     dtype:Kind.t ->
-    t
-
-  val cumsum_out2 :
-    t ->
-    t ->
-    dim:int ->
     t
 
   val det :
@@ -1277,11 +1277,11 @@ module type S = sig
     options:Kind.t * Device.t ->
     t
 
-  val empty_like1 :
+  val empty_like :
     t ->
     t
 
-  val empty_like2 :
+  val empty_like1 :
     t ->
     options:Kind.t * Device.t ->
     t
@@ -1394,23 +1394,23 @@ module type S = sig
     lambd:float ->
     t
 
-  val eye1 :
+  val eye :
     n:int ->
     options:Kind.t * Device.t ->
     t
 
-  val eye2 :
+  val eye1 :
     n:int ->
     m:int ->
     options:Kind.t * Device.t ->
     t
 
-  val eye_out1 :
+  val eye_out :
     t ->
     n:int ->
     t
 
-  val eye_out2 :
+  val eye_out1 :
     t ->
     n:int ->
     m:int ->
@@ -1448,12 +1448,12 @@ module type S = sig
 
   val fill_ :
     t ->
-    value:t ->
+    value:scalar ->
     t
 
   val fill_1 :
     t ->
-    value:scalar ->
+    value:t ->
     t
 
   val flatten :
@@ -1542,11 +1542,11 @@ module type S = sig
     random_samples:t ->
     t * t
 
-  val frobenius_norm1 :
+  val frobenius_norm :
     t ->
     t
 
-  val frobenius_norm2 :
+  val frobenius_norm1 :
     t ->
     dim:int list ->
     keepdim:bool ->
@@ -1565,12 +1565,12 @@ module type S = sig
     options:Kind.t * Device.t ->
     t
 
-  val full_like1 :
+  val full_like :
     t ->
     fill_value:scalar ->
     t
 
-  val full_like2 :
+  val full_like1 :
     t ->
     fill_value:scalar ->
     options:Kind.t * Device.t ->
@@ -1735,7 +1735,7 @@ module type S = sig
     cudnn_enabled:bool ->
     t
 
-  val gru1 :
+  val gru :
     t ->
     hx:t ->
     params:t list ->
@@ -1747,7 +1747,7 @@ module type S = sig
     batch_first:bool ->
     t * t
 
-  val gru2 :
+  val gru1 :
     data:t ->
     batch_sizes:t ->
     hx:t ->
@@ -1784,14 +1784,21 @@ module type S = sig
     t ->
     t
 
+  val hamming_window :
+    window_length:int ->
+    options:Kind.t * Device.t ->
+    t
+
   val hamming_window1 :
     window_length:int ->
+    periodic:bool ->
     options:Kind.t * Device.t ->
     t
 
   val hamming_window2 :
     window_length:int ->
     periodic:bool ->
+    alpha:float ->
     options:Kind.t * Device.t ->
     t
 
@@ -1799,23 +1806,16 @@ module type S = sig
     window_length:int ->
     periodic:bool ->
     alpha:float ->
-    options:Kind.t * Device.t ->
-    t
-
-  val hamming_window4 :
-    window_length:int ->
-    periodic:bool ->
-    alpha:float ->
     beta:float ->
     options:Kind.t * Device.t ->
     t
 
-  val hann_window1 :
+  val hann_window :
     window_length:int ->
     options:Kind.t * Device.t ->
     t
 
-  val hann_window2 :
+  val hann_window1 :
     window_length:int ->
     periodic:bool ->
     options:Kind.t * Device.t ->
@@ -2081,26 +2081,26 @@ module type S = sig
     bias:t ->
     t
 
-  val linspace1 :
+  val linspace :
     start:scalar ->
     end_:scalar ->
     options:Kind.t * Device.t ->
     t
 
-  val linspace2 :
+  val linspace1 :
     start:scalar ->
     end_:scalar ->
     steps:int ->
     options:Kind.t * Device.t ->
     t
 
-  val linspace_out1 :
+  val linspace_out :
     t ->
     start:scalar ->
     end_:scalar ->
     t
 
-  val linspace_out2 :
+  val linspace_out1 :
     t ->
     start:scalar ->
     end_:scalar ->
@@ -2196,26 +2196,26 @@ module type S = sig
     t ->
     t
 
-  val logspace1 :
+  val logspace :
     start:scalar ->
     end_:scalar ->
     options:Kind.t * Device.t ->
     t
 
-  val logspace2 :
+  val logspace1 :
     start:scalar ->
     end_:scalar ->
     steps:int ->
     options:Kind.t * Device.t ->
     t
 
-  val logspace_out1 :
+  val logspace_out :
     t ->
     start:scalar ->
     end_:scalar ->
     t
 
-  val logspace_out2 :
+  val logspace_out1 :
     t ->
     start:scalar ->
     end_:scalar ->
@@ -2235,7 +2235,7 @@ module type S = sig
     keepdim:bool ->
     t
 
-  val lstm1 :
+  val lstm :
     t ->
     hx:t list ->
     params:t list ->
@@ -2247,7 +2247,7 @@ module type S = sig
     batch_first:bool ->
     t * t * t
 
-  val lstm2 :
+  val lstm1 :
     data:t ->
     batch_sizes:t ->
     hx:t list ->
@@ -2331,14 +2331,14 @@ module type S = sig
     n:int ->
     t
 
-  val matrix_rank1 :
+  val matrix_rank :
     t ->
-    tol:float ->
     symmetric:bool ->
     t
 
-  val matrix_rank2 :
+  val matrix_rank1 :
     t ->
+    tol:float ->
     symmetric:bool ->
     t
 
@@ -2353,13 +2353,13 @@ module type S = sig
     keepdim:bool ->
     t * t
 
-  val max_out1 :
+  val max_out :
     t ->
     t ->
     t ->
     t
 
-  val max_out2 :
+  val max_out1 :
     max:t ->
     max_values:t ->
     t ->
@@ -2559,6 +2559,10 @@ module type S = sig
     keepdim:bool ->
     t
 
+  val mean :
+    t ->
+    t
+
   val mean1 :
     t ->
     dtype:Kind.t ->
@@ -2566,12 +2570,13 @@ module type S = sig
 
   val mean2 :
     t ->
+    dim:int ->
+    keepdim:bool ->
     t
 
   val mean3 :
     t ->
     dim:int ->
-    keepdim:bool ->
     dtype:Kind.t ->
     t
 
@@ -2579,19 +2584,20 @@ module type S = sig
     t ->
     dim:int ->
     keepdim:bool ->
+    dtype:Kind.t ->
     t
 
-  val mean5 :
+  val mean_out :
+    t ->
     t ->
     dim:int ->
-    dtype:Kind.t ->
+    keepdim:bool ->
     t
 
   val mean_out1 :
     t ->
     t ->
     dim:int ->
-    keepdim:bool ->
     dtype:Kind.t ->
     t
 
@@ -2600,12 +2606,6 @@ module type S = sig
     t ->
     dim:int ->
     keepdim:bool ->
-    t
-
-  val mean_out3 :
-    t ->
-    t ->
-    dim:int ->
     dtype:Kind.t ->
     t
 
@@ -2634,13 +2634,13 @@ module type S = sig
     keepdim:bool ->
     t * t
 
-  val min_out1 :
+  val min_out :
     t ->
     t ->
     t ->
     t
 
-  val min_out2 :
+  val min_out1 :
     min:t ->
     min_indices:t ->
     t ->
@@ -3083,11 +3083,11 @@ module type S = sig
     t ->
     t
 
-  val norm1 :
+  val norm :
     t ->
     t
 
-  val norm2 :
+  val norm1 :
     t ->
     p:scalar ->
     dim:int ->
@@ -3110,16 +3110,16 @@ module type S = sig
 
   val normal :
     mean:t ->
-    std:t ->
-    t
-
-  val normal1 :
-    mean:t ->
     std:float ->
     t
 
-  val normal2 :
+  val normal1 :
     mean:float ->
+    std:t ->
+    t
+
+  val normal2 :
+    mean:t ->
     std:t ->
     t
 
@@ -3129,19 +3129,19 @@ module type S = sig
     std:float ->
     t
 
-  val normal_out1 :
+  val normal_out :
     output:t ->
     mean:t ->
     std:float ->
     t
 
-  val normal_out2 :
+  val normal_out1 :
     output:t ->
     mean:float ->
     std:t ->
     t
 
-  val normal_out3 :
+  val normal_out2 :
     output:t ->
     mean:t ->
     std:t ->
@@ -3163,11 +3163,11 @@ module type S = sig
     options:Kind.t * Device.t ->
     t
 
-  val ones_like1 :
+  val ones_like :
     t ->
     t
 
-  val ones_like2 :
+  val ones_like1 :
     t ->
     options:Kind.t * Device.t ->
     t
@@ -3296,13 +3296,13 @@ module type S = sig
     exponent:t ->
     t
 
-  val pow_out1 :
+  val pow_out :
     t ->
     t ->
     exponent:t ->
     t
 
-  val pow_out2 :
+  val pow_out1 :
     t ->
     t ->
     exponent:scalar ->
@@ -3319,6 +3319,10 @@ module type S = sig
     weight:t ->
     t * t
 
+  val prod :
+    t ->
+    t
+
   val prod1 :
     t ->
     dtype:Kind.t ->
@@ -3326,12 +3330,13 @@ module type S = sig
 
   val prod2 :
     t ->
+    dim:int ->
+    keepdim:bool ->
     t
 
   val prod3 :
     t ->
     dim:int ->
-    keepdim:bool ->
     dtype:Kind.t ->
     t
 
@@ -3339,19 +3344,20 @@ module type S = sig
     t ->
     dim:int ->
     keepdim:bool ->
+    dtype:Kind.t ->
     t
 
-  val prod5 :
+  val prod_out :
+    t ->
     t ->
     dim:int ->
-    dtype:Kind.t ->
+    keepdim:bool ->
     t
 
   val prod_out1 :
     t ->
     t ->
     dim:int ->
-    keepdim:bool ->
     dtype:Kind.t ->
     t
 
@@ -3360,12 +3366,6 @@ module type S = sig
     t ->
     dim:int ->
     keepdim:bool ->
-    t
-
-  val prod_out3 :
-    t ->
-    t ->
-    dim:int ->
     dtype:Kind.t ->
     t
 
@@ -3391,11 +3391,11 @@ module type S = sig
     options:Kind.t * Device.t ->
     t
 
-  val rand_like1 :
+  val rand_like :
     t ->
     t
 
-  val rand_like2 :
+  val rand_like1 :
     t ->
     options:Kind.t * Device.t ->
     t
@@ -3405,50 +3405,50 @@ module type S = sig
     size:int list ->
     t
 
-  val randint1 :
+  val randint :
     high:int ->
     size:int list ->
     options:Kind.t * Device.t ->
     t
 
-  val randint2 :
+  val randint1 :
     low:int ->
     high:int ->
     size:int list ->
     options:Kind.t * Device.t ->
     t
 
+  val randint_like :
+    t ->
+    high:int ->
+    t
+
   val randint_like1 :
     t ->
+    low:int ->
     high:int ->
     t
 
   val randint_like2 :
     t ->
-    low:int ->
     high:int ->
+    options:Kind.t * Device.t ->
     t
 
   val randint_like3 :
     t ->
-    high:int ->
-    options:Kind.t * Device.t ->
-    t
-
-  val randint_like4 :
-    t ->
     low:int ->
     high:int ->
     options:Kind.t * Device.t ->
     t
 
-  val randint_out1 :
+  val randint_out :
     t ->
     high:int ->
     size:int list ->
     t
 
-  val randint_out2 :
+  val randint_out1 :
     t ->
     low:int ->
     high:int ->
@@ -3460,11 +3460,11 @@ module type S = sig
     options:Kind.t * Device.t ->
     t
 
-  val randn_like1 :
+  val randn_like :
     t ->
     t
 
-  val randn_like2 :
+  val randn_like1 :
     t ->
     options:Kind.t * Device.t ->
     t
@@ -3474,19 +3474,19 @@ module type S = sig
     size:int list ->
     t
 
+  val random_ :
+    t ->
+    t
+
   val random_1 :
     t ->
-    from:int ->
     to_:int ->
     t
 
   val random_2 :
     t ->
+    from:int ->
     to_:int ->
-    t
-
-  val random_3 :
-    t ->
     t
 
   val randperm :
@@ -3499,26 +3499,26 @@ module type S = sig
     n:int ->
     t
 
-  val range1 :
+  val range :
     start:scalar ->
     end_:scalar ->
     options:Kind.t * Device.t ->
     t
 
-  val range2 :
+  val range1 :
     start:scalar ->
     end_:scalar ->
     step:scalar ->
     options:Kind.t * Device.t ->
     t
 
-  val range_out1 :
+  val range_out :
     t ->
     start:scalar ->
     end_:scalar ->
     t
 
-  val range_out2 :
+  val range_out1 :
     t ->
     start:scalar ->
     end_:scalar ->
@@ -3714,7 +3714,7 @@ module type S = sig
     onesided:bool ->
     t
 
-  val rnn_relu1 :
+  val rnn_relu :
     t ->
     hx:t ->
     params:t list ->
@@ -3726,7 +3726,7 @@ module type S = sig
     batch_first:bool ->
     t * t
 
-  val rnn_relu2 :
+  val rnn_relu1 :
     data:t ->
     batch_sizes:t ->
     hx:t ->
@@ -3747,7 +3747,7 @@ module type S = sig
     b_hh:t option ->
     t
 
-  val rnn_tanh1 :
+  val rnn_tanh :
     t ->
     hx:t ->
     params:t list ->
@@ -3759,7 +3759,7 @@ module type S = sig
     batch_first:bool ->
     t * t
 
-  val rnn_tanh2 :
+  val rnn_tanh1 :
     data:t ->
     batch_sizes:t ->
     hx:t ->
@@ -3900,11 +3900,11 @@ module type S = sig
 
   val set_ :
     t ->
-    source:t ->
     t
 
   val set_1 :
     t ->
+    source:t ->
     t
 
   val set_requires_grad :
@@ -4080,14 +4080,14 @@ module type S = sig
     t
 
   val sparse_coo_tensor1 :
-    indices:t ->
-    values:t ->
     size:int list ->
+    options:Kind.t * Device.t ->
     t
 
   val sparse_coo_tensor2 :
+    indices:t ->
+    values:t ->
     size:int list ->
-    options:Kind.t * Device.t ->
     t
 
   val sparse_coo_tensor3 :
@@ -4130,20 +4130,20 @@ module type S = sig
     t ->
     t
 
-  val squeeze1 :
+  val squeeze :
     t ->
     t
 
-  val squeeze2 :
+  val squeeze1 :
     t ->
     dim:int ->
     t
 
-  val squeeze_1 :
+  val squeeze_ :
     t ->
     t
 
-  val squeeze_2 :
+  val squeeze_1 :
     t ->
     dim:int ->
     t
@@ -4172,12 +4172,12 @@ module type S = sig
     dim:int ->
     t
 
-  val std1 :
+  val std :
     t ->
     unbiased:bool ->
     t
 
-  val std2 :
+  val std1 :
     t ->
     dim:int ->
     unbiased:bool ->
@@ -4228,6 +4228,10 @@ module type S = sig
     t ->
     t
 
+  val sum :
+    t ->
+    t
+
   val sum1 :
     t ->
     dtype:Kind.t ->
@@ -4235,12 +4239,13 @@ module type S = sig
 
   val sum2 :
     t ->
+    dim:int list ->
+    keepdim:bool ->
     t
 
   val sum3 :
     t ->
     dim:int list ->
-    keepdim:bool ->
     dtype:Kind.t ->
     t
 
@@ -4248,19 +4253,20 @@ module type S = sig
     t ->
     dim:int list ->
     keepdim:bool ->
+    dtype:Kind.t ->
     t
 
-  val sum5 :
+  val sum_out :
+    t ->
     t ->
     dim:int list ->
-    dtype:Kind.t ->
+    keepdim:bool ->
     t
 
   val sum_out1 :
     t ->
     t ->
     dim:int list ->
-    keepdim:bool ->
     dtype:Kind.t ->
     t
 
@@ -4269,12 +4275,6 @@ module type S = sig
     t ->
     dim:int list ->
     keepdim:bool ->
-    t
-
-  val sum_out3 :
-    t ->
-    t ->
-    dim:int list ->
     dtype:Kind.t ->
     t
 
@@ -4357,33 +4357,33 @@ module type S = sig
     dims_other:int list ->
     t
 
-  val to1 :
+  val to_ :
     t ->
     device:Device.t ->
+    t
+
+  val to1 :
+    t ->
+    dtype:Kind.t ->
+    non_blocking:bool ->
     t
 
   val to2 :
     t ->
     device:Device.t ->
-    dtype:Kind.t ->
     non_blocking:bool ->
     t
 
   val to3 :
     t ->
-    dtype:Kind.t ->
+    t ->
     non_blocking:bool ->
     t
 
   val to4 :
     t ->
     device:Device.t ->
-    non_blocking:bool ->
-    t
-
-  val to5 :
-    t ->
-    t ->
+    dtype:Kind.t ->
     non_blocking:bool ->
     t
 
@@ -4684,12 +4684,12 @@ module type S = sig
     align_corners:bool ->
     t
 
-  val var1 :
+  val var :
     t ->
     unbiased:bool ->
     t
 
-  val var2 :
+  val var1 :
     t ->
     dim:int ->
     unbiased:bool ->
@@ -4729,11 +4729,11 @@ module type S = sig
     options:Kind.t * Device.t ->
     t
 
-  val zeros_like1 :
+  val zeros_like :
     t ->
     t
 
-  val zeros_like2 :
+  val zeros_like1 :
     t ->
     options:Kind.t * Device.t ->
     t

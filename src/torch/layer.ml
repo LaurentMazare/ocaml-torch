@@ -267,7 +267,7 @@ module Lstm = struct
     let h = Tensor.zeros [ 1; batch_size; t.hidden_size ] ~device:t.device in
     let c = Tensor.zeros [ 1; batch_size; t.hidden_size ] ~device:t.device in
     let output, h, c =
-      Tensor.lstm1 input_
+      Tensor.lstm input_
         ~hx:[ h; c ]
         ~params:[ t.w_ih; t.w_hh; t.b_ih; t.b_hh ]
         ~has_biases:true

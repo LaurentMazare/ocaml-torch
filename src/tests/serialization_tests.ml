@@ -11,7 +11,7 @@ let write_and_read tensor ~print_tensor =
 
 let%expect_test _ =
   let print_tensor tensor = Stdio.printf "%d\n" (Tensor.to_int0_exn tensor) in
-  Tensor.randint1 ~high:42 ~size:[ 3; 1; 4 ] ~options:(Int64, Cpu)
+  Tensor.randint ~high:42 ~size:[ 3; 1; 4 ] ~options:(Int64, Cpu)
   |> write_and_read ~print_tensor;
   [%expect{|
         0

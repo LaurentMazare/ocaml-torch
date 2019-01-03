@@ -12,7 +12,7 @@ open Torch
 let leaky_relu xs = Tensor.(max xs (xs * f 0.2))
 
 let pixel_norm xs =
-  Tensor.(xs / (sqrt (mean4 (xs * xs) ~dim:1 ~keepdim:true) + f 1e-8))
+  Tensor.(xs / (sqrt (mean2 (xs * xs) ~dim:1 ~keepdim:true) + f 1e-8))
 
 let w_scale_layer vs ~n ~size =
   let name s = N.(n / "wscale" / s) in

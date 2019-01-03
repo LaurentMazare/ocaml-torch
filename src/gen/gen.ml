@@ -82,11 +82,6 @@ module Func = struct
     ; kind : [ `function_ | `method_ ]
     }
 
-  let is_binary t =
-    match t.args with
-    | [ { arg_type = Tensor; _ }; { arg_type = Tensor; _ } ] -> true
-    | _ -> false
-
   let arg_type_of_string str ~is_nullable =
     match String.lowercase str with
     | "bool" -> Some Bool
@@ -411,14 +406,10 @@ let run ~yaml_filename ~cpp_filename ~stubs_filename ~wrapper_filename =
       | [] -> assert false
       | [ func ] -> [ name, func ]
       | funcs ->
-        (* If there is a binary function, use the short name. *)
-        match List.partition_tf funcs ~f:Func.is_binary with
-        | [ binary_func ], funcs ->
-          (name, binary_func) ::
-          List.mapi funcs ~f:(fun i func -> Printf.sprintf "%s%d" name (i+1), func)
-        | _, _ ->
-          List.mapi funcs ~f:(fun i func -> Printf.sprintf "%s%d" name (i+1), func)
-      )
+        List.sort funcs ~compare:(fun (f1:Func.t) (f2:Func.t) ->
+          Int.compare (List.length f1.args) (List.length f2.args))
+        |> List.mapi ~f:(fun i func ->
+           (if i = 0 then name else Printf.sprintf "%s%d" name i), func))
     |> Map.of_alist_exn (module String)
   in
   write_cpp funcs cpp_filename;

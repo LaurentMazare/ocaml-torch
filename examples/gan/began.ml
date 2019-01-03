@@ -145,7 +145,7 @@ let () =
        Optimizer.set_learning_rate opt_d ~learning_rate;
        Optimizer.set_learning_rate opt_g ~learning_rate;
        let x_real =
-         let index = Tensor.randint1 ~high:train_size ~size:[ batch_size ] ~options:(Int64, Cpu) in
+         let index = Tensor.randint ~high:train_size ~size:[ batch_size ] ~options:(Int64, Cpu) in
          Tensor.index_select images ~dim:0 ~index
          |> Tensor.to_type ~type_:Float
          |> fun xs -> Tensor.(xs / f 127.5 - f 1.)

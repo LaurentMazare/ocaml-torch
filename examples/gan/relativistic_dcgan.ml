@@ -109,7 +109,7 @@ let () =
   let fixed_noise = rand () in
 
   let next_batch_images () =
-    let index = Tensor.randint1 ~high:train_size ~size:[ batch_size ] ~options:(Int64, Cpu) in
+    let index = Tensor.randint ~high:train_size ~size:[ batch_size ] ~options:(Int64, Cpu) in
     Tensor.index_select images ~dim:0 ~index
     |> Tensor.to_type ~type_:Float
     |> fun xs -> Tensor.(xs / f 127.5 - f 1.)

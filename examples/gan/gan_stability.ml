@@ -139,7 +139,7 @@ let grad2 d_out x_in =
   in
   Tensor.(grad_dout * grad_dout)
   |> Tensor.view ~size:[ batch_size; -1 ]
-  |> Tensor.sum4 ~dim:[1] ~keepdim:false
+  |> Tensor.sum2 ~dim:[1] ~keepdim:false
 
 let () =
   let device =
@@ -155,7 +155,7 @@ let () =
   then Printf.failwithf "Usage: %s images.ot" Sys.argv.(0) ();
 
   let bce_loss_with_logits ys ~target =
-    Tensor.bce_loss (Tensor.sigmoid ys) ~targets:Tensor.(ones_like1 ys * f target)
+    Tensor.bce_loss (Tensor.sigmoid ys) ~targets:Tensor.(ones_like ys * f target)
   in
 
   let images = Serialize.load ~filename:Sys.argv.(1) in
@@ -176,7 +176,7 @@ let () =
     ~checkpoint_every:(`seconds 600.)
     (fun ~index:batch_idx ->
        let x_real =
-         let index = Tensor.randint1 ~high:train_size ~size:[ batch_size ] ~options:(Int64, Cpu) in
+         let index = Tensor.randint ~high:train_size ~size:[ batch_size ] ~options:(Int64, Cpu) in
          Tensor.index_select images ~dim:0 ~index
          |> Tensor.to_type ~type_:Float
          |> fun xs -> Tensor.(xs / f 127.5 - f 1.)
