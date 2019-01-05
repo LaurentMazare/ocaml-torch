@@ -174,6 +174,14 @@ module C(F: Cstubs.FOREIGN) = struct
     let t : t typ = ptr void
     let load = foreign "atm_load" (string @-> returning t)
     let forward = foreign "atm_forward" (t @-> ptr Tensor.t @-> int @-> returning Tensor.t)
+    let forward_multi =
+      foreign "atm_forward_multi"
+        (   t
+        @-> ptr Tensor.t
+        @-> int
+        @-> ptr Tensor.t
+        @-> int
+        @-> returning void)
     let free = foreign "atm_free" (t @-> returning void)
   end
 

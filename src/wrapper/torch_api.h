@@ -104,6 +104,11 @@ void atc_set_benchmark_cudnn(int b);
 
 module atm_load(char *);
 tensor atm_forward(module, tensor *tensors, int ntensors);
+void atm_forward_multi(module,
+                       tensor *tensors,
+                       int ntensors,
+                       tensor *out_tensors,
+                       int nout_tensors);
 void atm_free(module);
 
 #include "torch_api_generated.h"

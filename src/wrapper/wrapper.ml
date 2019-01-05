@@ -317,6 +317,18 @@ module Module = struct
     Gc.finalise Wrapper_generated.C.Tensor.free tensor;
     tensor
 
+  let forward_multi t tensors ~noutputs =
+    let output_tensors = CArray.make Wrapper_generated.C.Tensor.t noutputs in
+    forward_multi
+      t
+      CArray.(of_list Wrapper_generated.C.Tensor.t tensors |> start)
+      (List.length tensors)
+      (CArray.start output_tensors)
+      noutputs;
+    let output_tensors = CArray.to_list output_tensors in
+    List.iter (Gc.finalise Wrapper_generated.C.Tensor.free) output_tensors;
+    output_tensors
+
   let load filename =
     let m = load filename in
     Gc.finalise free m;

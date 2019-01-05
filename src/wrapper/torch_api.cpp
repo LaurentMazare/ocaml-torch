@@ -395,7 +395,33 @@ tensor atm_forward(module m, tensor *tensors, int ntensors) {
     std::vector<torch::jit::IValue> inputs;
     for (int i = 0; i < ntensors; ++i)
       inputs.push_back(*(tensors[i]));
-    return new torch::Tensor((*m)->forward(inputs).toTensor());
+    torch::jit::IValue output = (*m)->forward(inputs);
+    if (!output.isTensor())
+      caml_failwith("forward did not return a tensor");
+    return new torch::Tensor(output.toTensor());
+  )
+}
+
+void atm_forward_multi(module m,
+                       tensor *tensors,
+                       int ntensors,
+                       tensor *out_tensors,
+                       int nout_tensors) {
+  PROTECT(
+    std::vector<torch::jit::IValue> inputs;
+    for (int i = 0; i < ntensors; ++i)
+      inputs.push_back(*(tensors[i]));
+    torch::jit::IValue output = (*m)->forward(inputs);
+    if (!output.isTuple())
+      caml_failwith("forward did not return a tuple");
+    auto outputs = output.toTuple()->elements();
+    if (nout_tensors != outputs.size())
+      caml_failwith("forward did not return the expected number of tensors");
+    for (int i = 0; i < nout_tensors; ++i)
+      if (!outputs[i].isTensor())
+        caml_failwith("forward did not return a flat tuple of tensors");
+    for (int i = 0; i < nout_tensors; ++i)
+      out_tensors[i] = new torch::Tensor(outputs[i].toTensor());
   )
 }
 

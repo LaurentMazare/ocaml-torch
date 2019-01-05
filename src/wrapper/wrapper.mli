@@ -125,4 +125,5 @@ module Module : sig
   type t
   val load : string -> t
   val forward : t -> Tensor.t list -> Tensor.t
+  val forward_multi : t -> Tensor.t list -> noutputs:int -> Tensor.t list
 end
