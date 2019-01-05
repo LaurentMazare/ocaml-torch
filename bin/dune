@@ -1,4 +1,4 @@
 (executable
  (name tensor_tools)
  (modules tensor_tools)
- (libraries base cmdliner npy torch_core torch torch_vision))
+ (libraries base cmdliner npy torch_core stdio torch torch_vision))
