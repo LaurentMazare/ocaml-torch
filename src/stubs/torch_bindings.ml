@@ -169,6 +169,26 @@ module C(F: Cstubs.FOREIGN) = struct
     let set_benchmark_cudnn = foreign "atc_set_benchmark_cudnn" (int @-> returning void)
   end
 
+  module Ivalue = struct
+    type t = unit ptr
+    let t : t typ = ptr void
+
+    let to_int64 = foreign "ati_to_int" (t @-> returning int64_t)
+    let to_double = foreign "ati_to_double" (t @-> returning double)
+    let to_tensor = foreign "ati_to_tensor" (t @-> returning Tensor.t)
+    let tuple_length = foreign "ati_tuple_length" (t @-> returning int)
+    let to_tuple = foreign "ati_to_tuple" (t @-> ptr t @-> int @-> returning void)
+
+    let tensor = foreign "ati_tensor" (Tensor.t @-> returning t)
+    let int64 = foreign "ati_int" (int64_t @-> returning t)
+    let double = foreign "ati_double" (float @-> returning t)
+    let tuple = foreign "ati_tuple" (ptr t @-> int @-> returning t)
+
+    let tag = foreign "ati_tag" (t @-> returning int)
+
+    let free = foreign "ati_free" (t @-> returning void)
+  end
+
   module Module = struct
     type t = unit ptr
     let t : t typ = ptr void

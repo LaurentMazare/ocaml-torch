@@ -8,6 +8,7 @@ typedef torch::Tensor *tensor;
 typedef torch::Scalar *scalar;
 typedef torch::optim::Optimizer *optimizer;
 typedef std::shared_ptr<torch::jit::script::Module> *module;
+typedef torch::jit::IValue *ivalue;
 #define PROTECT(x) \
   try { \
     x \
@@ -19,6 +20,7 @@ typedef void *tensor;
 typedef void *optimizer;
 typedef void *scalar;
 typedef void *module;
+typedef void *ivalue;
 #endif
 
 void at_manual_seed(int64_t);
@@ -110,6 +112,21 @@ void atm_forward_multi(module,
                        tensor *out_tensors,
                        int nout_tensors);
 void atm_free(module);
+
+ivalue ati_tensor(tensor);
+ivalue ati_int(int64_t);
+ivalue ati_double(double);
+ivalue ati_tuple(ivalue *, int);
+
+tensor ati_to_tensor(ivalue);
+int64_t ati_to_int(ivalue);
+double ati_to_double(ivalue);
+int ati_tuple_length(ivalue);
+void ati_to_tuple(ivalue, ivalue *, int);
+
+int ati_tag(ivalue);
+
+void ati_free(ivalue);
 
 #include "torch_api_generated.h"
 

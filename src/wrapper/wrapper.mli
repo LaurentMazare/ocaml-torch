@@ -121,6 +121,28 @@ module Cuda : sig
   val set_benchmark_cudnn : bool -> unit
 end
 
+module Ivalue : sig
+  module Tag : sig
+    type t =
+      | Tensor
+      | Int
+      | Double
+      | Tuple
+  end
+
+  type t
+  val tensor : Tensor.t -> t
+  val int64 : Int64.t -> t
+  val double : float -> t
+  val tuple : t list -> t
+  val tag : t -> Tag.t
+
+  val to_tensor : t -> Tensor.t
+  val to_int64 : t -> Int64.t
+  val to_double : t -> float
+  val to_tuple : t -> t list
+end
+
 module Module : sig
   type t
   val load : string -> t

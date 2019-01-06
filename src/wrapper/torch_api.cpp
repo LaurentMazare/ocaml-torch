@@ -429,4 +429,83 @@ void atm_free(module m) {
   delete(m);
 }
 
+ivalue ati_tensor(tensor t) {
+  PROTECT(
+    return new torch::jit::IValue(*t);
+  )
+}
+
+ivalue ati_int(int64_t i) {
+  PROTECT(
+    return new torch::jit::IValue(i);
+  )
+}
+
+ivalue ati_double(double d) {
+  PROTECT(
+    return new torch::jit::IValue(d);
+  )
+}
+
+ivalue ati_tuple(ivalue *is, int nvalues) {
+  PROTECT(
+    vector<torch::jit::IValue> vec;
+    for (int i = 0; i < nvalues; ++i) vec.push_back(*(is[i]));
+    return new torch::jit::IValue(torch::jit::Tuple::create(vec));
+  )
+}
+
+int ati_tag(ivalue i) {
+  PROTECT(
+    if (i->isTensor()) return 0;
+    else if (i->isInt()) return 1;
+    else if (i->isDouble()) return 2;
+    else if (i->isTuple()) return 3;
+    caml_failwith(("unsupported tag" + i->tagKind()).c_str());
+    return -1;
+  )
+}
+
+int64_t ati_to_int(ivalue i) {
+  PROTECT(
+    return i->toInt();
+  )
+}
+
+double ati_to_double(ivalue i) {
+  PROTECT(
+    return i->toDouble();
+  )
+}
+
+tensor ati_to_tensor(ivalue i) {
+  PROTECT(
+    return new torch::Tensor(i->toTensor());
+  )
+}
+
+int ati_tuple_length(ivalue i) {
+  PROTECT(
+    return i->toTuple()->elements().size();
+  )
+}
+
+void ati_to_tuple(ivalue i,
+                  ivalue *outputs,
+                  int noutputs) {
+  PROTECT(
+    auto vec = i->toTuple()->elements();
+    if (vec.size() != noutputs) {
+      caml_failwith("unexpected tuple size");
+    }
+    for (int i = 0; i < noutputs; ++i)
+      outputs[i] = new torch::jit::IValue(vec[i]);
+  )
+}
+
+
+void ati_free(ivalue i) {
+  delete(i);
+}
+
 #include "torch_api_generated.cpp.h"

@@ -304,6 +304,63 @@ module Cuda = struct
   let set_benchmark_cudnn b = set_benchmark_cudnn (if b then 1 else 0)
 end
 
+module Ivalue = struct
+  module Tag = struct
+    type t =
+      | Tensor
+      | Int
+      | Double
+      | Tuple
+  end
+  include Wrapper_generated.C.Ivalue
+
+  let tensor tensor_ =
+    let t = tensor tensor_ in
+    Gc.finalise free t;
+    t
+
+  let double d =
+    let t = double d in
+    Gc.finalise free t;
+    t
+
+  let int64 i =
+    let t = int64 i in
+    Gc.finalise free t;
+    t
+
+  let tuple ts =
+    let t =
+      tuple
+        CArray.(of_list t ts |> start)
+        (List.length ts)
+    in
+    Gc.finalise free t;
+    t
+
+  let tag t : Tag.t =
+    match tag t with
+    | 0 -> Tensor
+    | 1 -> Int
+    | 2 -> Double
+    | 3 -> Tuple
+    | otherwise ->
+      Printf.sprintf "unexpected tag %d" otherwise |> failwith
+
+  let to_tensor t =
+    let tensor = to_tensor t in
+    Gc.finalise Wrapper_generated.C.Tensor.free tensor;
+    tensor
+
+  let to_tuple t =
+    let noutputs = tuple_length t in
+    let outputs = CArray.make Wrapper_generated.C.Tensor.t noutputs in
+    to_tuple t (CArray.start outputs) noutputs;
+    let outputs = CArray.to_list outputs in
+    List.iter (Gc.finalise free) outputs;
+    outputs
+end
+
 module Module = struct
   include Wrapper_generated.C.Module
 
