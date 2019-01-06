@@ -24,3 +24,13 @@ let%expect_test _ =
   [%expect{|
         1421 -1295
       |}]
+
+let%expect_test _ =
+  let model = Module.load "../../../../src/tests/foo3.pt" in
+  let output = Module.forward model [ Tensor.of_float1 [| 1.0; 2.0; 3.0; 4.0; 5.0 |] ] in
+  Stdio.printf !"%{sexp:float}\n" (Tensor.to_float0_exn output);
+  [%expect{|
+        120
+      |}]
+
+
