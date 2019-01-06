@@ -374,17 +374,15 @@ module Module = struct
     Gc.finalise Wrapper_generated.C.Tensor.free tensor;
     tensor
 
-  let forward_multi t tensors ~noutputs =
-    let output_tensors = CArray.make Wrapper_generated.C.Tensor.t noutputs in
-    forward_multi
-      t
-      CArray.(of_list Wrapper_generated.C.Tensor.t tensors |> start)
-      (List.length tensors)
-      (CArray.start output_tensors)
-      noutputs;
-    let output_tensors = CArray.to_list output_tensors in
-    List.iter (Gc.finalise Wrapper_generated.C.Tensor.free) output_tensors;
-    output_tensors
+  let forward_ t ivalues =
+    let ivalue =
+      forward_
+        t
+        CArray.(of_list Wrapper_generated.C.Ivalue.t ivalues |> start)
+        (List.length ivalues)
+    in
+    Gc.finalise Wrapper_generated.C.Ivalue.free ivalue;
+    ivalue
 
   let load filename =
     let m = load filename in

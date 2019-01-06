@@ -106,11 +106,9 @@ void atc_set_benchmark_cudnn(int b);
 
 module atm_load(char *);
 tensor atm_forward(module, tensor *tensors, int ntensors);
-void atm_forward_multi(module,
-                       tensor *tensors,
-                       int ntensors,
-                       tensor *out_tensors,
-                       int nout_tensors);
+ivalue atm_forward_(module,
+                    ivalue *ivalues,
+                    int nivalues);
 void atm_free(module);
 
 ivalue ati_tensor(tensor);

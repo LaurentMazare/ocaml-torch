@@ -11,12 +11,11 @@ let%expect_test _ =
 
 let%expect_test _ =
   let model = Module.load "../../../../src/tests/foo2.pt" in
-  let outputs =
-    Module.forward_multi model [ Tensor.f 42.; Tensor.f 1337. ] ~noutputs:2
-  in
+  let ivalue = Module.forward_ model [ Tensor (Tensor.f 42.); Tensor (Tensor.f 1337.) ] in
+  Caml.Gc.full_major ();
   let t1, t2 =
-    match outputs with
-    | [ t1; t2 ] -> t1, t2
+    match ivalue with
+    | Tuple [ Tensor t1; Tensor t2 ] -> t1, t2
     | _ -> assert false
   in
   Stdio.printf !"%{sexp:float} %{sexp:float}\n"
