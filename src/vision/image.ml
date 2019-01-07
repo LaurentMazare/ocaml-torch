@@ -122,7 +122,7 @@ let write_image tensor ~filename =
     |> Bigarray.array1_of_genarray
   in
   match String.rsplit2 filename ~on:'.' with
-  | Some (_, "jpg") -> failwith "writing jpg images is not supported"
+  | Some (_, "jpg") -> Stb_image_write.jpg filename bigarray ~w:width ~h:height ~c:channels ~quality:90
   | Some (_, "tga") -> Stb_image_write.tga filename bigarray ~w:width ~h:height ~c:channels
   | Some (_, "bmp") -> Stb_image_write.bmp filename bigarray ~w:width ~h:height ~c:channels
   | Some (_, "png") -> Stb_image_write.png filename bigarray ~w:width ~h:height ~c:channels
