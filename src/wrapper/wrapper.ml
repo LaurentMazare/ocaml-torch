@@ -304,6 +304,10 @@ module Cuda = struct
   let set_benchmark_cudnn b = set_benchmark_cudnn (if b then 1 else 0)
 end
 
+module Thread = struct
+  include Wrapper_generated.C.Thread
+end
+
 module Ivalue = struct
   module Tag = struct
     type t =

@@ -121,6 +121,11 @@ module Cuda : sig
   val set_benchmark_cudnn : bool -> unit
 end
 
+module Thread : sig
+  val get_num_threads : unit -> int
+  val set_num_threads : int -> unit
+end
+
 module Ivalue : sig
   module Tag : sig
     type t =

@@ -169,6 +169,11 @@ module C(F: Cstubs.FOREIGN) = struct
     let set_benchmark_cudnn = foreign "atc_set_benchmark_cudnn" (int @-> returning void)
   end
 
+  module Thread = struct
+    let get_num_threads = foreign "atc_get_num_threads" (void @-> returning int)
+    let set_num_threads = foreign "atc_set_num_threads" (int @-> returning void)
+  end
+
   module Ivalue = struct
     type t = unit ptr
     let t : t typ = ptr void

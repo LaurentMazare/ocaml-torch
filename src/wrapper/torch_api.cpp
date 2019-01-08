@@ -368,6 +368,14 @@ void ats_free(scalar s) {
   delete(s);
 }
 
+int atc_get_num_threads() {
+  PROTECT(return at::get_num_threads();)
+}
+
+void atc_set_num_threads(int n) {
+  PROTECT(at::set_num_threads(n);)
+}
+
 int atc_cuda_device_count() {
   PROTECT(return torch::cuda::device_count();)
 }
