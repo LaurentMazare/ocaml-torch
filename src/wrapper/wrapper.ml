@@ -306,6 +306,19 @@ end
 
 module Thread = struct
   include Wrapper_generated.C.Thread
+  let set_num_threads num_threads =
+    let num_threads =
+      match num_threads with
+      | None -> -1
+      | Some num_threads -> num_threads
+    in
+    set_num_threads num_threads
+
+  let get_num_threads () =
+    let num_threads = get_num_threads () in
+    if num_threads < 0
+    then None
+    else Some num_threads
 end
 
 module Ivalue = struct

@@ -122,8 +122,8 @@ module Cuda : sig
 end
 
 module Thread : sig
-  val get_num_threads : unit -> int
-  val set_num_threads : int -> unit
+  val get_num_threads : unit -> int option
+  val set_num_threads : int option -> unit
 end
 
 module Ivalue : sig
