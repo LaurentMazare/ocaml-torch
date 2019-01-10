@@ -88,7 +88,7 @@ let (-=) t other = ignore (sub_ t other : t)
 let (+=) t other = ignore (add_ t other : t)
 let (/=) t other = ignore (div_ t other : t)
 let ( *=) t other = ignore (mul_ t other : t)
-let (=) = eq
+let (=) = eq1
 
 let pair_to_list (p1, p2) = [ p1; p2 ]
 let conv2d ?(padding=0, 0) ?(dilation=1, 1) ?(groups=1) input weight bias ~stride =

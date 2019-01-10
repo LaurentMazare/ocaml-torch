@@ -8,7 +8,6 @@ open Stdio
 let excluded_functions =
   Set.of_list (module String)
     [ "multi_margin_loss"; "multi_margin_loss_out"
-    ; "potrf"; "potrf_out"
     ; "log_softmax_backward_data"; "softmax_backward_data"
     ]
 

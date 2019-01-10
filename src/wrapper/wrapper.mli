@@ -67,6 +67,9 @@ module Tensor : sig
   val defined : t -> bool
 
   val copy_ : t -> src:t -> unit
+
+  val max : t -> t -> t
+  val min : t -> t -> t
 end
 
 module Optimizer : sig

@@ -164,6 +164,9 @@ module Tensor = struct
 
   let argmax t = argmax1 t ~dim:(-1) ~keepdim:false
 
+  let max = max1
+  let min = min1
+
   let copy_ t ~src = copy_ t src
 
   let defined = defined
