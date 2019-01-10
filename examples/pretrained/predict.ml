@@ -34,6 +34,7 @@ let () =
     | "resnet101.ot" -> Resnet.resnet101 vs ~num_classes:1000
     | "resnet152.ot" -> Resnet.resnet152 vs ~num_classes:1000
     | "resnet18.ot" -> Resnet.resnet18 vs ~num_classes:1000
+    | "mobilenet-v2.ot" -> Mobilenet.v2 vs ~num_classes:1000
     | otherwise ->
       Printf.failwithf "unsupported model %s, try with resnet18.ot" otherwise ()
   in
