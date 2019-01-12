@@ -11,11 +11,11 @@ module C(F: Cstubs.FOREIGN) = struct
 
     let tensor_of_data =
       foreign "at_tensor_of_data"
-        (   ptr void (* data *)
-        @-> ptr long (* dims *)
-        @-> int      (* ndims *)
-        @-> int      (* element size in bytes *)
-        @-> int      (* kind *)
+        (   ptr void    (* data *)
+        @-> ptr int64_t (* dims *)
+        @-> int         (* ndims *)
+        @-> int         (* element size in bytes *)
+        @-> int         (* kind *)
         @-> returning t)
 
     let copy_data =

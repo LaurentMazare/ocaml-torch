@@ -100,7 +100,7 @@ module Func = struct
     List.map t.args ~f:(fun { arg_name; arg_type; _ } ->
       match arg_type with
       | IntList ->
-        Printf.sprintf "long int *%s_data, int %s_len" arg_name arg_name
+        Printf.sprintf "int64_t *%s_data, int %s_len" arg_name arg_name
       | TensorList ->
         Printf.sprintf "tensor *%s_data, int %s_len" arg_name arg_name
       | TensorOptions ->
@@ -158,7 +158,7 @@ module Func = struct
       | TensorOptions -> ["int"; "int"]
       | ScalarType -> ["int"]
       | Device -> ["int"]
-      | IntList -> ["ptr long"; "int"]
+      | IntList -> ["ptr int64_t"; "int"]
       | TensorList -> ["ptr t"; "int"]
       | Scalar -> ["scalar"]
     )
@@ -189,7 +189,7 @@ module Func = struct
       match arg.arg_type with
       | IntList ->
         Printf.sprintf
-          "(List.map Signed.Long.of_int %s |> CArray.of_list long |> CArray.start) (List.length %s)"
+          "(List.map Int64.of_int %s |> CArray.of_list int64_t |> CArray.start) (List.length %s)"
           name name
       | TensorList ->
         Printf.sprintf

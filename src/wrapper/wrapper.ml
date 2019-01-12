@@ -69,7 +69,7 @@ module Tensor = struct
     let t =
       tensor_of_data
         (bigarray_start genarray ga |> to_voidp)
-        (Array.to_list dims |> List.map Signed.Long.of_int |> CArray.of_list long |> CArray.start)
+        (Array.to_list dims |> List.map Int64.of_int |> CArray.of_list int64_t |> CArray.start)
         (Array.length dims)
         (Bigarray.kind_size_in_bytes kind)
         (Kind.to_int tensor_kind)

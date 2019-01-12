@@ -23,7 +23,7 @@ tensor at_new_tensor() {
   )
 }
 
-tensor at_tensor_of_data(void *vs, long int *dims, int ndims, int element_size_in_bytes, int type) {
+tensor at_tensor_of_data(void *vs, int64_t *dims, int ndims, int element_size_in_bytes, int type) {
   PROTECT(
     torch::Tensor tensor = torch::zeros(torch::IntList(dims, ndims), torch::ScalarType(type));
     if (element_size_in_bytes != tensor.type().elementSizeInBytes())
