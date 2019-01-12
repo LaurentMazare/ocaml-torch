@@ -154,8 +154,3 @@ git clone https://github.com/LaurentMazare/ocaml-torch.git
 cd ocaml-torch
 make all
 ```
-
-## TODO
-
-* Use a GADT to add type constraints to tensor elements.
-* Make it easier to use/import datasets.
