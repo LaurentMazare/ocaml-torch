@@ -21,7 +21,7 @@ let torch_flags () =
       ]
     in
     let libs =
-      [ Printf.sprintf "-Wl,-R%s" lib_dir
+      [ Printf.sprintf "-Wl,-rpath,%s" lib_dir
       ; Printf.sprintf "-L%s" lib_dir
       ; "-lc10"; "-lcaffe2"; "-ltorch"
       ]
@@ -65,7 +65,7 @@ let libcuda_flags ~lcuda ~lnvrtc =
   if file_exists cudadir && Caml.Sys.is_directory cudadir
   then
     let libs =
-      [ Printf.sprintf "-Wl,-R%s" cudadir
+      [ Printf.sprintf "-Wl,-rpath,%s" cudadir
       ; Printf.sprintf "-L%s" cudadir
       ]
     in
@@ -95,7 +95,7 @@ let () =
       in
       let conda_libs =
         Option.value_map (Caml.Sys.getenv_opt "CONDA_PREFIX") ~f:(fun conda_prefix ->
-            [ Printf.sprintf "-Wl,-R%s/lib" conda_prefix ]) ~default:[]
+            [ Printf.sprintf "-Wl,-rpath,%s/lib" conda_prefix ]) ~default:[]
       in
       C.Flags.write_sexp "cxx_flags.sexp" (torch_flags.cflags @ cuda_flags.cflags);
       C.Flags.write_sexp "c_library_flags.sexp" (torch_flags.libs @ conda_libs @ cuda_flags.libs))
