@@ -780,10 +780,14 @@ module type S = sig
 
   val clamp :
     t ->
+    min:scalar ->
+    max:scalar ->
     t
 
   val clamp_ :
     t ->
+    min:scalar ->
+    max:scalar ->
     t
 
   val clamp_max :
@@ -821,6 +825,8 @@ module type S = sig
   val clamp_out :
     t ->
     t ->
+    min:scalar ->
+    max:scalar ->
     t
 
   val clone :

@@ -907,16 +907,16 @@ void atg_cholesky_out(tensor *out__, tensor result, tensor self, int upper) {
   )
 }
 
-void atg_clamp(tensor *out__, tensor self) {
+void atg_clamp(tensor *out__, tensor self, scalar min, scalar max) {
   PROTECT(
-    auto outputs__ = torch::clamp(*self);
+    auto outputs__ = torch::clamp(*self, *min, *max);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
-void atg_clamp_(tensor *out__, tensor self) {
+void atg_clamp_(tensor *out__, tensor self, scalar min, scalar max) {
   PROTECT(
-    auto outputs__ = torch::clamp_(*self);
+    auto outputs__ = torch::clamp_(*self, *min, *max);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -963,9 +963,9 @@ void atg_clamp_min_out(tensor *out__, tensor result, tensor self, scalar min) {
   )
 }
 
-void atg_clamp_out(tensor *out__, tensor result, tensor self) {
+void atg_clamp_out(tensor *out__, tensor result, tensor self, scalar min, scalar max) {
   PROTECT(
-    auto outputs__ = torch::clamp_out(*result, *self);
+    auto outputs__ = torch::clamp_out(*result, *self, *min, *max);
     out__[0] = new torch::Tensor(outputs__);
   )
 }

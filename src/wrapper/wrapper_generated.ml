@@ -923,16 +923,16 @@ let cholesky_out result self ~upper =
   Gc.finalise C.Tensor.free t0;
   t0
 
-let clamp self =
+let clamp self ~min ~max =
   let out__ = CArray.make t 1 in
-  stubs_clamp (CArray.start out__) self;
+  stubs_clamp (CArray.start out__) self min max;
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
-let clamp_ self =
+let clamp_ self ~min ~max =
   let out__ = CArray.make t 1 in
-  stubs_clamp_ (CArray.start out__) self;
+  stubs_clamp_ (CArray.start out__) self min max;
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
@@ -979,9 +979,9 @@ let clamp_min_out result self ~min =
   Gc.finalise C.Tensor.free t0;
   t0
 
-let clamp_out result self =
+let clamp_out result self ~min ~max =
   let out__ = CArray.make t 1 in
-  stubs_clamp_out (CArray.start out__) result self;
+  stubs_clamp_out (CArray.start out__) result self min max;
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0

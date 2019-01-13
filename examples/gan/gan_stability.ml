@@ -224,8 +224,7 @@ let () =
          |> Tensor.view ~size:[ batch_size; 3; img_size; img_size ]
          |> Tensor.to_device ~device:Cpu
          |> fun xs -> Tensor.((xs + f 1.) * f 127.5)
-         |> Tensor.clamp_min_ ~min:(Scalar.float 0.)
-         |> Tensor.clamp_max_ ~max:(Scalar.float 255.)
+         |> Tensor.clamp ~min:(Scalar.float 0.) ~max:(Scalar.float 255.)
          |> Tensor.to_type ~type_:Uint8
          |> write_samples ~filename:(Printf.sprintf "out%d.png" batch_idx)
     )

@@ -262,7 +262,7 @@ let read_yaml filename =
               in
               let default_value = Map.find arg "default" |> Option.map ~f:extract_string in
               match Func.arg_type_of_string arg_type ~is_nullable with
-              | Some Scalar when Option.is_some default_value -> None
+              | Some Scalar when Option.is_some default_value && not is_nullable -> None
               | Some arg_type ->
                 Some { Func.arg_name; arg_type; default_value }
               | None ->

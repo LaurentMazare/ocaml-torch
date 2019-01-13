@@ -522,11 +522,11 @@ module C(F: Cstubs.FOREIGN) = struct
 
   let stubs_clamp =
     foreign "atg_clamp"
-    (ptr t @-> t @-> returning void)
+    (ptr t @-> t @-> scalar @-> scalar @-> returning void)
 
   let stubs_clamp_ =
     foreign "atg_clamp_"
-    (ptr t @-> t @-> returning void)
+    (ptr t @-> t @-> scalar @-> scalar @-> returning void)
 
   let stubs_clamp_max =
     foreign "atg_clamp_max"
@@ -554,7 +554,7 @@ module C(F: Cstubs.FOREIGN) = struct
 
   let stubs_clamp_out =
     foreign "atg_clamp_out"
-    (ptr t @-> t @-> t @-> returning void)
+    (ptr t @-> t @-> t @-> scalar @-> scalar @-> returning void)
 
   let stubs_clone =
     foreign "atg_clone"

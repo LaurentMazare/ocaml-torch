@@ -22,8 +22,7 @@ let clamp_ =
     let clamp_ kind index =
       let min, max = min_max kind in
       Tensor.narrow tensor ~dim:1 ~start:index ~length:1
-      |> Tensor.clamp_min ~min:(Scalar.float min)
-      |> Tensor.clamp_max ~max:(Scalar.float max)
+      |> Tensor.clamp ~min:(Scalar.float min) ~max:(Scalar.float max)
       |> fun (_:Tensor.t) -> ()
     in
     clamp_ `red 0;
@@ -41,8 +40,7 @@ let unnormalize tensor =
   let mean_ = Tensor.float_vec mean_ |> Tensor.view ~size:[ 3; 1; 1 ] in
   let std_ = Tensor.float_vec std_ |> Tensor.view ~size:[ 3; 1; 1 ] in
   Tensor.((tensor * std_ + mean_) * f 255.)
-  |> Tensor.clamp_min_ ~min:(Scalar.float 0.)
-  |> Tensor.clamp_max_ ~max:(Scalar.float 255.)
+  |> Tensor.clamp ~min:(Scalar.float 0.) ~max:(Scalar.float 255.)
   |> Tensor.to_type ~type_:Uint8
 
 let load_image filename =
