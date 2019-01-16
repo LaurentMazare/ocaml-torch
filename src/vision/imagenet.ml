@@ -30,15 +30,18 @@ let clamp_ =
     clamp_ `blue 2;
     tensor
 
+let mean_ = lazy (Tensor.float_vec mean_ |> Tensor.view ~size:[ 3; 1; 1 ])
+let std_ = lazy (Tensor.float_vec std_ |> Tensor.view ~size:[ 3; 1; 1 ])
+
 let normalize tensor =
-  let mean_ = Tensor.float_vec mean_ |> Tensor.view ~size:[ 3; 1; 1 ] in
-  let std_ = Tensor.float_vec std_ |> Tensor.view ~size:[ 3; 1; 1 ] in
+  let mean_ = Lazy.force mean_ in
+  let std_ = Lazy.force std_ in
   let tensor = Tensor.to_type tensor ~type_:Float in
   Tensor.((tensor / f 255. - mean_) / std_)
 
 let unnormalize tensor =
-  let mean_ = Tensor.float_vec mean_ |> Tensor.view ~size:[ 3; 1; 1 ] in
-  let std_ = Tensor.float_vec std_ |> Tensor.view ~size:[ 3; 1; 1 ] in
+  let mean_ = Lazy.force mean_ in
+  let std_ = Lazy.force std_ in
   Tensor.((tensor * std_ + mean_) * f 255.)
   |> Tensor.clamp ~min:(Scalar.float 0.) ~max:(Scalar.float 255.)
   |> Tensor.to_type ~type_:Uint8

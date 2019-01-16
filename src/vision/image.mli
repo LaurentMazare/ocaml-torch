@@ -26,3 +26,12 @@ val load_dataset
   -> Dataset_helper.t
 
 val write_image : Tensor.t -> filename:string -> unit
+
+module Loader : sig
+  type t
+  val create : ?resize:(int * int) -> dir:string -> unit -> t
+  val random_batch : t -> batch_size:int -> Tensor.t
+
+  val reset : t -> unit
+  val next_batch : t -> batch_size:int -> Tensor.t option
+end

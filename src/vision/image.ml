@@ -65,6 +65,9 @@ let load_image ?resize image_file =
   |> Result.map_error ~f:(fun (`Msg msg) -> Error.of_string msg)
 
 let image_suffixes = [ ".jpg"; ".png" ]
+let has_image_suffix filename =
+  List.exists image_suffixes ~f:(fun suffix -> String.is_suffix filename ~suffix)
+
 
 let load_images ?resize dir =
   if not (Caml.Sys.is_directory dir)
@@ -72,7 +75,7 @@ let load_images ?resize dir =
   let files = Caml.Sys.readdir dir |> Array.to_list in
   Stdio.printf "%d files found in %s\n%!" (List.length files) dir;
   List.filter_map files ~f:(fun filename ->
-    if List.exists image_suffixes ~f:(fun suffix -> String.is_suffix filename ~suffix)
+    if has_image_suffix filename
     then begin
       match load_image (Caml.Filename.concat dir filename) ?resize with
       | Ok image -> Some image
@@ -128,3 +131,60 @@ let write_image tensor ~filename =
   | Some (_, "png") -> Stb_image_write.png filename bigarray ~w:width ~h:height ~c:channels
   | Some _
   | None -> Stb_image_write.png (filename ^ ".png") bigarray ~w:width ~h:height ~c:channels
+
+(* TODO: think about how to do a multi-threaded version of this. *)
+module Loader = struct
+  type t =
+    { dir_and_filenames : (string * string) array
+    ; mutable current_index : int
+    ; resize : (int * int) option
+    }
+
+  let nsamples t = Array.length t.dir_and_filenames
+
+  let create ?resize ~dir () =
+    if not (Caml.Sys.is_directory dir)
+    then Printf.failwithf "not a directory %s" dir ();
+    let dir_and_filenames = ref [] in
+    let rec walk_dir dir =
+      Caml.Sys.readdir dir
+      |> Array.iter ~f:(fun file ->
+        let next_dir = Caml.Filename.concat dir file in
+        if Caml.Sys.is_directory next_dir
+        then walk_dir next_dir
+        else if has_image_suffix file
+        then dir_and_filenames := (dir, file) :: !dir_and_filenames)
+    in
+    walk_dir dir;
+    { dir_and_filenames = Array.of_list !dir_and_filenames
+    ; current_index = 0
+    ; resize
+    }
+
+  let reset t = t.current_index <- 0
+
+  let next_batch t ~batch_size =
+    let nsamples = nsamples t in
+    let batch_size = Int.min batch_size (nsamples - t.current_index) in
+    if batch_size = 0
+    then None
+    else begin
+      let batch =
+        List.init batch_size ~f:(fun i ->
+          let dir, file = t.dir_and_filenames.(t.current_index + i) in
+          load_image ?resize:t.resize (Caml.Filename.concat dir file)
+          |> Or_error.ok_exn)
+        |> Tensor.cat ~dim:0
+      in
+      t.current_index <- t.current_index + batch_size;
+      Some batch
+    end
+
+  let random_batch t ~batch_size =
+    let nsamples = nsamples t in
+    List.init batch_size ~f:(fun _ ->
+      let dir, file = t.dir_and_filenames.(Random.int nsamples) in
+      load_image ?resize:t.resize (Caml.Filename.concat dir file)
+      |> Or_error.ok_exn)
+    |> Tensor.cat ~dim:0
+end
