@@ -18,3 +18,13 @@ module Classes : sig
   val names : string array
   val top : Tensor.t -> k:int -> (string * float) list
 end
+
+module Loader : sig
+  type t
+  (* [resize] to 224x224 by default. *)
+  val create : ?resize:(int * int) -> dir:string -> unit -> t
+  val random_batch : t -> batch_size:int -> Tensor.t
+
+  val reset : t -> unit
+  val next_batch : t -> batch_size:int -> Tensor.t option
+end

@@ -1089,3 +1089,18 @@ module Classes = struct
       let class_index = Tensor.get_int1 indexes i in
       names.(class_index), Tensor.get_float1 vs class_index)
 end
+
+module Loader = struct
+  type t = Image.Loader.t
+
+  let create ?(resize = (224, 224)) ~dir () = Image.Loader.create ~resize ~dir ()
+  let random_batch t ~batch_size =
+    Image.Loader.random_batch t ~batch_size
+    |> normalize
+
+  let reset = Image.Loader.reset
+
+  let next_batch t ~batch_size =
+    Image.Loader.next_batch t ~batch_size
+    |> Option.map ~f:normalize
+end
