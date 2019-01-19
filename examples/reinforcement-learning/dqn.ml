@@ -1,6 +1,8 @@
 open Base
 open Torch
 
+let total_episodes = 500
+
 type state = Tensor.t
 
 module Transition = struct
@@ -9,6 +11,7 @@ module Transition = struct
     ; action : int
     ; next_state : state
     ; reward : float
+    ; is_done : bool
     }
 
   let batch_states ts =
@@ -28,6 +31,11 @@ module Transition = struct
     List.map ts ~f:(fun t -> t.action)
     |> Array.of_list
     |> Tensor.of_int1
+
+  let batch_continue ts =
+    List.map ts ~f:(fun t -> if t.is_done then 0. else 1.)
+    |> Array.of_list
+    |> Tensor.of_float1
 end
 
 module Replay_memory : sig
@@ -67,9 +75,9 @@ end = struct
 end
 
 let linear_model vs ~input_dim actions_dim =
-  let linear1 = Layer.linear vs ~input_dim 128 in
-  let linear2 = Layer.linear vs ~input_dim:128 128 in
-  let linear3 = Layer.linear vs ~input_dim:128 actions_dim in
+  let linear1 = Layer.linear vs ~input_dim 24 in
+  let linear2 = Layer.linear vs ~input_dim:24 24 in
+  let linear3 = Layer.linear vs ~input_dim:24 actions_dim in
   Layer.of_fn (fun xs ->
     Layer.apply linear1 xs
     |> Tensor.relu
@@ -124,7 +132,7 @@ end = struct
     { model
     ; memory
     ; actions
-    ; batch_size = 128
+    ; batch_size = 32
     ; gamma = 0.99
     ; epsilon = 0.01
     ; optimizer
@@ -152,16 +160,19 @@ end = struct
       let next_states = Transition.batch_next_states transitions in
       let actions = Transition.batch_actions transitions in
       let rewards = Transition.batch_rewards transitions in
+      let continue = Transition.batch_continue transitions in
       let qvalues =
         Layer.apply t.model states
         |> Tensor.gather ~dim:1 ~index:(Tensor.unsqueeze actions ~dim:1)
         |> Tensor.squeeze1 ~dim:1
       in
-      let next_qvalues, _ =
-        Layer.apply t.model next_states
-        |> Tensor.max2 ~dim:1 ~keepdim:false
+      let next_qvalues =
+        Tensor.no_grad (fun () ->
+          Layer.apply t.model next_states
+          |> Tensor.max2 ~dim:1 ~keepdim:false
+          |> fst)
       in
-      let expected_qvalues = Tensor.(rewards + f t.gamma * next_qvalues) in
+      let expected_qvalues = Tensor.(rewards + f t.gamma * next_qvalues * continue) in
       let loss = Tensor.mse_loss qvalues expected_qvalues in
       Optimizer.backward_step t.optimizer ~loss;
       Some (Tensor.to_float0_exn loss)
@@ -180,21 +191,31 @@ let gym_training () =
   in
   let instance_id = G.env_create "CartPole-v1" in
   let agent = DqnAgent.create ~state_dim:4 ~actions:2 ~memory_capacity:5000 in
-  for episode_idx = 1 to 10000 do
+  let is_learning = ref true in
+  for episode_idx = 1 to total_episodes do
     let init = G.env_reset instance_id in
     let rec loop state acc_reward =
       let action = DqnAgent.action agent state in
-      let response = G.env_step instance_id { action } false in
+      if not !is_learning
+      then Unix.sleepf 0.1;
+      let response = G.env_step instance_id { action } (not !is_learning) in
       let next_state = state_of_observation response.step_observation in
       let reward = response.step_reward in
-      DqnAgent.transition_feedback agent { state; action; next_state; reward };
-      let _loss = DqnAgent.learn agent in
+      DqnAgent.transition_feedback
+        agent { state; action; next_state; reward; is_done = response.step_done };
+      if !is_learning
+      then begin
+        let loss = DqnAgent.learn agent in
+        Option.iter loss ~f:ignore;
+      end;
       let acc_reward = reward +. acc_reward in
       if response.step_done
       then acc_reward
       else loop next_state acc_reward
     in
     let reward = loop (state_of_observation init.observation) 0. in
+    if Float.(>) reward 450.
+    then is_learning := false;
     Stdio.printf "%d %f\n%!" episode_idx reward;
   done;
   G.env_close instance_id
