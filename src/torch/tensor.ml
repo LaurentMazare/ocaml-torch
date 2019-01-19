@@ -337,3 +337,7 @@ let of_int3 f =
 
 let minimum t = view t ~size:[ -1 ] |> min_values ~dim:0 ~keepdim:false
 let maximum t = view t ~size:[ -1 ] |> max_values ~dim:0 ~keepdim:false
+
+let flatten t =
+  let batch_size = shape t |> List.hd_exn in
+  view t ~size:[ batch_size; -1 ]

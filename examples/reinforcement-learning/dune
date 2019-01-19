@@ -1,0 +1,3 @@
+(executables
+  (names dqn)
+  (libraries base torch_core torch stdio))

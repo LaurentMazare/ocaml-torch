@@ -178,3 +178,5 @@ val print_shape : ?name:string -> t -> unit
 
 val minimum : t -> t
 val maximum : t -> t
+
+val flatten : t -> t
