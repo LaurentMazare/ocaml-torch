@@ -75,37 +75,15 @@ end = struct
 end
 
 let linear_model vs ~input_dim actions_dim =
-  let linear1 = Layer.linear vs ~input_dim 24 in
-  let linear2 = Layer.linear vs ~input_dim:24 24 in
-  let linear3 = Layer.linear vs ~input_dim:24 actions_dim in
+  let linear1 = Layer.linear vs ~input_dim 8 in
+  let linear2 = Layer.linear vs ~input_dim:8 4 in
+  let linear3 = Layer.linear vs ~input_dim:4 actions_dim in
   Layer.of_fn (fun xs ->
     Layer.apply linear1 xs
     |> Tensor.relu
     |> Layer.apply linear2
     |> Tensor.relu
     |> Layer.apply linear3)
-
-let cnn_model vs =
-  let conv2d = Layer.conv2d_ vs ~ksize:5 ~stride:2 in
-  let conv1 = conv2d ~input_dim:3 16 in
-  let bn1 = Layer.batch_norm2d vs 16 in
-  let conv2 = conv2d ~input_dim:16 32 in
-  let bn2 = Layer.batch_norm2d vs 32 in
-  let conv3 = conv2d ~input_dim:32 32 in
-  let bn3 = Layer.batch_norm2d vs 32 in
-  let linear = Layer.linear vs ~input_dim:448 (* or 512 ? *) 2 in
-  Layer.of_fn_ (fun xs ~is_training ->
-    Layer.apply conv1 xs
-    |> Layer.apply_ bn1 ~is_training
-    |> Tensor.relu
-    |> Layer.apply conv2
-    |> Layer.apply_ bn2 ~is_training
-    |> Tensor.relu
-    |> Layer.apply conv3
-    |> Layer.apply_ bn3 ~is_training
-    |> Tensor.relu
-    |> Tensor.flatten
-    |> Layer.apply linear)
 
 module DqnAgent : sig
   type t
@@ -134,7 +112,7 @@ end = struct
     ; actions
     ; batch_size = 32
     ; gamma = 0.99
-    ; epsilon = 0.01
+    ; epsilon = 0.1
     ; optimizer
     }
 
@@ -182,43 +160,32 @@ end = struct
 end
 
 (* Hard-code dimensions to CartPole-v1 for the time being. *)
-let gym_training () =
-  let module G = Openai_gym.Gym_client in
-  let state_of_observation obs =
-    Yojson.Basic.Util.to_list obs
-    |> List.map ~f:Yojson.Basic.Util.to_number
-    |> Tensor.float_vec
-  in
-  let instance_id = G.env_create "CartPole-v1" in
+let gym_training (module E : Env_intf.S) =
+  let env = E.create "CartPole-v1" in
   let agent = DqnAgent.create ~state_dim:4 ~actions:2 ~memory_capacity:5000 in
   let is_learning = ref true in
   for episode_idx = 1 to total_episodes do
-    let init = G.env_reset instance_id in
     let rec loop state acc_reward =
       let action = DqnAgent.action agent state in
       if not !is_learning
       then Unix.sleepf 0.1;
-      let response = G.env_step instance_id { action } (not !is_learning) in
-      let next_state = state_of_observation response.step_observation in
-      let reward = response.step_reward in
-      DqnAgent.transition_feedback
-        agent { state; action; next_state; reward; is_done = response.step_done };
+      let { Env_intf.obs = next_state; reward; is_done } =
+        E.step env ~action ~render:(not !is_learning)
+      in
+      DqnAgent.transition_feedback agent { state; action; next_state; reward; is_done };
       if !is_learning
       then begin
         let loss = DqnAgent.learn agent in
         Option.iter loss ~f:ignore;
       end;
       let acc_reward = reward +. acc_reward in
-      if response.step_done
-      then acc_reward
-      else loop next_state acc_reward
+      if is_done then acc_reward else loop next_state acc_reward
     in
-    let reward = loop (state_of_observation init.observation) 0. in
+    let reward = loop (E.reset env) 0. in
     if Float.(>) reward 450.
     then is_learning := false;
     Stdio.printf "%d %f\n%!" episode_idx reward;
-  done;
-  G.env_close instance_id
+  done
 
 let () =
-  gym_training ()
+  gym_training (module Env_gym_http_api)
