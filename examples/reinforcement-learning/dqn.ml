@@ -90,7 +90,7 @@ module DqnAgent : sig
   type t
   val create : state_dim:int -> actions:int -> memory_capacity:int -> t
   val action : t -> state -> int
-  val learn : t -> float option
+  val experience_replay : t -> unit
   val transition_feedback : t -> Transition.t -> unit
 end = struct
   type t =
@@ -99,7 +99,9 @@ end = struct
     ; actions : int
     ; batch_size : int
     ; gamma : float
-    ; epsilon : float
+    ; epsilon_decay : float
+    ; epsilon_min : float
+    ; mutable epsilon : float
     ; optimizer : Optimizer.t
     }
 
@@ -113,7 +115,9 @@ end = struct
     ; actions
     ; batch_size = 32
     ; gamma = 0.99
-    ; epsilon = 0.1
+    ; epsilon_decay = 0.995
+    ; epsilon_min = 0.01
+    ; epsilon = 1.
     ; optimizer
     }
 
@@ -131,7 +135,7 @@ end = struct
       |> fun xs -> xs.(0)
     end else Random.int t.actions
 
-  let learn t =
+  let experience_replay t =
     if t.batch_size <= Replay_memory.length t.memory
     then begin
       let transitions = Replay_memory.sample t.memory ~batch_size:t.batch_size in
@@ -154,8 +158,8 @@ end = struct
       let expected_qvalues = Tensor.(rewards + f t.gamma * next_qvalues * continue) in
       let loss = Tensor.mse_loss qvalues expected_qvalues in
       Optimizer.backward_step t.optimizer ~loss;
-      Some (Tensor.to_float0_exn loss)
-    end else None
+      t.epsilon <- Float.max t.epsilon_min (t.epsilon *. t.epsilon_decay)
+    end
 
   let transition_feedback t transition = Replay_memory.push t.memory transition
 end
@@ -163,28 +167,17 @@ end
 (* Hard-code dimensions to CartPole-v1 for the time being. *)
 let gym_training (module E : Env_intf.S) =
   let env = E.create "CartPole-v1" in
-  let agent = DqnAgent.create ~state_dim:4 ~actions:2 ~memory_capacity:5000 in
-  let is_learning = ref true in
+  let agent = DqnAgent.create ~state_dim:4 ~actions:2 ~memory_capacity:1_000_000 in
   for episode_idx = 1 to total_episodes do
     let rec loop state acc_reward =
       let action = DqnAgent.action agent state in
-      if not !is_learning
-      then Unix.sleepf 0.1;
-      let { Env_intf.obs = next_state; reward; is_done } =
-        E.step env ~action ~render:(not !is_learning)
-      in
+      let { Env_intf.obs = next_state; reward; is_done } = E.step env ~action ~render:false in
       DqnAgent.transition_feedback agent { state; action; next_state; reward; is_done };
-      if !is_learning
-      then begin
-        let loss = DqnAgent.learn agent in
-        Option.iter loss ~f:ignore;
-      end;
+      DqnAgent.experience_replay agent;
       let acc_reward = reward +. acc_reward in
       if is_done then acc_reward else loop next_state acc_reward
     in
     let reward = loop (E.reset env) 0. in
-    if Float.(>) reward 450.
-    then is_learning := false;
     Stdio.printf "%d %f\n%!" episode_idx reward;
   done
 
