@@ -76,9 +76,9 @@ end = struct
 end
 
 let linear_model vs ~input_dim actions_dim =
-  let linear1 = Layer.linear vs ~input_dim 8 in
-  let linear2 = Layer.linear vs ~input_dim:8 4 in
-  let linear3 = Layer.linear vs ~input_dim:4 actions_dim in
+  let linear1 = Layer.linear vs ~input_dim 24 in
+  let linear2 = Layer.linear vs ~input_dim:24 24 in
+  let linear3 = Layer.linear vs ~input_dim:24 actions_dim in
   Layer.of_fn (fun xs ->
     Layer.apply linear1 xs
     |> Tensor.relu
