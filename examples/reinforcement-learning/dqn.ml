@@ -2,6 +2,7 @@ open Base
 open Torch
 
 let total_episodes = 500
+let env = `pyml (* or `http *)
 
 type state = Tensor.t
 
@@ -188,4 +189,5 @@ let gym_training (module E : Env_intf.S) =
   done
 
 let () =
-  gym_training (module Env_gym_http_api)
+  gym_training
+    (match env with `pyml -> (module Env_gym_pyml) | `http -> (module Env_gym_http_api))

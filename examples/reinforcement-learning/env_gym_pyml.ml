@@ -9,10 +9,14 @@ let create str =
   let gym = Py.import "gym" in
   Py.Module.get_function gym "make" [| Py.String.of_string str |]
 
-let to_tensor np = Numpy.to_bigarray Float32 C_layout np |> Tensor.of_bigarray
+let to_tensor np =
+  Numpy.to_bigarray Float64 C_layout np
+  |> Tensor.of_bigarray
+  |> Tensor.to_type ~type_:Float
 
 let reset t =
-  Py.Object.call_method t "reset" [||]
+  let reset_fn = Py.Object.get_attr_string t "reset" in
+  Py.Callable.to_function (Option.value_exn reset_fn) [||]
   |> to_tensor
 
 let step t ~action ~render:_ =
