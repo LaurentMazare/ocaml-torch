@@ -74,50 +74,34 @@ end = struct
       Queue.get t.memory index)
 end
 
-let cnn_model vs actions =
-  let conv2d = Layer.conv2d_ vs ~ksize:5 ~stride:2 in
-  let conv1 = conv2d ~input_dim:1 16 in
-  let bn1 = Layer.batch_norm2d vs 16 in
-  let conv2 = conv2d ~input_dim:16 32 in
-  let bn2 = Layer.batch_norm2d vs 32 in
-  let conv3 = conv2d ~input_dim:32 32 in
-  let bn3 = Layer.batch_norm2d vs 32 in
-  let linear = Layer.linear vs ~input_dim:(7 * 7 * 32) actions in
-  Layer.of_fn_ (fun xs ~is_training ->
-    Layer.apply conv1 xs
-    |> Layer.apply_ bn1 ~is_training
+let model vs actions =
+  let linear1 = Layer.linear vs ~input_dim:(80 * 80) 200 in
+  let linear2 = Layer.linear vs ~input_dim:200 actions in
+  Layer.of_fn (fun xs ->
+    Tensor.flatten xs
+    |> Layer.apply linear1
     |> Tensor.relu
-    |> Layer.apply conv2
-    |> Layer.apply_ bn2 ~is_training
-    |> Tensor.relu
-    |> Layer.apply conv3
-    |> Layer.apply_ bn3 ~is_training
-    |> Tensor.relu
-    |> Tensor.flatten
-    |> Layer.apply linear)
+    |> Layer.apply linear2)
 
 module DqnAgent : sig
   type t
   val create : actions:int -> memory_capacity:int -> t
-  val action : t -> state -> int
+  val action : t -> state -> total_frames:int -> int
   val experience_replay : t -> unit
   val transition_feedback : t -> Transition.t -> unit
 end = struct
   type t =
-    { model : Layer.t_with_training
+    { model : Layer.t
     ; memory : Transition.t Replay_memory.t
     ; actions : int
     ; batch_size : int
     ; gamma : float
-    ; epsilon_decay : float
-    ; epsilon_min : float
-    ; mutable epsilon : float
     ; optimizer : Optimizer.t
     }
 
   let create ~actions ~memory_capacity =
     let vs = Var_store.create ~name:"dqn" () in
-    let model = cnn_model vs actions in
+    let model = model vs actions in
     let memory = Replay_memory.create ~capacity:memory_capacity in
     let optimizer = Optimizer.adam vs ~learning_rate:1e-3 in
     { model
@@ -125,20 +109,16 @@ end = struct
     ; actions
     ; batch_size = 32
     ; gamma = 0.99
-    ; epsilon_decay = 0.995
-    ; epsilon_min = 0.01
-    ; epsilon = 1.
     ; optimizer
     }
 
-  let action t state =
+  let action t state ~total_frames =
     (* epsilon-greedy action choice. *)
-    if Float.(<) t.epsilon (Random.float 1.)
+    let epsilon = Float.max 0.02 (1. -. Float.of_int total_frames /. 100_000.) in
+    if Float.(<) epsilon (Random.float 1.)
     then begin
       let qvalues =
-        Tensor.no_grad (fun () ->
-          Tensor.unsqueeze state ~dim:0
-          |> Layer.apply_ t.model ~is_training:false)
+        Tensor.no_grad (fun () -> Tensor.unsqueeze state ~dim:0 |> Layer.apply t.model)
       in
       Tensor.argmax1 qvalues ~dim:1 ~keepdim:false
       |> Tensor.to_int1_exn
@@ -155,20 +135,17 @@ end = struct
       let rewards = Transition.batch_rewards transitions in
       let continue = Transition.batch_continue transitions in
       let qvalues =
-        Layer.apply_ t.model states ~is_training:true
+        Layer.apply t.model states
         |> Tensor.gather ~dim:1 ~index:(Tensor.unsqueeze actions ~dim:1)
         |> Tensor.squeeze1 ~dim:1
       in
       let next_qvalues =
         Tensor.no_grad (fun () ->
-          Layer.apply_ t.model next_states ~is_training:false
-          |> Tensor.max2 ~dim:1 ~keepdim:false
-          |> fst)
+          Layer.apply t.model next_states |> Tensor.max2 ~dim:1 ~keepdim:false |> fst)
       in
       let expected_qvalues = Tensor.(rewards + f t.gamma * next_qvalues * continue) in
       let loss = Tensor.mse_loss qvalues expected_qvalues in
       Optimizer.backward_step t.optimizer ~loss;
-      t.epsilon <- Float.max t.epsilon_min (t.epsilon *. t.epsilon_decay)
     end
 
   let transition_feedback t transition = Replay_memory.push t.memory transition
@@ -195,18 +172,22 @@ let preprocess () =
 
 let () =
   let module E = Env_gym_pyml in
-  let env = E.create "PongNoFrameskip-v3" in
+  let env = E.create "Pong-v0" in
   let agent = DqnAgent.create ~actions:2 ~memory_capacity:50_000 in
+  let total_frames = ref 0 in
   for episode_idx = 1 to total_episodes do
     let preprocess = preprocess () in
     let rec loop state acc_reward =
-      let action = DqnAgent.action agent state in
-      let { Env_intf.obs = next_state; reward; is_done } = E.step env ~action ~render:false in
+      let action = DqnAgent.action agent state ~total_frames:!total_frames in
+      let { Env_intf.obs = next_state; reward; is_done } = E.step env ~action:(2 + action) ~render:false in
       let next_state = preprocess next_state in
       DqnAgent.transition_feedback agent { state; action; next_state; reward; is_done };
       DqnAgent.experience_replay agent;
       Caml.Gc.full_major ();
+      Int.incr total_frames;
       let acc_reward = reward +. acc_reward in
+      if Float.(<>) reward 0.
+      then Stdio.printf "reward: %.0f total: %.0f (%d frames)\n%!" reward acc_reward !total_frames;
       if is_done then acc_reward else loop next_state acc_reward
     in
     let reward = loop (E.reset env |> preprocess) 0. in
