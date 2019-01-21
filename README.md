@@ -46,8 +46,11 @@ Then create a `dune` file with the following content:
   (libraries torch))
 ```
 
-Run `dune build example.exe` to compile the program and
-`_build/default/example.exe` to run it!
+Run `dune exec example.exe` to compile the program and run it!
+
+Alternatively you can first compile the code via `dune build example.exe` then run the executable
+`_build/default/example.exe` (note that building the bytecode target `example.bc` may
+not work on macos).
 
 ## Tutorials
 
