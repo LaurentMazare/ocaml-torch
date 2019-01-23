@@ -56,7 +56,7 @@ not work on macos).
 
 * [MNIST tutorial](https://github.com/LaurentMazare/ocaml-torch/tree/master/examples/mnist).
 * [Finetuning a ResNet-18 model](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/pretrained/).
-* [Generative Adverserial Networks](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/gan).
+* [Generative Adversarial Networks](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/gan).
 * [Running some Python model](https://github.com/LaurentMazare/ocaml-torch/tree/master/examples/jit).
 
 ## Examples

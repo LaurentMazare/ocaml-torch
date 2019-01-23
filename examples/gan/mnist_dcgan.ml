@@ -1,4 +1,4 @@
-(* Deep Convolutional Generative Adverserial Networks trained on the MNIST dataset.
+(* Deep Convolutional Generative Adversarial Networks trained on the MNIST dataset.
    https://arxiv.org/abs/1511.06434
 *)
 open Base

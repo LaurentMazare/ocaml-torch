@@ -1,4 +1,4 @@
-[Generative Adverserial Networks](https://en.wikipedia.org/wiki/Generative_adversarial_network)
+[Generative Adversarial Networks](https://en.wikipedia.org/wiki/Generative_adversarial_network)
 (GAN) were introduced in 2014 by Goodfellow et al<sup>[1](#bib1)</sup>. 
 These networks are generative models: after training a GAN on a dataset the goal
 is to produce content very similar to what the original dataset holds.

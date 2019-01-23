@@ -1,4 +1,4 @@
-(* Conditional Generative Adverserial Nets trained on the MNIST dataset. *)
+(* Conditional Generative Adversarial Nets trained on the MNIST dataset. *)
 open Base
 open Torch
 

@@ -1,4 +1,4 @@
-(* Generative Adverserial Networks trained on the MNIST dataset. *)
+(* Generative Adversarial Networks trained on the MNIST dataset. *)
 open Base
 open Torch
 
