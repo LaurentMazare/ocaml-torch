@@ -105,7 +105,7 @@ end = struct
     }
 
   let create ~actions ~memory_capacity =
-    let target_vs = Var_store.create ~name:"target-dqn" () in
+    let target_vs = Var_store.create ~frozen:true ~name:"target-dqn" () in
     let target_model = model target_vs actions in
     let vs = Var_store.create ~name:"dqn" () in
     let model = model vs actions in
@@ -174,8 +174,9 @@ let preprocess () =
       (* RGB to grey conversion. *)
       Tensor.(d 0 ~factor:0.299 + d 1 ~factor:0.587 + d 2 ~factor:0.114)
       |> Tensor.narrow ~dim:0 ~start:35 ~length:160
+      |> Tensor.slice ~dim:0 ~start:0 ~end_:160 ~step:2
+      |> Tensor.slice ~dim:1 ~start:0 ~end_:160 ~step:2
       |> Tensor.unsqueeze ~dim:0
-      |> Tensor.avg_pool2d ~ksize:(2, 2)
     in
     let diff =
       match !prev_img with
@@ -187,9 +188,10 @@ let preprocess () =
 
 let () =
   let module E = Env_gym_pyml in
-  let env = E.create "Pong-v0" in
+  let env = E.create "PongDeterministic-v4" in
   let agent = DqnAgent.create ~actions:2 ~memory_capacity:50_000 in
   let total_frames = ref 0 in
+  let subepisode_frames = ref 0 in
   for episode_idx = 1 to total_episodes do
     let preprocess = preprocess () in
     let rec loop state acc_reward =
@@ -200,13 +202,18 @@ let () =
       DqnAgent.experience_replay agent;
       Caml.Gc.full_major ();
       Int.incr total_frames;
+      Int.incr subepisode_frames;
 
       if !total_frames % update_target_every = 0
       then DqnAgent.update_target_model agent;
 
       let acc_reward = reward +. acc_reward in
       if Float.(<>) reward 0.
-      then Stdio.printf "reward: %.0f total: %.0f (%d frames)\n%!" reward acc_reward !total_frames;
+      then begin
+        Stdio.printf "reward: %4.0f total: %6.0f (%d/%d frames)\n%!"
+          reward acc_reward ! subepisode_frames !total_frames;
+        subepisode_frames := 0;
+      end;
       if is_done then acc_reward else loop next_state acc_reward
     in
     let reward = loop (E.reset env |> preprocess) 0. in
