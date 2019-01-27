@@ -2,6 +2,7 @@ open Base
 open Torch
 
 let total_episodes = 500
+let update_target_every = 1_000
 
 type state = Tensor.t
 
@@ -89,9 +90,13 @@ module DqnAgent : sig
   val action : t -> state -> total_frames:int -> int
   val experience_replay : t -> unit
   val transition_feedback : t -> Transition.t -> unit
+  val update_target_model : t -> unit
 end = struct
   type t =
     { model : Layer.t
+    ; target_model : Layer.t
+    ; vs : Var_store.t
+    ; target_vs : Var_store.t
     ; memory : Transition.t Replay_memory.t
     ; actions : int
     ; batch_size : int
@@ -100,21 +105,30 @@ end = struct
     }
 
   let create ~actions ~memory_capacity =
+    let target_vs = Var_store.create ~name:"target-dqn" () in
+    let target_model = model target_vs actions in
     let vs = Var_store.create ~name:"dqn" () in
     let model = model vs actions in
     let memory = Replay_memory.create ~capacity:memory_capacity in
-    let optimizer = Optimizer.adam vs ~learning_rate:1e-3 in
+    let optimizer =
+      Optimizer.rmsprop vs ~learning_rate:0.0025 ~alpha:0.9 ~eps:0.01 ~momentum:0.0
+    in
     { model
+    ; target_model
+    ; vs
+    ; target_vs
     ; memory
     ; actions
-    ; batch_size = 32
+    ; batch_size = 64
     ; gamma = 0.99
     ; optimizer
     }
 
+  let update_target_model t = Var_store.copy ~src:t.vs ~dst:t.target_vs
+
   let action t state ~total_frames =
     (* epsilon-greedy action choice. *)
-    let epsilon = Float.max 0.02 (1. -. Float.of_int total_frames /. 100_000.) in
+    let epsilon = Float.max 0.02 (0.5 -. Float.of_int total_frames /. 1_000_000.) in
     if Float.(<) epsilon (Random.float 1.)
     then begin
       let qvalues =
@@ -141,7 +155,7 @@ end = struct
       in
       let next_qvalues =
         Tensor.no_grad (fun () ->
-          Layer.apply t.model next_states |> Tensor.max2 ~dim:1 ~keepdim:false |> fst)
+          Layer.apply t.target_model next_states |> Tensor.max2 ~dim:1 ~keepdim:false |> fst)
       in
       let expected_qvalues = Tensor.(rewards + f t.gamma * next_qvalues * continue) in
       let loss = Tensor.mse_loss qvalues expected_qvalues in
@@ -157,6 +171,7 @@ let preprocess () =
   fun state ->
     let d i ~factor = Tensor.(select state ~dim:2 ~index:i * f (factor /. 255.)) in
     let img =
+      (* RGB to grey conversion. *)
       Tensor.(d 0 ~factor:0.299 + d 1 ~factor:0.587 + d 2 ~factor:0.114)
       |> Tensor.narrow ~dim:0 ~start:35 ~length:160
       |> Tensor.unsqueeze ~dim:0
@@ -185,6 +200,10 @@ let () =
       DqnAgent.experience_replay agent;
       Caml.Gc.full_major ();
       Int.incr total_frames;
+
+      if !total_frames % update_target_every = 0
+      then DqnAgent.update_target_model agent;
+
       let acc_reward = reward +. acc_reward in
       if Float.(<>) reward 0.
       then Stdio.printf "reward: %.0f total: %.0f (%d frames)\n%!" reward acc_reward !total_frames;

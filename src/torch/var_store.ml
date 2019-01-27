@@ -39,6 +39,15 @@ let unfreeze t =
 
 let all_vars t = Hashtbl.to_alist t.all_tensors_by_name
 
+let copy ~src ~dst =
+  Tensor.no_grad (fun () ->
+    Hashtbl.iteri dst.all_tensors_by_name ~f:(fun ~key ~data ->
+      match Hashtbl.find src.all_tensors_by_name key with
+      | Some src -> Tensor.copy_ data ~src
+      | None ->
+        Printf.failwithf "cannot find var %s from var-store %s in %s"
+          key dst.name src.name ()))
+
 let name t = t.name
 let device t = t.device
 

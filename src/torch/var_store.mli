@@ -42,3 +42,5 @@ val default_name : t -> N.t option -> string -> N.t
 
 val freeze : t -> unit
 val unfreeze : t -> unit
+
+val copy : src:t -> dst:t -> unit
