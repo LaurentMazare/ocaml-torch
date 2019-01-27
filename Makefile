@@ -16,11 +16,18 @@ ALL = examples/char_rnn/char_rnn.exe \
       examples/pretrained/predict.exe \
       bin/tensor_tools.exe
 
+RL = examples/reinforcement-learning/dqn.exe \
+		 examples/reinforcement-learning/dqn_pong.exe \
+		 examples/reinforcement-learning/a2c.exe
+
 %.exe: .FORCE
 	dune build $@
 
 all: .FORCE
 	dune build $(ALL)
+
+rl: .FORCE
+	dune build $(RL)
 
 gen: .FORCE
 	dune build src/gen/gen.exe

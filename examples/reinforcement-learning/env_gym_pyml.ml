@@ -1,6 +1,12 @@
 open Base
 open Torch
 
+type step =
+  { obs : Tensor.t
+  ; reward : float
+  ; is_done : bool
+  }
+
 type t =
   { env : Pytypes.pyobject
   ; np : Pytypes.pyobject
@@ -29,7 +35,7 @@ let reset t =
 let step t ~action ~render:_ =
   let v = Py.Object.call_method t.env "step" [| Py.Int.of_int action |] in
   let obs, reward, is_done, _ = Py.Tuple.to_tuple4 v in
-  { Env_intf.obs = to_tensor t obs
+  { obs = to_tensor t obs
   ; reward = Py.Float.to_float reward
   ; is_done = Py.Bool.to_bool is_done
   }

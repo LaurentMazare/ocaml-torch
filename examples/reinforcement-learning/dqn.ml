@@ -2,7 +2,6 @@ open Base
 open Torch
 
 let total_episodes = 500
-let env = `pyml (* or `http *)
 
 type state = Tensor.t
 
@@ -165,13 +164,14 @@ end = struct
 end
 
 (* Hard-code dimensions to CartPole-v1 for the time being. *)
-let gym_training (module E : Env_intf.S) =
+let () =
+  let module E = Env_gym_pyml in
   let env = E.create "CartPole-v1" in
   let agent = DqnAgent.create ~state_dim:4 ~actions:2 ~memory_capacity:1_000_000 in
   for episode_idx = 1 to total_episodes do
     let rec loop state acc_reward =
       let action = DqnAgent.action agent state in
-      let { Env_intf.obs = next_state; reward; is_done } = E.step env ~action ~render:false in
+      let { E.obs = next_state; reward; is_done } = E.step env ~action ~render:false in
       DqnAgent.transition_feedback agent { state; action; next_state; reward; is_done };
       DqnAgent.experience_replay agent;
       let acc_reward = reward +. acc_reward in
@@ -180,7 +180,3 @@ let gym_training (module E : Env_intf.S) =
     let reward = loop (E.reset env) 0. in
     Stdio.printf "%d %f\n%!" episode_idx reward;
   done
-
-let () =
-  gym_training
-    (match env with `pyml -> (module Env_gym_pyml) | `http -> (module Env_gym_http_api))

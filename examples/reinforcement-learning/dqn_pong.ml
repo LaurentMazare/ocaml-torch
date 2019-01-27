@@ -3,6 +3,7 @@ open Torch
 
 let total_episodes = 500
 let update_target_every = 1_000
+let verbose = false
 
 type state = Tensor.t
 
@@ -91,6 +92,7 @@ module DqnAgent : sig
   val experience_replay : t -> unit
   val transition_feedback : t -> Transition.t -> unit
   val update_target_model : t -> unit
+  val var_store : t -> Var_store.t
 end = struct
   type t =
     { model : Layer.t
@@ -123,6 +125,8 @@ end = struct
     ; gamma = 0.99
     ; optimizer
     }
+
+  let var_store t = t.vs (* Only store the main network weights. *)
 
   let update_target_model t = Var_store.copy ~src:t.vs ~dst:t.target_vs
 
@@ -191,31 +195,34 @@ let () =
   let env = E.create "PongDeterministic-v4" in
   let agent = DqnAgent.create ~actions:2 ~memory_capacity:50_000 in
   let total_frames = ref 0 in
-  let subepisode_frames = ref 0 in
   for episode_idx = 1 to total_episodes do
+    let episode_frames = ref 0 in
     let preprocess = preprocess () in
     let rec loop state acc_reward =
       let action = DqnAgent.action agent state ~total_frames:!total_frames in
-      let { Env_intf.obs = next_state; reward; is_done } = E.step env ~action:(2 + action) ~render:false in
+      let { E.obs = next_state; reward; is_done } = E.step env ~action:(2 + action) ~render:false in
       let next_state = preprocess next_state in
       DqnAgent.transition_feedback agent { state; action; next_state; reward; is_done };
       DqnAgent.experience_replay agent;
       Caml.Gc.full_major ();
       Int.incr total_frames;
-      Int.incr subepisode_frames;
+      Int.incr episode_frames;
 
       if !total_frames % update_target_every = 0
       then DqnAgent.update_target_model agent;
 
       let acc_reward = reward +. acc_reward in
-      if Float.(<>) reward 0.
-      then begin
-        Stdio.printf "reward: %4.0f total: %6.0f (%d/%d frames)\n%!"
-          reward acc_reward ! subepisode_frames !total_frames;
-        subepisode_frames := 0;
-      end;
+      if verbose && Float.(<>) reward 0.
+      then
+        Stdio.printf "reward: %4.0f total: %6.0f (%d frames)\n%!"
+          reward acc_reward !total_frames;
       if is_done then acc_reward else loop next_state acc_reward
     in
     let reward = loop (E.reset env |> preprocess) 0. in
-    Stdio.printf "%d %f\n%!" episode_idx reward;
+    Stdio.printf "%d %f (%d/%d frames)\n%!" episode_idx reward !episode_frames !total_frames;
+    if episode_idx % 10 = 0
+    then
+      Serialize.save_multi
+        ~named_tensors:(DqnAgent.var_store agent |> Var_store.all_vars)
+        ~filename:(Printf.sprintf "dqn-pong-%d.ckpt" episode_idx)
   done
