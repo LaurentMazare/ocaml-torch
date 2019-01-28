@@ -1,3 +1,3 @@
 (executables
   (names a2c dqn dqn_pong)
-  (libraries base torch_core torch stdio yojson pyml))
+  (libraries base torch_core torch stdio pyml))

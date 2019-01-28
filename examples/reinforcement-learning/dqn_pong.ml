@@ -200,7 +200,7 @@ let () =
     let preprocess = preprocess () in
     let rec loop state acc_reward =
       let action = DqnAgent.action agent state ~total_frames:!total_frames in
-      let { E.obs = next_state; reward; is_done } = E.step env ~action:(2 + action) ~render:false in
+      let { E.obs = next_state; reward; is_done } = E.step env ~action:(2 + action) in
       let next_state = preprocess next_state in
       DqnAgent.transition_feedback agent { state; action; next_state; reward; is_done };
       DqnAgent.experience_replay agent;

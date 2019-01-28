@@ -1,3 +1,4 @@
+module PyNumpy = Numpy
 open Base
 open Torch
 
@@ -32,7 +33,7 @@ let reset t =
   Py.Callable.to_function (Option.value_exn reset_fn) [||]
   |> to_tensor t
 
-let step t ~action ~render:_ =
+let step t ~action =
   let v = Py.Object.call_method t.env "step" [| Py.Int.of_int action |] in
   let obs, reward, is_done, _ = Py.Tuple.to_tuple4 v in
   { obs = to_tensor t obs

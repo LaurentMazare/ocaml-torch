@@ -10,4 +10,4 @@ type t
 
 val create : string -> t
 val reset : t -> Tensor.t
-val step : t -> action:int -> render:bool -> step
+val step : t -> action:int -> step
