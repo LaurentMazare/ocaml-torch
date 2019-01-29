@@ -171,7 +171,7 @@ let () =
   for episode_idx = 1 to total_episodes do
     let rec loop state acc_reward =
       let action = DqnAgent.action agent state in
-      let { E.obs = next_state; reward; is_done } = E.step env ~action ~render:false in
+      let { E.obs = next_state; reward; is_done } = E.step env ~action in
       DqnAgent.transition_feedback agent { state; action; next_state; reward; is_done };
       DqnAgent.experience_replay agent;
       let acc_reward = reward +. acc_reward in
