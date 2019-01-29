@@ -1,4 +1,3 @@
-module PyNumpy = Numpy
 open Base
 open Torch
 

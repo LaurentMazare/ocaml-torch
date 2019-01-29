@@ -109,17 +109,21 @@ let load_dataset ~dir ~classes ~with_cache ~resize =
   | Some cache_file -> Dataset_helper.read_with_cache ~cache_file ~read
 
 let write_image tensor ~filename =
-  let tensor, height, width, channels =
+  let tensor, height, width, channels, hcw =
     match Tensor.shape tensor with
     | [ 1; channels; b; c ] when channels = 1 || channels = 3 ->
-        Tensor.reshape tensor ~shape:[ channels; b; c ], b, c, channels
-    | [ channels; b; c ] when channels = 1 || channels = 3 -> tensor, b, c, channels
+        Tensor.reshape tensor ~shape:[ channels; b; c ], b, c, channels, true
+    | [ channels; b; c ] when channels = 1 || channels = 3 -> tensor, b, c, channels, true
+    | [ b; c; channels ] when channels = 1 || channels = 3 -> tensor, b, c, channels, false
     | _ -> Printf.failwithf "unexpected shape %s" (Tensor.shape_str tensor) ()
   in
   let bigarray =
-    Tensor.permute tensor ~dims:[ 1; 2; 0 ]
-    |> Tensor.contiguous
-    |> Tensor.view ~size:[ channels * height * width ]
+    let tensor =
+      if hcw
+      then Tensor.permute tensor ~dims:[ 1; 2; 0 ] |> Tensor.contiguous
+      else tensor
+    in
+    Tensor.view tensor ~size:[ channels * height * width ]
     |> Tensor.to_type ~type_:Uint8
     |> Tensor.to_bigarray ~kind:Int8_unsigned
     |> Bigarray.array1_of_genarray

@@ -4,6 +4,7 @@ open Torch
 let total_episodes = 500
 let update_target_every = 1_000
 let verbose = false
+let render = false
 
 type state = Tensor.t
 
@@ -190,10 +191,21 @@ let preprocess () =
     prev_img := Some img;
     diff
 
+let maybe_load_weights agent =
+  match Sys.argv with
+  | [| _ |] -> ()
+  | [| _; filename |] ->
+      Serialize.load_multi_
+        ~named_tensors:(DqnAgent.var_store agent |> Var_store.all_vars)
+        ~filename;
+      DqnAgent.update_target_model agent
+  | _ -> Printf.failwithf "usage: %s [weights]" Sys.argv.(0) ()
+
 let () =
   let module E = Env_gym_pyml in
   let env = E.create "PongDeterministic-v4" in
   let agent = DqnAgent.create ~actions:2 ~memory_capacity:50_000 in
+  maybe_load_weights agent;
   let total_frames = ref 0 in
   for episode_idx = 1 to total_episodes do
     let episode_frames = ref 0 in
@@ -201,6 +213,10 @@ let () =
     let rec loop state acc_reward =
       let action = DqnAgent.action agent state ~total_frames:!total_frames in
       let { E.obs = next_state; reward; is_done } = E.step env ~action:(2 + action) in
+      if render
+      then
+        Torch_vision.Image.write_image next_state
+          ~filename:(Printf.sprintf "out%d.png" !total_frames);
       let next_state = preprocess next_state in
       DqnAgent.transition_feedback agent { state; action; next_state; reward; is_done };
       DqnAgent.experience_replay agent;
