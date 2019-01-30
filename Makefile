@@ -17,6 +17,7 @@ ALL = examples/char_rnn/char_rnn.exe \
       bin/tensor_tools.exe
 
 RL = examples/reinforcement-learning/dqn.exe \
+		 examples/reinforcement-learning/dqn_atari.exe \
 		 examples/reinforcement-learning/dqn_pong.exe \
 		 examples/reinforcement-learning/a2c.exe
 

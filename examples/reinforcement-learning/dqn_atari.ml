@@ -1,9 +1,10 @@
 open Base
 open Torch
 
-let total_episodes = 500
+let num_stack = 4
+let total_episodes = 1_000
 let update_target_every = 1_000
-let verbose = false
+let memory_capacity = 50_000
 let render = false
 
 type state = Tensor.t
@@ -62,10 +63,20 @@ end = struct
 end
 
 let model vs actions =
-  let linear1 = Layer.linear vs ~input_dim:(80 * 80) 200 in
-  let linear2 = Layer.linear vs ~input_dim:200 actions in
+  let conv1 = Layer.conv2d_ vs ~ksize:8 ~stride:4 ~input_dim:num_stack 16 in
+  let conv2 = Layer.conv2d_ vs ~ksize:4 ~stride:2 ~input_dim:16 32 in
+  let linear1 = Layer.linear vs ~input_dim:2816 256 in
+  let linear2 = Layer.linear vs ~input_dim:256 actions in
   Layer.of_fn (fun xs ->
-      Tensor.flatten xs |> Layer.apply linear1 |> Tensor.relu |> Layer.apply linear2 )
+      Tensor.(to_type xs ~type_:Float * f (1. /. 255.))
+      |> Layer.apply conv1
+      |> Tensor.relu
+      |> Layer.apply conv2
+      |> Tensor.relu
+      |> Tensor.flatten
+      |> Layer.apply linear1
+      |> Tensor.relu
+      |> Layer.apply linear2 )
 
 module DqnAgent : sig
   type t
@@ -153,26 +164,27 @@ end = struct
   let transition_feedback t transition = Replay_memory.push t.memory transition
 end
 
-(* Initial shape is (210, 160, 3), convert to (1, 80, 80) and take the diff. *)
+(* Initial shape is (210, 160, 3), convert to num_stack grayscale images of size (105, 80).
+   Use Uint8 for the final result to reduce memory consumption.
+*)
 let preprocess () =
-  let prev_img = ref None in
+  let stacked_frames = Tensor.zeros [num_stack; 105; 80] ~kind:Uint8 in
   fun state ->
-    let d i ~factor = Tensor.(select state ~dim:2 ~index:i * f (factor /. 255.)) in
+    let d i ~factor = Tensor.(select state ~dim:2 ~index:i * f factor) in
     let img =
       (* RGB to grey conversion. *)
       Tensor.(d 0 ~factor:0.299 + d 1 ~factor:0.587 + d 2 ~factor:0.114)
-      |> Tensor.narrow ~dim:0 ~start:35 ~length:160
-      |> Tensor.slice ~dim:0 ~start:0 ~end_:160 ~step:2
+      |> Tensor.slice ~dim:0 ~start:0 ~end_:210 ~step:2
       |> Tensor.slice ~dim:1 ~start:0 ~end_:160 ~step:2
-      |> Tensor.unsqueeze ~dim:0
+      |> Tensor.to_type ~type_:Uint8
     in
-    let diff =
-      match !prev_img with
-      | None -> Tensor.zeros_like img
-      | Some prev_img -> Tensor.(img - prev_img)
-    in
-    prev_img := Some img;
-    diff
+    for frame_index = 1 to num_stack - 1 do
+      Tensor.copy_
+        (Tensor.get stacked_frames (frame_index - 1))
+        ~src:(Tensor.get stacked_frames frame_index)
+    done;
+    Tensor.copy_ (Tensor.get stacked_frames (num_stack - 1)) ~src:img;
+    stacked_frames
 
 let maybe_load_weights agent =
   match Sys.argv with
@@ -184,47 +196,71 @@ let maybe_load_weights agent =
     DqnAgent.update_target_model agent
   | _ -> Printf.failwithf "usage: %s [weights]" Sys.argv.(0) ()
 
+module E = struct
+  type t =
+    { fire_action : int option
+    ; env : Env_gym_pyml.t
+    ; preprocess : state -> state
+    ; lives : int
+    ; mutable total_frames : int }
+
+  let create () =
+    let env = Env_gym_pyml.create "BreakoutDeterministic-v4" in
+    let fire_action =
+      let actions = Env_gym_pyml.actions env in
+      Stdio.printf "actions: %s\n%!" (String.concat ~sep:"," actions);
+      List.find_mapi actions ~f:(fun i -> function "FIRE" -> Some i | _ -> None)
+    in
+    let lives = Env_gym_pyml.lives env in
+    {fire_action; env; preprocess = preprocess (); lives; total_frames = 0}
+
+  let reset t =
+    let first_obs = Env_gym_pyml.reset t.env in
+    t.preprocess
+      (match t.fire_action with
+      | None -> first_obs
+      | Some action -> Env_gym_pyml.((step t.env ~action).obs))
+
+  let step t ~action =
+    let {Env_gym_pyml.obs; reward; is_done} =
+      Env_gym_pyml.step t.env ~action:(2 + action)
+    in
+    if render
+    then
+      Torch_vision.Image.write_image
+        obs
+        ~filename:(Printf.sprintf "/tmp/out%d.png" t.total_frames);
+    t.total_frames <- t.total_frames + 1;
+    let lives = Env_gym_pyml.lives t.env in
+    (* Episodic Life *)
+    t.preprocess obs, reward, is_done || lives <> t.lives
+end
+
 let () =
-  let module E = Env_gym_pyml in
-  let env = E.create "PongDeterministic-v4" in
-  let agent = DqnAgent.create ~actions:2 ~memory_capacity:50_000 in
+  let env = E.create () in
+  let agent = DqnAgent.create ~actions:2 ~memory_capacity in
   maybe_load_weights agent;
-  let total_frames = ref 0 in
   for episode_idx = 1 to total_episodes do
     let episode_frames = ref 0 in
-    let preprocess = preprocess () in
     let rec loop state acc_reward =
-      let action = DqnAgent.action agent state ~total_frames:!total_frames in
-      let {E.obs = next_state; reward; is_done} = E.step env ~action:(2 + action) in
-      if render
-      then
-        Torch_vision.Image.write_image
-          next_state
-          ~filename:(Printf.sprintf "out%d.png" !total_frames);
-      let next_state = preprocess next_state in
+      let action = DqnAgent.action agent state ~total_frames:env.total_frames in
+      let next_state, reward, is_done = E.step env ~action in
       DqnAgent.transition_feedback agent {state; action; next_state; reward; is_done};
       DqnAgent.experience_replay agent;
       Caml.Gc.full_major ();
-      Int.incr total_frames;
       Int.incr episode_frames;
-      if !total_frames % update_target_every = 0 then DqnAgent.update_target_model agent;
+      if env.total_frames % update_target_every = 0
+      then DqnAgent.update_target_model agent;
       let acc_reward = reward +. acc_reward in
-      if verbose && Float.( <> ) reward 0.
-      then
-        Stdio.printf
-          "reward: %4.0f total: %6.0f (%d frames)\n%!"
-          reward
-          acc_reward
-          !total_frames;
       if is_done then acc_reward else loop next_state acc_reward
     in
-    let reward = loop (E.reset env |> preprocess) 0. in
+    let reward = loop (E.reset env) 0. in
     Stdio.printf
       "%d %f (%d/%d frames)\n%!"
       episode_idx
       reward
       !episode_frames
-      !total_frames;
+      env.total_frames;
     if episode_idx % 10 = 0
     then
       Serialize.save_multi
