@@ -2,7 +2,7 @@ open Base
 open Torch
 
 let num_stack = 4
-let total_episodes = 1_000
+let total_episodes = 1_000_000
 let update_target_every = 1_000
 let memory_capacity = 50_000
 let render = false
@@ -261,7 +261,7 @@ let () =
       reward
       !episode_frames
       env.total_frames;
-    if episode_idx % 10 = 0
+    if episode_idx % 500 = 0
     then
       Serialize.save_multi
         ~named_tensors:(DqnAgent.var_store agent |> Var_store.all_vars)
