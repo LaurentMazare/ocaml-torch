@@ -43,14 +43,18 @@ let torch_flags () =
           else None
         else None)
     |> function
-    | [] -> empty_flags
-    | lib_dir :: _ -> config ~include_dir:(lib_dir /^ "include") ~lib_dir
+    | [] -> None
+    | lib_dir :: _ -> Some (config ~include_dir:(lib_dir /^ "include") ~lib_dir)
   in
   match Caml.Sys.getenv_opt "LIBTORCH" with
   | Some l -> config ~include_dir:(l /^ "include") ~lib_dir:(l /^ "lib")
   | None ->
-    match Caml.Sys.getenv_opt "CONDA_PREFIX" with
-    | Some conda_prefix -> conda_config ~conda_prefix
+    let conda_flags =
+      Option.bind (Caml.Sys.getenv_opt "CONDA_PREFIX") ~f:(fun conda_prefix ->
+        conda_config ~conda_prefix)
+    in
+    match conda_flags with
+    | Some conda_flags -> conda_flags
     | None ->
       match Caml.Sys.getenv_opt "OPAM_SWITCH_PREFIX" with
       | Some prefix ->
