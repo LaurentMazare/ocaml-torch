@@ -10,6 +10,8 @@ let render = false
 type state = Tensor.t
 
 module Transition = struct
+  (* This way of storing transition is very inefficient as the data is duplicated
+     between [state] and [num_state], as well as because of stacking. *)
   type t =
     { state : state
     ; action : int
@@ -219,7 +221,7 @@ module E = struct
     ; mutable total_frames : int }
 
   let create () =
-    let env = Env_gym_pyml.create "BreakoutDeterministic-v4" in
+    let env = Env_gym_pyml.create "BreakoutNoFrameskip-v4" in
     let fire_action =
       let actions = Env_gym_pyml.actions env in
       Stdio.printf "actions: %s\n%!" (String.concat ~sep:"," actions);
