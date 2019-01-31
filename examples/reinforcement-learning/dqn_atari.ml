@@ -4,7 +4,7 @@ open Torch
 let num_stack = 4
 let total_episodes = 1_000_000
 let update_target_every = 1_000
-let memory_capacity = 50_000
+let memory_capacity = 100_000
 let render = false
 
 type state = Tensor.t
@@ -100,14 +100,20 @@ end = struct
     ; optimizer : Optimizer.t }
 
   let create ~actions ~memory_capacity =
-    let target_vs = Var_store.create ~frozen:true ~name:"target-dqn" () in
+    let device =
+      if Cuda.is_available ()
+      then (
+        Stdio.printf "Using cuda, devices: %d\n%!" (Cuda.device_count ());
+        Cuda.set_benchmark_cudnn true;
+        Torch_core.Device.Cuda )
+      else Torch_core.Device.Cpu
+    in
+    let target_vs = Var_store.create ~frozen:true ~name:"target-dqn" ~device () in
     let target_model = model target_vs actions in
-    let vs = Var_store.create ~name:"dqn" () in
+    let vs = Var_store.create ~name:"dqn" ~device () in
     let model = model vs actions in
     let memory = Replay_memory.create ~capacity:memory_capacity in
-    let optimizer =
-      Optimizer.rmsprop vs ~learning_rate:0.0025 ~alpha:0.9 ~eps:0.01 ~momentum:0.0
-    in
+    let optimizer = Optimizer.adam vs ~learning_rate:6e-5 in
     { model
     ; target_model
     ; vs
@@ -130,7 +136,11 @@ end = struct
     if Float.( < ) epsilon (Random.float 1.)
     then
       let qvalues =
-        Tensor.no_grad (fun () -> Tensor.unsqueeze state ~dim:0 |> Layer.apply t.model)
+        let device = Var_store.device t.vs in
+        Tensor.no_grad (fun () ->
+            Tensor.unsqueeze state ~dim:0
+            |> Tensor.to_device ~device
+            |> Layer.apply t.model )
       in
       Tensor.argmax1 qvalues ~dim:1 ~keepdim:false
       |> Tensor.to_int1_exn
@@ -140,12 +150,15 @@ end = struct
   let experience_replay t =
     if t.batch_size <= Replay_memory.length t.memory
     then
+      let device = Var_store.device t.vs in
       let transitions = Replay_memory.sample t.memory ~batch_size:t.batch_size in
-      let states = Transition.batch_states transitions in
-      let next_states = Transition.batch_next_states transitions in
-      let actions = Transition.batch_actions transitions in
-      let rewards = Transition.batch_rewards transitions in
-      let continue = Transition.batch_continue transitions in
+      let states = Transition.batch_states transitions |> Tensor.to_device ~device in
+      let next_states =
+        Transition.batch_next_states transitions |> Tensor.to_device ~device
+      in
+      let actions = Transition.batch_actions transitions |> Tensor.to_device ~device in
+      let rewards = Transition.batch_rewards transitions |> Tensor.to_device ~device in
+      let continue = Transition.batch_continue transitions |> Tensor.to_device ~device in
       let qvalues =
         Layer.apply t.model states
         |> Tensor.gather ~dim:1 ~index:(Tensor.unsqueeze actions ~dim:1)
@@ -158,7 +171,7 @@ end = struct
             |> fst )
       in
       let expected_qvalues = Tensor.(rewards + (f t.gamma * next_qvalues * continue)) in
-      let loss = Tensor.mse_loss qvalues expected_qvalues in
+      let loss = Tensor.huber_loss qvalues expected_qvalues in
       Optimizer.backward_step t.optimizer ~loss
 
   let transition_feedback t transition = Replay_memory.push t.memory transition
@@ -177,6 +190,7 @@ let preprocess () =
       |> Tensor.slice ~dim:0 ~start:0 ~end_:210 ~step:2
       |> Tensor.slice ~dim:1 ~start:0 ~end_:160 ~step:2
       |> Tensor.to_type ~type_:Uint8
+      |> Tensor.flip ~dims:[0; 1]
     in
     for frame_index = 1 to num_stack - 1 do
       Tensor.copy_
@@ -246,8 +260,8 @@ let () =
       let action = DqnAgent.action agent state ~total_frames:env.total_frames in
       let next_state, reward, is_done = E.step env ~action in
       DqnAgent.transition_feedback agent {state; action; next_state; reward; is_done};
-      DqnAgent.experience_replay agent;
-      Caml.Gc.full_major ();
+      if env.total_frames % 4 = 0 then DqnAgent.experience_replay agent;
+      if env.total_frames % 100 = 0 then Caml.Gc.full_major ();
       Int.incr episode_frames;
       if env.total_frames % update_target_every = 0
       then DqnAgent.update_target_model agent;
