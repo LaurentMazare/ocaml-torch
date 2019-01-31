@@ -5,16 +5,16 @@ open Torch
 let%expect_test _ =
   let t = Tensor.(f 41. + f 1.) in
   Stdio.printf !"%{sexp:float}\n" (Tensor.to_float0_exn t);
-  [%expect{|
+  [%expect {|
         42
       |}];
-  let t = Tensor.float_vec [ 1.; 42.; 1337. ] in
+  let t = Tensor.float_vec [1.; 42.; 1337.] in
   Stdio.printf !"%{sexp:float array}\n" Tensor.(to_float1_exn (t * t));
-  [%expect{|
+  [%expect {|
         (1 1764 1787569)
       |}];
   Stdio.printf !"%{sexp:float array}\n" Tensor.(to_float1_exn (t + f 1.5));
-  [%expect{|
+  [%expect {|
         (2.5 43.5 1338.5)
       |}]
 
@@ -24,9 +24,10 @@ let%expect_test _ =
   t.%.{[1; 1]} <- 42.0;
   t.%.{[3; 0]} <- 1.337;
   for i = 0 to 3 do
-    Stdio.printf "%f %f\n" t.%.{[i; 0]} t.%.{[i; 1]};
+    Stdio.printf "%f %f\n" (t.%.{[i; 0]}) (t.%.{[i; 1]})
   done;
-  [%expect{|
+  [%expect
+    {|
         0.000000 0.000000
         0.000000 42.000000
         0.000000 0.000000
@@ -40,43 +41,40 @@ let%expect_test _ =
   narrow t ~dim:0 ~start:1 ~length:3 += f 2.;
   narrow t ~dim:1 ~start:1 ~length:1 -= f 3.;
   Stdio.printf !"%{sexp:float array array}\n" (Tensor.to_float2_exn t);
-  [%expect{| ((1 -2) (3 0) (3 0) (3 0) (1 -2)) |}]
+  [%expect {| ((1 -2) (3 0) (3 0) (3 0) (1 -2)) |}]
 
 let%expect_test _ =
   let t = List.init 5 ~f:Float.of_int |> Tensor.float_vec in
   let array = Tensor.to_float1_exn t in
-  let array_narrow =
-    Tensor.narrow t ~dim:0 ~start:1 ~length:3
-    |> Tensor.to_float1_exn
-  in
+  let array_narrow = Tensor.narrow t ~dim:0 ~start:1 ~length:3 |> Tensor.to_float1_exn in
   Stdio.printf !"%{sexp:float array}\n" array;
   Stdio.printf !"%{sexp:float array}\n" array_narrow;
-  [%expect{|
+  [%expect {|
     (0 1 2 3 4)
     (1 2 3) |}]
 
 let%expect_test _ =
-  let t = Tensor.of_int2 [| [| 3; 4; 5 |]; [| 2; 3; 4 |] |] in
+  let t = Tensor.of_int2 [|[|3; 4; 5|]; [|2; 3; 4|]|] in
   Tensor.(narrow t ~dim:1 ~start:0 ~length:1 += of_int0 42);
   Stdio.printf !"%{sexp:int array array}\n" (Tensor.to_int2_exn t);
-  [%expect{| ((45 4 5) (44 3 4)) |}]
+  [%expect {| ((45 4 5) (44 3 4)) |}]
 
 let%expect_test _ =
-  let t = Tensor.zeros [ 2; 3; 2 ] in
+  let t = Tensor.zeros [2; 3; 2] in
   let u = Tensor.narrow t ~dim:1 ~start:1 ~length:2 in
   let v = Tensor.get u 1 in
   let w = Tensor.copy v in
   Tensor.(w += f 1.);
   Stdio.printf !"%{sexp:float array array}\n" (Tensor.to_float2_exn w);
-  [%expect{| ((1 1) (1 1)) |}];
+  [%expect {| ((1 1) (1 1)) |}];
   Stdio.printf !"%{sexp:float array array array}\n" (Tensor.to_float3_exn t);
-  [%expect{| (((0 0) (0 0) (0 0)) ((0 0) (0 0) (0 0))) |}];
+  [%expect {| (((0 0) (0 0) (0 0)) ((0 0) (0 0) (0 0))) |}];
   Tensor.(v += f 1.);
   Stdio.printf !"%{sexp:float array array array}\n" (Tensor.to_float3_exn t);
-  [%expect{| (((0 0) (0 0) (0 0)) ((0 0) (1 1) (1 1))) |}]
+  [%expect {| (((0 0) (0 0) (0 0)) ((0 0) (1 1) (1 1))) |}]
 
 let%expect_test _ =
-  let logits = Tensor.of_float1 [| -1.; 0.5; 0.25; 0.; 2.; 4.; -1. |] in
+  let logits = Tensor.of_float1 [|-1.; 0.5; 0.25; 0.; 2.; 4.; -1.|] in
   let eval_and_print ~target =
     let bce1 =
       Tensor.(bce_loss (sigmoid logits) ~targets:(ones_like logits * f target))
@@ -86,19 +84,28 @@ let%expect_test _ =
     in
     let bce3 =
       Tensor.(
-        - f target * log (sigmoid logits)
-        - (f 1. - f target) * log (f 1. - sigmoid logits))
+        (-f target * log (sigmoid logits))
+        - ((f 1. - f target) * log (f 1. - sigmoid logits)))
       |> Tensor.mean
     in
-    Stdio.printf !"%{sexp:float} %{sexp:float} %{sexp:float}\n"
+    Stdio.printf
+      !"%{sexp:float} %{sexp:float} %{sexp:float}\n"
       (Tensor.to_float0_exn bce1)
       (Tensor.to_float0_exn bce2)
       (Tensor.to_float0_exn bce3)
   in
   eval_and_print ~target:0.;
-  [%expect{| 1.3235377073287964 1.3235379457473755 1.3235377073287964 |}];
+  [%expect {| 1.3235377073287964 1.3235379457473755 1.3235377073287964 |}];
   eval_and_print ~target:0.5;
-  [%expect{| 0.98425197601318359 0.98425209522247314 0.98425191640853882 |}];
+  [%expect {| 0.98425197601318359 0.98425209522247314 0.98425191640853882 |}];
   eval_and_print ~target:1.;
-  [%expect{| 0.64496642351150513 0.64496642351150513 0.64496642351150513 |}]
+  [%expect {| 0.64496642351150513 0.64496642351150513 0.64496642351150513 |}]
 
+let%expect_test _ =
+  let vs = Tensor.of_float1 [|-1.01; -1.; -0.99; 0.5; 0.25; 0.; 2.; 4.; -1.; -3.|] in
+  Stdio.printf
+    !"%{sexp:float array} %{sexp:float}\n"
+    Tensor.(huber_loss vs (Tensor.f 0.) ~reduction:None |> to_float1_exn)
+    Tensor.(huber_loss vs (Tensor.f 0.) |> to_float0_exn);
+  [%expect
+    {| (0.50999999046325684 0.5 0.49005001783370972 0.125 0.03125 0 1.5 3.5 0.5 2.5) 0.9656299352645874 |}]
