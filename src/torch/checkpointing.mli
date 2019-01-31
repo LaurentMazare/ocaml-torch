@@ -9,12 +9,12 @@
     If such files already exist when starting the loop, the last one of this
     file is used to restore the variables content.
 *)
-val loop
-  :  start_index:int
+val loop :
+     start_index:int
   -> end_index:int
   -> var_stores:Var_store.t list
   -> checkpoint_base:string
   -> ?only_keep:int
-  -> ?checkpoint_every:[ `iters of int | `seconds of float ] (* default : `second 600 *)
+  -> ?checkpoint_every:[`iters of int | `seconds of float] (* default : `second 600 *)
   -> (index:int -> unit)
   -> unit

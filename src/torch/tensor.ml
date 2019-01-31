@@ -5,12 +5,10 @@ let set_float2 t i j value = float_set t [i; j] value
 let set_float1 t i value = float_set t [i] value
 let set_int2 t i j value = int_set t [i; j] value
 let set_int1 t i value = int_set t [i] value
-
 let get_float2 t i j = float_get t [i; j]
 let get_float1 t i = float_get t [i]
 let get_int2 t i j = int_get t [i; j]
 let get_int1 t i = int_get t [i]
-
 let ( .%{} ) = int_get
 let ( .%{}<- ) = int_set
 let ( .%.{} ) = float_get
@@ -24,7 +22,8 @@ let no_grad_ t ~f =
   if requires_grad t
   then
     let t = set_requires_grad t ~r:false in
-    Exn.protect ~f:(fun () -> f t)
+    Exn.protect
+      ~f:(fun () -> f t)
       ~finally:(fun () -> ignore (set_requires_grad t ~r:true : t))
   else f t
 
@@ -35,13 +34,12 @@ let no_grad f =
 let zero_grad t =
   let grad = grad t in
   if defined grad
-  then begin
+  then (
     ignore (detach_ grad : t);
-    ignore (zero_ grad : t)
-  end
+    ignore (zero_ grad : t) )
 
-type create
-  =  ?requires_grad:bool
+type create =
+     ?requires_grad:bool
   -> ?kind:Torch_core.Kind.t
   -> ?device:Torch_core.Device.t
   -> ?scale:float
@@ -50,49 +48,43 @@ type create
 
 let type_ = kind
 let to_type t ~type_ = totype t ~scalar_type:type_
+let to_device ?device t = match device with None -> t | Some device -> to_ t ~device
+let float_vec ?kind ?device dims = float_vec ?kind dims |> to_device ?device
 
-let to_device ?device t =
-  match device with
-  | None -> t
-  | Some device -> to_ t ~device
-
-let float_vec ?kind ?device dims =
-  float_vec ?kind dims |> to_device ?device
-
-let gen ~f ?(requires_grad = false) ?(kind = Torch_core.Kind.Float) ?(device = Torch_core.Device.Cpu) ?scale size =
+let gen
+    ~f
+    ?(requires_grad = false)
+    ?(kind = Torch_core.Kind.Float)
+    ?(device = Torch_core.Device.Cpu)
+    ?scale
+    size =
   let t = f ~size ~options:(kind, device) in
   let t =
-    Option.value_map scale
-      ~f:(fun scale -> mul t (float_vec [ scale ] ~device))
-      ~default:t
+    Option.value_map scale ~f:(fun scale -> mul t (float_vec [scale] ~device)) ~default:t
   in
-  if requires_grad
-  then set_requires_grad t ~r:true
-  else t
+  if requires_grad then set_requires_grad t ~r:true else t
 
 let zeros = gen ~f:zeros
 let ones = gen ~f:ones
 let rand = gen ~f:rand
 let randn = gen ~f:randn
-
-let f v = float_vec [ v ] |> reshape ~shape:[]
+let f v = float_vec [v] |> reshape ~shape:[]
 let mm = matmul
-
-let (+) = add
-let (-) = sub
+let ( + ) = add
+let ( - ) = sub
 let ( * ) = mul
-let (/) = div
+let ( / ) = div
+let ( ~- ) = neg
+let ( -= ) t other = ignore (sub_ t other : t)
+let ( += ) t other = ignore (add_ t other : t)
+let ( /= ) t other = ignore (div_ t other : t)
+let ( *= ) t other = ignore (mul_ t other : t)
+let ( = ) = eq1
+let pair_to_list (p1, p2) = [p1; p2]
 
-let (~-) = neg
-let (-=) t other = ignore (sub_ t other : t)
-let (+=) t other = ignore (add_ t other : t)
-let (/=) t other = ignore (div_ t other : t)
-let ( *=) t other = ignore (mul_ t other : t)
-let (=) = eq1
-
-let pair_to_list (p1, p2) = [ p1; p2 ]
-let conv2d ?(padding=0, 0) ?(dilation=1, 1) ?(groups=1) input weight bias ~stride =
-  conv2d input
+let conv2d ?(padding = 0, 0) ?(dilation = 1, 1) ?(groups = 1) input weight bias ~stride =
+  conv2d
+    input
     ~weight
     ~bias
     ~stride:(pair_to_list stride)
@@ -101,16 +93,16 @@ let conv2d ?(padding=0, 0) ?(dilation=1, 1) ?(groups=1) input weight bias ~strid
     ~groups
 
 let conv_transpose2d
-    ?(output_padding=0, 0)
-    ?(padding=0, 0)
-    ?(dilation=1, 1)
-    ?(groups=1)
+    ?(output_padding = 0, 0)
+    ?(padding = 0, 0)
+    ?(dilation = 1, 1)
+    ?(groups = 1)
     input
     weight
     bias
-    ~stride
-  =
-  conv_transpose2d input
+    ~stride =
+  conv_transpose2d
+    input
     ~weight
     ~bias
     ~stride:(pair_to_list stride)
@@ -119,24 +111,34 @@ let conv_transpose2d
     ~groups
     ~dilation:(pair_to_list dilation)
 
-let max_pool2d ?(padding=0, 0) ?(dilation=1, 1) ?(ceil_mode=false) ?stride self ~ksize =
-  max_pool2d self
+let max_pool2d
+    ?(padding = 0, 0) ?(dilation = 1, 1) ?(ceil_mode = false) ?stride self ~ksize =
+  max_pool2d
+    self
     ~kernel_size:(pair_to_list ksize)
     ~stride:(Option.value stride ~default:ksize |> pair_to_list)
     ~padding:(pair_to_list padding)
     ~dilation:(pair_to_list dilation)
     ~ceil_mode
 
-let avg_pool2d ?(padding=0, 0) ?(count_include_pad=false) ?(ceil_mode=false) ?stride self ~ksize =
-  avg_pool2d self
+let avg_pool2d
+    ?(padding = 0, 0)
+    ?(count_include_pad = false)
+    ?(ceil_mode = false)
+    ?stride
+    self
+    ~ksize =
+  avg_pool2d
+    self
     ~kernel_size:(pair_to_list ksize)
     ~stride:(Option.value stride ~default:ksize |> pair_to_list)
     ~padding:(pair_to_list padding)
     ~ceil_mode
     ~count_include_pad
 
-let const_batch_norm ?(momentum=0.1) ?(eps=1e-5) input =
-  batch_norm input
+let const_batch_norm ?(momentum = 0.1) ?(eps = 1e-5) input =
+  batch_norm
+    input
     ~weight:None
     ~bias:None
     ~running_mean:None
@@ -153,8 +155,9 @@ let to_bigarray t ~kind =
 
 let undefined = lazy (new_tensor ())
 
-let nll_loss ?(reduction=Torch_core.Reduction.Elementwise_mean) xs ~targets =
-  nll_loss xs
+let nll_loss ?(reduction = Torch_core.Reduction.Elementwise_mean) xs ~targets =
+  nll_loss
+    xs
     ~target:targets
     ~weight:(Lazy.force undefined)
     ~reduction:(Torch_core.Reduction.to_int reduction)
@@ -165,13 +168,14 @@ let cross_entropy_for_logits ?reduction logits ~targets =
 
 let dropout t ~p ~is_training = dropout t ~p ~train:is_training
 
-let bce_loss ?(reduction=Torch_core.Reduction.Elementwise_mean) t ~targets =
-  binary_cross_entropy t
+let bce_loss ?(reduction = Torch_core.Reduction.Elementwise_mean) t ~targets =
+  binary_cross_entropy
+    t
     ~target:targets
     ~weight:(Lazy.force undefined)
     ~reduction:(Torch_core.Reduction.to_int reduction)
 
-let mse_loss ?(reduction=Torch_core.Reduction.Elementwise_mean) t1 t2 =
+let mse_loss ?(reduction = Torch_core.Reduction.Elementwise_mean) t1 t2 =
   let diff = t1 - t2 in
   let square_error = diff * diff in
   match reduction with
@@ -179,60 +183,50 @@ let mse_loss ?(reduction=Torch_core.Reduction.Elementwise_mean) t1 t2 =
   | Elementwise_mean -> mean square_error
   | Sum -> sum square_error
 
-let bce_loss_with_logits ?(reduction=Torch_core.Reduction.Elementwise_mean) t ~targets =
-  let max_val = clamp_min_ (- t) ~min:(Scalar.float 0.) in
+let bce_loss_with_logits ?(reduction = Torch_core.Reduction.Elementwise_mean) t ~targets
+    =
+  let max_val = clamp_min_ (-t) ~min:(Scalar.float 0.) in
   let one_minus_targets = ones_like targets - targets in
   let bce =
     add_
       (add_ (mul_ one_minus_targets t) max_val)
-      (add_ (exp_ (- max_val)) (exp_ (- t - max_val)) |> log_)
+      (add_ (exp_ (-max_val)) (exp_ (-t - max_val)) |> log_)
   in
-  match reduction with
-  | None -> bce
-  | Elementwise_mean -> mean bce
-  | Sum -> sum bce
+  match reduction with None -> bce | Elementwise_mean -> mean bce | Sum -> sum bce
 
 let pp formatter t =
   let shape = shape t in
   let element_count = List.fold shape ~init:1 ~f:Int.( * ) in
   if element_count < 1_000
-  then begin
+  then (
     Caml.Format.pp_print_newline formatter ();
     Caml.Format.pp_print_string formatter (to_string t ~line_size:96);
-    Caml.Format.pp_print_newline formatter ()
-  end else begin
+    Caml.Format.pp_print_newline formatter () )
+  else
     List.map shape ~f:Int.to_string
     |> String.concat ~sep:", "
     |> Printf.sprintf "Tensor<%s>"
     |> Caml.Format.pp_print_string formatter
-  end
 
 let copy t =
   let t_ = zeros (shape t) ~kind:(kind t) in
   copy_ t_ ~src:t;
   t_
 
-let shape_str t =
-  List.map (shape t) ~f:Int.to_string
-  |> String.concat ~sep:", "
-
-let print_shape ?(name="") t =
-  Stdio.printf "%s<%s>\n%!" name (shape_str t)
+let shape_str t = List.map (shape t) ~f:Int.to_string |> String.concat ~sep:", "
+let print_shape ?(name = "") t = Stdio.printf "%s<%s>\n%!" name (shape_str t)
 
 let bigarray_to_array1 bigarray ~f =
   try
     let bigarray = Bigarray.array1_of_genarray bigarray in
-    Array.init (Bigarray.Array1.dim bigarray) ~f:(fun i ->
-        f bigarray.{i})
-    |> Option.some
+    Array.init (Bigarray.Array1.dim bigarray) ~f:(fun i -> f bigarray.{i}) |> Option.some
   with Invalid_argument _ -> None
 
 let bigarray_to_array2 bigarray ~f =
   try
     let bigarray = Bigarray.array2_of_genarray bigarray in
     Array.init (Bigarray.Array2.dim1 bigarray) ~f:(fun i ->
-        Array.init (Bigarray.Array2.dim2 bigarray) ~f:(fun j ->
-            f bigarray.{i, j}))
+        Array.init (Bigarray.Array2.dim2 bigarray) ~f:(fun j -> f bigarray.{i, j}) )
     |> Option.some
   with Invalid_argument _ -> None
 
@@ -241,8 +235,8 @@ let bigarray_to_array3 bigarray ~f =
     let bigarray = Bigarray.array3_of_genarray bigarray in
     Array.init (Bigarray.Array3.dim1 bigarray) ~f:(fun i ->
         Array.init (Bigarray.Array3.dim2 bigarray) ~f:(fun j ->
-            Array.init (Bigarray.Array3.dim3 bigarray) ~f:(fun k ->
-                f bigarray.{i, j, k})))
+            Array.init (Bigarray.Array3.dim3 bigarray) ~f:(fun k -> f bigarray.{i, j, k})
+        ) )
     |> Option.some
   with Invalid_argument _ -> None
 
@@ -285,11 +279,9 @@ let to_int3 t =
 let to_int1_exn t = Option.value_exn (to_int1 t)
 let to_int2_exn t = Option.value_exn (to_int2 t)
 let to_int3_exn t = Option.value_exn (to_int3 t)
-
 let to_float1_exn t = Option.value_exn (to_float1 t)
 let to_float2_exn t = Option.value_exn (to_float2 t)
 let to_float3_exn t = Option.value_exn (to_float3 t)
-
 let to_float0_exn = float_value
 let to_float0 t = try float_value t |> Option.some with _ -> None
 let to_int0_exn = int_value
@@ -316,28 +308,20 @@ let of_float3 f =
   |> of_bigarray
 
 let of_int0 f =
-  Bigarray.Array0.of_value Int C_layout f
-  |> Bigarray.genarray_of_array0
-  |> of_bigarray
+  Bigarray.Array0.of_value Int C_layout f |> Bigarray.genarray_of_array0 |> of_bigarray
 
 let of_int1 f =
-  Bigarray.Array1.of_array Int C_layout f
-  |> Bigarray.genarray_of_array1
-  |> of_bigarray
+  Bigarray.Array1.of_array Int C_layout f |> Bigarray.genarray_of_array1 |> of_bigarray
 
 let of_int2 f =
-  Bigarray.Array2.of_array Int C_layout f
-  |> Bigarray.genarray_of_array2
-  |> of_bigarray
+  Bigarray.Array2.of_array Int C_layout f |> Bigarray.genarray_of_array2 |> of_bigarray
 
 let of_int3 f =
-  Bigarray.Array3.of_array Int C_layout f
-  |> Bigarray.genarray_of_array3
-  |> of_bigarray
+  Bigarray.Array3.of_array Int C_layout f |> Bigarray.genarray_of_array3 |> of_bigarray
 
-let minimum t = view t ~size:[ -1 ] |> min_values ~dim:0 ~keepdim:false
-let maximum t = view t ~size:[ -1 ] |> max_values ~dim:0 ~keepdim:false
+let minimum t = view t ~size:[-1] |> min_values ~dim:0 ~keepdim:false
+let maximum t = view t ~size:[-1] |> max_values ~dim:0 ~keepdim:false
 
 let flatten t =
   let batch_size = shape t |> List.hd_exn in
-  view t ~size:[ batch_size; -1 ]
+  view t ~size:[batch_size; -1]

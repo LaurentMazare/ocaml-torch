@@ -15,25 +15,20 @@ module Init : sig
     | Zeros
     | Ones
     | Const of float
-    | Normal of { mean : float; stdev : float }
+    | Normal of {mean : float; stdev : float}
     | Uniform of float * float
     | Copy of Tensor.t
 end
 
-val new_var
-  :  ?trainable:bool (* default: true *)
+val new_var :
+     ?trainable:bool (* default: true *)
   -> t
   -> shape:int list
   -> init:Init.t
   -> name:N.t
   -> Tensor.t
 
-val new_var_copy
-  :  ?trainable:bool
-  -> t
-  -> src:Tensor.t
-  -> name:N.t
-  -> Tensor.t
+val new_var_copy : ?trainable:bool -> t -> src:Tensor.t -> name:N.t -> Tensor.t
 
 (** [default_name t name_option str] builds a default name based on [str] when
     [name_option] is [None], otherwise [name_option] is used.
@@ -42,5 +37,4 @@ val default_name : t -> N.t option -> string -> N.t
 
 val freeze : t -> unit
 val unfreeze : t -> unit
-
 val copy : src:t -> dst:t -> unit

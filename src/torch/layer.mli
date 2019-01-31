@@ -2,6 +2,7 @@ open Base
 
 type t
 type t_with_training
+
 val set_training : t_with_training -> is_training:bool -> t
 val with_training : t -> t_with_training
 
@@ -13,8 +14,8 @@ type activation =
   | Leaky_relu
   | Sigmoid
 
-val linear
-  :  ?n:N.t
+val linear :
+     ?n:N.t
   -> Var_store.t
   -> ?activation:activation (* default: no activation *)
   -> ?use_bias:bool (* default: true *)
@@ -23,8 +24,8 @@ val linear
   -> int
   -> t
 
-val conv2d
-  :  ?n:N.t
+val conv2d :
+     ?n:N.t
   -> Var_store.t
   -> ksize:int * int
   -> stride:int * int
@@ -36,8 +37,8 @@ val conv2d
   -> int
   -> t
 
-val conv2d_
-  :  ?n:N.t
+val conv2d_ :
+     ?n:N.t
   -> Var_store.t
   -> ksize:int
   -> stride:int
@@ -49,8 +50,8 @@ val conv2d_
   -> int
   -> t
 
-val conv_transpose2d
-  :  ?n:N.t
+val conv_transpose2d :
+     ?n:N.t
   -> Var_store.t
   -> ksize:int * int
   -> stride:int * int
@@ -63,8 +64,8 @@ val conv_transpose2d
   -> int
   -> t
 
-val conv_transpose2d_
-  :  ?n:N.t
+val conv_transpose2d_ :
+     ?n:N.t
   -> Var_store.t
   -> ksize:int
   -> stride:int
@@ -77,8 +78,8 @@ val conv_transpose2d_
   -> int
   -> t
 
-val batch_norm2d
-  :  ?n:N.t
+val batch_norm2d :
+     ?n:N.t
   -> Var_store.t
   -> ?w_init:Var_store.Init.t
   -> ?cudnn_enabled:bool
@@ -93,17 +94,8 @@ val of_fn : (Tensor.t -> Tensor.t) -> t
 val of_fn_ : (Tensor.t -> is_training:bool -> Tensor.t) -> t_with_training
 val fold : t list -> t
 val fold_ : t_with_training list -> t_with_training
-
-val apply
-  :  t
-  -> Tensor.t
-  -> Tensor.t
-
-val apply_
-  :  t_with_training
-  -> Tensor.t
-  -> is_training:bool
-  -> Tensor.t
+val apply : t -> Tensor.t -> Tensor.t
+val apply_ : t_with_training -> Tensor.t -> is_training:bool -> Tensor.t
 
 module Lstm : sig
   type t

@@ -6,8 +6,7 @@ type t =
   ; all_tensors_by_name : (string, Tensor.t) Hashtbl.t
   ; device : Torch_core.Device.t
   ; mutable name_counter : int
-  ; mutable frozen : bool
-  }
+  ; mutable frozen : bool }
 
 let create ?(frozen = false) ?(device = Torch_core.Device.Cpu) ~name () =
   { name
@@ -15,38 +14,41 @@ let create ?(frozen = false) ?(device = Torch_core.Device.Cpu) ~name () =
   ; all_tensors_by_name = Hashtbl.create (module String)
   ; device
   ; name_counter = 1
-  ; frozen
-  }
+  ; frozen }
 
 let default_name t name_option base =
   match name_option with
   | Some t -> t
   | None ->
     t.name_counter <- t.name_counter + 1;
-    N.of_list [ Printf.sprintf "%s__%d" base t.name_counter ]
+    N.of_list [Printf.sprintf "%s__%d" base t.name_counter]
 
 let trainable_vars t = t.trainable_tensors
 
 let freeze t =
   t.frozen <- true;
   List.iter (trainable_vars t) ~f:(fun tensor ->
-    ignore (Tensor.set_requires_grad tensor ~r:false : Tensor.t))
+      ignore (Tensor.set_requires_grad tensor ~r:false : Tensor.t) )
 
 let unfreeze t =
   t.frozen <- false;
   List.iter (trainable_vars t) ~f:(fun tensor ->
-    ignore (Tensor.set_requires_grad tensor ~r:true : Tensor.t))
+      ignore (Tensor.set_requires_grad tensor ~r:true : Tensor.t) )
 
 let all_vars t = Hashtbl.to_alist t.all_tensors_by_name
 
 let copy ~src ~dst =
   Tensor.no_grad (fun () ->
-    Hashtbl.iteri dst.all_tensors_by_name ~f:(fun ~key ~data ->
-      match Hashtbl.find src.all_tensors_by_name key with
-      | Some src -> Tensor.copy_ data ~src
-      | None ->
-        Printf.failwithf "cannot find var %s from var-store %s in %s"
-          key dst.name src.name ()))
+      Hashtbl.iteri dst.all_tensors_by_name ~f:(fun ~key ~data ->
+          match Hashtbl.find src.all_tensors_by_name key with
+          | Some src -> Tensor.copy_ data ~src
+          | None ->
+            Printf.failwithf
+              "cannot find var %s from var-store %s in %s"
+              key
+              dst.name
+              src.name
+              () ) )
 
 let name t = t.name
 let device t = t.device
@@ -56,12 +58,12 @@ module Init = struct
     | Zeros
     | Ones
     | Const of float
-    | Normal of { mean : float; stdev : float }
+    | Normal of {mean : float; stdev : float}
     | Uniform of float * float
     | Copy of Tensor.t
 end
 
-let new_var ?(trainable=true) t ~shape ~init ~name =
+let new_var ?(trainable = true) t ~shape ~init ~name =
   let device = device t in
   let requires_grad = trainable && not t.frozen in
   let tensor =
@@ -69,10 +71,9 @@ let new_var ?(trainable=true) t ~shape ~init ~name =
     | Zeros -> Tensor.zeros shape ~requires_grad ~device
     | Ones -> Tensor.ones shape ~requires_grad ~device
     | Const scale -> Tensor.ones shape ~requires_grad ~device ~scale
-    | Normal { mean = 0.; stdev } ->
-        Tensor.randn shape ~scale:stdev ~requires_grad ~device
-    | Normal { mean; stdev } ->
-      Tensor.(+)
+    | Normal {mean = 0.; stdev} -> Tensor.randn shape ~scale:stdev ~requires_grad ~device
+    | Normal {mean; stdev} ->
+      Tensor.( + )
         (Tensor.randn shape ~scale:stdev ~requires_grad ~device)
         (Tensor.f mean)
     | Uniform (from, to_) ->
@@ -88,10 +89,7 @@ let new_var ?(trainable=true) t ~shape ~init ~name =
   if Hashtbl.mem t.all_tensors_by_name name
   then Printf.failwithf "multiple variable with name: %s" name ();
   Hashtbl.add_exn t.all_tensors_by_name ~key:name ~data:tensor;
-  if trainable
-  then begin
-    t.trainable_tensors <- tensor :: t.trainable_tensors
-  end;
+  if trainable then t.trainable_tensors <- tensor :: t.trainable_tensors;
   tensor
 
 let new_var_copy ?trainable t ~src ~name =

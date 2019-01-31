@@ -16,16 +16,14 @@ let ptr_of_strings strings =
 module Tensor = struct
   include Wrapper_generated
   open! C.Tensor
+
   type nonrec t = t
 
   let float_vec ?(kind = `float) values =
     let values_len = List.length values in
     let values = CArray.of_list double values |> CArray.start in
     let kind =
-      match kind with
-      | `float -> Kind.Float
-      | `double -> Double
-      | `half -> Half
+      match kind with `float -> Kind.Float | `double -> Double | `half -> Half
     in
     let t = float_vec values values_len (Kind.to_int kind) in
     Gc.finalise free t;
@@ -34,9 +32,7 @@ module Tensor = struct
   let int_vec ?(kind = `int) values =
     let values_len = List.length values in
     let values =
-      List.map Int64.of_int values
-      |> CArray.of_list int64_t
-      |> CArray.start
+      List.map Int64.of_int values |> CArray.of_list int64_t |> CArray.start
     in
     let kind =
       match kind with
@@ -50,7 +46,7 @@ module Tensor = struct
     Gc.finalise free t;
     t
 
-  let of_bigarray (type a) (type b) (ga : (b, a, Bigarray.c_layout) Bigarray.Genarray.t) =
+  let of_bigarray (type a b) (ga : (b, a, Bigarray.c_layout) Bigarray.Genarray.t) =
     let dims = Bigarray.Genarray.dims ga in
     let kind = Bigarray.Genarray.kind ga in
     let tensor_kind =
@@ -69,7 +65,10 @@ module Tensor = struct
     let t =
       tensor_of_data
         (bigarray_start genarray ga |> to_voidp)
-        (Array.to_list dims |> List.map Int64.of_int |> CArray.of_list int64_t |> CArray.start)
+        ( Array.to_list dims
+        |> List.map Int64.of_int
+        |> CArray.of_list int64_t
+        |> CArray.start )
         (Array.length dims)
         (Bigarray.kind_size_in_bytes kind)
         (Kind.to_int tensor_kind)
@@ -77,9 +76,11 @@ module Tensor = struct
     Gc.finalise free t;
     t
 
-  let copy_to_bigarray (type a) (type b) t (ga : (b, a, Bigarray.c_layout) Bigarray.Genarray.t) =
+  let copy_to_bigarray (type a b) t (ga : (b, a, Bigarray.c_layout) Bigarray.Genarray.t)
+      =
     let kind = Bigarray.Genarray.kind ga in
-    copy_data t
+    copy_data
+      t
       (bigarray_start genarray ga |> to_voidp)
       (Bigarray.Genarray.dims ga |> Array.fold_left ( * ) 1 |> Int64.of_int)
       (Bigarray.kind_size_in_bytes kind)
@@ -94,62 +95,48 @@ module Tensor = struct
     let shape = String.concat ", " (List.map string_of_int shape) in
     Printf.sprintf "unexpected shape <%s>" shape |> failwith
 
-  let shape1_exn t =
-    match shape t with
-    | [ s1 ] -> s1
-    | shape -> unexpected_shape shape
+  let shape1_exn t = match shape t with [s1] -> s1 | shape -> unexpected_shape shape
 
   let shape2_exn t =
-    match shape t with
-    | [ s1; s2 ] -> s1, s2
-    | shape -> unexpected_shape shape
+    match shape t with [s1; s2] -> s1, s2 | shape -> unexpected_shape shape
 
   let shape3_exn t =
-    match shape t with
-    | [ s1; s2; s3 ] -> s1, s2, s3
-    | shape -> unexpected_shape shape
+    match shape t with [s1; s2; s3] -> s1, s2, s3 | shape -> unexpected_shape shape
 
   let shape4_exn t =
     match shape t with
-    | [ s1; s2; s3; s4 ] -> s1, s2, s3, s4
+    | [s1; s2; s3; s4] -> s1, s2, s3, s4
     | shape -> unexpected_shape shape
 
   let kind t = scalar_type t |> Kind.of_int_exn
-
-  let requires_grad t =
-    if requires_grad t <> 0
-    then true
-    else false
-
-  let grad_set_enabled b =
-    grad_set_enabled (if b then 1 else 0) <> 0
+  let requires_grad t = if requires_grad t <> 0 then true else false
+  let grad_set_enabled b = grad_set_enabled (if b then 1 else 0) <> 0
 
   let get t index =
     let t = get t index in
     Gc.finalise free t;
     t
 
-  let float_value t =
-    double_value t (from_voidp int null) 0
-
-  let int_value t =
-    int64_value t (from_voidp int null) 0 |> Int64.to_int
+  let float_value t = double_value t (from_voidp int null) 0
+  let int_value t = int64_value t (from_voidp int null) 0 |> Int64.to_int
 
   let float_get t indexes =
-    double_value t
-      (CArray.of_list int indexes |> CArray.start) (List.length indexes)
+    double_value t (CArray.of_list int indexes |> CArray.start) (List.length indexes)
 
   let int_get t indexes =
-    int64_value t
-      (CArray.of_list int indexes |> CArray.start) (List.length indexes)
+    int64_value t (CArray.of_list int indexes |> CArray.start) (List.length indexes)
     |> Int64.to_int
 
   let float_set t indexes v =
-    double_value_set t
-      (CArray.of_list int indexes |> CArray.start) (List.length indexes) v
+    double_value_set
+      t
+      (CArray.of_list int indexes |> CArray.start)
+      (List.length indexes)
+      v
 
   let int_set t indexes v =
-    int64_value_set t
+    int64_value_set
+      t
       (CArray.of_list int indexes |> CArray.start)
       (List.length indexes)
       (Int64.of_int v)
@@ -157,18 +144,15 @@ module Tensor = struct
   let fill_float t v = fill_double t v
   let fill_int t i = fill_int64 t (Int64.of_int i)
 
-  let backward ?(keep_graph=false) ?(create_graph=false) t =
+  let backward ?(keep_graph = false) ?(create_graph = false) t =
     backward t (if keep_graph then 1 else 0) (if create_graph then 1 else 0)
+
   let print = print
   let to_string t ~line_size = to_string t line_size
-
   let argmax t = argmax1 t ~dim:(-1) ~keepdim:false
-
   let max = max1
   let min = min1
-
   let copy_ t ~src = copy_ t src
-
   let defined = defined
 
   let new_tensor () =
@@ -176,11 +160,9 @@ module Tensor = struct
     Gc.finalise free t;
     t
 
-  let run_backward ?keep_graph ?(create_graph=false) tensors inputs =
+  let run_backward ?keep_graph ?(create_graph = false) tensors inputs =
     let keep_graph =
-      match keep_graph with
-      | None -> create_graph
-      | Some keep_graph -> keep_graph
+      match keep_graph with None -> create_graph | Some keep_graph -> keep_graph
     in
     let out_ = CArray.make t (List.length inputs) in
     run_backward
@@ -217,6 +199,7 @@ module Optimizer = struct
     let t = adam learning_rate beta1 beta2 weight_decay in
     Gc.finalise free t;
     t
+
   let rmsprop ~learning_rate ~alpha ~eps ~weight_decay ~momentum ~centered =
     let centered = if centered then 1 else 0 in
     let t = rmsprop learning_rate alpha eps weight_decay momentum centered in
@@ -224,14 +207,7 @@ module Optimizer = struct
     t
 
   let sgd ~learning_rate ~momentum ~dampening ~weight_decay ~nesterov =
-    let t =
-      sgd
-        learning_rate
-        momentum
-        dampening
-        weight_decay
-        nesterov
-    in
+    let t = sgd learning_rate momentum dampening weight_decay nesterov in
     Gc.finalise free t;
     t
 
@@ -246,9 +222,8 @@ module Serialize = struct
   include Wrapper_generated.C.Serialize
 
   let save t ~filename = save t filename
-
-  let escape s = String.map (function | '.' -> '|' | c -> c) s
-  let unescape s = String.map (function | '|' -> '.' | c -> c) s
+  let escape s = String.map (function '.' -> '|' | c -> c) s
+  let unescape s = String.map (function '|' -> '.' | c -> c) s
 
   let load ~filename =
     let t = load filename in
@@ -268,11 +243,7 @@ module Serialize = struct
     let names = List.map escape names in
     let ntensors = List.length names in
     let tensors = CArray.make Wrapper_generated.C.Tensor.t ntensors in
-    load_multi
-      (CArray.start tensors)
-      (ptr_of_strings names)
-      ntensors
-      filename;
+    load_multi (CArray.start tensors) (ptr_of_strings names) ntensors filename;
     let tensors = CArray.to_list tensors in
     List.iter (Gc.finalise Wrapper_generated.C.Tensor.free) tensors;
     tensors
@@ -294,7 +265,7 @@ module Serialize = struct
         (static_funptr (string @-> Wrapper_generated.C.Tensor.t @-> returning void))
         (fun tensor_name tensor ->
           Gc.finalise Wrapper_generated.C.Tensor.free tensor;
-          all_tensors := (unescape tensor_name, tensor) :: !all_tensors)
+          all_tensors := (unescape tensor_name, tensor) :: !all_tensors )
     in
     load_callback filename callback;
     !all_tensors
@@ -302,6 +273,7 @@ end
 
 module Cuda = struct
   include Wrapper_generated.C.Cuda
+
   let is_available () = is_available () <> 0
   let cudnn_is_available () = cudnn_is_available () <> 0
   let set_benchmark_cudnn b = set_benchmark_cudnn (if b then 1 else 0)
@@ -309,19 +281,16 @@ end
 
 module Thread = struct
   include Wrapper_generated.C.Thread
+
   let set_num_threads num_threads =
     let num_threads =
-      match num_threads with
-      | None -> -1
-      | Some num_threads -> num_threads
+      match num_threads with None -> -1 | Some num_threads -> num_threads
     in
     set_num_threads num_threads
 
   let get_num_threads () =
     let num_threads = get_num_threads () in
-    if num_threads < 0
-    then None
-    else Some num_threads
+    if num_threads < 0 then None else Some num_threads
 end
 
 module Ivalue = struct
@@ -332,6 +301,7 @@ module Ivalue = struct
       | Double
       | Tuple
   end
+
   include Wrapper_generated.C.Ivalue
 
   let tensor tensor_ =
@@ -350,11 +320,7 @@ module Ivalue = struct
     t
 
   let tuple ts =
-    let t =
-      tuple
-        CArray.(of_list t ts |> start)
-        (List.length ts)
-    in
+    let t = tuple CArray.(of_list t ts |> start) (List.length ts) in
     Gc.finalise free t;
     t
 
@@ -364,8 +330,7 @@ module Ivalue = struct
     | 1 -> Int
     | 2 -> Double
     | 3 -> Tuple
-    | otherwise ->
-      Printf.sprintf "unexpected tag %d" otherwise |> failwith
+    | otherwise -> Printf.sprintf "unexpected tag %d" otherwise |> failwith
 
   let to_tensor t =
     let tensor = to_tensor t in

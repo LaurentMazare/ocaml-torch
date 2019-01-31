@@ -1,29 +1,22 @@
 val manual_seed : int -> unit
+
 module Scalar : sig
   type t
+
   val int : int -> t
   val float : float -> t
 end
 
 module Tensor : sig
   type t
+
   include Wrapper_generated_intf.S with type t := t and type scalar := Scalar.t
 
   val new_tensor : unit -> t
-
-  val float_vec
-    :  ?kind:[ `double | `float | `half ]
-    -> float list
-    -> t
-
-  val int_vec
-    :  ?kind:[ `int | `int16 | `int64 | `int8 | `uint8 ]
-    -> int list
-    -> t
-
+  val float_vec : ?kind:[`double | `float | `half] -> float list -> t
+  val int_vec : ?kind:[`int | `int16 | `int64 | `int8 | `uint8] -> int list -> t
   val of_bigarray : (_, _, Bigarray.c_layout) Bigarray.Genarray.t -> t
   val copy_to_bigarray : t -> (_, _, Bigarray.c_layout) Bigarray.Genarray.t -> unit
-
   val shape : t -> int list
   val shape1_exn : t -> int
   val shape2_exn : t -> int * int
@@ -31,10 +24,11 @@ module Tensor : sig
   val shape4_exn : t -> int * int * int * int
   val kind : t -> Kind.t
   val requires_grad : t -> bool
-  val grad_set_enabled : bool -> bool (* returns the previous state. *)
+  val grad_set_enabled : bool -> bool
+
+  (* returns the previous state. *)
   val get : t -> int -> t
   val select : t -> dim:int -> index:int -> t
-
   val float_value : t -> float
   val int_value : t -> int
   val float_get : t -> int list -> float
@@ -43,31 +37,20 @@ module Tensor : sig
   val int_set : t -> int list -> int -> unit
   val fill_float : t -> float -> unit
   val fill_int : t -> int -> unit
-
   val backward : ?keep_graph:bool -> ?create_graph:bool -> t -> unit
 
   (* Computes and returns the sum of gradients of outputs w.r.t. the inputs.
      If [create_graph] is set to true, graph of the derivative will be constructed,
      allowing to compute higher order derivative products.
   *)
-  val run_backward
-    :  ?keep_graph:bool
-    -> ?create_graph:bool
-    -> t list
-    -> t list
-    -> t list
-
+  val run_backward : ?keep_graph:bool -> ?create_graph:bool -> t list -> t list -> t list
   val print : t -> unit
   val to_string : t -> line_size:int -> string
-
   val sum : t -> t
   val mean : t -> t
   val argmax : t -> t
-
   val defined : t -> bool
-
   val copy_ : t -> src:t -> unit
-
   val max : t -> t -> t
   val min : t -> t -> t
 end
@@ -75,15 +58,10 @@ end
 module Optimizer : sig
   type t
 
-  val adam
-    :  learning_rate:float
-    -> beta1:float
-    -> beta2:float
-    -> weight_decay:float
-    -> t
+  val adam : learning_rate:float -> beta1:float -> beta2:float -> weight_decay:float -> t
 
-  val rmsprop
-    :  learning_rate:float
+  val rmsprop :
+       learning_rate:float
     -> alpha:float
     -> eps:float
     -> weight_decay:float
@@ -91,8 +69,8 @@ module Optimizer : sig
     -> centered:bool
     -> t
 
-  val sgd
-    :  learning_rate:float
+  val sgd :
+       learning_rate:float
     -> momentum:float
     -> dampening:float
     -> weight_decay:float
@@ -100,9 +78,7 @@ module Optimizer : sig
     -> t
 
   val set_learning_rate : t -> float -> unit
-
   val set_momentum : t -> float -> unit
-
   val add_parameters : t -> Tensor.t list -> unit
   val zero_grad : t -> unit
   val step : t -> unit
@@ -139,12 +115,12 @@ module Ivalue : sig
   end
 
   type t
+
   val tensor : Tensor.t -> t
   val int64 : Int64.t -> t
   val double : float -> t
   val tuple : t list -> t
   val tag : t -> Tag.t
-
   val to_tensor : t -> Tensor.t
   val to_int64 : t -> Int64.t
   val to_double : t -> float
@@ -153,6 +129,7 @@ end
 
 module Module : sig
   type t
+
   val load : string -> t
   val forward : t -> Tensor.t list -> Tensor.t
   val forward_ : t -> Ivalue.t list -> Ivalue.t
