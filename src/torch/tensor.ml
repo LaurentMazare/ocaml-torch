@@ -186,7 +186,7 @@ let mse_loss ?(reduction = Torch_core.Reduction.Elementwise_mean) t1 t2 =
 let huber_loss ?(reduction = Torch_core.Reduction.Elementwise_mean) t1 t2 =
   let d = abs (t1 - t2) in
   let half = f 0.5 in
-  let err = where ~condition:(le1 d (f 1.)) (half * d * d) (d - half) in
+  let err = where ~condition:(le d (Scalar.float 1.)) (half * d * d) (d - half) in
   match reduction with None -> err | Elementwise_mean -> mean err | Sum -> sum err
 
 let bce_loss_with_logits ?(reduction = Torch_core.Reduction.Elementwise_mean) t ~targets
