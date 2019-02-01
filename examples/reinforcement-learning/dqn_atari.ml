@@ -200,7 +200,7 @@ let preprocess () =
         ~src:(Tensor.get stacked_frames frame_index)
     done;
     Tensor.copy_ (Tensor.get stacked_frames (num_stack - 1)) ~src:img;
-    stacked_frames
+    Tensor.copy stacked_frames
 
 let maybe_load_weights agent =
   match Sys.argv with
