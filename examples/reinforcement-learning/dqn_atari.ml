@@ -212,32 +212,60 @@ let maybe_load_weights agent =
     DqnAgent.update_target_model agent
   | _ -> Printf.failwithf "usage: %s [weights]" Sys.argv.(0) ()
 
+(* This environment wrapper uses episodic life: [is_done] is set to true as
+   soon as a life is lost. The [should_reset] field is used to remember
+   whether a real reset is needed. *)
 module E = struct
   type t =
     { fire_action : int option
     ; env : Env_gym_pyml.t
     ; preprocess : state -> state
-    ; lives : int
+    ; mutable should_reset : bool
+    ; mutable episode_idx : int
+    ; mutable episode_reward : float
+    ; mutable episode_frames : int
     ; mutable total_frames : int }
 
   let create () =
-    let env = Env_gym_pyml.create "BreakoutNoFrameskip-v4" in
+    let env = Env_gym_pyml.create "BreakoutDeterministic-v4" in
     let fire_action =
       let actions = Env_gym_pyml.actions env in
       Stdio.printf "actions: %s\n%!" (String.concat ~sep:"," actions);
       List.find_mapi actions ~f:(fun i -> function "FIRE" -> Some i | _ -> None)
     in
-    let lives = Env_gym_pyml.lives env in
-    {fire_action; env; preprocess = preprocess (); lives; total_frames = 0}
+    { fire_action
+    ; env
+    ; preprocess = preprocess ()
+    ; should_reset = true
+    ; episode_idx = 0
+    ; episode_reward = 0.
+    ; episode_frames = 0
+    ; total_frames = 0 }
 
   let reset t =
-    let first_obs = Env_gym_pyml.reset t.env in
-    t.preprocess
-      (match t.fire_action with
-      | None -> first_obs
-      | Some action -> Env_gym_pyml.((step t.env ~action).obs))
+    if t.should_reset
+    then (
+      t.should_reset <- false;
+      Stdio.printf
+        "%d %.0f (%d/%d frames)\n%!"
+        t.episode_idx
+        t.episode_reward
+        t.episode_frames
+        t.total_frames;
+      t.episode_reward <- 0.;
+      t.episode_idx <- t.episode_idx + 1;
+      t.episode_frames <- 0;
+      let first_obs = Env_gym_pyml.reset t.env in
+      t.preprocess
+        (match t.fire_action with
+        | None -> first_obs
+        | Some action -> Env_gym_pyml.((step t.env ~action).obs)) )
+    else
+      let action = Option.value t.fire_action ~default:0 in
+      t.preprocess Env_gym_pyml.((step t.env ~action).obs)
 
   let step t ~action =
+    let prev_lives = Env_gym_pyml.lives t.env in
     let {Env_gym_pyml.obs; reward; is_done} =
       Env_gym_pyml.step t.env ~action:(2 + action)
     in
@@ -246,10 +274,12 @@ module E = struct
       Torch_vision.Image.write_image
         obs
         ~filename:(Printf.sprintf "/tmp/out%d.png" t.total_frames);
+    t.episode_reward <- reward +. t.episode_reward;
+    t.episode_frames <- t.episode_frames + 1;
     t.total_frames <- t.total_frames + 1;
+    if is_done then t.should_reset <- true;
     let lives = Env_gym_pyml.lives t.env in
-    (* Episodic Life *)
-    t.preprocess obs, reward, is_done || lives <> t.lives
+    t.preprocess obs, reward, is_done || lives <> prev_lives
 end
 
 let () =
@@ -257,27 +287,18 @@ let () =
   let agent = DqnAgent.create ~actions:2 ~memory_capacity in
   maybe_load_weights agent;
   for episode_idx = 1 to total_episodes do
-    let episode_frames = ref 0 in
-    let rec loop state acc_reward =
+    let rec loop state =
       let action = DqnAgent.action agent state ~total_frames:env.total_frames in
       let next_state, reward, is_done = E.step env ~action in
       DqnAgent.transition_feedback agent {state; action; next_state; reward; is_done};
       if env.total_frames % 4 = 0 then DqnAgent.experience_replay agent;
       if env.total_frames % 100 = 0 then Caml.Gc.full_major ();
-      Int.incr episode_frames;
       if env.total_frames % update_target_every = 0
       then DqnAgent.update_target_model agent;
-      let acc_reward = reward +. acc_reward in
-      if is_done then acc_reward else loop next_state acc_reward
+      if not is_done then loop next_state
     in
-    let reward = loop (E.reset env) 0. in
-    Stdio.printf
-      "%d %f (%d/%d frames)\n%!"
-      episode_idx
-      reward
-      !episode_frames
-      env.total_frames;
-    if episode_idx % 500 = 0
+    loop (E.reset env);
+    if episode_idx % 1000 = 0
     then
       Serialize.save_multi
         ~named_tensors:(DqnAgent.var_store agent |> Var_store.all_vars)
