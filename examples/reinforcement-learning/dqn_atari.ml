@@ -302,5 +302,5 @@ let () =
     then
       Serialize.save_multi
         ~named_tensors:(DqnAgent.var_store agent |> Var_store.all_vars)
-        ~filename:(Printf.sprintf "dqn-pong-%d.ckpt" episode_idx)
+        ~filename:(Printf.sprintf "dqn-atari-%d.ckpt" episode_idx)
   done
