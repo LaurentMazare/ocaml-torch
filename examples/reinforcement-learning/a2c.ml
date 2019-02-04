@@ -1,11 +1,13 @@
 open Base
 open Torch
 
-let batch_size = 32
+let num_steps = 5
 let updates = 1_000
+let num_processes = 16
 
 module Model : sig
   type t
+
   val create : Var_store.t -> input_dim:int -> int -> t
   val logits_and_value : t -> Tensor.t -> Tensor.t * Tensor.t
   val action_and_value : t -> Tensor.t -> num_samples:int -> Tensor.t * Tensor.t
@@ -14,15 +16,13 @@ end = struct
     { linear1 : Layer.t
     ; linear2 : Layer.t
     ; value : Layer.t
-    ; logits : Layer.t
-    }
+    ; logits : Layer.t }
 
   let create vs ~input_dim actions_dim =
     { linear1 = Layer.linear vs ~input_dim 128
     ; linear2 = Layer.linear vs ~input_dim:128 128
     ; value = Layer.linear vs ~input_dim:128 1
-    ; logits = Layer.linear vs ~input_dim:128 actions_dim
-    }
+    ; logits = Layer.linear vs ~input_dim:128 actions_dim }
 
   let logits_and_value t xs =
     let logits = Layer.apply t.linear1 xs |> Tensor.relu |> Layer.apply t.logits in
@@ -32,14 +32,14 @@ end = struct
   let action_and_value t xs ~num_samples =
     let logits, value = logits_and_value t xs in
     let action =
-      Tensor.softmax logits ~dim:1
-      |> Tensor.multinomial ~num_samples ~replacement:true
+      Tensor.softmax logits ~dim:1 |> Tensor.multinomial ~num_samples ~replacement:true
     in
     action, value
 end
 
 module A2CAgent : sig
   type t
+
   val create : state_dim:int -> actions:int -> t
   val train : t -> unit
 end = struct
@@ -50,8 +50,7 @@ end = struct
     ; gamma : float
     ; value : float
     ; entropy : float
-    ; optimizer : Optimizer.t
-    }
+    ; optimizer : Optimizer.t }
 
   let create ~state_dim ~actions =
     let vs = Var_store.create ~name:"a2c" () in
@@ -63,24 +62,27 @@ end = struct
     ; gamma = 0.99
     ; value = 0.5
     ; entropy = 1e-4
-    ; optimizer
-    }
+    ; optimizer }
 
   let train t =
     let returns, value, policy_loss, entropy_loss = failwith "TODO" in
     let value_loss = Tensor.mse_loss returns value in
-    let loss = Tensor.(f t.value * value_loss + policy_loss - f t.entropy * entropy_loss) in
+    let loss =
+      Tensor.((f t.value * value_loss) + policy_loss - (f t.entropy * entropy_loss))
+    in
     Optimizer.backward_step t.optimizer ~loss
 end
 
 let () =
-  let module E = Env_gym_pyml in
-  let env = E.create "CartPole-v1" in
+  let module E = Vec_env_gym_pyml in
+  let envs = E.create "PongNoFrameskip-v4" ~num_processes in
+  Stdio.printf "Action space: %d\n%!" (E.action_space envs);
   let agent = A2CAgent.create ~state_dim:4 ~actions:2 in
+  let state = E.reset envs in
   for _index = 1 to updates do
-    for _batch_index = 1 to batch_size do
+    for _step_index = 1 to num_steps do
       ()
     done;
-    A2CAgent.train agent;
+    A2CAgent.train agent
   done;
-  ignore (Model.action_and_value, Model.logits_and_value, agent, env)
+  ignore (Model.action_and_value, Model.logits_and_value, state)
