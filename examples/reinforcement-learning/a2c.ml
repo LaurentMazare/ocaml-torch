@@ -19,8 +19,7 @@ let model vs ~actions =
   let actor_linear = Layer.linear vs ~input_dim:512 actions in
   fun xs ->
     let ys =
-      Tensor.(to_type xs ~type_:Float * f (1. /. 255.))
-      |> Layer.apply conv1
+      Layer.apply conv1 xs
       |> Tensor.relu
       |> Layer.apply conv2
       |> Tensor.relu
@@ -126,7 +125,7 @@ let () =
     let action_loss =
       Tensor.(f 0. - (detach advantages * action_log_probs)) |> Tensor.mean
     in
-    let loss = Tensor.((value_loss * f 0.05) + action_loss - (f 0.01 * dist_entropy)) in
+    let loss = Tensor.((value_loss * f 0.5) + action_loss - (f 0.01 * dist_entropy)) in
     Optimizer.backward_step optimizer ~loss ~clip_grad_norm2:0.5;
     Caml.Gc.full_major ();
     set s_states 0 (Tensor.get s_states (-1))
