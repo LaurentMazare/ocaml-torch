@@ -79,13 +79,14 @@ let () =
       let probs = Tensor.softmax actor ~dim:(-1) in
       let actions =
         Tensor.multinomial probs ~num_samples:1 ~replacement:true
-        |> Tensor.squeeze1 ~dim:(-1)
+        |> Tensor.squeeze_last
       in
-      set s_actions s actions;
-      let actions = Tensor.to_int1_exn actions |> Array.to_list in
-      let {E.obs; reward; is_done} = E.step envs ~actions in
+      let {E.obs; reward; is_done} =
+        E.step envs ~actions:(Tensor.to_int1_exn actions |> Array.to_list)
+      in
       let masks = Tensor.(f 1. - is_done) in
       let obs = Frame_stack.update frame_stack obs ~masks in
+      set s_actions s actions;
       set s_states (s + 1) obs;
       set s_rewards s reward;
       set s_masks s masks
@@ -112,12 +113,9 @@ let () =
     let probs = Tensor.softmax actor ~dim:(-1) in
     let action_log_probs =
       Tensor.gather log_probs ~dim:2 ~index:(Tensor.unsqueeze s_actions ~dim:(-1))
-      |> Tensor.squeeze1 ~dim:(-1)
+      |> Tensor.squeeze_last
     in
-    let dist_entropy =
-      Tensor.sum2 Tensor.(f 0. - (log_probs * probs)) ~dim:[-1] ~keepdim:true
-      |> Tensor.mean
-    in
+    let dist_entropy = Tensor.mean Tensor.(f 0. - (log_probs * probs)) in
     let advantages =
       Tensor.(narrow s_returns ~dim:0 ~start:0 ~length:num_steps - critic)
     in
