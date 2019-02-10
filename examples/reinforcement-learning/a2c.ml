@@ -162,8 +162,12 @@ let valid ~filename ~device =
   let obs = ref (E.reset envs) in
   for _index = 1 to 1_000 do
     let {actor; critic = _} = Frame_stack.update frame_stack !obs |> model in
-    let actions = Tensor.(argmax1 actor ~dim:(-1) ~keepdim:false |> to_int1_exn) in
-    let step = E.step envs ~actions:(Array.to_list actions) in
+    let probs = Tensor.softmax actor ~dim:(-1) in
+    let actions =
+      Tensor.multinomial probs ~num_samples:1 ~replacement:true |> Tensor.squeeze_last
+    in
+    (* let actions = Tensor.(argmax1 actor ~dim:(-1) ~keepdim:false |> to_int1_exn) in *)
+    let step = E.step envs ~actions:(Tensor.to_int1_exn actions |> Array.to_list) in
     let reward = (Tensor.to_float1_exn step.reward).(0) in
     if Float.( <> ) reward 0. then Stdio.printf "Reward: %f\n%!" reward;
     obs := step.E.obs
