@@ -1,6 +1,8 @@
 open Base
 open Torch
+module E = Vec_env_gym_pyml
 
+let atari_game = "PongNoFrameskip-v4"
 let num_steps = 5
 let updates = 1_000_000
 let num_procs = 16
@@ -55,17 +57,8 @@ end
 
 let set tensor i src = Tensor.copy_ (Tensor.get tensor i) ~src
 
-let () =
-  let module E = Vec_env_gym_pyml in
-  let device =
-    if Cuda.is_available ()
-    then (
-      Stdio.printf "Using cuda, devices: %d\n%!" (Cuda.device_count ());
-      Cuda.set_benchmark_cudnn true;
-      Torch_core.Device.Cuda )
-    else Torch_core.Device.Cpu
-  in
-  let envs = E.create "PongNoFrameskip-v4" ~num_processes:num_procs in
+let train ~device =
+  let envs = E.create atari_game ~num_processes:num_procs in
   let action_space = E.action_space envs in
   Stdio.printf "Action space: %d\n%!" action_space;
   let vs = Var_store.create ~name:"a2c" () ~device in
@@ -144,7 +137,12 @@ let () =
     Optimizer.backward_step optimizer ~loss ~clip_grad_norm2:0.5;
     Caml.Gc.full_major ();
     set s_states 0 (Tensor.get s_states (-1));
-    if index % 100 = 0
+    if index % 10_000 = 0
+    then
+      Serialize.save_multi
+        ~named_tensors:(Var_store.all_vars vs)
+        ~filename:(Printf.sprintf "a2c-%d.ckpt" index);
+    if index % 500 = 0
     then (
       Stdio.printf
         "%d %f\n%!"
@@ -153,3 +151,33 @@ let () =
       ignore (Tensor.zero_ sum_rewards : Tensor.t);
       ignore (Tensor.zero_ cnt_rewards : Tensor.t) )
   done
+
+let valid ~filename ~device =
+  let envs = E.create atari_game ~num_processes:1 in
+  let action_space = E.action_space envs in
+  let vs = Var_store.create ~frozen:true ~name:"a2c" () ~device in
+  let model = model vs ~actions:action_space in
+  Serialize.load_multi_ ~named_tensors:(Var_store.all_vars vs) ~filename;
+  let frame_stack = Frame_stack.create () in
+  let obs = ref (E.reset envs) in
+  for _index = 1 to 1_000 do
+    let {actor; critic = _} = Frame_stack.update frame_stack !obs |> model in
+    let actions = Tensor.(argmax1 actor ~dim:(-1) ~keepdim:false |> to_int1_exn) in
+    let step = E.step envs ~actions:(Array.to_list actions) in
+    let reward = (Tensor.to_float1_exn step.reward).(0) in
+    if Float.( <> ) reward 0. then Stdio.printf "Reward: %f\n%!" reward;
+    obs := step.E.obs
+  done
+
+let () =
+  let device =
+    if Cuda.is_available ()
+    then (
+      Stdio.printf "Using cuda, devices: %d\n%!" (Cuda.device_count ());
+      Cuda.set_benchmark_cudnn true;
+      Torch_core.Device.Cuda )
+    else Torch_core.Device.Cpu
+  in
+  if Array.length Caml.Sys.argv > 1
+  then valid ~filename:Caml.Sys.argv.(1) ~device
+  else train ~device
