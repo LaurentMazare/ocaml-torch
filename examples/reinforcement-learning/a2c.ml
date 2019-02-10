@@ -19,7 +19,8 @@ let model vs ~actions =
   let actor_linear = Layer.linear vs ~input_dim:512 actions in
   fun xs ->
     let ys =
-      Layer.apply conv1 xs
+      Tensor.to_device xs ~device:(Var_store.device vs)
+      |> Layer.apply conv1
       |> Tensor.relu
       |> Layer.apply conv2
       |> Tensor.relu
@@ -56,10 +57,19 @@ let set tensor i src = Tensor.copy_ (Tensor.get tensor i) ~src
 
 let () =
   let module E = Vec_env_gym_pyml in
+  let device =
+    if Cuda.is_available ()
+    then (
+      Stdio.printf "Using cuda, devices: %d\n%!" (Cuda.device_count ());
+      Cuda.set_benchmark_cudnn true;
+      Torch_core.Device.Cuda )
+    else Torch_core.Device.Cpu
+  in
   let envs = E.create "PongNoFrameskip-v4" ~num_processes:num_procs in
-  Stdio.printf "Action space: %d\n%!" (E.action_space envs);
-  let vs = Var_store.create ~name:"a2c" () in
-  let model = model vs ~actions:2 in
+  let action_space = E.action_space envs in
+  Stdio.printf "Action space: %d\n%!" action_space;
+  let vs = Var_store.create ~name:"a2c" () ~device in
+  let model = model vs ~actions:action_space in
   let optimizer = Optimizer.rmsprop vs ~learning_rate:7e-4 ~eps:1e-5 ~alpha:0.99 in
   let frame_stack = Frame_stack.create () in
   let obs = E.reset envs in
@@ -78,8 +88,7 @@ let () =
       in
       let probs = Tensor.softmax actor ~dim:(-1) in
       let actions =
-        Tensor.multinomial probs ~num_samples:1 ~replacement:true
-        |> Tensor.squeeze_last
+        Tensor.multinomial probs ~num_samples:1 ~replacement:true |> Tensor.squeeze_last
       in
       let {E.obs; reward; is_done} =
         E.step envs ~actions:(Tensor.to_int1_exn actions |> Array.to_list)
@@ -112,18 +121,20 @@ let () =
     let log_probs = Tensor.log_softmax actor ~dim:(-1) in
     let probs = Tensor.softmax actor ~dim:(-1) in
     let action_log_probs =
-      Tensor.gather log_probs ~dim:2 ~index:(Tensor.unsqueeze s_actions ~dim:(-1))
-      |> Tensor.squeeze_last
+      let index = Tensor.unsqueeze s_actions ~dim:(-1) |> Tensor.to_device ~device in
+      Tensor.gather log_probs ~dim:2 ~index |> Tensor.squeeze_last
     in
-    let dist_entropy = Tensor.mean Tensor.(f 0. - (log_probs * probs)) in
+    let dist_entropy = Tensor.mean Tensor.(~-(log_probs * probs)) in
     let advantages =
-      Tensor.(narrow s_returns ~dim:0 ~start:0 ~length:num_steps - critic)
+      let s_returns =
+        Tensor.narrow s_returns ~dim:0 ~start:0 ~length:num_steps
+        |> Tensor.to_device ~device
+      in
+      Tensor.(s_returns - critic)
     in
     let value_loss = Tensor.(advantages * advantages) |> Tensor.mean in
-    let action_loss =
-      Tensor.(f 0. - (detach advantages * action_log_probs)) |> Tensor.mean
-    in
-    let loss = Tensor.((value_loss * f 0.5) + action_loss - (f 0.01 * dist_entropy)) in
+    let action_loss = Tensor.(~-(detach advantages * action_log_probs)) |> Tensor.mean in
+    let loss = Tensor.(scale value_loss 0.5 + action_loss - scale dist_entropy 0.01) in
     Optimizer.backward_step optimizer ~loss ~clip_grad_norm2:0.5;
     Caml.Gc.full_major ();
     set s_states 0 (Tensor.get s_states (-1))

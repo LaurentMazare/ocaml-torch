@@ -333,3 +333,4 @@ let flatten t =
   view t ~size:[batch_size; -1]
 
 let squeeze_last t = squeeze1 t ~dim:(-1)
+let scale t f = mul1 t (Scalar.float f)
