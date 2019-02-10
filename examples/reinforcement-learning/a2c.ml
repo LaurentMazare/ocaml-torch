@@ -2,7 +2,7 @@ open Base
 open Torch
 
 let num_steps = 5
-let updates = 1_000
+let updates = 1_000_000
 let num_procs = 16
 let num_stack = 4
 
@@ -70,7 +70,7 @@ let () =
   Stdio.printf "Action space: %d\n%!" action_space;
   let vs = Var_store.create ~name:"a2c" () ~device in
   let model = model vs ~actions:action_space in
-  let optimizer = Optimizer.rmsprop vs ~learning_rate:7e-4 ~eps:1e-5 ~alpha:0.99 in
+  let optimizer = Optimizer.adam vs ~learning_rate:1e-4 in
   let frame_stack = Frame_stack.create () in
   let obs = E.reset envs in
   Tensor.print_shape obs ~name:"obs";
@@ -79,9 +79,11 @@ let () =
     Tensor.zeros [num_steps + 1; num_procs; num_stack; 84; 84] ~kind:Float
   in
   let s_rewards = Tensor.zeros [num_steps; num_procs] in
+  let sum_rewards = Tensor.zeros [] in
+  let cnt_rewards = Tensor.zeros [] in
   let s_actions = Tensor.zeros [num_steps; num_procs] ~kind:Int64 in
   let s_masks = Tensor.zeros [num_steps; num_procs] in
-  for _index = 1 to updates do
+  for index = 1 to updates do
     for s = 0 to num_steps - 1 do
       let {actor; critic = _} =
         Tensor.no_grad (fun () -> model (Tensor.get s_states s))
@@ -93,6 +95,8 @@ let () =
       let {E.obs; reward; is_done} =
         E.step envs ~actions:(Tensor.to_int1_exn actions |> Array.to_list)
       in
+      Tensor.(sum_rewards += sum reward);
+      Tensor.(cnt_rewards += sum (abs reward));
       let masks = Tensor.(f 1. - is_done) in
       let obs = Frame_stack.update frame_stack obs ~masks in
       set s_actions s actions;
@@ -124,7 +128,9 @@ let () =
       let index = Tensor.unsqueeze s_actions ~dim:(-1) |> Tensor.to_device ~device in
       Tensor.gather log_probs ~dim:2 ~index |> Tensor.squeeze_last
     in
-    let dist_entropy = Tensor.mean Tensor.(~-(log_probs * probs)) in
+    let dist_entropy =
+      Tensor.(~-(log_probs * probs) |> sum2 ~dim:[-1] ~keepdim:false |> mean)
+    in
     let advantages =
       let s_returns =
         Tensor.narrow s_returns ~dim:0 ~start:0 ~length:num_steps
@@ -137,5 +143,13 @@ let () =
     let loss = Tensor.(scale value_loss 0.5 + action_loss - scale dist_entropy 0.01) in
     Optimizer.backward_step optimizer ~loss ~clip_grad_norm2:0.5;
     Caml.Gc.full_major ();
-    set s_states 0 (Tensor.get s_states (-1))
+    set s_states 0 (Tensor.get s_states (-1));
+    if index % 100 = 0
+    then (
+      Stdio.printf
+        "%d %f\n%!"
+        index
+        Tensor.(to_float0_exn sum_rewards /. to_float0_exn cnt_rewards);
+      ignore (Tensor.zero_ sum_rewards : Tensor.t);
+      ignore (Tensor.zero_ cnt_rewards : Tensor.t) )
   done
