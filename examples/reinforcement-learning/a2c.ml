@@ -72,8 +72,9 @@ let train ~device =
     Tensor.zeros [num_steps + 1; num_procs; num_stack; 84; 84] ~kind:Float
   in
   let s_rewards = Tensor.zeros [num_steps; num_procs] in
-  let sum_rewards = Tensor.zeros [] in
-  let cnt_rewards = Tensor.zeros [] in
+  let sum_rewards = Tensor.zeros [num_procs] in
+  let total_rewards = ref 0. in
+  let total_episodes = ref 0. in
   let s_actions = Tensor.zeros [num_steps; num_procs] ~kind:Int64 in
   let s_masks = Tensor.zeros [num_steps; num_procs] in
   for index = 1 to updates do
@@ -88,9 +89,12 @@ let train ~device =
       let {E.obs; reward; is_done} =
         E.step envs ~actions:(Tensor.to_int1_exn actions |> Array.to_list)
       in
-      Tensor.(sum_rewards += sum reward);
-      Tensor.(cnt_rewards += sum (abs reward));
+      Tensor.(sum_rewards += reward);
+      (total_rewards :=
+         !total_rewards +. Tensor.(sum (sum_rewards * is_done) |> to_float0_exn));
+      (total_episodes := !total_episodes +. Tensor.(sum is_done |> to_float0_exn));
       let masks = Tensor.(f 1. - is_done) in
+      Tensor.(sum_rewards *= masks);
       let obs = Frame_stack.update frame_stack obs ~masks in
       set s_actions s actions;
       set s_states (s + 1) obs;
@@ -145,11 +149,12 @@ let train ~device =
     if index % 500 = 0
     then (
       Stdio.printf
-        "%d %f\n%!"
+        "%d %f (%.0f episodes)\n%!"
         index
-        Tensor.(to_float0_exn sum_rewards /. to_float0_exn cnt_rewards);
-      ignore (Tensor.zero_ sum_rewards : Tensor.t);
-      ignore (Tensor.zero_ cnt_rewards : Tensor.t) )
+        (!total_rewards /. !total_episodes)
+        !total_episodes;
+      total_rewards := 0.;
+      total_episodes := 0. )
   done
 
 let valid ~filename ~device =
