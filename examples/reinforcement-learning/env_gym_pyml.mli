@@ -7,7 +7,7 @@ type step =
 
 type t
 
-val create : string -> t
+val create : string -> action_repeat:int -> t
 val reset : t -> Tensor.t
 val step : t -> action:int -> step
 val actions : t -> string list

@@ -2,10 +2,13 @@ open Base
 open Torch
 
 let num_stack = 4
+let action_repeat = 4
 let total_episodes = 1_000_000
 let update_target_every = 1_000
 let memory_capacity = 100_000
 let render = false
+let env_name = "PongNoFrameskip-v4"
+let double_dqn = true
 
 type state = Tensor.t
 
@@ -134,7 +137,7 @@ end = struct
 
   let action t state ~total_frames =
     (* epsilon-greedy action choice. *)
-    let epsilon = Float.max 0.02 (0.5 -. (Float.of_int total_frames /. 1_000_000.)) in
+    let epsilon = Float.max 0.02 (0.5 -. (Float.of_int total_frames /. 100_000.)) in
     if Float.( < ) epsilon (Random.float 1.)
     then
       let qvalues =
@@ -168,9 +171,18 @@ end = struct
       in
       let next_qvalues =
         Tensor.no_grad (fun () ->
-            Layer.apply t.target_model next_states
-            |> Tensor.max2 ~dim:1 ~keepdim:false
-            |> fst )
+            if double_dqn
+            then
+              let actions =
+                Layer.apply t.model next_states |> Tensor.argmax1 ~dim:1 ~keepdim:true
+              in
+              Layer.apply t.target_model next_states
+              |> Tensor.gather ~dim:1 ~index:actions
+              |> Tensor.squeeze1 ~dim:1
+            else
+              Layer.apply t.target_model next_states
+              |> Tensor.max2 ~dim:1 ~keepdim:false
+              |> fst )
       in
       let expected_qvalues = Tensor.(rewards + (f t.gamma * next_qvalues * continue)) in
       let loss = Tensor.huber_loss qvalues expected_qvalues in
@@ -218,6 +230,7 @@ let maybe_load_weights agent =
 module E = struct
   type t =
     { fire_action : int option
+    ; nactions : int
     ; env : Env_gym_pyml.t
     ; preprocess : state -> state
     ; mutable should_reset : bool
@@ -227,13 +240,14 @@ module E = struct
     ; mutable total_frames : int }
 
   let create () =
-    let env = Env_gym_pyml.create "BreakoutDeterministic-v4" in
+    let env = Env_gym_pyml.create env_name ~action_repeat in
+    let actions = Env_gym_pyml.actions env in
+    Stdio.printf "actions: %s\n%!" (String.concat ~sep:"," actions);
     let fire_action =
-      let actions = Env_gym_pyml.actions env in
-      Stdio.printf "actions: %s\n%!" (String.concat ~sep:"," actions);
       List.find_mapi actions ~f:(fun i -> function "FIRE" -> Some i | _ -> None)
     in
     { fire_action
+    ; nactions = List.length actions
     ; env
     ; preprocess = preprocess ()
     ; should_reset = true
@@ -266,9 +280,7 @@ module E = struct
 
   let step t ~action =
     let prev_lives = Env_gym_pyml.lives t.env in
-    let {Env_gym_pyml.obs; reward; is_done} =
-      Env_gym_pyml.step t.env ~action:(2 + action)
-    in
+    let {Env_gym_pyml.obs; reward; is_done} = Env_gym_pyml.step t.env ~action in
     if render
     then
       Torch_vision.Image.write_image
@@ -284,15 +296,15 @@ end
 
 let () =
   let env = E.create () in
-  let agent = DqnAgent.create ~actions:2 ~memory_capacity in
+  let agent = DqnAgent.create ~actions:env.nactions ~memory_capacity in
   maybe_load_weights agent;
   for episode_idx = 1 to total_episodes do
     let rec loop state =
       let action = DqnAgent.action agent state ~total_frames:env.total_frames in
       let next_state, reward, is_done = E.step env ~action in
       DqnAgent.transition_feedback agent {state; action; next_state; reward; is_done};
-      if env.total_frames % 4 = 0 then DqnAgent.experience_replay agent;
-      if env.total_frames % 100 = 0 then Caml.Gc.full_major ();
+      DqnAgent.experience_replay agent;
+      if env.total_frames % 20 = 0 then Caml.Gc.full_major ();
       if env.total_frames % update_target_every = 0
       then DqnAgent.update_target_model agent;
       if not is_done then loop next_state

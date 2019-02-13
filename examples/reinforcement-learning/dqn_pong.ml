@@ -186,7 +186,7 @@ let maybe_load_weights agent =
 
 let () =
   let module E = Env_gym_pyml in
-  let env = E.create "PongDeterministic-v4" in
+  let env = E.create "PongDeterministic-v4" ~action_repeat:1 in
   let agent = DqnAgent.create ~actions:2 ~memory_capacity:50_000 in
   maybe_load_weights agent;
   let total_frames = ref 0 in
