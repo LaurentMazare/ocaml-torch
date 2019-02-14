@@ -1,5 +1,10 @@
-open! Base
+open Base
 module Optimizer = Torch_core.Wrapper.Optimizer
+module Clip_grad = struct
+  type t =
+    | Norm2 of float
+    | Value of float
+end
 
 type t =
   { optimizer : Optimizer.t
@@ -45,6 +50,13 @@ let sgd
     ~learning_rate =
   Optimizer.sgd ~learning_rate ~momentum ~dampening ~weight_decay ~nesterov |> create ~vs
 
+let clip_grad_value_ t ~max_value =
+  Var_store.trainable_vars t.vs
+  |> List.iter ~f:(fun tensor ->
+      Tensor.grad tensor
+      |> Tensor.clamp_ ~min:(Scalar.f (-. max_value)) ~max:(Scalar.f max_value)
+      |> fun tensor -> ignore (tensor : Tensor.t))
+
 let clip_grad_norm2_ t ~max_norm2 =
   let total_norm =
     Var_store.trainable_vars t.vs
@@ -69,15 +81,20 @@ let zero_grad t =
   add_missing_parameters t;
   Optimizer.zero_grad t.optimizer
 
-let step ?clip_grad_norm2 t =
+let step ?clip_grad t =
   add_missing_parameters t;
-  Option.iter clip_grad_norm2 ~f:(fun max_norm2 -> clip_grad_norm2_ t ~max_norm2);
+  begin
+    match (clip_grad : Clip_grad.t option) with
+    | None -> ()
+    | Some (Norm2 max_norm2) -> clip_grad_norm2_ t ~max_norm2
+    | Some (Value max_value) -> clip_grad_value_ t ~max_value
+  end;
   Optimizer.step t.optimizer
 
-let backward_step ?clip_grad_norm2 t ~loss =
+let backward_step ?clip_grad t ~loss =
   zero_grad t;
   Tensor.backward loss;
-  step ?clip_grad_norm2 t
+  step ?clip_grad t
 
 let set_learning_rate t ~learning_rate =
   Optimizer.set_learning_rate t.optimizer learning_rate

@@ -1,5 +1,11 @@
 type t
 
+module Clip_grad : sig
+  type t =
+    | Norm2 of float
+    | Value of float
+end
+
 val adam :
      ?beta1:float
   -> ?beta2:float
@@ -27,9 +33,9 @@ val sgd :
   -> learning_rate:float
   -> t
 
-val step : ?clip_grad_norm2:float -> t -> unit
+val step : ?clip_grad:Clip_grad.t -> t -> unit
 val zero_grad : t -> unit
-val backward_step : ?clip_grad_norm2:float -> t -> loss:Tensor.t -> unit
+val backward_step : ?clip_grad:Clip_grad.t -> t -> loss:Tensor.t -> unit
 val set_learning_rate : t -> learning_rate:float -> unit
 
 module Linear_interpolation : sig

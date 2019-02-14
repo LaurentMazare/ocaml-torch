@@ -138,7 +138,7 @@ let train ~device =
     let value_loss = Tensor.(advantages * advantages) |> Tensor.mean in
     let action_loss = Tensor.(~-(detach advantages * action_log_probs)) |> Tensor.mean in
     let loss = Tensor.(scale value_loss 0.5 + action_loss - scale dist_entropy 0.01) in
-    Optimizer.backward_step optimizer ~loss ~clip_grad_norm2:0.5;
+    Optimizer.backward_step optimizer ~loss ~clip_grad:(Norm2 0.5);
     Caml.Gc.full_major ();
     set s_states 0 (Tensor.get s_states (-1));
     if index % 10_000 = 0

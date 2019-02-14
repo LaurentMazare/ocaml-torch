@@ -87,7 +87,7 @@ let () =
           batch_idx batches_per_epoch
           (!sum_loss /. Float.of_int (1 + batch_idx));
         Tensor.backward loss;
-        Optimizer.step ~clip_grad_norm2:4. adam);
+        Optimizer.step ~clip_grad:(Norm2 4.) adam);
       Stdio.printf "%d %.0fs %f\n%!"
         epoch_idx
         (Unix.gettimeofday () -. start_time)
