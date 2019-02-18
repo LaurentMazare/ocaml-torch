@@ -40,7 +40,7 @@ void at_copy_data(tensor tensor, void *vs, int64_t numel, int element_size_in_by
       caml_failwith("incoherent element sizes in bytes");
     if (numel != tensor->numel())
       caml_failwith("incoherent number of elements");
-    void *tensor_data = tensor->data_ptr();
+    void *tensor_data = tensor->contiguous().data_ptr();
     memcpy(vs, tensor_data, numel * element_size_in_bytes);
   )
 }
