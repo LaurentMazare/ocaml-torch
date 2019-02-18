@@ -38,7 +38,8 @@ type totals =
 type rollout =
   { states : Tensor.t
   ; returns : Tensor.t
-  ; actions : Tensor.t }
+  ; actions : Tensor.t
+  ; values : Tensor.t }
 
 type t =
   { envs : E.t
@@ -73,14 +74,13 @@ let action_space t = E.action_space t.envs
 
 let run t ~model =
   set t.s_states 0 (Tensor.get t.s_states (-1));
+  let s_values = Tensor.zeros [t.num_steps; t.num_procs] in
   let s_rewards = Tensor.zeros [t.num_steps; t.num_procs] in
   let s_actions = Tensor.zeros [t.num_steps; t.num_procs] ~kind:Int64 in
   let s_masks = Tensor.zeros [t.num_steps; t.num_procs] in
   for s = 0 to t.num_steps - 1 do
-    let probs =
-      Tensor.no_grad (fun () -> (model (Tensor.get t.s_states s)).actor)
-      |> Tensor.softmax ~dim:(-1)
-    in
+    let {actor; critic} = Tensor.no_grad (fun () -> model (Tensor.get t.s_states s)) in
+    let probs = Tensor.softmax actor ~dim:(-1) in
     let actions =
       Tensor.multinomial probs ~num_samples:1 ~replacement:true |> Tensor.squeeze_last
     in
@@ -95,6 +95,7 @@ let run t ~model =
     Tensor.(t.sum_rewards *= masks);
     let obs = Frame_stack.update t.frame_stack obs ~masks in
     set s_actions s actions;
+    set s_values s (critic |> Tensor.squeeze1 ~dim:(-1));
     set t.s_states (s + 1) obs;
     set s_rewards s reward;
     set s_masks s masks
@@ -110,7 +111,7 @@ let run t ~model =
     done;
     r
   in
-  {states = t.s_states; returns = s_returns; actions = s_actions}
+  {states = t.s_states; returns = s_returns; actions = s_actions; values = s_values}
 
 let get_and_reset_totals t =
   let res = {rewards = t.total_rewards; episodes = t.total_episodes} in

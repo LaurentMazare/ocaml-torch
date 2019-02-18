@@ -38,7 +38,7 @@ let train ~device =
   let model = model vs ~actions:action_space in
   let optimizer = Optimizer.adam vs ~learning_rate:1e-4 in
   for index = 1 to updates do
-    let {Rollout.states; actions; returns} = Rollout.run rollout ~model in
+    let {Rollout.states; actions; returns; _} = Rollout.run rollout ~model in
     let {Rollout.actor; critic} =
       model
         ( Tensor.narrow states ~dim:0 ~start:0 ~length:num_steps
