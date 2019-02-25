@@ -34,14 +34,21 @@ tensor at_tensor_of_data(void *vs, int64_t *dims, int ndims, int element_size_in
   )
 }
 
-void at_copy_data(tensor tensor, void *vs, int64_t numel, int element_size_in_bytes) {
+void at_copy_data(tensor tensor, void *vs, int64_t numel, int elt_size_in_bytes) {
   PROTECT(
-    if (element_size_in_bytes != tensor->type().elementSizeInBytes())
+    if (elt_size_in_bytes != tensor->type().elementSizeInBytes())
       caml_failwith("incoherent element sizes in bytes");
     if (numel != tensor->numel())
       caml_failwith("incoherent number of elements");
-    void *tensor_data = tensor->contiguous().data_ptr();
-    memcpy(vs, tensor_data, numel * element_size_in_bytes);
+    if (tensor->device().type() != at::kCPU) {
+      torch::Tensor tmp_tensor = tensor->to(at::kCPU);
+      void *tensor_data = tmp_tensor.contiguous().data_ptr();
+      memcpy(vs, tensor_data, numel * elt_size_in_bytes);
+    }
+    else {
+      void *tensor_data = tensor->contiguous().data_ptr();
+      memcpy(vs, tensor_data, numel * elt_size_in_bytes);
+    }
   )
 }
 
