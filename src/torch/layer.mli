@@ -15,7 +15,7 @@ type activation =
   | Sigmoid
 
 val linear :
-     ?n:N.t
+     ?n:string
   -> Var_store.t
   -> ?activation:activation (* default: no activation *)
   -> ?use_bias:bool (* default: true *)
@@ -25,7 +25,7 @@ val linear :
   -> t
 
 val conv2d :
-     ?n:N.t
+     ?n:string
   -> Var_store.t
   -> ksize:int * int
   -> stride:int * int
@@ -38,7 +38,7 @@ val conv2d :
   -> t
 
 val conv2d_ :
-     ?n:N.t
+     ?n:string
   -> Var_store.t
   -> ksize:int
   -> stride:int
@@ -51,7 +51,7 @@ val conv2d_ :
   -> t
 
 val conv_transpose2d :
-     ?n:N.t
+     ?n:string
   -> Var_store.t
   -> ksize:int * int
   -> stride:int * int
@@ -65,7 +65,7 @@ val conv_transpose2d :
   -> t
 
 val conv_transpose2d_ :
-     ?n:N.t
+     ?n:string
   -> Var_store.t
   -> ksize:int
   -> stride:int
@@ -79,7 +79,7 @@ val conv_transpose2d_ :
   -> t
 
 val batch_norm2d :
-     ?n:N.t
+     ?n:string
   -> Var_store.t
   -> ?w_init:Var_store.Init.t
   -> ?cudnn_enabled:bool
@@ -101,7 +101,7 @@ module Lstm : sig
   type t
   type state = Tensor.t * Tensor.t
 
-  val create : ?n:N.t -> Var_store.t -> input_dim:int -> hidden_size:int -> t
+  val create : ?n:string -> Var_store.t -> input_dim:int -> hidden_size:int -> t
   val step : t -> state -> Tensor.t -> state
   val seq : t -> Tensor.t -> Tensor.t * state
   val zero_state : t -> batch_size:int -> state

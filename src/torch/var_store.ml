@@ -1,54 +1,90 @@
-open! Base
+open Base
 
+(* Maybe we should also store the full path in the var stores ? *)
 type t =
   { name : string
   ; mutable trainable_tensors : Tensor.t list
   ; all_tensors_by_name : (string, Tensor.t) Hashtbl.t
+  ; subs : (string, t) Hashtbl.t
   ; device : Torch_core.Device.t
-  ; mutable name_counter : int
   ; mutable frozen : bool }
 
 let create ?(frozen = false) ?(device = Torch_core.Device.Cpu) ~name () =
   { name
   ; trainable_tensors = []
+  ; subs = Hashtbl.create (module String)
   ; all_tensors_by_name = Hashtbl.create (module String)
   ; device
-  ; name_counter = 1
   ; frozen }
 
-let default_name t name_option base =
-  match name_option with
-  | Some t -> t
-  | None ->
-    t.name_counter <- t.name_counter + 1;
-    N.of_list [Printf.sprintf "%s__%d" base t.name_counter]
+let first_free_name name table =
+  if Hashtbl.mem table name
+  then
+    let rec loop idx =
+      let name = Printf.sprintf "%s_%d" name idx in
+      if Hashtbl.mem table name then loop (idx + 1) else name
+    in
+    loop 1
+  else name
 
-let trainable_vars t = t.trainable_tensors
+let sub t sub_name =
+  if String.contains sub_name '.'
+  then Printf.failwithf "sub names cannot contain ., %s" sub_name ();
+  Hashtbl.find_or_add t.subs sub_name ~default:(fun () ->
+      { name = t.name
+      ; trainable_tensors = []
+      ; subs = Hashtbl.create (module String)
+      ; all_tensors_by_name = Hashtbl.create (module String)
+      ; device = t.device
+      ; frozen = t.frozen } )
 
-let freeze t =
+let ( / ) = sub
+
+let rec freeze t =
   t.frozen <- true;
-  List.iter (trainable_vars t) ~f:(fun tensor ->
-      ignore (Tensor.set_requires_grad tensor ~r:false : Tensor.t) )
+  List.iter t.trainable_tensors ~f:(fun tensor ->
+      ignore (Tensor.set_requires_grad tensor ~r:false : Tensor.t) );
+  Hashtbl.iter t.subs ~f:freeze
 
-let unfreeze t =
+let rec unfreeze t =
   t.frozen <- false;
-  List.iter (trainable_vars t) ~f:(fun tensor ->
-      ignore (Tensor.set_requires_grad tensor ~r:true : Tensor.t) )
+  List.iter t.trainable_tensors ~f:(fun tensor ->
+      ignore (Tensor.set_requires_grad tensor ~r:true : Tensor.t) );
+  Hashtbl.iter t.subs ~f:unfreeze
 
-let all_vars t = Hashtbl.to_alist t.all_tensors_by_name
+let rec trainable_vars t =
+  let sub_vars = Hashtbl.data t.subs |> List.concat_map ~f:trainable_vars in
+  t.trainable_tensors @ sub_vars
+
+let rec all_vars t =
+  let sub_vars = Hashtbl.data t.subs |> List.concat_map ~f:all_vars in
+  Hashtbl.to_alist t.all_tensors_by_name @ sub_vars
 
 let copy ~src ~dst =
   Tensor.no_grad (fun () ->
-      Hashtbl.iteri dst.all_tensors_by_name ~f:(fun ~key ~data ->
-          match Hashtbl.find src.all_tensors_by_name key with
-          | Some src -> Tensor.copy_ data ~src
-          | None ->
-            Printf.failwithf
-              "cannot find var %s from var-store %s in %s"
-              key
-              dst.name
-              src.name
-              () ) )
+      let rec walk ~src ~dst path =
+        Hashtbl.iteri dst.all_tensors_by_name ~f:(fun ~key ~data ->
+            match Hashtbl.find src.all_tensors_by_name key with
+            | Some src -> Tensor.copy_ data ~src
+            | None ->
+              Printf.failwithf
+                "cannot find var %s from var-store %s in %s"
+                (List.rev (key :: path) |> String.concat ~sep:".")
+                dst.name
+                src.name
+                () );
+        Hashtbl.iteri dst.subs ~f:(fun ~key ~data:dst ->
+            match Hashtbl.find src.subs key with
+            | Some src -> walk ~src ~dst (key :: path)
+            | None ->
+              Printf.failwithf
+                "cannot find sub %s from var-store %s in %s"
+                (List.rev (key :: path) |> String.concat ~sep:".")
+                dst.name
+                src.name
+                () )
+      in
+      walk ~src ~dst [] )
 
 let name t = t.name
 let device t = t.device
@@ -85,9 +121,9 @@ let new_var ?(trainable = true) t ~shape ~init ~name =
       |> Tensor.to_device ~device
       |> Tensor.set_requires_grad ~r:requires_grad
   in
-  let name = N.to_string name in
-  if Hashtbl.mem t.all_tensors_by_name name
-  then Printf.failwithf "multiple variable with name: %s" name ();
+  if String.contains name '.'
+  then Printf.failwithf "tensor names cannot contain ., %s" name ();
+  let name = first_free_name name t.all_tensors_by_name in
   Hashtbl.add_exn t.all_tensors_by_name ~key:name ~data:tensor;
   if trainable then t.trainable_tensors <- tensor :: t.trainable_tensors;
   tensor

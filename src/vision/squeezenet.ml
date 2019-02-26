@@ -1,12 +1,10 @@
 open Base
 open Torch
 
-let fire vs ~n in_planes squeeze_planes exp1_planes exp3_planes =
-  let n str = N.(n / str) in
+let fire vs in_planes squeeze_planes exp1_planes exp3_planes =
   let squeeze =
     Layer.conv2d_
-      vs
-      ~n:(n "squeeze")
+      (Var_store.sub vs "squeeze")
       ~ksize:1
       ~stride:1
       ~input_dim:in_planes
@@ -14,8 +12,7 @@ let fire vs ~n in_planes squeeze_planes exp1_planes exp3_planes =
   in
   let exp1 =
     Layer.conv2d_
-      vs
-      ~n:(n "expand1x1")
+      (Var_store.sub vs "expand1x1")
       ~ksize:1
       ~stride:1
       ~input_dim:squeeze_planes
@@ -23,8 +20,7 @@ let fire vs ~n in_planes squeeze_planes exp1_planes exp3_planes =
   in
   let exp3 =
     Layer.conv2d_
-      vs
-      ~n:(n "expand3x3")
+      (Var_store.sub vs "expand3x3")
       ~ksize:3
       ~stride:1
       ~padding:1
@@ -39,43 +35,42 @@ let fire vs ~n in_planes squeeze_planes exp1_planes exp3_planes =
 
 let squeezenet vs ~version ~num_classes =
   let features =
-    let n i = N.(root / "features" / Int.to_string i) in
+    let sub_vs i = Var_store.(vs / "features" / Int.to_string i) in
     match version with
     | `v1_0 ->
       Layer.fold
-        [ Layer.conv2d_ vs ~n:(n 0) ~ksize:7 ~stride:2 ~input_dim:3 96
+        [ Layer.conv2d_ (sub_vs 0) ~ksize:7 ~stride:2 ~input_dim:3 96
         ; Layer.of_fn Tensor.relu_
         ; Layer.of_fn (Tensor.max_pool2d ~ceil_mode:true ~ksize:(3, 3) ~stride:(2, 2))
-        ; fire vs ~n:(n 3) 96 16 64 64
-        ; fire vs ~n:(n 4) 128 16 64 64
-        ; fire vs ~n:(n 5) 128 32 128 128
+        ; fire (sub_vs 3) 96 16 64 64
+        ; fire (sub_vs 4) 128 16 64 64
+        ; fire (sub_vs 5) 128 32 128 128
         ; Layer.of_fn (Tensor.max_pool2d ~ceil_mode:true ~ksize:(3, 3) ~stride:(2, 2))
-        ; fire vs ~n:(n 7) 256 32 128 128
-        ; fire vs ~n:(n 8) 256 48 192 192
-        ; fire vs ~n:(n 9) 384 48 192 192
-        ; fire vs ~n:(n 10) 384 64 256 256
+        ; fire (sub_vs 7) 256 32 128 128
+        ; fire (sub_vs 8) 256 48 192 192
+        ; fire (sub_vs 9) 384 48 192 192
+        ; fire (sub_vs 10) 384 64 256 256
         ; Layer.of_fn (Tensor.max_pool2d ~ceil_mode:true ~ksize:(3, 3) ~stride:(2, 2))
-        ; fire vs ~n:(n 12) 512 64 256 256 ]
+        ; fire (sub_vs 12) 512 64 256 256 ]
     | `v1_1 ->
       Layer.fold
-        [ Layer.conv2d_ vs ~n:(n 0) ~ksize:3 ~stride:2 ~input_dim:3 64
+        [ Layer.conv2d_ (sub_vs 0) ~ksize:3 ~stride:2 ~input_dim:3 64
         ; Layer.of_fn Tensor.relu_
         ; Layer.of_fn (Tensor.max_pool2d ~ceil_mode:true ~ksize:(3, 3) ~stride:(2, 2))
-        ; fire vs ~n:(n 3) 64 16 64 64
-        ; fire vs ~n:(n 4) 128 16 64 64
+        ; fire (sub_vs 3) 64 16 64 64
+        ; fire (sub_vs 4) 128 16 64 64
         ; Layer.of_fn (Tensor.max_pool2d ~ceil_mode:true ~ksize:(3, 3) ~stride:(2, 2))
-        ; fire vs ~n:(n 6) 128 32 128 128
-        ; fire vs ~n:(n 7) 256 32 128 128
+        ; fire (sub_vs 6) 128 32 128 128
+        ; fire (sub_vs 7) 256 32 128 128
         ; Layer.of_fn (Tensor.max_pool2d ~ceil_mode:true ~ksize:(3, 3) ~stride:(2, 2))
-        ; fire vs ~n:(n 9) 256 48 192 192
-        ; fire vs ~n:(n 10) 384 48 192 192
-        ; fire vs ~n:(n 11) 384 64 256 256
-        ; fire vs ~n:(n 12) 512 64 256 256 ]
+        ; fire (sub_vs 9) 256 48 192 192
+        ; fire (sub_vs 10) 384 48 192 192
+        ; fire (sub_vs 11) 384 64 256 256
+        ; fire (sub_vs 12) 512 64 256 256 ]
   in
   let final_conv =
     Layer.conv2d_
-      vs
-      ~n:N.(root / "classifier" / "1")
+      Var_store.(vs / "classifier" / "1")
       ~ksize:1
       ~stride:1
       ~input_dim:512

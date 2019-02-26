@@ -42,13 +42,12 @@ let apply ?activation ys =
   | None -> ys
 
 let linear ?n vs ?activation ?(use_bias = true) ?w_init ~input_dim output_dim =
-  let name = Var_store.default_name vs n "linear" in
+  let vs = Var_store.sub vs (Option.value n ~default:"linear") in
   let w =
     let shape = [output_dim; input_dim] in
-    let name = N.(name / "weight") in
     match w_init with
-    | None -> kaiming_uniform vs ~shape ~a:(Float.sqrt 5.) ~name
-    | Some init -> Var_store.new_var vs ~shape ~init ~name
+    | None -> kaiming_uniform vs ~shape ~a:(Float.sqrt 5.) ~name:"weight"
+    | Some init -> Var_store.new_var vs ~shape ~init ~name:"weight"
   in
   let apply =
     if use_bias
@@ -59,7 +58,7 @@ let linear ?n vs ?activation ?(use_bias = true) ?w_init ~input_dim output_dim =
           vs
           ~shape:[output_dim]
           ~init:(Uniform (-.bound, bound))
-          ~name:N.(name / "bias")
+          ~name:"bias"
       in
       fun xs -> Tensor.(mm xs (tr w) + b) |> apply ?activation
     else fun xs -> Tensor.(mm xs (tr w)) |> apply ?activation
@@ -77,20 +76,17 @@ let conv2d
     ?(padding = 0, 0)
     ~input_dim
     output_dim =
-  let name = Var_store.default_name vs n "conv2d" in
+  let vs = Var_store.sub vs (Option.value n ~default:"conv2d") in
   let w =
     let shape = [output_dim; input_dim; k1; k2] in
-    let name = N.(name / "weight") in
     match w_init with
-    | None -> kaiming_uniform vs ~shape ~a:(Float.sqrt 5.) ~name
-    | Some init -> Var_store.new_var vs ~shape ~init ~name
+    | None -> kaiming_uniform vs ~shape ~a:(Float.sqrt 5.) ~name:"weight"
+    | Some init -> Var_store.new_var vs ~shape ~init ~name:"weight"
   in
   let apply =
     if use_bias
     then
-      let b =
-        Var_store.new_var vs ~shape:[output_dim] ~init:Zeros ~name:N.(name / "bias")
-      in
+      let b = Var_store.new_var vs ~shape:[output_dim] ~init:Zeros ~name:"bias" in
       fun xs -> Tensor.conv2d xs w b ~padding ~stride |> apply ?activation
     else
       let b = Tensor.zeros [output_dim] ~device:(Var_store.device vs) in
@@ -133,18 +129,18 @@ let conv_transpose2d
     ?(output_padding = 0, 0)
     ~input_dim
     output_dim =
-  let name = Var_store.default_name vs n "conv_transpose2d" in
+  let vs = Var_store.sub vs (Option.value n ~default:"conv_transpose2d") in
   let w =
     Var_store.new_var
       vs
       ~shape:[input_dim; output_dim; k1; k2]
       ~init:w_init
-      ~name:N.(name / "weight")
+      ~name:"weight"
   in
   let apply =
     let b =
       if use_bias
-      then Var_store.new_var vs ~shape:[output_dim] ~init:Zeros ~name:N.(name / "bias")
+      then Var_store.new_var vs ~shape:[output_dim] ~init:Zeros ~name:"bias"
       else Tensor.zeros [output_dim] ~device:(Var_store.device vs)
     in
     fun xs ->
@@ -186,18 +182,16 @@ let batch_norm2d
     ?(eps = 1e-5)
     ?(momentum = 0.1)
     output_dim =
-  let name = Var_store.default_name vs n "batch_norm2d" in
-  let w =
-    Var_store.new_var vs ~shape:[output_dim] ~init:w_init ~name:N.(name / "weight")
-  in
-  let b = Var_store.new_var vs ~shape:[output_dim] ~init:Zeros ~name:N.(name / "bias") in
+  let vs = Var_store.sub vs (Option.value n ~default:"batch_norm2d") in
+  let w = Var_store.new_var vs ~shape:[output_dim] ~init:w_init ~name:"weight" in
+  let b = Var_store.new_var vs ~shape:[output_dim] ~init:Zeros ~name:"bias" in
   let running_mean =
     Var_store.new_var
       vs
       ~trainable:false
       ~shape:[output_dim]
       ~init:Zeros
-      ~name:N.(name / "running_mean")
+      ~name:"running_mean"
   in
   let running_var =
     Var_store.new_var
@@ -205,7 +199,7 @@ let batch_norm2d
       ~trainable:false
       ~shape:[output_dim]
       ~init:Ones
-      ~name:N.(name / "running_var")
+      ~name:"running_var"
   in
   let apply_with_training xs ~is_training =
     Tensor.batch_norm
@@ -253,28 +247,16 @@ module Lstm = struct
   type state = Tensor.t * Tensor.t
 
   let create ?n vs ~input_dim ~hidden_size =
-    let name = Var_store.default_name vs n "lstm" in
+    let vs = Var_store.sub vs (Option.value n ~default:"lstm") in
     let gate_size = 4 * hidden_size in
     let w_ih =
-      kaiming_uniform
-        vs
-        ~shape:[gate_size; input_dim]
-        ~a:(Float.sqrt 5.)
-        ~name:N.(name / "w_ih")
+      kaiming_uniform vs ~shape:[gate_size; input_dim] ~a:(Float.sqrt 5.) ~name:"w_ih"
     in
     let w_hh =
-      kaiming_uniform
-        vs
-        ~shape:[gate_size; hidden_size]
-        ~a:(Float.sqrt 5.)
-        ~name:N.(name / "w_hh")
+      kaiming_uniform vs ~shape:[gate_size; hidden_size] ~a:(Float.sqrt 5.) ~name:"w_hh"
     in
-    let b_ih =
-      Var_store.new_var vs ~shape:[gate_size] ~init:Zeros ~name:N.(name / "b_ih")
-    in
-    let b_hh =
-      Var_store.new_var vs ~shape:[gate_size] ~init:Zeros ~name:N.(name / "b_hh")
-    in
+    let b_ih = Var_store.new_var vs ~shape:[gate_size] ~init:Zeros ~name:"b_ih" in
+    let b_hh = Var_store.new_var vs ~shape:[gate_size] ~init:Zeros ~name:"b_hh" in
     {w_ih; w_hh; b_ih; b_hh; hidden_size; device = Var_store.device vs}
 
   let zero_state t ~batch_size =

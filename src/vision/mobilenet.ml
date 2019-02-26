@@ -1,14 +1,14 @@
 open Base
 open Torch
 
+let sub = Var_store.sub
 let relu6 xs = Tensor.(max (relu xs) (f 6.))
 
-let conv_bn vs ~n ~ksize ~stride ~input_dim output_dim =
+let conv_bn sub_vs ~ksize ~stride ~input_dim output_dim =
   let ksize, padding = match ksize with `k1 -> 1, 0 | `k3 -> 3, 1 in
   let conv =
     Layer.conv2d_
-      vs
-      ~n:(n 0)
+      (sub_vs 0)
       ~ksize
       ~stride
       ~padding
@@ -16,12 +16,12 @@ let conv_bn vs ~n ~ksize ~stride ~input_dim output_dim =
       ~input_dim
       output_dim
   in
-  let bn = Layer.batch_norm2d vs ~n:(n 1) output_dim in
+  let bn = Layer.batch_norm2d (sub_vs 1) output_dim in
   Layer.of_fn_ (fun xs ~is_training ->
       Layer.apply conv xs |> Layer.apply_ bn ~is_training )
 
-let inverted_residual vs ~n ~stride ~expand_ratio ~input_dim output_dim =
-  let n ~base i = N.(n / Int.to_string (base + i)) in
+let inverted_residual vs ~stride ~expand_ratio ~input_dim output_dim =
+  let sub_vs ~base i = sub vs (Int.to_string (base + i)) in
   let hidden_dim = input_dim * expand_ratio in
   let use_residual = input_dim = output_dim && stride = 1 in
   let conv0 =
@@ -29,15 +29,14 @@ let inverted_residual vs ~n ~stride ~expand_ratio ~input_dim output_dim =
     then Layer.id_
     else
       Layer.fold_
-        [ conv_bn vs ~n:(n ~base:0) ~ksize:`k1 ~stride:1 ~input_dim hidden_dim
+        [ conv_bn (sub_vs ~base:0) ~ksize:`k1 ~stride:1 ~input_dim hidden_dim
         ; Layer.of_fn_ (fun xs ~is_training:_ -> relu6 xs) ]
   in
   let base = if expand_ratio = 1 then 0 else 3 in
-  let conv1 = conv_bn vs ~n:(n ~base) ~ksize:`k3 ~stride ~input_dim hidden_dim in
+  let conv1 = conv_bn (sub_vs ~base) ~ksize:`k3 ~stride ~input_dim hidden_dim in
   let conv2 =
     conv_bn
-      vs
-      ~n:(n ~base:(base + 3))
+      (sub_vs ~base:(base + 3))
       ~ksize:`k1
       ~stride:1
       ~input_dim:hidden_dim
@@ -52,9 +51,9 @@ let inverted_residual vs ~n ~stride ~expand_ratio ~input_dim output_dim =
 
 let v2 vs ~num_classes =
   let input_dim = 32 in
-  let n_features = N.(root / "features") in
-  let n d i = N.(n_features / Int.to_string d / Int.to_string i) in
-  let initial_conv = conv_bn vs ~n:(n 0) ~ksize:`k3 ~stride:2 ~input_dim:3 input_dim in
+  let vs_features = sub vs "features" in
+  let sub_vs d i = Var_store.(vs_features / Int.to_string d / Int.to_string i) in
+  let initial_conv = conv_bn (sub_vs 0) ~ksize:`k3 ~stride:2 ~input_dim:3 input_dim in
   let last_dim, layers =
     let layer_idx = ref 0 in
     (* t, c, n, s *)
@@ -69,17 +68,19 @@ let v2 vs ~num_classes =
            let layer =
              List.init nn ~f:(fun idx ->
                  Int.incr layer_idx;
-                 let n = N.(n_features / Int.to_string !layer_idx / "conv") in
+                 let sub_vs =
+                   Var_store.(vs_features / Int.to_string !layer_idx / "conv")
+                 in
                  let input_dim, stride = if idx = 0 then input_dim, s else c, 1 in
-                 inverted_residual vs ~n ~stride ~expand_ratio:t ~input_dim c )
+                 inverted_residual sub_vs ~stride ~expand_ratio:t ~input_dim c )
              |> Layer.fold_
            in
            c, layer )
   in
   let layers = Layer.fold_ layers in
-  let final_conv = conv_bn vs ~n:(n 18) ~ksize:`k1 ~stride:1 ~input_dim last_dim in
+  let final_conv = conv_bn (sub_vs 18) ~ksize:`k1 ~stride:1 ~input_dim last_dim in
   let final_linear =
-    Layer.linear vs ~n:N.(root / "classifier" / "1") ~input_dim:last_dim num_classes
+    Layer.linear (sub (sub vs "classifier") "1") ~input_dim:last_dim num_classes
   in
   Layer.of_fn_ (fun xs ~is_training ->
       let batch_size = Tensor.shape xs |> List.hd_exn in

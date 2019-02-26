@@ -1,10 +1,14 @@
+(** A VarStore is used to store all the variables used by a given model.
+    The model creates variables by calling [Var_store.new_var] for which
+    it has to provide a name.
+    [Var_store.sub] creates a sub-directory in the var store which is
+    useful to group some variables together.
+*)
 type t
 
 val create : ?frozen:bool -> ?device:Torch_core.Device.t -> name:string -> unit -> t
-
-(* The trainable variables are guaranteed to be returned in
-   reverse order of addition (the [Optimizer] module relies
-   on this). *)
+val sub : t -> string -> t
+val ( / ) : t -> string -> t
 val trainable_vars : t -> Tensor.t list
 val all_vars : t -> (string * Tensor.t) list
 val name : t -> string
@@ -25,16 +29,10 @@ val new_var :
   -> t
   -> shape:int list
   -> init:Init.t
-  -> name:N.t
+  -> name:string
   -> Tensor.t
 
-val new_var_copy : ?trainable:bool -> t -> src:Tensor.t -> name:N.t -> Tensor.t
-
-(** [default_name t name_option str] builds a default name based on [str] when
-    [name_option] is [None], otherwise [name_option] is used.
-*)
-val default_name : t -> N.t option -> string -> N.t
-
+val new_var_copy : ?trainable:bool -> t -> src:Tensor.t -> name:string -> Tensor.t
 val freeze : t -> unit
 val unfreeze : t -> unit
 val copy : src:t -> dst:t -> unit
