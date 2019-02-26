@@ -56,9 +56,20 @@ let rec trainable_vars t =
   let sub_vars = Hashtbl.data t.subs |> List.concat_map ~f:trainable_vars in
   t.trainable_tensors @ sub_vars
 
-let rec all_vars t =
-  let sub_vars = Hashtbl.data t.subs |> List.concat_map ~f:all_vars in
-  Hashtbl.to_alist t.all_tensors_by_name @ sub_vars
+let all_vars t =
+  let rec walk t ~path =
+    let sub_vars =
+      Hashtbl.to_alist t.subs
+      |> List.concat_map ~f:(fun (key, t) -> walk t ~path:(key :: path))
+    in
+    let vars =
+      Hashtbl.to_alist t.all_tensors_by_name
+      |> List.map ~f:(fun (key, tensor) ->
+             List.rev (key :: path) |> String.concat ~sep:".", tensor )
+    in
+    vars @ sub_vars
+  in
+  walk t ~path:[]
 
 let copy ~src ~dst =
   Tensor.no_grad (fun () ->
