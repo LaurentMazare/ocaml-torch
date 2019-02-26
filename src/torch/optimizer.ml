@@ -1,5 +1,6 @@
 open Base
 module Optimizer = Torch_core.Wrapper.Optimizer
+
 module Clip_grad = struct
   type t =
     | Norm2 of float
@@ -8,24 +9,9 @@ end
 
 type t =
   { optimizer : Optimizer.t
-  ; vs : Var_store.t
-  ; mutable parameters_in_optimizer : int }
+  ; trainable_vars : Tensor.t list }
 
-let add_missing_parameters t =
-  let tensors = Var_store.trainable_vars t.vs in
-  let missing = List.length tensors - t.parameters_in_optimizer in
-  if missing > 0
-  then (
-    (* This only works as [Var_store.vars] returns tensors in
-       reverse order of them being added to the store. *)
-    let to_add = List.take tensors missing in
-    Optimizer.add_parameters t.optimizer to_add;
-    t.parameters_in_optimizer <- t.parameters_in_optimizer + List.length to_add )
-
-let create optimizer ~vs =
-  let t = {optimizer; vs; parameters_in_optimizer = 0} in
-  add_missing_parameters t;
-  t
+let create optimizer ~vs = {optimizer; trainable_vars = Var_store.trainable_vars vs}
 
 let adam ?(beta1 = 0.9) ?(beta2 = 0.999) ?(weight_decay = 0.) vs ~learning_rate =
   Optimizer.adam ~learning_rate ~beta1 ~beta2 ~weight_decay |> create ~vs
@@ -51,44 +37,36 @@ let sgd
   Optimizer.sgd ~learning_rate ~momentum ~dampening ~weight_decay ~nesterov |> create ~vs
 
 let clip_grad_value_ t ~max_value =
-  Var_store.trainable_vars t.vs
-  |> List.iter ~f:(fun tensor ->
+  List.iter t.trainable_vars ~f:(fun tensor ->
       Tensor.grad tensor
-      |> Tensor.clamp_ ~min:(Scalar.f (-. max_value)) ~max:(Scalar.f max_value)
-      |> fun tensor -> ignore (tensor : Tensor.t))
+      |> Tensor.clamp_ ~min:(Scalar.f (-.max_value)) ~max:(Scalar.f max_value)
+      |> fun tensor -> ignore (tensor : Tensor.t) )
 
 let clip_grad_norm2_ t ~max_norm2 =
   let total_norm =
-    Var_store.trainable_vars t.vs
-    |> List.fold ~init:0. ~f:(fun acc tensor ->
-           let grad = Tensor.grad tensor in
-           let grad_norm =
-             if Tensor.defined grad then Tensor.norm grad |> Tensor.float_value else 0.
-           in
-           acc +. grad_norm )
+    List.fold t.trainable_vars ~init:0. ~f:(fun acc tensor ->
+        let grad = Tensor.grad tensor in
+        let grad_norm =
+          if Tensor.defined grad then Tensor.norm grad |> Tensor.float_value else 0.
+        in
+        acc +. grad_norm )
     |> Float.sqrt
   in
   let clip_coef = max_norm2 /. (1e-6 +. total_norm) in
   if Float.( < ) clip_coef 1.
   then
     let clip_coef = Tensor.f clip_coef in
-    Var_store.trainable_vars t.vs
-    |> List.iter ~f:(fun tensor ->
-           let grad = Tensor.grad tensor in
-           if Tensor.defined grad then ignore (Tensor.mul_ grad clip_coef : Tensor.t) )
+    List.iter t.trainable_vars ~f:(fun tensor ->
+        let grad = Tensor.grad tensor in
+        if Tensor.defined grad then ignore (Tensor.mul_ grad clip_coef : Tensor.t) )
 
-let zero_grad t =
-  add_missing_parameters t;
-  Optimizer.zero_grad t.optimizer
+let zero_grad t = Optimizer.zero_grad t.optimizer
 
 let step ?clip_grad t =
-  add_missing_parameters t;
-  begin
-    match (clip_grad : Clip_grad.t option) with
-    | None -> ()
-    | Some (Norm2 max_norm2) -> clip_grad_norm2_ t ~max_norm2
-    | Some (Value max_value) -> clip_grad_value_ t ~max_value
-  end;
+  (match (clip_grad : Clip_grad.t option) with
+  | None -> ()
+  | Some (Norm2 max_norm2) -> clip_grad_norm2_ t ~max_norm2
+  | Some (Value max_value) -> clip_grad_value_ t ~max_value);
   Optimizer.step t.optimizer
 
 let backward_step ?clip_grad t ~loss =
