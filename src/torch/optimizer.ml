@@ -11,7 +11,10 @@ type t =
   { optimizer : Optimizer.t
   ; trainable_vars : Tensor.t list }
 
-let create optimizer ~vs = {optimizer; trainable_vars = Var_store.trainable_vars vs}
+let create optimizer ~vs =
+  let trainable_vars = Var_store.trainable_vars vs in
+  Optimizer.add_parameters optimizer trainable_vars;
+  {optimizer; trainable_vars}
 
 let adam ?(beta1 = 0.9) ?(beta2 = 0.999) ?(weight_decay = 0.) vs ~learning_rate =
   Optimizer.adam ~learning_rate ~beta1 ~beta2 ~weight_decay |> create ~vs
