@@ -2,7 +2,7 @@ open Base
 open Torch
 
 let sub = Var_store.sub
-let relu6 xs = Tensor.(max (relu xs) (f 6.))
+let relu6 xs = Tensor.(min (relu xs) (f 6.))
 
 let conv_bn sub_vs ~ksize ~stride ~input_dim output_dim =
   let ksize, padding = match ksize with `k1 -> 1, 0 | `k3 -> 3, 1 in
