@@ -24,7 +24,7 @@ let fire vs in_planes squeeze_planes exp1_planes exp3_planes =
       ~ksize:3
       ~stride:1
       ~padding:1
-      ~input_dim:exp1_planes
+      ~input_dim:squeeze_planes
       exp3_planes
   in
   Layer.of_fn (fun xs ->
