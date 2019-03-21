@@ -95,7 +95,15 @@ let () =
           ~f:(fun conda_prefix -> [Printf.sprintf "-Wl,-rpath,%s/lib" conda_prefix])
           ~default:[]
       in
-      C.Flags.write_sexp "cxx_flags.sexp" (torch_flags.cflags @ cuda_flags.cflags);
+      let cxx_abi_flag =
+        let cxx_abi =
+          match Caml.Sys.getenv_opt "LIBTORCH_CXX11_ABI" with Some v -> v | None -> "0"
+        in
+        Printf.sprintf "-D_GLIBCXX_USE_CXX11_ABI=%s" cxx_abi
+      in
+      C.Flags.write_sexp
+        "cxx_flags.sexp"
+        (cxx_abi_flag :: (torch_flags.cflags @ cuda_flags.cflags));
       C.Flags.write_sexp
         "c_library_flags.sexp"
         (torch_flags.libs @ conda_libs @ cuda_flags.libs) )
