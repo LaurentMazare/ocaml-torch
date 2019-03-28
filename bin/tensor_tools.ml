@@ -37,8 +37,8 @@ let npz_to_pytorch npz_src pytorch_dst =
       match packed_tensor with
       | Npy.P tensor ->
         match Bigarray.Genarray.layout tensor with
-        | C_layout -> tensor_name, Tensor.of_bigarray tensor
-        | Fortran_layout -> failwith "fortran layout is not supported")
+        | Bigarray.C_layout -> tensor_name, Tensor.of_bigarray tensor
+        | Bigarray.Fortran_layout -> failwith "fortran layout is not supported")
   in
   Serialize.save_multi ~named_tensors ~filename:pytorch_dst
 
