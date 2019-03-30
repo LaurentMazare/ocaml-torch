@@ -20,7 +20,9 @@ let tensor_of_data ~data ~width ~height =
   |> Tensor.permute ~dims:[0; 3; 1; 2]
 
 let maybe_crop tensor ~dim ~length ~target_length =
-  assert (target_length <= length);
+  if length < target_length
+  then
+    Printf.failwithf "target_length greater than length %d > %d" target_length length ();
   if length = target_length
   then tensor
   else
@@ -39,9 +41,9 @@ let load_image ?resize image_file =
              let resize_width, resize_height =
                let ratio_w = Float.of_int target_width /. Float.of_int image.width in
                let ratio_h = Float.of_int target_height /. Float.of_int image.height in
-               let ratio = Float.max ratio_w ratio_h in
-               ( Float.to_int (ratio *. Float.of_int image.width)
-               , Float.to_int (ratio *. Float.of_int image.height) )
+               let r = Float.max ratio_w ratio_h in
+               ( Float.to_int (r *. Float.of_int image.width) |> Int.max target_width
+               , Float.to_int (r *. Float.of_int image.height) |> Int.max target_height )
              in
              let out_data =
                Bigarray.Array1.create
