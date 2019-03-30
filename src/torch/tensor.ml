@@ -41,7 +41,7 @@ let zero_grad t =
 type create =
      ?requires_grad:bool
   -> ?kind:Torch_core.Kind.t
-  -> ?device:Torch_core.Device.t
+  -> ?device:Device.t
   -> ?scale:float
   -> int list
   -> t
@@ -55,7 +55,7 @@ let gen
     ~f
     ?(requires_grad = false)
     ?(kind = Torch_core.Kind.Float)
-    ?(device = Torch_core.Device.Cpu)
+    ?(device = Device.Cpu)
     ?scale
     size =
   let t = f ~size ~options:(kind, device) in

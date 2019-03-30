@@ -43,7 +43,7 @@ val f : float -> t
 type create =
      ?requires_grad:bool
   -> ?kind:Torch_core.Kind.t
-  -> ?device:Torch_core.Device.t
+  -> ?device:Device.t
   -> ?scale:float
   -> int list
   -> t
@@ -52,10 +52,7 @@ val zeros : create
 val ones : create
 val rand : create
 val randn : create
-
-val float_vec :
-  ?kind:[`double | `float | `half] -> ?device:Torch_core.Device.t -> float list -> t
-
+val float_vec : ?kind:[`double | `float | `half] -> ?device:Device.t -> float list -> t
 val to_type : t -> type_:Kind.t -> t
 val type_ : t -> Kind.t
 val to_device : ?device:Device.t -> t -> t

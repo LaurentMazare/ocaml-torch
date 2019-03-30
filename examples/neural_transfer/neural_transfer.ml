@@ -29,13 +29,7 @@ let load_pretrained_vgg ~filename ~device =
   model
 
 let () =
-  let device =
-    if Cuda.is_available ()
-    then (
-      Stdio.printf "Using cuda, devices: %d\n%!" (Cuda.device_count ());
-      Torch_core.Device.Cuda )
-    else Torch_core.Device.Cpu
-  in
+  let device = Device.cuda_if_available () in
   let style_img, content_img, filename =
     match Sys.argv with
     | [|_; style_img; content_img; filename|] -> style_img, content_img, filename

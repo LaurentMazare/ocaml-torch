@@ -6,13 +6,13 @@
 *)
 type t
 
-val create : ?frozen:bool -> ?device:Torch_core.Device.t -> name:string -> unit -> t
+val create : ?frozen:bool -> ?device:Device.t -> name:string -> unit -> t
 val sub : t -> string -> t
 val ( / ) : t -> string -> t
 val trainable_vars : t -> Tensor.t list
 val all_vars : t -> (string * Tensor.t) list
 val name : t -> string
-val device : t -> Torch_core.Device.t
+val device : t -> Device.t
 
 module Init : sig
   type t =

@@ -6,10 +6,10 @@ type t =
   ; mutable trainable_tensors : Tensor.t list
   ; all_tensors_by_name : (string, Tensor.t) Hashtbl.t
   ; subs : (string, t) Hashtbl.t
-  ; device : Torch_core.Device.t
+  ; device : Device.t
   ; mutable frozen : bool }
 
-let create ?(frozen = false) ?(device = Torch_core.Device.Cpu) ~name () =
+let create ?(frozen = false) ?(device = Device.Cpu) ~name () =
   { name
   ; trainable_tensors = []
   ; subs = Hashtbl.create (module String)

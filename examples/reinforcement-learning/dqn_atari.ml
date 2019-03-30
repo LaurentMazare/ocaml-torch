@@ -105,14 +105,7 @@ end = struct
     ; optimizer : Optimizer.t }
 
   let create ~actions ~memory_capacity =
-    let device =
-      if Cuda.is_available ()
-      then (
-        Stdio.printf "Using cuda, devices: %d\n%!" (Cuda.device_count ());
-        Cuda.set_benchmark_cudnn true;
-        Torch_core.Device.Cuda )
-      else Torch_core.Device.Cpu
-    in
+    let device = Device.cuda_if_available () in
     let target_vs = Var_store.create ~frozen:true ~name:"target-dqn" ~device () in
     let target_model = model target_vs actions in
     let vs = Var_store.create ~name:"dqn" ~device () in

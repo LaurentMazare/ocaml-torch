@@ -97,14 +97,7 @@ let valid ~filename ~device =
 
 let () =
   Torch_core.Wrapper.manual_seed 42;
-  let device =
-    if Cuda.is_available ()
-    then (
-      Stdio.printf "Using cuda, devices: %d\n%!" (Cuda.device_count ());
-      Cuda.set_benchmark_cudnn true;
-      Torch_core.Device.Cuda )
-    else Torch_core.Device.Cpu
-  in
+  let device = Device.cuda_if_available () in
   if Array.length Caml.Sys.argv > 1
   then valid ~filename:Caml.Sys.argv.(1) ~device
   else train ~device

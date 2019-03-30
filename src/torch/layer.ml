@@ -41,8 +41,7 @@ let apply ?activation ys =
   | Some Leaky_relu -> Tensor.leaky_relu ys
   | None -> ys
 
-let linear ?n vs ?activation ?(use_bias = true) ?w_init ~input_dim output_dim =
-  let vs = Var_store.sub vs (Option.value n ~default:"linear") in
+let linear vs ?activation ?(use_bias = true) ?w_init ~input_dim output_dim =
   let w =
     let shape = [output_dim; input_dim] in
     match w_init with
@@ -66,7 +65,6 @@ let linear ?n vs ?activation ?(use_bias = true) ?w_init ~input_dim output_dim =
   {apply}
 
 let conv2d
-    ?n
     vs
     ~ksize:(k1, k2)
     ~stride
@@ -76,7 +74,6 @@ let conv2d
     ?(padding = 0, 0)
     ~input_dim
     output_dim =
-  let vs = Var_store.sub vs (Option.value n ~default:"conv2d") in
   let w =
     let shape = [output_dim; input_dim; k1; k2] in
     match w_init with
@@ -95,19 +92,10 @@ let conv2d
   {apply}
 
 let conv2d_
-    ?n
-    vs
-    ~ksize
-    ~stride
-    ?activation
-    ?use_bias
-    ?w_init
-    ?(padding = 0)
-    ~input_dim
-    output_dim =
+    vs ~ksize ~stride ?activation ?use_bias ?w_init ?(padding = 0) ~input_dim output_dim
+    =
   conv2d
     vs
-    ?n
     ~ksize:(ksize, ksize)
     ~stride:(stride, stride)
     ?use_bias
@@ -118,7 +106,6 @@ let conv2d_
     output_dim
 
 let conv_transpose2d
-    ?n
     vs
     ~ksize:(k1, k2)
     ~stride
@@ -129,7 +116,6 @@ let conv_transpose2d
     ?(output_padding = 0, 0)
     ~input_dim
     output_dim =
-  let vs = Var_store.sub vs (Option.value n ~default:"conv_transpose2d") in
   let w =
     Var_store.new_var
       vs
@@ -150,7 +136,6 @@ let conv_transpose2d
   {apply}
 
 let conv_transpose2d_
-    ?n
     vs
     ~ksize
     ~stride
@@ -163,7 +148,6 @@ let conv_transpose2d_
     output_dim =
   conv_transpose2d
     vs
-    ?n
     ~ksize:(ksize, ksize)
     ~stride:(stride, stride)
     ?activation
@@ -175,14 +159,12 @@ let conv_transpose2d_
     output_dim
 
 let batch_norm2d
-    ?n
     vs
     ?(w_init = Var_store.Init.Uniform (0., 1.))
     ?(cudnn_enabled = true)
     ?(eps = 1e-5)
     ?(momentum = 0.1)
     output_dim =
-  let vs = Var_store.sub vs (Option.value n ~default:"batch_norm2d") in
   let w = Var_store.new_var vs ~shape:[output_dim] ~init:w_init ~name:"weight" in
   let b = Var_store.new_var vs ~shape:[output_dim] ~init:Zeros ~name:"bias" in
   let running_mean =
@@ -242,12 +224,11 @@ module Lstm = struct
     ; b_ih : Tensor.t
     ; b_hh : Tensor.t
     ; hidden_size : int
-    ; device : Torch_core.Device.t }
+    ; device : Device.t }
 
   type state = Tensor.t * Tensor.t
 
-  let create ?n vs ~input_dim ~hidden_size =
-    let vs = Var_store.sub vs (Option.value n ~default:"lstm") in
+  let create vs ~input_dim ~hidden_size =
     let gate_size = 4 * hidden_size in
     let w_ih =
       kaiming_uniform vs ~shape:[gate_size; input_dim] ~a:(Float.sqrt 5.) ~name:"w_ih"

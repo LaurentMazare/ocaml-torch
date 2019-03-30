@@ -14,7 +14,7 @@ type t =
     performed as specified via [augmentation].
 *)
 val train_batch :
-     ?device:Torch_core.Device.t
+     ?device:Device.t
   -> ?augmentation:[`flip | `crop_with_pad of int | `cutout of int] list
   -> t
   -> batch_size:int
@@ -27,7 +27,7 @@ val train_batch :
     Computations are done using batch of length [batch_size].
 *)
 val batch_accuracy :
-     ?device:Torch_core.Device.t
+     ?device:Device.t
   -> ?samples:int
   -> t
   -> [`test | `train]
@@ -49,7 +49,7 @@ val batches_per_epoch : t -> batch_size:int -> int
     Random shuffling and augmentation can be specified.
 *)
 val iter :
-     ?device:Torch_core.Device.t
+     ?device:Device.t
   -> ?augmentation:[`flip | `crop_with_pad of int | `cutout of int] list
   -> ?shuffle:bool
   -> t
@@ -72,7 +72,7 @@ val random_crop : Tensor.t -> pad:int -> Tensor.t
 val shuffle : t -> t
 
 val map :
-     ?device:Torch_core.Device.t
+     ?device:Device.t
   -> t
   -> f:(int -> batch_images:Tensor.t -> batch_labels:Tensor.t -> Tensor.t * Tensor.t)
   -> batch_size:int
