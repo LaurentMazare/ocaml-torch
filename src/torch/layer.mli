@@ -31,6 +31,7 @@ val conv2d :
   -> ?use_bias:bool (* default: true *)
   -> ?w_init:Var_store.Init.t
   -> ?padding:int * int
+  -> ?groups:int
   -> input_dim:int
   -> int
   -> t
@@ -43,6 +44,7 @@ val conv2d_ :
   -> ?use_bias:bool (* default: true *)
   -> ?w_init:Var_store.Init.t
   -> ?padding:int
+  -> ?groups:int
   -> input_dim:int
   -> int
   -> t
@@ -56,6 +58,7 @@ val conv_transpose2d :
   -> ?w_init:Var_store.Init.t
   -> ?padding:int * int
   -> ?output_padding:int * int
+  -> ?groups:int
   -> input_dim:int
   -> int
   -> t
@@ -69,6 +72,7 @@ val conv_transpose2d_ :
   -> ?w_init:Var_store.Init.t
   -> ?padding:int
   -> ?output_padding:int
+  -> ?groups:int
   -> input_dim:int
   -> int
   -> t

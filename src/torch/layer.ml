@@ -72,10 +72,11 @@ let conv2d
     ?(use_bias = true)
     ?w_init
     ?(padding = 0, 0)
+    ?(groups = 1)
     ~input_dim
     output_dim =
   let w =
-    let shape = [output_dim; input_dim; k1; k2] in
+    let shape = [output_dim; input_dim / groups; k1; k2] in
     match w_init with
     | None -> kaiming_uniform vs ~shape ~a:(Float.sqrt 5.) ~name:"weight"
     | Some init -> Var_store.new_var vs ~shape ~init ~name:"weight"
@@ -84,16 +85,24 @@ let conv2d
     if use_bias
     then
       let b = Var_store.new_var vs ~shape:[output_dim] ~init:Zeros ~name:"bias" in
-      fun xs -> Tensor.conv2d xs w b ~padding ~stride |> apply ?activation
+      fun xs -> Tensor.conv2d xs w b ~padding ~stride ~groups |> apply ?activation
     else
       let b = Tensor.zeros [output_dim] ~device:(Var_store.device vs) in
-      fun xs -> Tensor.conv2d xs w b ~padding ~stride |> apply ?activation
+      fun xs -> Tensor.conv2d xs w b ~padding ~stride ~groups |> apply ?activation
   in
   {apply}
 
 let conv2d_
-    vs ~ksize ~stride ?activation ?use_bias ?w_init ?(padding = 0) ~input_dim output_dim
-    =
+    vs
+    ~ksize
+    ~stride
+    ?activation
+    ?use_bias
+    ?w_init
+    ?(padding = 0)
+    ?groups
+    ~input_dim
+    output_dim =
   conv2d
     vs
     ~ksize:(ksize, ksize)
@@ -102,6 +111,7 @@ let conv2d_
     ?activation
     ?w_init
     ~padding:(padding, padding)
+    ?groups
     ~input_dim
     output_dim
 
@@ -114,12 +124,13 @@ let conv_transpose2d
     ?(w_init = Var_store.Init.Normal {mean = 0.; stdev = 0.1})
     ?(padding = 0, 0)
     ?(output_padding = 0, 0)
+    ?(groups = 1)
     ~input_dim
     output_dim =
   let w =
     Var_store.new_var
       vs
-      ~shape:[input_dim; output_dim; k1; k2]
+      ~shape:[input_dim; output_dim / groups; k1; k2]
       ~init:w_init
       ~name:"weight"
   in
@@ -130,7 +141,7 @@ let conv_transpose2d
       else Tensor.zeros [output_dim] ~device:(Var_store.device vs)
     in
     fun xs ->
-      Tensor.conv_transpose2d xs w b ~output_padding ~padding ~stride
+      Tensor.conv_transpose2d xs w b ~output_padding ~padding ~stride ~groups
       |> apply ?activation
   in
   {apply}
@@ -144,6 +155,7 @@ let conv_transpose2d_
     ?w_init
     ?(padding = 0)
     ?(output_padding = 0)
+    ?groups
     ~input_dim
     output_dim =
   conv_transpose2d
@@ -155,6 +167,7 @@ let conv_transpose2d_
     ?w_init
     ~padding:(padding, padding)
     ~output_padding:(output_padding, output_padding)
+    ?groups
     ~input_dim
     output_dim
 
