@@ -452,6 +452,10 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_bmm_out"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
+  let stubs_broadcast_tensors =
+    foreign "atg_broadcast_tensors"
+    (ptr t @-> int @-> returning (ptr t))
+
   let stubs_btrifact =
     foreign "atg_btrifact"
     (ptr t @-> t @-> int @-> returning void)
@@ -519,6 +523,10 @@ module C(F: Cstubs.FOREIGN) = struct
   let stubs_cholesky_out =
     foreign "atg_cholesky_out"
     (ptr t @-> t @-> t @-> int @-> returning void)
+
+  let stubs_chunk =
+    foreign "atg_chunk"
+    (t @-> int64_t @-> int64_t @-> returning (ptr t))
 
   let stubs_clamp =
     foreign "atg_clamp"
@@ -1856,6 +1864,10 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_median_out"
     (ptr t @-> t @-> t @-> t @-> int64_t @-> int @-> returning void)
 
+  let stubs_meshgrid =
+    foreign "atg_meshgrid"
+    (ptr t @-> int @-> returning (ptr t))
+
   let stubs_min =
     foreign "atg_min"
     (ptr t @-> t @-> returning void)
@@ -2904,6 +2916,14 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_sparse_resize_and_clear_"
     (ptr t @-> t @-> ptr int64_t @-> int @-> int64_t @-> int64_t @-> returning void)
 
+  let stubs_split =
+    foreign "atg_split"
+    (t @-> int64_t @-> int64_t @-> returning (ptr t))
+
+  let stubs_split_with_sizes =
+    foreign "atg_split_with_sizes"
+    (t @-> ptr int64_t @-> int @-> int64_t @-> returning (ptr t))
+
   let stubs_sqrt =
     foreign "atg_sqrt"
     (ptr t @-> t @-> returning void)
@@ -3199,6 +3219,10 @@ module C(F: Cstubs.FOREIGN) = struct
   let stubs_type_as =
     foreign "atg_type_as"
     (ptr t @-> t @-> t @-> returning void)
+
+  let stubs_unbind =
+    foreign "atg_unbind"
+    (t @-> int64_t @-> returning (ptr t))
 
   let stubs_unfold =
     foreign "atg_unfold"

@@ -5,6 +5,18 @@ open Ctypes
 module C = Torch_bindings.C(Torch_generated)
 open C.TensorG
 
+let to_tensor_list ptr =
+  let rec loop ptr acc =
+    let tensor = !@ptr in
+    if is_null tensor
+    then acc
+    else begin
+      Gc.finalise C.Tensor.free tensor;
+      loop (ptr +@ 1) (tensor :: acc)
+    end
+  in
+  loop ptr []
+
 let abs self =
   let out__ = CArray.make t 1 in
   stubs_abs (CArray.start out__) self;
@@ -792,6 +804,9 @@ let bmm_out result self ~mat2 =
   Gc.finalise C.Tensor.free t0;
   t0
 
+let broadcast_tensors tensors =
+  stubs_broadcast_tensors (CArray.of_list t tensors |> CArray.start) (List.length tensors) |> to_tensor_list
+
 let btrifact self ~pivot =
   let out__ = CArray.make t 2 in
   stubs_btrifact (CArray.start out__) self (if pivot then 1 else 0);
@@ -922,6 +937,9 @@ let cholesky_out result self ~upper =
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
+
+let chunk self ~chunks ~dim =
+  stubs_chunk self (Int64.of_int chunks) (Int64.of_int dim) |> to_tensor_list
 
 let clamp self ~min ~max =
   let out__ = CArray.make t 1 in
@@ -3341,6 +3359,9 @@ let median_out ~values ~indices self ~dim ~keepdim =
   Gc.finalise C.Tensor.free t1;
   t0, t1
 
+let meshgrid tensors =
+  stubs_meshgrid (CArray.of_list t tensors |> CArray.start) (List.length tensors) |> to_tensor_list
+
 let min self =
   let out__ = CArray.make t 1 in
   stubs_min (CArray.start out__) self;
@@ -5221,6 +5242,12 @@ let sparse_resize_and_clear_ self ~size ~sparse_dim ~dense_dim =
   Gc.finalise C.Tensor.free t0;
   t0
 
+let split self ~split_size ~dim =
+  stubs_split self (Int64.of_int split_size) (Int64.of_int dim) |> to_tensor_list
+
+let split_with_sizes self ~split_sizes ~dim =
+  stubs_split_with_sizes self (List.map Int64.of_int split_sizes |> CArray.of_list int64_t |> CArray.start) (List.length split_sizes) (Int64.of_int dim) |> to_tensor_list
+
 let sqrt self =
   let out__ = CArray.make t 1 in
   stubs_sqrt (CArray.start out__) self;
@@ -5758,6 +5785,9 @@ let type_as self other =
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
+
+let unbind self ~dim =
+  stubs_unbind self (Int64.of_int dim) |> to_tensor_list
 
 let unfold self ~dimension ~size ~step =
   let out__ = CArray.make t 1 in

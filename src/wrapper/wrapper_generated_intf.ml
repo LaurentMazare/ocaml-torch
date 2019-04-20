@@ -687,6 +687,10 @@ module type S = sig
     mat2:t ->
     t
 
+  val broadcast_tensors :
+    t list ->
+    t list
+
   val btrifact :
     t ->
     pivot:bool ->
@@ -777,6 +781,12 @@ module type S = sig
     t ->
     upper:bool ->
     t
+
+  val chunk :
+    t ->
+    chunks:int ->
+    dim:int ->
+    t list
 
   val clamp :
     t ->
@@ -2864,6 +2874,10 @@ module type S = sig
     keepdim:bool ->
     t * t
 
+  val meshgrid :
+    t list ->
+    t list
+
   val min :
     t ->
     t
@@ -4473,6 +4487,18 @@ module type S = sig
     dense_dim:int ->
     t
 
+  val split :
+    t ->
+    split_size:int ->
+    dim:int ->
+    t list
+
+  val split_with_sizes :
+    t ->
+    split_sizes:int list ->
+    dim:int ->
+    t list
+
   val sqrt :
     t ->
     t
@@ -4904,6 +4930,11 @@ module type S = sig
     t ->
     t ->
     t
+
+  val unbind :
+    t ->
+    dim:int ->
+    t list
 
   val unfold :
     t ->
