@@ -15,7 +15,9 @@ let to_tensor_list ptr =
       loop (ptr +@ 1) (tensor :: acc)
     end
   in
-  loop ptr []
+  let result = loop ptr [] in
+  C.free (to_voidp ptr);
+  List.rev result
 
 let abs self =
   let out__ = CArray.make t 1 in
