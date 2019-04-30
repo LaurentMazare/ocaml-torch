@@ -13,6 +13,8 @@
 open Base
 open Torch
 
+let batch_size = 128
+
 module VAE = struct
   type t =
     { fc1 : Layer.t
@@ -51,23 +53,35 @@ let loss ~recon_x ~x ~mu ~logvar =
   let kld = Tensor.(f (-0.5) * (f 1.0 + logvar - (mu * mu) - exp logvar) |> sum) in
   Tensor.( + ) bce kld
 
+let write_samples samples ~filename =
+  let samples = Tensor.(samples * f 256.) in
+  List.init 8 ~f:(fun i ->
+      List.init 8 ~f:(fun j ->
+          Tensor.narrow samples ~dim:0 ~start:((4 * i) + j) ~length:1)
+      |> Tensor.cat ~dim:2)
+  |> Tensor.cat ~dim:3
+  |> Torch_vision.Image.write_image ~filename
+
 let () =
   let device = Device.cuda_if_available () in
-  let mnist = Mnist_helper.read_files () in
+  let m = Mnist_helper.read_files () in
   let vs = Var_store.create ~name:"vae" ~device () in
   let vae = VAE.create vs in
   let opt = Optimizer.adam vs ~learning_rate:1e-3 in
-  for batch_idx = 1 to 1000_000 do
-    let bimages, _ = Dataset_helper.train_batch mnist ~batch_size:128 ~batch_idx in
-    let bimages = Tensor.to_device bimages ~device in
-    let recon_x, mu, logvar = VAE.forward vae bimages in
-    let loss = loss ~recon_x ~x:bimages ~mu ~logvar in
-    Optimizer.backward_step ~loss opt;
-    if batch_idx % 100 = 0
-    then
-      Stdio.printf
-        "batch %4d    loss: %12.6f\n%!"
-        batch_idx
-        (Tensor.float_value loss /. 128.);
-    Caml.Gc.full_major ()
+  for epoch_idx = 1 to 20 do
+    let train_loss = ref 0. in
+    let samples = ref 0. in
+    Dataset_helper.iter m ~batch_size ~device ~f:(fun _ ~batch_images ~batch_labels:_ ->
+        let recon_x, mu, logvar = VAE.forward vae batch_images in
+        let loss = loss ~recon_x ~x:batch_images ~mu ~logvar in
+        Optimizer.backward_step ~loss opt;
+        train_loss := !train_loss +. Tensor.float_value loss;
+        samples := !samples +. (Tensor.shape batch_images |> List.hd_exn |> Float.of_int)
+    );
+    Stdio.printf "epoch %4d  loss: %12.6f\n%!" epoch_idx (!train_loss /. !samples);
+    Tensor.randn [ 64; 20 ] ~device
+    |> VAE.decode vae
+    |> Tensor.to_device ~device:Cpu
+    |> Tensor.view ~size:[ -1; 1; 28; 28 ]
+    |> write_samples ~filename:(Printf.sprintf "s_%d.png" epoch_idx)
   done
