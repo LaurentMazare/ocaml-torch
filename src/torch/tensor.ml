@@ -153,13 +153,11 @@ let to_bigarray t ~kind =
   copy_to_bigarray (to_device t ~device:Cpu) bigarray;
   bigarray
 
-let undefined = lazy (new_tensor ())
-
 let nll_loss ?(reduction = Torch_core.Reduction.Elementwise_mean) xs ~targets =
   nll_loss
     xs
     ~target:targets
-    ~weight:(Lazy.force undefined)
+    ~weight:None
     ~reduction:(Torch_core.Reduction.to_int reduction)
     ~ignore_index:(-100)
 
@@ -172,7 +170,7 @@ let bce_loss ?(reduction = Torch_core.Reduction.Elementwise_mean) t ~targets =
   binary_cross_entropy
     t
     ~target:targets
-    ~weight:(Lazy.force undefined)
+    ~weight:None
     ~reduction:(Torch_core.Reduction.to_int reduction)
 
 let mse_loss ?(reduction = Torch_core.Reduction.Elementwise_mean) t1 t2 =
@@ -325,8 +323,8 @@ let of_int2 f =
 let of_int3 f =
   Bigarray.Array3.of_array Int C_layout f |> Bigarray.genarray_of_array3 |> of_bigarray
 
-let minimum t = view t ~size:[-1] |> min_values ~dim:0 ~keepdim:false
-let maximum t = view t ~size:[-1] |> max_values ~dim:0 ~keepdim:false
+let minimum t = view t ~size:[-1] |> min_values ~dim:[0] ~keepdim:false
+let maximum t = view t ~size:[-1] |> max_values ~dim:[0] ~keepdim:false
 
 let flatten t =
   let batch_size = shape t |> List.hd_exn in

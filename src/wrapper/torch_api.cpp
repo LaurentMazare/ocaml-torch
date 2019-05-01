@@ -26,7 +26,7 @@ tensor at_new_tensor() {
 tensor at_tensor_of_data(void *vs, int64_t *dims, int ndims, int element_size_in_bytes, int type) {
   PROTECT(
     torch::Tensor tensor = torch::zeros(torch::IntList(dims, ndims), torch::ScalarType(type));
-    if (element_size_in_bytes != tensor.type().elementSizeInBytes())
+    if (element_size_in_bytes != tensor.element_size())
       caml_failwith("incoherent element sizes in bytes");
     void *tensor_data = tensor.data_ptr();
     memcpy(tensor_data, vs, tensor.numel() * element_size_in_bytes);
@@ -36,7 +36,7 @@ tensor at_tensor_of_data(void *vs, int64_t *dims, int ndims, int element_size_in
 
 void at_copy_data(tensor tensor, void *vs, int64_t numel, int elt_size_in_bytes) {
   PROTECT(
-    if (elt_size_in_bytes != tensor->type().elementSizeInBytes())
+    if (elt_size_in_bytes != tensor->element_size())
       caml_failwith("incoherent element sizes in bytes");
     if (numel != tensor->numel())
       caml_failwith("incoherent number of elements");
@@ -209,7 +209,9 @@ void at_load_callback(char *filename, void (*f)(char *, tensor)) {
     if (module == nullptr)
       caml_failwith("torch::jit::load returned a nullptr");
     for (const auto &p : module->get_parameters()) {
-      f((char*)p.key().c_str(), new torch::Tensor(*p.value().slot()));
+      auto v = p.value();
+      if (v.isTensor())
+        f((char*)p.name().c_str(), new torch::Tensor(v.toTensor()));
     }
   )
 }
@@ -373,14 +375,6 @@ scalar ats_float(double v) {
 
 void ats_free(scalar s) {
   delete(s);
-}
-
-int atc_get_num_threads() {
-  PROTECT(return at::get_num_threads();)
-}
-
-void atc_set_num_threads(int n) {
-  PROTECT(at::set_num_threads(n);)
 }
 
 int atc_cuda_device_count() {

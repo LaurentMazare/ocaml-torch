@@ -87,7 +87,7 @@ val conv2d :
   -> ?groups:int
   -> t (* input *)
   -> t (* weight *)
-  -> t (* bias *)
+  -> t option (* bias *)
   -> stride:int * int
   -> t
 
@@ -98,7 +98,7 @@ val conv_transpose2d :
   -> ?groups:int
   -> t (* input *)
   -> t (* weight *)
-  -> t (* bias *)
+  -> t option (* bias *)
   -> stride:int * int
   -> t
 
@@ -134,7 +134,6 @@ val bce_loss : ?reduction:Torch_core.Reduction.t -> t -> targets:t -> t
 val bce_loss_with_logits : ?reduction:Torch_core.Reduction.t -> t -> targets:t -> t
 val mse_loss : ?reduction:Torch_core.Reduction.t -> t -> t -> t
 val huber_loss : ?reduction:Torch_core.Reduction.t -> t -> t -> t
-val undefined : t Lazy.t
 val pp : Format.formatter -> t -> unit [@@ocaml.toplevel_printer]
 val copy : t -> t
 val shape_str : t -> string

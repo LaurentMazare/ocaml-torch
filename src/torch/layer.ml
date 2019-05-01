@@ -81,15 +81,12 @@ let conv2d
     | None -> kaiming_uniform vs ~shape ~a:(Float.sqrt 5.) ~name:"weight"
     | Some init -> Var_store.new_var vs ~shape ~init ~name:"weight"
   in
-  let apply =
+  let b =
     if use_bias
-    then
-      let b = Var_store.new_var vs ~shape:[output_dim] ~init:Zeros ~name:"bias" in
-      fun xs -> Tensor.conv2d xs w b ~padding ~stride ~groups |> apply ?activation
-    else
-      let b = Tensor.zeros [output_dim] ~device:(Var_store.device vs) in
-      fun xs -> Tensor.conv2d xs w b ~padding ~stride ~groups |> apply ?activation
+    then Some (Var_store.new_var vs ~shape:[output_dim] ~init:Zeros ~name:"bias")
+    else None
   in
+  let apply xs = Tensor.conv2d xs w b ~padding ~stride ~groups |> apply ?activation in
   {apply}
 
 let conv2d_
@@ -137,8 +134,8 @@ let conv_transpose2d
   let apply =
     let b =
       if use_bias
-      then Var_store.new_var vs ~shape:[output_dim] ~init:Zeros ~name:"bias"
-      else Tensor.zeros [output_dim] ~device:(Var_store.device vs)
+      then Some (Var_store.new_var vs ~shape:[output_dim] ~init:Zeros ~name:"bias")
+      else None
     in
     fun xs ->
       Tensor.conv_transpose2d xs w b ~output_padding ~padding ~stride ~groups

@@ -48,7 +48,7 @@ module Tensor : sig
   val to_string : t -> line_size:int -> string
   val sum : t -> t
   val mean : t -> t
-  val argmax : t -> t
+  val argmax : ?dim:int -> ?keepdim:bool -> t -> t
   val defined : t -> bool
   val copy_ : t -> src:t -> unit
   val max : t -> t -> t
@@ -98,11 +98,6 @@ module Cuda : sig
   val is_available : unit -> bool
   val cudnn_is_available : unit -> bool
   val set_benchmark_cudnn : bool -> unit
-end
-
-module Thread : sig
-  val get_num_threads : unit -> int option
-  val set_num_threads : int option -> unit
 end
 
 module Ivalue : sig
