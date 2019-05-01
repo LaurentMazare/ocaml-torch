@@ -204,7 +204,7 @@ let print_summary {train_images; train_labels; test_images; test_labels} =
   Tensor.print_shape ~name:"test-images" test_images;
   Stdio.printf
     "Train labels: %d, test labels: %d.\n"
-    (1 + (Tensor.max_values ~dim:0 ~keepdim:false train_labels |> Tensor.int_value))
-    (1 + (Tensor.max_values ~dim:0 ~keepdim:false test_labels |> Tensor.int_value))
+    (1 + (Tensor.max_values ~dim:[0] ~keepdim:false train_labels |> Tensor.int_value))
+    (1 + (Tensor.max_values ~dim:[0] ~keepdim:false test_labels |> Tensor.int_value))
 
 let shuffle = shuffle_

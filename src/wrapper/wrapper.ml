@@ -149,7 +149,7 @@ module Tensor = struct
 
   let print = print
   let to_string t ~line_size = to_string t line_size
-  let argmax t = argmax1 t ~dim:(-1) ~keepdim:false
+  let argmax ?(dim=(-1)) ?(keepdim=false) t = argmax t ~dim ~keepdim
   let max = max1
   let min = min1
   let copy_ t ~src = copy_ t src
@@ -277,20 +277,6 @@ module Cuda = struct
   let is_available () = is_available () <> 0
   let cudnn_is_available () = cudnn_is_available () <> 0
   let set_benchmark_cudnn b = set_benchmark_cudnn (if b then 1 else 0)
-end
-
-module Thread = struct
-  include Wrapper_generated.C.Thread
-
-  let set_num_threads num_threads =
-    let num_threads =
-      match num_threads with None -> -1 | Some num_threads -> num_threads
-    in
-    set_num_threads num_threads
-
-  let get_num_threads () =
-    let num_threads = get_num_threads () in
-    if num_threads < 0 then None else Some num_threads
 end
 
 module Ivalue = struct
