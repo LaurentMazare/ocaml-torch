@@ -140,7 +140,7 @@ end = struct
             |> Tensor.to_device ~device
             |> Layer.apply t.model )
       in
-      Tensor.argmax1 qvalues ~dim:1 ~keepdim:false
+      Tensor.argmax qvalues ~dim:1 ~keepdim:false
       |> Tensor.to_int1_exn
       |> fun xs -> xs.(0)
     else Random.int t.actions
@@ -159,7 +159,7 @@ end = struct
       let continue = Transition.batch_continue transitions |> Tensor.to_device ~device in
       let qvalues =
         Layer.apply t.model states
-        |> Tensor.gather ~dim:1 ~index:(Tensor.unsqueeze actions ~dim:1)
+        |> Tensor.gather ~dim:1 ~index:(Tensor.unsqueeze actions ~dim:1) ~sparse_grad:false
         |> Tensor.squeeze1 ~dim:1
       in
       let next_qvalues =
@@ -167,10 +167,10 @@ end = struct
             if double_dqn
             then
               let actions =
-                Layer.apply t.model next_states |> Tensor.argmax1 ~dim:1 ~keepdim:true
+                Layer.apply t.model next_states |> Tensor.argmax ~dim:1 ~keepdim:true
               in
               Layer.apply t.target_model next_states
-              |> Tensor.gather ~dim:1 ~index:actions
+              |> Tensor.gather ~dim:1 ~index:actions ~sparse_grad:false
               |> Tensor.squeeze1 ~dim:1
             else
               Layer.apply t.target_model next_states

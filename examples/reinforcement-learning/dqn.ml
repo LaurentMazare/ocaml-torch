@@ -110,7 +110,7 @@ end = struct
       let qvalues =
         Tensor.no_grad (fun () -> Tensor.unsqueeze state ~dim:0 |> Layer.apply t.model)
       in
-      Tensor.argmax1 qvalues ~dim:1 ~keepdim:false
+      Tensor.argmax qvalues ~dim:1 ~keepdim:false
       |> Tensor.to_int1_exn
       |> fun xs -> xs.(0)
     else Random.int t.actions
@@ -126,7 +126,7 @@ end = struct
       let continue = Transition.batch_continue transitions in
       let qvalues =
         Layer.apply t.model states
-        |> Tensor.gather ~dim:1 ~index:(Tensor.unsqueeze actions ~dim:1)
+        |> Tensor.gather ~dim:1 ~index:(Tensor.unsqueeze actions ~dim:1) ~sparse_grad:false
         |> Tensor.squeeze1 ~dim:1
       in
       let next_qvalues =

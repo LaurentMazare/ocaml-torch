@@ -57,7 +57,7 @@ let train ~device =
     let probs = Tensor.softmax actor ~dim:(-1) in
     let action_log_probs =
       let index = Tensor.unsqueeze actions ~dim:(-1) |> Tensor.to_device ~device in
-      Tensor.gather log_probs ~dim:2 ~index |> Tensor.squeeze_last
+      Tensor.gather log_probs ~dim:2 ~index ~sparse_grad:false |> Tensor.squeeze_last
     in
     let dist_entropy =
       Tensor.(~-(log_probs * probs) |> sum2 ~dim:[-1] ~keepdim:false |> mean)
