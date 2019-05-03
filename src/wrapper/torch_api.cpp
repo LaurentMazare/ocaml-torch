@@ -25,7 +25,7 @@ tensor at_new_tensor() {
 
 tensor at_tensor_of_data(void *vs, int64_t *dims, int ndims, int element_size_in_bytes, int type) {
   PROTECT(
-    torch::Tensor tensor = torch::zeros(torch::IntList(dims, ndims), torch::ScalarType(type));
+    torch::Tensor tensor = torch::zeros(torch::IntArrayRef(dims, ndims), torch::ScalarType(type));
     if (element_size_in_bytes != tensor.element_size())
       caml_failwith("incoherent element sizes in bytes");
     void *tensor_data = tensor.data_ptr();

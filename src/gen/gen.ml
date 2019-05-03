@@ -127,7 +127,7 @@ module Func = struct
         | Scalar | Tensor -> "*" ^ arg_name
         | TensorOption -> Printf.sprintf "(%s ? *%s : torch::Tensor())" arg_name arg_name
         | Bool -> "(bool)" ^ arg_name
-        | IntList -> Printf.sprintf "torch::IntList(%s_data, %s_len)" arg_name arg_name
+        | IntList -> Printf.sprintf "torch::IntArrayRef(%s_data, %s_len)" arg_name arg_name
         | TensorList ->
           Printf.sprintf "of_carray_tensor(%s_data, %s_len)" arg_name arg_name
         | TensorOptions ->
