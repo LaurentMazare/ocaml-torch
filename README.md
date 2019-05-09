@@ -123,8 +123,7 @@ The weight files can be downloaded at the following links:
 
 Running the pre-trained models on some sample images can the easily be done via the following commands.
 ```bash
-make all
-_build/default/examples/pretrained/predict.exe path/to/resnet18.ot tiger.jpg
+dune exec examples/pretrained/predict.exe path/to/resnet18.ot tiger.jpg
 ```
 
 ## Alternative Installation Options
