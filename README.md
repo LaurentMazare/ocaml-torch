@@ -3,6 +3,8 @@ __ocaml-torch__ provides some ocaml bindings for the [PyTorch](https://pytorch.o
 This brings to OCaml NumPy-like tensor computations with GPU acceleration and tape-based automatic
 differentiation.
 
+[![Build Status](https://travis-ci.org/LaurentMazare/ocaml-torch.svg?branch=master)](https://travis-ci.org/LaurentMazare/ocaml-torch)
+
 These bindings use the [PyTorch C++ API](https://pytorch.org/cppdocs/) and are
 mostly automatically generated. The current GitHub tip corresponds to PyTorch **v1.1.0**.
 
