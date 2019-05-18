@@ -332,3 +332,11 @@ let flatten t =
 
 let squeeze_last t = squeeze1 t ~dim:(-1)
 let scale t f = mul1 t (Scalar.float f)
+
+let eq t1 t2 =
+  if Torch_core.Kind.(<>) (kind t1) (kind t2)
+  then false
+  else if Caml.(<>) (shape t1) (shape t2)
+  then false
+  else
+    eq1 t1 t2 |> all |> to_int0_exn |> fun x -> x <> 0

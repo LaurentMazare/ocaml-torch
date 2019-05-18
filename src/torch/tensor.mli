@@ -37,6 +37,7 @@ val ( *= ) : t -> t -> unit
 val ( /= ) : t -> t -> unit
 val ( ~- ) : t -> t
 val ( = ) : t -> t -> t
+val eq : t -> t -> bool
 val mm : t -> t -> t
 val f : float -> t
 

@@ -119,3 +119,19 @@ let%expect_test _ =
     (List.map chunk ~f:Tensor.to_int1_exn);
   [%expect
     {| (1 2 3 4 5 6 7 8 9) ((1 2 3) (4 5 6) (7 8 9)) |}]
+
+let%expect_test _ =
+  let vs = Tensor.of_int1 [| 3; 1; 4 |] in
+  let ws = Tensor.to_type vs ~type_:Float in
+  let xs = Tensor.reshape vs ~shape:[ -1; 1 ] in
+  Stdio.printf "%b %b %b %b\n"
+    (Tensor.eq vs vs) (Tensor.eq vs ws) (Tensor.eq ws ws) (Tensor.eq vs xs);
+  [%expect {| true false true false |}];
+  let ws = Tensor.of_int1 [| 3; 1 |] in
+  let xs = Tensor.of_int1 [| 4; 2; 5 |] in
+  Stdio.printf "%b %b\n" (Tensor.eq vs ws) (Tensor.eq vs xs);
+  [%expect {| false false |}];
+  Tensor.(xs -= of_int0 1);
+  Stdio.printf "%b %b\n" (Tensor.eq vs ws) (Tensor.eq vs xs);
+  [%expect {| false true |}]
+

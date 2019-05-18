@@ -13,3 +13,6 @@ type t =
 
 val to_int : t -> int
 val of_int_exn : int -> t
+
+val (=) : t -> t -> bool
+val (<>) : t -> t -> bool
