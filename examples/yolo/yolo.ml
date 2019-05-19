@@ -115,7 +115,7 @@ module Darknet = struct
       |> List.map ~f:(fun i -> if i >= 0 then index - i else -i)
     in
     let channels =
-      List.sum (module Int) layers ~f:(fun i -> List.nth_exn prevs i |> fst)
+      List.sum (module Int) layers ~f:(fun i -> List.nth_exn prevs (i-1) |> fst)
     in
     channels, `route layers
 
@@ -159,11 +159,12 @@ module Darknet = struct
     let xs =
       Tensor.view xs ~size:[ bsize; bbox_attrs * num_anchors; grid_size * grid_size ]
       |> Tensor.transpose ~dim0:1 ~dim1:2
+      |> Tensor.contiguous
       |> Tensor.view ~size:[ bsize; grid_size * grid_size * num_anchors; bbox_attrs ]
     in
     let grid = Tensor.arange ~end_:(Scalar.int grid_size) ~options:(Float, device) in
     let a = Tensor.repeat grid ~repeats:[grid_size; 1] in
-    let b = Tensor.tr a in
+    let b = Tensor.tr a |> Tensor.contiguous in
     let x_offset = Tensor.view a ~size:[ -1; 1 ] in
     let y_offset = Tensor.view b ~size:[ -1; 1 ] in
     let xy_offset =
