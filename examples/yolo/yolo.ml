@@ -16,6 +16,10 @@ module Darknet = struct
     ; parameters : (string, string, String.comparator_witness) Map.t
     }
 
+  let int_list_of_string str =
+    String.split str ~on:','
+    |> List.map ~f:(fun i -> String.strip i |> Int.of_string)
+
   let parse_config filename =
     let blocks =
       Stdio.In_channel.read_lines filename
@@ -107,26 +111,31 @@ module Darknet = struct
 
   let route ~index ~prevs ~parameters =
     let layers =
-      find_key ~index ~parameters "layers" ~f:Fn.id
-      |> String.split ~on:','
-      |> List.map ~f:(fun i ->
-          let i = String.strip i |> Int.of_string in
-          if i >= 0 then index - i else -i)
+      find_key ~index ~parameters "layers" ~f:int_list_of_string
+      |> List.map ~f:(fun i -> if i >= 0 then index - i else -i)
     in
     let channels =
       List.sum (module Int) layers ~f:(fun i -> List.nth_exn prevs i |> fst)
     in
     channels, `route layers
 
-  let shortcut ~index:_ ~prev_channels ~parameters:_ =
-    prev_channels, `layers []
+  let shortcut ~index ~prev_channels ~parameters =
+    let from = find_key ~index ~parameters "from" ~f:Int.of_string in
+    prev_channels, `shortcut (if from >= 0 then index - from else -from)
 
   let yolo ~index ~prev_channels ~parameters =
-    ignore (index, parameters);
-    prev_channels, `yolo
+    let mask = find_key ~index ~parameters "mask" ~f:int_list_of_string in
+    let anchors =
+      find_key ~index ~parameters "anchors" ~f:int_list_of_string
+      |> List.groupi ~break:(fun i _ _ -> i % 2 = 0)
+      |> List.map ~f:(function
+        | [ p; q ] -> p, q
+        | _ -> failwithf "odd number of elements in mask at index %d" index ())
+    in
+    prev_channels, `yolo (mask, anchors)
 
   let build_model vs t =
-    let _blocks =
+    let blocks =
       List.foldi t.blocks ~init:[] ~f:(fun index prevs block ->
         let prev_channels =
           match prevs with
@@ -145,7 +154,25 @@ module Darknet = struct
         in
         block :: prevs)
     in
-    failwith "TODO"
+    let blocks = List.rev blocks in
+    let outputs = Hashtbl.create (module Int) in
+    Layer.of_fn_ (fun xs ~is_training ->
+      List.foldi blocks ~init:xs ~f:(fun index xs (_channels, block) ->
+        let ys =
+          match block with
+          | `layers layers ->
+              List.fold layers ~init:xs ~f:(fun xs l -> Layer.apply_ l xs ~is_training)
+          | `route layers ->
+              List.map layers ~f:(fun i -> Hashtbl.find_exn outputs (index -i))
+              |> Tensor.cat ~dim:1
+          | `shortcut from ->
+              Tensor.(+) (Hashtbl.find_exn outputs (index - 1)) (Hashtbl.find_exn outputs (index - from))
+          | `yolo _ ->
+              (* TODO: compute and gather the outputs of the yolo modules. *)
+              xs
+        in
+        Hashtbl.add_exn outputs ~key:index ~data:ys;
+        ys))
 end
 
 let () =
@@ -156,12 +183,9 @@ let () =
   Stdio.printf "%d blocks in %s\n%!" (List.length darknet.blocks) config_filename;
   let model = Darknet.build_model vs darknet in
   Stdio.printf "Loading weights from %s\n%!" Sys.argv.(1);
-  let image = Imagenet.load_image Sys.argv.(2) in
-  Serialize.load_multi_ ~named_tensors:(Var_store.all_vars vs) ~filename:Sys.argv.(1);
-  let probabilities =
-    Layer.apply_ model image ~is_training:false |> Tensor.softmax ~dim:(-1)
-  in
-  Imagenet.Classes.top probabilities ~k:5
-  |> List.iter ~f:(fun (name, probability) ->
-      Stdio.printf "%s: %.2f%%\n%!" name (100. *. probability) )
+  (* Serialize.load_multi_ ~named_tensors:(Var_store.all_vars vs) ~filename:Sys.argv.(1); *)
+  let image = Image.load_image Sys.argv.(2) ~resize:(416, 416) |> Or_error.ok_exn in
+  let image = Tensor.(to_type image ~type_:Float / f 255.) in
+  let predictions = Layer.apply_ model image ~is_training:false in
+  Tensor.print_shape ~name:"predictions" predictions
 
