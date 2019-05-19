@@ -14,6 +14,7 @@ ALL = examples/char_rnn/char_rnn.exe \
       examples/neural_transfer/neural_transfer.exe \
       examples/pretrained/finetuning.exe \
       examples/pretrained/predict.exe \
+      examples/yolo/yolo.exe \
       examples/vae/vae.exe \
       bin/tensor_tools.exe
 
