@@ -124,15 +124,68 @@ module Darknet = struct
     prev_channels, `shortcut (if from >= 0 then index - from else -from)
 
   let yolo ~index ~prev_channels ~parameters =
-    let mask = find_key ~index ~parameters "mask" ~f:int_list_of_string in
     let anchors =
       find_key ~index ~parameters "anchors" ~f:int_list_of_string
       |> List.groupi ~break:(fun i _ _ -> i % 2 = 0)
       |> List.map ~f:(function
         | [ p; q ] -> p, q
         | _ -> failwithf "odd number of elements in mask at index %d" index ())
+      |> Array.of_list
     in
-    prev_channels, `yolo (mask, anchors)
+    let anchors =
+      find_key ~index ~parameters "mask" ~f:int_list_of_string
+      |> List.map ~f:(fun i -> anchors.(i))
+    in
+    let classes = find_key ~index ~parameters "classes" ~f:Int.of_string in
+    prev_channels, `yolo (classes, anchors)
+
+  let width t = find_key "width" ~index:(-1) ~parameters:t.parameters ~f:Int.of_string
+  let height t = find_key "height" ~index:(-1) ~parameters:t.parameters ~f:Int.of_string
+
+  let slice_apply_and_set xs ~start ~length ~f =
+    let slice = Tensor.narrow xs ~dim:2 ~start ~length in
+    Tensor.copy_ slice ~src:(f slice)
+
+  let detect xs ~image_height ~anchors ~classes ~device =
+    let bsize, _channels, height, _width = Tensor.shape4_exn xs in
+    let stride = image_height / height in
+    let grid_size = image_height / stride in
+    let anchors =
+      List.map anchors ~f:(fun (x, y) ->
+        Float.(of_int x / of_int stride, of_int y / of_int stride))
+    in
+    let num_anchors = List.length anchors in
+    let bbox_attrs = 5 + classes in
+    let xs =
+      Tensor.view xs ~size:[ bsize; bbox_attrs * num_anchors; grid_size * grid_size ]
+      |> Tensor.transpose ~dim0:1 ~dim1:2
+      |> Tensor.view ~size:[ bsize; grid_size * grid_size * num_anchors; bbox_attrs ]
+    in
+    let grid = Tensor.arange ~end_:(Scalar.int grid_size) ~options:(Float, device) in
+    let a = Tensor.repeat grid ~repeats:[grid_size; 1] in
+    let b = Tensor.tr a in
+    let x_offset = Tensor.view a ~size:[ -1; 1 ] in
+    let y_offset = Tensor.view b ~size:[ -1; 1 ] in
+    let xy_offset =
+      Tensor.cat [ x_offset; y_offset ] ~dim:1
+      |> Tensor.repeat ~repeats:[ 1; num_anchors ]
+      |> Tensor.view ~size:[ -1; 2 ]
+      |> Tensor.unsqueeze ~dim:0
+    in
+    slice_apply_and_set xs ~start:0 ~length:2
+      ~f:Tensor.(fun xs -> sigmoid xs + xy_offset);
+    slice_apply_and_set xs ~start:4 ~length:(1 + classes) ~f:Tensor.sigmoid;
+    let anchors =
+      Array.of_list anchors
+      |> Array.map ~f:(fun (x, y) -> [| x; y |])
+      |> Tensor.of_float2
+      |> Tensor.repeat ~repeats:[ grid_size * grid_size; 1 ]
+      |> Tensor.unsqueeze ~dim:0
+    in
+    slice_apply_and_set xs ~start:2 ~length:2 ~f:Tensor.(fun xs -> exp xs * anchors);
+    slice_apply_and_set xs ~start:0 ~length:4
+      ~f:Tensor.(fun xs -> xs * f (Float.of_int stride));
+    xs
 
   let build_model vs t =
     let blocks =
@@ -156,36 +209,60 @@ module Darknet = struct
     in
     let blocks = List.rev blocks in
     let outputs = Hashtbl.create (module Int) in
+    let image_height = height t in
     Layer.of_fn_ (fun xs ~is_training ->
-      List.foldi blocks ~init:xs ~f:(fun index xs (_channels, block) ->
-        let ys =
+      List.foldi blocks ~init:(xs, None) ~f:(fun index (xs, detections) (_channels, block) ->
+        let ys, detections =
           match block with
           | `layers layers ->
+            let ys =
               List.fold layers ~init:xs ~f:(fun xs l -> Layer.apply_ l xs ~is_training)
+            in
+            ys, detections
           | `route layers ->
+            let ys =
               List.map layers ~f:(fun i -> Hashtbl.find_exn outputs (index -i))
               |> Tensor.cat ~dim:1
+            in
+            ys, detections
           | `shortcut from ->
+            let ys =
               Tensor.(+) (Hashtbl.find_exn outputs (index - 1)) (Hashtbl.find_exn outputs (index - from))
-          | `yolo _ ->
-              (* TODO: compute and gather the outputs of the yolo modules. *)
-              xs
+            in
+            ys, detections
+          | `yolo (classes, anchors) ->
+            let ys = detect xs ~image_height ~anchors ~classes ~device:(Var_store.device vs) in
+            let detections =
+              match detections with
+              | None -> ys
+              | Some detections -> Tensor.cat [ detections; ys ] ~dim:1
+            in
+            ys, Some detections
         in
         Hashtbl.add_exn outputs ~key:index ~data:ys;
-        ys))
+        ys, detections)
+      |> fun (_last, detections) -> Option.value_exn detections)
 end
 
 let () =
   if Array.length Sys.argv <> 3
   then Printf.failwithf "usage: %s yolo-v3.ot input.png" Sys.argv.(0) ();
+
+  (* Build the model. *)
   let vs = Var_store.create ~name:"rn" ~device:Cpu () in
   let darknet = Darknet.parse_config config_filename in
   Stdio.printf "%d blocks in %s\n%!" (List.length darknet.blocks) config_filename;
   let model = Darknet.build_model vs darknet in
+
   Stdio.printf "Loading weights from %s\n%!" Sys.argv.(1);
   (* Serialize.load_multi_ ~named_tensors:(Var_store.all_vars vs) ~filename:Sys.argv.(1); *)
-  let image = Image.load_image Sys.argv.(2) ~resize:(416, 416) |> Or_error.ok_exn in
+
+  (* Load the image. *)
+  let width, height = Darknet.width darknet, Darknet.height darknet in
+  let image = Image.load_image Sys.argv.(2) ~resize:(width, height) |> Or_error.ok_exn in
   let image = Tensor.(to_type image ~type_:Float / f 255.) in
+
+  (* Apply the model. *)
   let predictions = Layer.apply_ model image ~is_training:false in
   Tensor.print_shape ~name:"predictions" predictions
 
