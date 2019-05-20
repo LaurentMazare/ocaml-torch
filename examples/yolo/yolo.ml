@@ -7,6 +7,8 @@ open Torch_vision
 let sprintf = Printf.sprintf
 let failwithf = Printf.failwithf
 let config_filename = "examples/yolo/yolo-v3.cfg"
+let confidence_threshold = 0.5
+let classes = Coco_names.names
 
 module Darknet = struct
   type block =
@@ -249,6 +251,49 @@ module Darknet = struct
       |> fun (_last, detections) -> Option.value_exn detections)
 end
 
+type prediction =
+  { xmin : float
+  ; ymin : float
+  ; xmax : float
+  ; ymax : float
+  ; confidence : float
+  ; class_index : int
+  ; class_confidence : float
+  }
+
+let report predictions =
+  Tensor.print_shape ~name:"predictions" predictions;
+  let predictions =
+    List.init (Tensor.shape2_exn predictions |> fst) ~f:(fun index ->
+      let predictions = Tensor.get predictions index |> Tensor.to_float1_exn in
+      let confidence = predictions.(4) in
+      if Float.(>) confidence confidence_threshold
+      then (
+        let xmin = predictions.(0) -. predictions.(2) /. 2. in
+        let ymin = predictions.(1) -. predictions.(3) /. 2. in
+        let xmax = predictions.(0) +. predictions.(2) /. 2. in
+        let ymax = predictions.(1) +. predictions.(3) /. 2. in
+        let best_class_index =
+          Array.foldi predictions ~init:5 ~f:(fun index max_index v ->
+            if index > 5 && Float.(<) predictions.(max_index) v then index else max_index)
+        in
+        let class_confidence = predictions.(best_class_index) in
+        let class_index = best_class_index - 5 in
+        if Float.(>) class_confidence 0.
+        then
+          let prediction =
+            { confidence; xmin; ymin; xmax; ymax; class_index; class_confidence }
+          in
+          Some (class_index, prediction)
+        else None
+      )
+      else None)
+    |> List.filter_opt
+  in
+  List.iter predictions ~f:(fun (_, p) ->
+    Stdio.printf "%s %.2f %.2f (%f %f %f %f)\n%!"
+      classes.(p.class_index) p.confidence p.class_confidence p.xmin p.ymin p.xmax p.ymax)
+
 let () =
   if Array.length Sys.argv <> 3
   then Printf.failwithf "usage: %s yolo-v3.ot input.png" Sys.argv.(0) ();
@@ -269,9 +314,4 @@ let () =
 
   (* Apply the model. *)
   let predictions = Layer.apply_ model image ~is_training:false in
-  let predictions = Tensor.squeeze predictions in
-  Tensor.print_shape ~name:"predictions" predictions;
-  Tensor.get predictions 0
-  |> Tensor.to_float1_exn
-  |> Array.iteri ~f:(fun i f -> Stdio.printf "%2d %f\n%!" i f)
-
+  Tensor.squeeze predictions |> report
