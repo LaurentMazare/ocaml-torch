@@ -1,6 +1,8 @@
 (* The pre-trained weights can be downloaded here:
      https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/yolo-v3.ot
 *)
+(* TODO: preserve the aspect ratio when loading the images. *)
+(* TODO: draw bboxes on the initial images. *)
 open Base
 open Torch
 open Torch_vision
@@ -274,7 +276,7 @@ let iou b1 b2 =
   in
   i_area /. (b1_area +. b2_area -. i_area)
 
-let report predictions =
+let report predictions ~image =
   Tensor.print_shape ~name:"predictions" predictions;
   let bboxes =
     List.init (Tensor.shape2_exn predictions |> fst) ~f:(fun index ->
@@ -313,9 +315,18 @@ let report predictions =
         in
         if drop then acc_bboxes else bbox :: acc_bboxes))
   in
+  let color = Tensor.(of_float1 [| 0.; 0.5; 0.5 |] |> reshape ~shape:[1; 3; 1; 1]) in
   List.iter bboxes ~f:(fun b ->
-    Stdio.printf "%s %.2f %.2f (%f %f %f %f)\n%!"
-      classes.(b.class_index) b.confidence b.class_confidence b.xmin b.ymin b.xmax b.ymax)
+    let xmin, ymin = Int.(of_float b.xmin, of_float b.ymin) in
+    let xmax, ymax = Int.( of_float b.xmax, of_float b.ymax) in
+    let bbox =
+      Tensor.narrow image ~dim:3 ~start:xmin ~length:(xmax - xmin)
+      |> Tensor.narrow ~dim:2 ~start:ymin ~length:(ymax - ymin)
+    in
+    Tensor.copy_ bbox ~src:Tensor.(bbox * f 0.7 + color * f 0.3);
+    Stdio.printf "%s %.2f %.2f (%d %d %d %d)\n%!"
+      classes.(b.class_index) b.confidence b.class_confidence xmin ymin xmax ymax);
+  Image.write_image Tensor.(image * f 255.) ~filename:"output.jpg"
 
 let () =
   if Array.length Sys.argv <> 3
@@ -337,4 +348,4 @@ let () =
 
   (* Apply the model. *)
   let predictions = Layer.apply_ model image ~is_training:false in
-  Tensor.squeeze predictions |> report
+  Tensor.squeeze predictions |> report ~image
