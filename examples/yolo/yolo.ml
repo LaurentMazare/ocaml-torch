@@ -1,3 +1,6 @@
+(* The pre-trained weights can be downloaded here:
+     https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/yolo-v3.ot
+*)
 open Base
 open Torch
 open Torch_vision
@@ -191,6 +194,7 @@ module Darknet = struct
   let build_model vs t =
     let blocks =
       List.foldi t.blocks ~init:[] ~f:(fun index prevs block ->
+        let vs = Var_store.(vs / Int.to_string index) in
         let prev_channels =
           match prevs with
           | [] -> 3
@@ -256,7 +260,7 @@ let () =
   let model = Darknet.build_model vs darknet in
 
   Stdio.printf "Loading weights from %s\n%!" Sys.argv.(1);
-  (* Serialize.load_multi_ ~named_tensors:(Var_store.all_vars vs) ~filename:Sys.argv.(1); *)
+  Serialize.load_multi_ ~named_tensors:(Var_store.all_vars vs) ~filename:Sys.argv.(1);
 
   (* Load the image. *)
   let width, height = Darknet.width darknet, Darknet.height darknet in
@@ -265,5 +269,9 @@ let () =
 
   (* Apply the model. *)
   let predictions = Layer.apply_ model image ~is_training:false in
-  Tensor.print_shape ~name:"predictions" predictions
+  let predictions = Tensor.squeeze predictions in
+  Tensor.print_shape ~name:"predictions" predictions;
+  Tensor.get predictions 0
+  |> Tensor.to_float1_exn
+  |> Array.iteri ~f:(fun i f -> Stdio.printf "%2d %f\n%!" i f)
 
