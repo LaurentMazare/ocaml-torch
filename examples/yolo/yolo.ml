@@ -8,6 +8,7 @@ let sprintf = Printf.sprintf
 let failwithf = Printf.failwithf
 let config_filename = "examples/yolo/yolo-v3.cfg"
 let confidence_threshold = 0.5
+let nms_threshold = 0.4
 let classes = Coco_names.names
 
 module Darknet = struct
@@ -251,7 +252,7 @@ module Darknet = struct
       |> fun (_last, detections) -> Option.value_exn detections)
 end
 
-type prediction =
+type bbox =
   { xmin : float
   ; ymin : float
   ; xmax : float
@@ -261,9 +262,21 @@ type prediction =
   ; class_confidence : float
   }
 
+let iou b1 b2 =
+  let b1_area = (b1.xmax -. b1.xmin +. 1.) *. (b1.ymax -. b1.ymin +. 1.) in
+  let b2_area = (b2.xmax -. b2.xmin +. 1.) *. (b2.ymax -. b2.ymin +. 1.) in
+  let i_xmin = Float.max b1.xmin b2.xmin in
+  let i_xmax = Float.min b1.xmax b2.xmax in
+  let i_ymin = Float.max b1.ymin b2.ymin in
+  let i_ymax = Float.min b1.ymax b2.ymax in
+  let i_area =
+    Float.max 0. (i_xmax -. i_xmin +. 1.) *. Float.max 0. (i_ymax -. i_ymin +. 1.)
+  in
+  i_area /. (b1_area +. b2_area -. i_area)
+
 let report predictions =
   Tensor.print_shape ~name:"predictions" predictions;
-  let predictions =
+  let bboxes =
     List.init (Tensor.shape2_exn predictions |> fst) ~f:(fun index ->
       let predictions = Tensor.get predictions index |> Tensor.to_float1_exn in
       let confidence = predictions.(4) in
@@ -280,19 +293,29 @@ let report predictions =
         let class_confidence = predictions.(best_class_index) in
         let class_index = best_class_index - 5 in
         if Float.(>) class_confidence 0.
-        then
-          let prediction =
-            { confidence; xmin; ymin; xmax; ymax; class_index; class_confidence }
-          in
-          Some (class_index, prediction)
+        then Some { confidence; xmin; ymin; xmax; ymax; class_index; class_confidence }
         else None
       )
       else None)
     |> List.filter_opt
   in
-  List.iter predictions ~f:(fun (_, p) ->
+  let bboxes =
+    (* Group bboxes by class-index. *)
+    List.map bboxes ~f:(fun bbox -> bbox.class_index, (bbox.confidence, bbox))
+    |> Map.of_alist_multi (module Int)
+    |> Map.to_alist
+    |> List.concat_map ~f:(fun (_, bboxes) ->
+      (* NMS suppression. *)
+      let bboxes = List.sort bboxes ~compare:Caml.compare |> List.rev_map ~f:snd in
+      List.fold bboxes ~init:[] ~f:(fun acc_bboxes bbox ->
+        let drop =
+          List.exists acc_bboxes ~f:(fun b -> Float.(>) (iou b bbox) nms_threshold)
+        in
+        if drop then acc_bboxes else bbox :: acc_bboxes))
+  in
+  List.iter bboxes ~f:(fun b ->
     Stdio.printf "%s %.2f %.2f (%f %f %f %f)\n%!"
-      classes.(p.class_index) p.confidence p.class_confidence p.xmin p.ymin p.xmax p.ymax)
+      classes.(b.class_index) b.confidence b.class_confidence b.xmin b.ymin b.xmax b.ymax)
 
 let () =
   if Array.length Sys.argv <> 3
