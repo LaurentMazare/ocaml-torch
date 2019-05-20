@@ -107,7 +107,7 @@ module Darknet = struct
     let layer =
       Layer.of_fn (fun xs ->
         let _n, _c, h, w = Tensor.shape4_exn xs in
-        Tensor.upsample_bilinear2d xs ~output_size:[ h * 2; w * 2 ] ~align_corners:false)
+        Tensor.upsample_nearest2d xs ~output_size:[ h * 2; w * 2 ])
       |> Layer.with_training
     in
     prev_channels, `layers [ layer ]
