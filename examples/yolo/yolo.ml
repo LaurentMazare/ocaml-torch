@@ -369,7 +369,8 @@ let () =
   Serialize.load_multi_ ~named_tensors:(Var_store.all_vars vs) ~filename:Sys.argv.(1);
   (* Load the image. *)
   let width, height = Darknet.width darknet, Darknet.height darknet in
-  let image = Image.load_image Sys.argv.(2) ~resize:(width, height) |> Or_error.ok_exn in
+  let image = Image.load_image Sys.argv.(2) |> Or_error.ok_exn in
+  let image = Image.resize image ~width ~height in
   let image = Tensor.(to_type image ~type_:Float / f 255.) in
   (* Apply the model. *)
   let predictions = Layer.apply_ model image ~is_training:false in

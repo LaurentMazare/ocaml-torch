@@ -44,3 +44,11 @@ module Loader : sig
   val reset : t -> unit
   val next_batch : t -> batch_size:int -> Tensor.t option
 end
+
+(** [resize t ~height ~width] resizes the given tensor to [height] and [width].
+    This does not preserve the aspect ratio.
+    [t] can have dimensions NCHW with C set to 1 or 3, the returned tensor will
+    have dimensions NCH'W' with [H' = height] and [W' = width].
+    The input and output tensors have values between 0 and 255.
+*)
+val resize : Tensor.t -> height:int -> width:int -> Tensor.t

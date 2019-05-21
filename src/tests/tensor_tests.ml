@@ -117,15 +117,18 @@ let%expect_test _ =
     !"%{sexp:int array} %{sexp:int array list}\n"
     (Tensor.to_int1_exn vs)
     (List.map chunk ~f:Tensor.to_int1_exn);
-  [%expect
-    {| (1 2 3 4 5 6 7 8 9) ((1 2 3) (4 5 6) (7 8 9)) |}]
+  [%expect {| (1 2 3 4 5 6 7 8 9) ((1 2 3) (4 5 6) (7 8 9)) |}]
 
 let%expect_test _ =
   let vs = Tensor.of_int1 [| 3; 1; 4 |] in
   let ws = Tensor.to_type vs ~type_:Float in
   let xs = Tensor.reshape vs ~shape:[ -1; 1 ] in
-  Stdio.printf "%b %b %b %b\n"
-    (Tensor.eq vs vs) (Tensor.eq vs ws) (Tensor.eq ws ws) (Tensor.eq vs xs);
+  Stdio.printf
+    "%b %b %b %b\n"
+    (Tensor.eq vs vs)
+    (Tensor.eq vs ws)
+    (Tensor.eq ws ws)
+    (Tensor.eq vs xs);
   [%expect {| true false true false |}];
   let ws = Tensor.of_int1 [| 3; 1 |] in
   let xs = Tensor.of_int1 [| 4; 2; 5 |] in
@@ -135,3 +138,10 @@ let%expect_test _ =
   Stdio.printf "%b %b\n" (Tensor.eq vs ws) (Tensor.eq vs xs);
   [%expect {| false true |}]
 
+let%expect_test _ =
+  let t = Tensor.of_int2 [| [| 3; 1; 4 |]; [| 1; 5; 9 |] |] in
+  Tensor.to_list t
+  |> List.iter ~f:(fun t -> Tensor.to_int1_exn t |> Stdio.printf !"%{sexp:int array}\n");
+  [%expect {|
+    (3 1 4)
+    (1 5 9) |}]

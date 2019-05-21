@@ -1,14 +1,14 @@
 include Base
 include Torch_core.Wrapper.Tensor
 
-let set_float2 t i j value = float_set t [i; j] value
-let set_float1 t i value = float_set t [i] value
-let set_int2 t i j value = int_set t [i; j] value
-let set_int1 t i value = int_set t [i] value
-let get_float2 t i j = float_get t [i; j]
-let get_float1 t i = float_get t [i]
-let get_int2 t i j = int_get t [i; j]
-let get_int1 t i = int_get t [i]
+let set_float2 t i j value = float_set t [ i; j ] value
+let set_float1 t i value = float_set t [ i ] value
+let set_int2 t i j value = int_set t [ i; j ] value
+let set_int1 t i value = int_set t [ i ] value
+let get_float2 t i j = float_get t [ i; j ]
+let get_float1 t i = float_get t [ i ]
+let get_int2 t i j = int_get t [ i; j ]
+let get_int1 t i = int_get t [ i ]
 let ( .%{} ) = int_get
 let ( .%{}<- ) = int_set
 let ( .%.{} ) = float_get
@@ -20,11 +20,11 @@ let ( .%.[]<- ) = set_float1
 
 let no_grad_ t ~f =
   if requires_grad t
-  then
+  then (
     let t = set_requires_grad t ~r:false in
     Exn.protect
       ~f:(fun () -> f t)
-      ~finally:(fun () -> ignore (set_requires_grad t ~r:true : t))
+      ~finally:(fun () -> ignore (set_requires_grad t ~r:true : t)))
   else f t
 
 let no_grad f =
@@ -36,10 +36,10 @@ let zero_grad t =
   if defined grad
   then (
     ignore (detach_ grad : t);
-    ignore (zero_ grad : t) )
+    ignore (zero_ grad : t))
 
 type create =
-     ?requires_grad:bool
+  ?requires_grad:bool
   -> ?kind:Torch_core.Kind.t
   -> ?device:Device.t
   -> ?scale:float
@@ -48,7 +48,13 @@ type create =
 
 let type_ = kind
 let to_type t ~type_ = totype t ~scalar_type:type_
-let to_device ?device t = match device with None -> t | Some device -> to_ t ~device
+let to_kind t ~kind = totype t ~scalar_type:kind
+
+let to_device ?device t =
+  match device with
+  | None -> t
+  | Some device -> to_ t ~device
+
 let float_vec ?kind ?device dims = float_vec ?kind dims |> to_device ?device
 
 let gen
@@ -57,10 +63,14 @@ let gen
     ?(kind = Torch_core.Kind.Float)
     ?(device = Device.Cpu)
     ?scale
-    size =
+    size
+  =
   let t = f ~size ~options:(kind, device) in
   let t =
-    Option.value_map scale ~f:(fun scale -> mul t (float_vec [scale] ~device)) ~default:t
+    Option.value_map
+      scale
+      ~f:(fun scale -> mul t (float_vec [ scale ] ~device))
+      ~default:t
   in
   if requires_grad then set_requires_grad t ~r:true else t
 
@@ -68,7 +78,7 @@ let zeros = gen ~f:zeros
 let ones = gen ~f:ones
 let rand = gen ~f:rand
 let randn = gen ~f:randn
-let f v = float_vec [v] |> reshape ~shape:[]
+let f v = float_vec [ v ] |> reshape ~shape:[]
 let mm = matmul
 let ( + ) = add
 let ( - ) = sub
@@ -80,7 +90,7 @@ let ( += ) t other = ignore (add_ t other : t)
 let ( /= ) t other = ignore (div_ t other : t)
 let ( *= ) t other = ignore (mul_ t other : t)
 let ( = ) = eq1
-let pair_to_list (p1, p2) = [p1; p2]
+let pair_to_list (p1, p2) = [ p1; p2 ]
 
 let conv2d ?(padding = 0, 0) ?(dilation = 1, 1) ?(groups = 1) input weight bias ~stride =
   conv2d
@@ -100,7 +110,8 @@ let conv_transpose2d
     input
     weight
     bias
-    ~stride =
+    ~stride
+  =
   conv_transpose2d
     input
     ~weight
@@ -112,7 +123,8 @@ let conv_transpose2d
     ~dilation:(pair_to_list dilation)
 
 let max_pool2d
-    ?(padding = 0, 0) ?(dilation = 1, 1) ?(ceil_mode = false) ?stride self ~ksize =
+    ?(padding = 0, 0) ?(dilation = 1, 1) ?(ceil_mode = false) ?stride self ~ksize
+  =
   max_pool2d
     self
     ~kernel_size:(pair_to_list ksize)
@@ -127,7 +139,8 @@ let avg_pool2d
     ?(ceil_mode = false)
     ?stride
     self
-    ~ksize =
+    ~ksize
+  =
   avg_pool2d
     self
     ~kernel_size:(pair_to_list ksize)
@@ -185,10 +198,12 @@ let huber_loss ?(reduction = Torch_core.Reduction.Elementwise_mean) t1 t2 =
   let d = abs (t1 - t2) in
   let half = f 0.5 in
   let err = where ~condition:(le d (Scalar.float 1.)) (half * d * d) (d - half) in
-  match reduction with None -> err | Elementwise_mean -> mean err | Sum -> sum err
+  match reduction with
+  | None -> err
+  | Elementwise_mean -> mean err
+  | Sum -> sum err
 
-let bce_loss_with_logits ?(reduction = Torch_core.Reduction.Elementwise_mean) t ~targets
-    =
+let bce_loss_with_logits ?(reduction = Torch_core.Reduction.Elementwise_mean) t ~targets =
   let max_val = clamp_min_ (-t) ~min:(Scalar.float 0.) in
   let one_minus_targets = ones_like targets - targets in
   let bce =
@@ -196,7 +211,10 @@ let bce_loss_with_logits ?(reduction = Torch_core.Reduction.Elementwise_mean) t 
       (add_ (mul_ one_minus_targets t) max_val)
       (add_ (exp_ (-max_val)) (exp_ (-t - max_val)) |> log_)
   in
-  match reduction with None -> bce | Elementwise_mean -> mean bce | Sum -> sum bce
+  match reduction with
+  | None -> bce
+  | Elementwise_mean -> mean bce
+  | Sum -> sum bce
 
 let pp formatter t =
   let shape = shape t in
@@ -205,7 +223,7 @@ let pp formatter t =
   then (
     Caml.Format.pp_print_newline formatter ();
     Caml.Format.pp_print_string formatter (to_string t ~line_size:96);
-    Caml.Format.pp_print_newline formatter () )
+    Caml.Format.pp_print_newline formatter ())
   else
     List.map shape ~f:Int.to_string
     |> String.concat ~sep:", "
@@ -224,15 +242,17 @@ let bigarray_to_array1 bigarray ~f =
   try
     let bigarray = Bigarray.array1_of_genarray bigarray in
     Array.init (Bigarray.Array1.dim bigarray) ~f:(fun i -> f bigarray.{i}) |> Option.some
-  with Invalid_argument _ -> None
+  with
+  | Invalid_argument _ -> None
 
 let bigarray_to_array2 bigarray ~f =
   try
     let bigarray = Bigarray.array2_of_genarray bigarray in
     Array.init (Bigarray.Array2.dim1 bigarray) ~f:(fun i ->
-        Array.init (Bigarray.Array2.dim2 bigarray) ~f:(fun j -> f bigarray.{i, j}) )
+        Array.init (Bigarray.Array2.dim2 bigarray) ~f:(fun j -> f bigarray.{i, j}))
     |> Option.some
-  with Invalid_argument _ -> None
+  with
+  | Invalid_argument _ -> None
 
 let bigarray_to_array3 bigarray ~f =
   try
@@ -240,9 +260,10 @@ let bigarray_to_array3 bigarray ~f =
     Array.init (Bigarray.Array3.dim1 bigarray) ~f:(fun i ->
         Array.init (Bigarray.Array3.dim2 bigarray) ~f:(fun j ->
             Array.init (Bigarray.Array3.dim3 bigarray) ~f:(fun k -> f bigarray.{i, j, k})
-        ) )
+        ))
     |> Option.some
-  with Invalid_argument _ -> None
+  with
+  | Invalid_argument _ -> None
 
 let to_float1 t =
   match kind t with
@@ -287,9 +308,16 @@ let to_float1_exn t = Option.value_exn (to_float1 t)
 let to_float2_exn t = Option.value_exn (to_float2 t)
 let to_float3_exn t = Option.value_exn (to_float3 t)
 let to_float0_exn = float_value
-let to_float0 t = try float_value t |> Option.some with _ -> None
+
+let to_float0 t =
+  try float_value t |> Option.some with
+  | _ -> None
+
 let to_int0_exn = int_value
-let to_int0 t = try int_value t |> Option.some with _ -> None
+
+let to_int0 t =
+  try int_value t |> Option.some with
+  | _ -> None
 
 let of_float0 f =
   Bigarray.Array0.of_value Float32 C_layout f
@@ -323,19 +351,27 @@ let of_int2 f =
 let of_int3 f =
   Bigarray.Array3.of_array Int C_layout f |> Bigarray.genarray_of_array3 |> of_bigarray
 
-let minimum t = view t ~size:[-1] |> min_values ~dim:[0] ~keepdim:false
-let maximum t = view t ~size:[-1] |> max_values ~dim:[0] ~keepdim:false
+let minimum t = view t ~size:[ -1 ] |> min_values ~dim:[ 0 ] ~keepdim:false
+let maximum t = view t ~size:[ -1 ] |> max_values ~dim:[ 0 ] ~keepdim:false
 
 let flatten t =
   let batch_size = shape t |> List.hd_exn in
-  view t ~size:[batch_size; -1]
+  view t ~size:[ batch_size; -1 ]
 
 let squeeze_last t = squeeze1 t ~dim:(-1)
 let scale t f = mul1 t (Scalar.float f)
 
 let eq t1 t2 =
-  if Torch_core.Kind.(<>) (kind t1) (kind t2)
+  if Torch_core.Kind.( <> ) (kind t1) (kind t2)
   then false
-  else if Caml.(<>) (shape t1) (shape t2)
+  else if Caml.( <> ) (shape t1) (shape t2)
   then false
-  else eq1 t1 t2 |> all |> to_int0_exn |> (<>) 0
+  else eq1 t1 t2 |> all |> to_int0_exn |> ( <> ) 0
+
+let to_list t =
+  let size =
+    match size t with
+    | [] -> failwith "scalar tensor"
+    | size :: _ -> size
+  in
+  List.init size ~f:(get t)
