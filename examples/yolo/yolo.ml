@@ -364,13 +364,17 @@ let report predictions ~image ~width ~height =
       let xmax = resize_and_clamp b.xmax ~initial_max:initial_width ~max:width in
       let ymin = resize_and_clamp b.ymin ~initial_max:initial_height ~max:height in
       let ymax = resize_and_clamp b.ymax ~initial_max:initial_height ~max:height in
-      let bbox =
-        Tensor.narrow image ~dim:3 ~start:xmin ~length:(xmax - xmin)
-        |> Tensor.narrow ~dim:2 ~start:ymin ~length:(ymax - ymin)
-      in
       let color = colors.(b.class_index % Array.length colors) in
       let color = Tensor.(of_float1 color |> reshape ~shape:[ 1; 3; 1; 1 ]) in
-      Tensor.copy_ bbox ~src:Tensor.((bbox * f 0.7) + (color * f 0.3));
+      let draw_rect xmin xmax ymin ymax =
+        Tensor.narrow image ~dim:3 ~start:xmin ~length:(xmax - xmin)
+        |> Tensor.narrow ~dim:2 ~start:ymin ~length:(ymax - ymin)
+        |> Tensor.copy_ ~src:color
+      in
+      draw_rect xmin xmax ymin (Int.min (ymin + 2) ymax);
+      draw_rect xmin xmax (Int.max ymin (ymax - 2)) ymax;
+      draw_rect (Int.max xmin (xmax - 2)) xmax ymin ymax;
+      draw_rect xmin (Int.min (xmin + 2) xmax) ymin ymax;
       Stdio.printf
         "%s %.2f %.2f (%d %d %d %d)\n%!"
         classes.(b.class_index)
