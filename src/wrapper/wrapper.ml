@@ -23,7 +23,10 @@ module Tensor = struct
     let values_len = List.length values in
     let values = CArray.of_list double values |> CArray.start in
     let kind =
-      match kind with `float -> Kind.Float | `double -> Double | `half -> Half
+      match kind with
+      | `float -> Kind.Float
+      | `double -> Double
+      | `half -> Half
     in
     let t = float_vec values values_len (Kind.to_int kind) in
     Gc.finalise free t;
@@ -65,10 +68,10 @@ module Tensor = struct
     let t =
       tensor_of_data
         (bigarray_start genarray ga |> to_voidp)
-        ( Array.to_list dims
+        (Array.to_list dims
         |> List.map Int64.of_int
         |> CArray.of_list int64_t
-        |> CArray.start )
+        |> CArray.start)
         (Array.length dims)
         (Bigarray.kind_size_in_bytes kind)
         (Kind.to_int tensor_kind)
@@ -76,8 +79,7 @@ module Tensor = struct
     Gc.finalise free t;
     t
 
-  let copy_to_bigarray (type a b) t (ga : (b, a, Bigarray.c_layout) Bigarray.Genarray.t)
-      =
+  let copy_to_bigarray (type a b) t (ga : (b, a, Bigarray.c_layout) Bigarray.Genarray.t) =
     let kind = Bigarray.Genarray.kind ga in
     copy_data
       t
@@ -91,21 +93,30 @@ module Tensor = struct
     shape t (CArray.start carray);
     CArray.to_list carray
 
+  let size = shape
+
   let unexpected_shape shape =
     let shape = String.concat ", " (List.map string_of_int shape) in
     Printf.sprintf "unexpected shape <%s>" shape |> failwith
 
-  let shape1_exn t = match shape t with [s1] -> s1 | shape -> unexpected_shape shape
+  let shape1_exn t =
+    match shape t with
+    | [ s1 ] -> s1
+    | shape -> unexpected_shape shape
 
   let shape2_exn t =
-    match shape t with [s1; s2] -> s1, s2 | shape -> unexpected_shape shape
+    match shape t with
+    | [ s1; s2 ] -> s1, s2
+    | shape -> unexpected_shape shape
 
   let shape3_exn t =
-    match shape t with [s1; s2; s3] -> s1, s2, s3 | shape -> unexpected_shape shape
+    match shape t with
+    | [ s1; s2; s3 ] -> s1, s2, s3
+    | shape -> unexpected_shape shape
 
   let shape4_exn t =
     match shape t with
-    | [s1; s2; s3; s4] -> s1, s2, s3, s4
+    | [ s1; s2; s3; s4 ] -> s1, s2, s3, s4
     | shape -> unexpected_shape shape
 
   let kind t = scalar_type t |> Kind.of_int_exn
@@ -149,7 +160,7 @@ module Tensor = struct
 
   let print = print
   let to_string t ~line_size = to_string t line_size
-  let argmax ?(dim=(-1)) ?(keepdim=false) t = argmax t ~dim ~keepdim
+  let argmax ?(dim = -1) ?(keepdim = false) t = argmax t ~dim ~keepdim
   let max = max1
   let min = min1
   let copy_ t ~src = copy_ t src
@@ -162,7 +173,9 @@ module Tensor = struct
 
   let run_backward ?keep_graph ?(create_graph = false) tensors inputs =
     let keep_graph =
-      match keep_graph with None -> create_graph | Some keep_graph -> keep_graph
+      match keep_graph with
+      | None -> create_graph
+      | Some keep_graph -> keep_graph
     in
     let out_ = CArray.make t (List.length inputs) in
     run_backward
@@ -222,8 +235,20 @@ module Serialize = struct
   include Wrapper_generated.C.Serialize
 
   let save t ~filename = save t filename
-  let escape s = String.map (function '.' -> '|' | c -> c) s
-  let unescape s = String.map (function '|' -> '.' | c -> c) s
+
+  let escape s =
+    String.map
+      (function
+        | '.' -> '|'
+        | c -> c)
+      s
+
+  let unescape s =
+    String.map
+      (function
+        | '|' -> '.'
+        | c -> c)
+      s
 
   let load ~filename =
     let t = load filename in
@@ -265,7 +290,7 @@ module Serialize = struct
         (static_funptr (string @-> Wrapper_generated.C.Tensor.t @-> returning void))
         (fun tensor_name tensor ->
           Gc.finalise Wrapper_generated.C.Tensor.free tensor;
-          all_tensors := (unescape tensor_name, tensor) :: !all_tensors )
+          all_tensors := (unescape tensor_name, tensor) :: !all_tensors)
     in
     load_callback filename callback;
     !all_tensors
