@@ -294,7 +294,22 @@ let iou b1 b2 =
   in
   i_area /. (b1_area +. b2_area -. i_area)
 
-let report predictions ~image =
+let colors =
+  [| [| 0.5; 0.0; 0.5 |]
+   ; [| 0.0; 0.5; 0.5 |]
+   ; [| 0.5; 0.5; 0.0 |]
+   ; [| 0.7; 0.3; 0.0 |]
+   ; [| 0.7; 0.0; 0.3 |]
+   ; [| 0.0; 0.7; 0.3 |]
+   ; [| 0.3; 0.7; 0.0 |]
+   ; [| 0.3; 0.0; 0.7 |]
+   ; [| 0.0; 0.3; 0.7 |]
+  |]
+
+(* [image] is the original image. [width] and [height] are the model [width] on
+   [height] relative to which bounding boxes have been computed.
+*)
+let report predictions ~image ~width ~height =
   Tensor.print_shape ~name:"predictions" predictions;
   let bboxes =
     List.init
@@ -337,14 +352,24 @@ let report predictions ~image =
                in
                if drop then acc_bboxes else bbox :: acc_bboxes))
   in
-  let color = Tensor.(of_float1 [| 0.; 0.5; 0.5 |] |> reshape ~shape:[ 1; 3; 1; 1 ]) in
+  let image = Tensor.(to_type image ~type_:Float / f 255.) in
+  let _, _, initial_height, initial_width = Tensor.shape4_exn image in
+  let resize_and_clamp v ~initial_max ~max =
+    Int.of_float (v *. Float.of_int initial_max /. Float.of_int max)
+    |> Int.max 0
+    |> Int.min (max - 1)
+  in
   List.iter bboxes ~f:(fun b ->
-      let xmin, ymin = Int.(of_float b.xmin, of_float b.ymin) in
-      let xmax, ymax = Int.(of_float b.xmax, of_float b.ymax) in
+      let xmin = resize_and_clamp b.xmin ~initial_max:initial_width ~max:width in
+      let xmax = resize_and_clamp b.xmax ~initial_max:initial_width ~max:width in
+      let ymin = resize_and_clamp b.ymin ~initial_max:initial_height ~max:height in
+      let ymax = resize_and_clamp b.ymax ~initial_max:initial_height ~max:height in
       let bbox =
         Tensor.narrow image ~dim:3 ~start:xmin ~length:(xmax - xmin)
         |> Tensor.narrow ~dim:2 ~start:ymin ~length:(ymax - ymin)
       in
+      let color = colors.(b.class_index % Array.length colors) in
+      let color = Tensor.(of_float1 color |> reshape ~shape:[ 1; 3; 1; 1 ]) in
       Tensor.copy_ bbox ~src:Tensor.((bbox * f 0.7) + (color * f 0.3));
       Stdio.printf
         "%s %.2f %.2f (%d %d %d %d)\n%!"
@@ -370,8 +395,8 @@ let () =
   (* Load the image. *)
   let width, height = Darknet.width darknet, Darknet.height darknet in
   let image = Image.load_image Sys.argv.(2) |> Or_error.ok_exn in
-  let image = Image.resize image ~width ~height in
-  let image = Tensor.(to_type image ~type_:Float / f 255.) in
+  let resized_image = Image.resize image ~width ~height in
+  let resized_image = Tensor.(to_type resized_image ~type_:Float / f 255.) in
   (* Apply the model. *)
-  let predictions = Layer.apply_ model image ~is_training:false in
-  Tensor.squeeze predictions |> report ~image
+  let predictions = Layer.apply_ model resized_image ~is_training:false in
+  Tensor.squeeze predictions |> report ~image ~width ~height
