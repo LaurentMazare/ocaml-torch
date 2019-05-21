@@ -6,6 +6,7 @@
 open Base
 open Torch
 open Torch_vision
+
 let sprintf = Printf.sprintf
 let failwithf = Printf.failwithf
 let config_filename = "examples/yolo/yolo-v3.cfg"
@@ -25,40 +26,44 @@ module Darknet = struct
     }
 
   let int_list_of_string str =
-    String.split str ~on:','
-    |> List.map ~f:(fun i -> String.strip i |> Int.of_string)
+    String.split str ~on:',' |> List.map ~f:(fun i -> String.strip i |> Int.of_string)
 
   let parse_config filename =
     let blocks =
       Stdio.In_channel.read_lines filename
       |> List.filter_map ~f:(fun line ->
-          let line = String.strip line in
-          if String.is_empty line || Char.(=) line.[0] '#'
-          then None
-          else Some line)
-      |> List.group ~break:(fun _ line -> Char.(=) line.[0] '[')
+             let line = String.strip line in
+             if String.is_empty line || Char.( = ) line.[0] '#' then None else Some line
+         )
+      |> List.group ~break:(fun _ line -> Char.( = ) line.[0] '[')
       |> List.map ~f:(function
-        | block_type :: paramaters ->
-            let block_type =
-              match String.chop_prefix block_type ~prefix:"[" with
-              | None -> failwithf "block-type does not start with [: %s" block_type ()
-              | Some block_type ->
-                  match String.chop_suffix block_type ~suffix:"]" with
-                  | None -> failwithf "block-type does not end with ]: %s" block_type ()
-                  | Some block_type -> block_type
-            in
-            let parameters = List.map paramaters ~f:(fun line ->
-              match String.split line ~on:'=' with
-              | [ lhs; rhs ] -> String.strip lhs, String.strip rhs
-              | _ -> failwithf "parameter line does not contain exactly one equal: %s" line ())
-            in
-            let parameters =
-              match Map.of_alist (module String) parameters with
-              | `Duplicate_key key -> failwithf "multiple %s key for %s" key block_type ()
-              | `Ok parameters -> parameters
-            in
-            { block_type; parameters }
-        | _ -> assert false)
+             | block_type :: paramaters ->
+               let block_type =
+                 match String.chop_prefix block_type ~prefix:"[" with
+                 | None -> failwithf "block-type does not start with [: %s" block_type ()
+                 | Some block_type ->
+                   (match String.chop_suffix block_type ~suffix:"]" with
+                   | None -> failwithf "block-type does not end with ]: %s" block_type ()
+                   | Some block_type -> block_type)
+               in
+               let parameters =
+                 List.map paramaters ~f:(fun line ->
+                     match String.split line ~on:'=' with
+                     | [ lhs; rhs ] -> String.strip lhs, String.strip rhs
+                     | _ ->
+                       failwithf
+                         "parameter line does not contain exactly one equal: %s"
+                         line
+                         ())
+               in
+               let parameters =
+                 match Map.of_alist (module String) parameters with
+                 | `Duplicate_key key ->
+                   failwithf "multiple %s key for %s" key block_type ()
+                 | `Ok parameters -> parameters
+               in
+               { block_type; parameters }
+             | _ -> assert false)
     in
     match blocks with
     | { block_type = "net"; parameters } :: blocks -> { blocks; parameters }
@@ -68,10 +73,8 @@ module Darknet = struct
     match Map.find parameters key with
     | None -> failwithf "cannot find key %s for block %d" key index ()
     | Some value ->
-        try
-          f value
-        with
-        | _ -> failwithf "unable to convert '%s' (key %s, block %d)" value key index ()
+      (try f value with
+      | _ -> failwithf "unable to convert '%s' (key %s, block %d)" value key index ())
 
   let convolutional vs ~index ~prev_channels ~parameters =
     let activation = find_key ~index ~parameters "activation" ~f:String.lowercase in
@@ -83,10 +86,10 @@ module Darknet = struct
     let bn, use_bias =
       match Map.find parameters "batch_normalize" with
       | Some b when Int.of_string b <> 0 ->
-          let bn =
-            Layer.batch_norm2d Var_store.(vs / sprintf "batch_norm_%d" index) next_channels
-          in
-          bn, false
+        let bn =
+          Layer.batch_norm2d Var_store.(vs / sprintf "batch_norm_%d" index) next_channels
+        in
+        bn, false
       | Some _ | None -> Layer.id_, true
     in
     let conv =
@@ -102,7 +105,8 @@ module Darknet = struct
     in
     let activation =
       match activation with
-      | "leaky" -> Layer.of_fn (fun xs -> Tensor.(max xs (xs * f 0.1))) |> Layer.with_training
+      | "leaky" ->
+        Layer.of_fn (fun xs -> Tensor.(max xs (xs * f 0.1))) |> Layer.with_training
       | "linear" -> Layer.id_
       | activation -> failwithf "unsupported activation %s block %d" activation index ()
     in
@@ -111,8 +115,8 @@ module Darknet = struct
   let upsample ~index:_ ~prev_channels ~parameters:_ =
     let layer =
       Layer.of_fn (fun xs ->
-        let _n, _c, h, w = Tensor.shape4_exn xs in
-        Tensor.upsample_nearest2d xs ~output_size:[ h * 2; w * 2 ])
+          let _n, _c, h, w = Tensor.shape4_exn xs in
+          Tensor.upsample_nearest2d xs ~output_size:[ h * 2; w * 2 ])
       |> Layer.with_training
     in
     prev_channels, `layers [ layer ]
@@ -123,7 +127,7 @@ module Darknet = struct
       |> List.map ~f:(fun i -> if i >= 0 then index - i else -i)
     in
     let channels =
-      List.sum (module Int) layers ~f:(fun i -> List.nth_exn prevs (i-1) |> fst)
+      List.sum (module Int) layers ~f:(fun i -> List.nth_exn prevs (i - 1) |> fst)
     in
     channels, `route layers
 
@@ -136,8 +140,8 @@ module Darknet = struct
       find_key ~index ~parameters "anchors" ~f:int_list_of_string
       |> List.groupi ~break:(fun i _ _ -> i % 2 = 0)
       |> List.map ~f:(function
-        | [ p; q ] -> p, q
-        | _ -> failwithf "odd number of elements in mask at index %d" index ())
+             | [ p; q ] -> p, q
+             | _ -> failwithf "odd number of elements in mask at index %d" index ())
       |> Array.of_list
     in
     let anchors =
@@ -160,7 +164,7 @@ module Darknet = struct
     let grid_size = image_height / stride in
     let anchors =
       List.map anchors ~f:(fun (x, y) ->
-        Float.(of_int x / of_int stride, of_int y / of_int stride))
+          Float.(of_int x / of_int stride, of_int y / of_int stride))
     in
     let num_anchors = List.length anchors in
     let bbox_attrs = 5 + classes in
@@ -171,7 +175,7 @@ module Darknet = struct
       |> Tensor.view ~size:[ bsize; grid_size * grid_size * num_anchors; bbox_attrs ]
     in
     let grid = Tensor.arange ~end_:(Scalar.int grid_size) ~options:(Float, device) in
-    let a = Tensor.repeat grid ~repeats:[grid_size; 1] in
+    let a = Tensor.repeat grid ~repeats:[ grid_size; 1 ] in
     let b = Tensor.tr a |> Tensor.contiguous in
     let x_offset = Tensor.view a ~size:[ -1; 1 ] in
     let y_offset = Tensor.view b ~size:[ -1; 1 ] in
@@ -181,7 +185,10 @@ module Darknet = struct
       |> Tensor.view ~size:[ -1; 2 ]
       |> Tensor.unsqueeze ~dim:0
     in
-    slice_apply_and_set xs ~start:0 ~length:2
+    slice_apply_and_set
+      xs
+      ~start:0
+      ~length:2
       ~f:Tensor.(fun xs -> sigmoid xs + xy_offset);
     slice_apply_and_set xs ~start:4 ~length:(1 + classes) ~f:Tensor.sigmoid;
     let anchors =
@@ -192,66 +199,77 @@ module Darknet = struct
       |> Tensor.unsqueeze ~dim:0
     in
     slice_apply_and_set xs ~start:2 ~length:2 ~f:Tensor.(fun xs -> exp xs * anchors);
-    slice_apply_and_set xs ~start:0 ~length:4
+    slice_apply_and_set
+      xs
+      ~start:0
+      ~length:4
       ~f:Tensor.(fun xs -> xs * f (Float.of_int stride));
     xs
 
   let build_model vs t =
     let blocks =
       List.foldi t.blocks ~init:[] ~f:(fun index prevs block ->
-        let vs = Var_store.(vs / Int.to_string index) in
-        let prev_channels =
-          match prevs with
-          | [] -> 3
-          | (channels, _) :: _ -> channels
-        in
-        let { block_type; parameters } = block in
-        let block =
-          match block_type with
-          | "convolutional" -> convolutional vs ~index ~prev_channels ~parameters
-          | "upsample" -> upsample ~index ~prev_channels ~parameters
-          | "route" -> route ~index ~prevs ~parameters
-          | "shortcut" -> shortcut ~index ~prev_channels ~parameters
-          | "yolo" -> yolo ~index ~prev_channels ~parameters
-          | bt -> failwithf "block-type %s is not implemented" bt ()
-        in
-        block :: prevs)
+          let vs = Var_store.(vs / Int.to_string index) in
+          let prev_channels =
+            match prevs with
+            | [] -> 3
+            | (channels, _) :: _ -> channels
+          in
+          let { block_type; parameters } = block in
+          let block =
+            match block_type with
+            | "convolutional" -> convolutional vs ~index ~prev_channels ~parameters
+            | "upsample" -> upsample ~index ~prev_channels ~parameters
+            | "route" -> route ~index ~prevs ~parameters
+            | "shortcut" -> shortcut ~index ~prev_channels ~parameters
+            | "yolo" -> yolo ~index ~prev_channels ~parameters
+            | bt -> failwithf "block-type %s is not implemented" bt ()
+          in
+          block :: prevs)
     in
     let blocks = List.rev blocks in
     let outputs = Hashtbl.create (module Int) in
     let image_height = height t in
     Layer.of_fn_ (fun xs ~is_training ->
-      List.foldi blocks ~init:(xs, None) ~f:(fun index (xs, detections) (_channels, block) ->
-        let ys, detections =
-          match block with
-          | `layers layers ->
-            let ys =
-              List.fold layers ~init:xs ~f:(fun xs l -> Layer.apply_ l xs ~is_training)
+        List.foldi
+          blocks
+          ~init:(xs, None)
+          ~f:(fun index (xs, detections) (_channels, block) ->
+            let ys, detections =
+              match block with
+              | `layers layers ->
+                let ys =
+                  List.fold layers ~init:xs ~f:(fun xs l ->
+                      Layer.apply_ l xs ~is_training)
+                in
+                ys, detections
+              | `route layers ->
+                let ys =
+                  List.map layers ~f:(fun i -> Hashtbl.find_exn outputs (index - i))
+                  |> Tensor.cat ~dim:1
+                in
+                ys, detections
+              | `shortcut from ->
+                let ys =
+                  Tensor.( + )
+                    (Hashtbl.find_exn outputs (index - 1))
+                    (Hashtbl.find_exn outputs (index - from))
+                in
+                ys, detections
+              | `yolo (classes, anchors) ->
+                let ys =
+                  detect xs ~image_height ~anchors ~classes ~device:(Var_store.device vs)
+                in
+                let detections =
+                  match detections with
+                  | None -> ys
+                  | Some detections -> Tensor.cat [ detections; ys ] ~dim:1
+                in
+                ys, Some detections
             in
-            ys, detections
-          | `route layers ->
-            let ys =
-              List.map layers ~f:(fun i -> Hashtbl.find_exn outputs (index -i))
-              |> Tensor.cat ~dim:1
-            in
-            ys, detections
-          | `shortcut from ->
-            let ys =
-              Tensor.(+) (Hashtbl.find_exn outputs (index - 1)) (Hashtbl.find_exn outputs (index - from))
-            in
-            ys, detections
-          | `yolo (classes, anchors) ->
-            let ys = detect xs ~image_height ~anchors ~classes ~device:(Var_store.device vs) in
-            let detections =
-              match detections with
-              | None -> ys
-              | Some detections -> Tensor.cat [ detections; ys ] ~dim:1
-            in
-            ys, Some detections
-        in
-        Hashtbl.add_exn outputs ~key:index ~data:ys;
-        ys, detections)
-      |> fun (_last, detections) -> Option.value_exn detections)
+            Hashtbl.add_exn outputs ~key:index ~data:ys;
+            ys, detections)
+        |> fun (_last, detections) -> Option.value_exn detections)
 end
 
 type bbox =
@@ -279,26 +297,29 @@ let iou b1 b2 =
 let report predictions ~image =
   Tensor.print_shape ~name:"predictions" predictions;
   let bboxes =
-    List.init (Tensor.shape2_exn predictions |> fst) ~f:(fun index ->
-      let predictions = Tensor.get predictions index |> Tensor.to_float1_exn in
-      let confidence = predictions.(4) in
-      if Float.(>) confidence confidence_threshold
-      then (
-        let xmin = predictions.(0) -. predictions.(2) /. 2. in
-        let ymin = predictions.(1) -. predictions.(3) /. 2. in
-        let xmax = predictions.(0) +. predictions.(2) /. 2. in
-        let ymax = predictions.(1) +. predictions.(3) /. 2. in
-        let best_class_index =
-          Array.foldi predictions ~init:5 ~f:(fun index max_index v ->
-            if index > 5 && Float.(<) predictions.(max_index) v then index else max_index)
-        in
-        let class_confidence = predictions.(best_class_index) in
-        let class_index = best_class_index - 5 in
-        if Float.(>) class_confidence 0.
-        then Some { confidence; xmin; ymin; xmax; ymax; class_index; class_confidence }
-        else None
-      )
-      else None)
+    List.init
+      (Tensor.shape2_exn predictions |> fst)
+      ~f:(fun index ->
+        let predictions = Tensor.get predictions index |> Tensor.to_float1_exn in
+        let confidence = predictions.(4) in
+        if Float.( > ) confidence confidence_threshold
+        then (
+          let xmin = predictions.(0) -. (predictions.(2) /. 2.) in
+          let ymin = predictions.(1) -. (predictions.(3) /. 2.) in
+          let xmax = predictions.(0) +. (predictions.(2) /. 2.) in
+          let ymax = predictions.(1) +. (predictions.(3) /. 2.) in
+          let best_class_index =
+            Array.foldi predictions ~init:5 ~f:(fun index max_index v ->
+                if index > 5 && Float.( < ) predictions.(max_index) v
+                then index
+                else max_index)
+          in
+          let class_confidence = predictions.(best_class_index) in
+          let class_index = best_class_index - 5 in
+          if Float.( > ) class_confidence 0.
+          then Some { confidence; xmin; ymin; xmax; ymax; class_index; class_confidence }
+          else None)
+        else None)
     |> List.filter_opt
   in
   let bboxes =
@@ -307,45 +328,49 @@ let report predictions ~image =
     |> Map.of_alist_multi (module Int)
     |> Map.to_alist
     |> List.concat_map ~f:(fun (_, bboxes) ->
-      (* NMS suppression. *)
-      let bboxes = List.sort bboxes ~compare:Caml.compare |> List.rev_map ~f:snd in
-      List.fold bboxes ~init:[] ~f:(fun acc_bboxes bbox ->
-        let drop =
-          List.exists acc_bboxes ~f:(fun b -> Float.(>) (iou b bbox) nms_threshold)
-        in
-        if drop then acc_bboxes else bbox :: acc_bboxes))
+           (* NMS suppression. *)
+           let bboxes = List.sort bboxes ~compare:Caml.compare |> List.rev_map ~f:snd in
+           List.fold bboxes ~init:[] ~f:(fun acc_bboxes bbox ->
+               let drop =
+                 List.exists acc_bboxes ~f:(fun b ->
+                     Float.( > ) (iou b bbox) nms_threshold)
+               in
+               if drop then acc_bboxes else bbox :: acc_bboxes))
   in
-  let color = Tensor.(of_float1 [| 0.; 0.5; 0.5 |] |> reshape ~shape:[1; 3; 1; 1]) in
+  let color = Tensor.(of_float1 [| 0.; 0.5; 0.5 |] |> reshape ~shape:[ 1; 3; 1; 1 ]) in
   List.iter bboxes ~f:(fun b ->
-    let xmin, ymin = Int.(of_float b.xmin, of_float b.ymin) in
-    let xmax, ymax = Int.( of_float b.xmax, of_float b.ymax) in
-    let bbox =
-      Tensor.narrow image ~dim:3 ~start:xmin ~length:(xmax - xmin)
-      |> Tensor.narrow ~dim:2 ~start:ymin ~length:(ymax - ymin)
-    in
-    Tensor.copy_ bbox ~src:Tensor.(bbox * f 0.7 + color * f 0.3);
-    Stdio.printf "%s %.2f %.2f (%d %d %d %d)\n%!"
-      classes.(b.class_index) b.confidence b.class_confidence xmin ymin xmax ymax);
+      let xmin, ymin = Int.(of_float b.xmin, of_float b.ymin) in
+      let xmax, ymax = Int.(of_float b.xmax, of_float b.ymax) in
+      let bbox =
+        Tensor.narrow image ~dim:3 ~start:xmin ~length:(xmax - xmin)
+        |> Tensor.narrow ~dim:2 ~start:ymin ~length:(ymax - ymin)
+      in
+      Tensor.copy_ bbox ~src:Tensor.((bbox * f 0.7) + (color * f 0.3));
+      Stdio.printf
+        "%s %.2f %.2f (%d %d %d %d)\n%!"
+        classes.(b.class_index)
+        b.confidence
+        b.class_confidence
+        xmin
+        ymin
+        xmax
+        ymax);
   Image.write_image Tensor.(image * f 255.) ~filename:"output.jpg"
 
 let () =
   if Array.length Sys.argv <> 3
   then Printf.failwithf "usage: %s yolo-v3.ot input.png" Sys.argv.(0) ();
-
   (* Build the model. *)
   let vs = Var_store.create ~name:"rn" ~device:Cpu () in
   let darknet = Darknet.parse_config config_filename in
   Stdio.printf "%d blocks in %s\n%!" (List.length darknet.blocks) config_filename;
   let model = Darknet.build_model vs darknet in
-
   Stdio.printf "Loading weights from %s\n%!" Sys.argv.(1);
   Serialize.load_multi_ ~named_tensors:(Var_store.all_vars vs) ~filename:Sys.argv.(1);
-
   (* Load the image. *)
   let width, height = Darknet.width darknet, Darknet.height darknet in
   let image = Image.load_image Sys.argv.(2) ~resize:(width, height) |> Or_error.ok_exn in
   let image = Tensor.(to_type image ~type_:Float / f 255.) in
-
   (* Apply the model. *)
   let predictions = Layer.apply_ model image ~is_training:false in
   Tensor.squeeze predictions |> report ~image
