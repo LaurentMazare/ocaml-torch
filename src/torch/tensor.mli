@@ -297,12 +297,38 @@ val to_bigarray :
   t -> kind:('a, 'b) Bigarray.kind -> ('a, 'b, Bigarray.c_layout) Bigarray.Genarray.t
 
 val cross_entropy_for_logits : ?reduction:Reduction.t -> t -> targets:t -> t
+
+(** [dropout t ~p ~is_training] applies dropout to [t] with probability [p].
+    If [is_training] is [false], [t] is returned.
+    If [is_training] is [true], a tensor similar to [t] is returned except that
+    each element has a probability [p] to be replaced by [0].
+*)
 val dropout : t -> p:float (* dropout prob *) -> is_training:bool -> t
+
 val nll_loss : ?reduction:Torch_core.Reduction.t -> t -> targets:t -> t
+
+(** [bce_loss t ~targets] returns the binary cross entropy loss between [t]
+    and [targets]. Elements of [t] are supposed to represent a probability
+    distribution (according to the last dimension of [t]), so should be
+    between 0 and 1 and sum to 1. *)
 val bce_loss : ?reduction:Torch_core.Reduction.t -> t -> targets:t -> t
+
+(** [bce_loss_with_logits t ~targets] returns the binary cross entropy loss between [t]
+    and [targets]. Elements of [t] are logits, a softmax is used in this function to
+    convert them to a probability distribution. *)
 val bce_loss_with_logits : ?reduction:Torch_core.Reduction.t -> t -> targets:t -> t
+
+(** [mse_loss t1 t2] returns the square of the difference between [t1] and [t2].
+    [reduction] can be used to either keep the whole tensor or reduce it by averaging
+    or summing.
+*)
+
 val mse_loss : ?reduction:Torch_core.Reduction.t -> t -> t -> t
 val huber_loss : ?reduction:Torch_core.Reduction.t -> t -> t -> t
+
+(** [pp] is a pretty-printer for tensors to be used in top-levels such as utop
+    or jupyter.
+*)
 val pp : Format.formatter -> t -> unit [@@ocaml.toplevel_printer]
 
 (** [copy t] returns a new copy of [t] with the same size and data which does
