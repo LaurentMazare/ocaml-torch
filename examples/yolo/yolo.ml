@@ -357,7 +357,7 @@ let report predictions ~image ~width ~height =
   let resize_and_clamp v ~initial_max ~max =
     Int.of_float (v *. Float.of_int initial_max /. Float.of_int max)
     |> Int.max 0
-    |> Int.min (max - 1)
+    |> Int.min (initial_max - 1)
   in
   List.iter bboxes ~f:(fun b ->
       let xmin = resize_and_clamp b.xmin ~initial_max:initial_width ~max:width in
@@ -377,8 +377,8 @@ let report predictions ~image ~width ~height =
         b.confidence
         b.class_confidence
         xmin
-        ymin
         xmax
+        ymin
         ymax);
   Image.write_image Tensor.(image * f 255.) ~filename:"output.jpg"
 
