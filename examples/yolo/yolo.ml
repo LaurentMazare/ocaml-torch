@@ -1,8 +1,6 @@
 (* The pre-trained weights can be downloaded here:
      https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/yolo-v3.ot
 *)
-(* TODO: preserve the aspect ratio when loading the images. *)
-(* TODO: draw bboxes on the initial images. *)
 open Base
 open Torch
 open Torch_vision
