@@ -757,42 +757,42 @@ let bilinear ~input1 ~input2 ~weight ~bias =
 
 let binary_cross_entropy self ~target ~weight ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_binary_cross_entropy (CArray.start out__) self target (match weight with | Some v -> v | None -> null) (Int64.of_int reduction);
+  stubs_binary_cross_entropy (CArray.start out__) self target (match weight with | Some v -> v | None -> null) (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let binary_cross_entropy_backward ~grad_output self ~target ~weight ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_binary_cross_entropy_backward (CArray.start out__) grad_output self target weight (Int64.of_int reduction);
+  stubs_binary_cross_entropy_backward (CArray.start out__) grad_output self target weight (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let binary_cross_entropy_backward_out ~grad_input ~grad_output self ~target ~weight ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_binary_cross_entropy_backward_out (CArray.start out__) grad_input grad_output self target weight (Int64.of_int reduction);
+  stubs_binary_cross_entropy_backward_out (CArray.start out__) grad_input grad_output self target weight (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let binary_cross_entropy_out ~out self ~target ~weight ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_binary_cross_entropy_out (CArray.start out__) out self target (match weight with | Some v -> v | None -> null) (Int64.of_int reduction);
+  stubs_binary_cross_entropy_out (CArray.start out__) out self target (match weight with | Some v -> v | None -> null) (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let binary_cross_entropy_with_logits self ~target ~weight ~pos_weight ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_binary_cross_entropy_with_logits (CArray.start out__) self target (match weight with | Some v -> v | None -> null) (match pos_weight with | Some v -> v | None -> null) (Int64.of_int reduction);
+  stubs_binary_cross_entropy_with_logits (CArray.start out__) self target (match weight with | Some v -> v | None -> null) (match pos_weight with | Some v -> v | None -> null) (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let binary_cross_entropy_with_logits_backward ~grad_output self ~target ~weight ~pos_weight ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_binary_cross_entropy_with_logits_backward (CArray.start out__) grad_output self target (match weight with | Some v -> v | None -> null) (match pos_weight with | Some v -> v | None -> null) (Int64.of_int reduction);
+  stubs_binary_cross_entropy_with_logits_backward (CArray.start out__) grad_output self target (match weight with | Some v -> v | None -> null) (match pos_weight with | Some v -> v | None -> null) (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
@@ -1173,7 +1173,7 @@ let cosh_out ~out self =
 
 let cosine_embedding_loss ~input1 ~input2 ~target ~margin ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_cosine_embedding_loss (CArray.start out__) input1 input2 target margin (Int64.of_int reduction);
+  stubs_cosine_embedding_loss (CArray.start out__) input1 input2 target margin (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
@@ -1201,14 +1201,14 @@ let cross_out ~out self other ~dim =
 
 let ctc_loss ~log_probs ~targets ~input_lengths ~target_lengths ~blank ~reduction ~zero_infinity =
   let out__ = CArray.make t 1 in
-  stubs_ctc_loss (CArray.start out__) log_probs targets (List.map Int64.of_int input_lengths |> CArray.of_list int64_t |> CArray.start) (List.length input_lengths) (List.map Int64.of_int target_lengths |> CArray.of_list int64_t |> CArray.start) (List.length target_lengths) (Int64.of_int blank) (Int64.of_int reduction) (if zero_infinity then 1 else 0);
+  stubs_ctc_loss (CArray.start out__) log_probs targets (List.map Int64.of_int input_lengths |> CArray.of_list int64_t |> CArray.start) (List.length input_lengths) (List.map Int64.of_int target_lengths |> CArray.of_list int64_t |> CArray.start) (List.length target_lengths) (Int64.of_int blank) (Reduction.to_int reduction |> Int64.of_int) (if zero_infinity then 1 else 0);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let ctc_loss1 ~log_probs ~targets ~input_lengths ~target_lengths ~blank ~reduction ~zero_infinity =
   let out__ = CArray.make t 1 in
-  stubs_ctc_loss1 (CArray.start out__) log_probs targets input_lengths target_lengths (Int64.of_int blank) (Int64.of_int reduction) (if zero_infinity then 1 else 0);
+  stubs_ctc_loss1 (CArray.start out__) log_probs targets input_lengths target_lengths (Int64.of_int blank) (Reduction.to_int reduction |> Int64.of_int) (if zero_infinity then 1 else 0);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
@@ -2491,7 +2491,7 @@ let hardtanh_out ~out self =
 
 let hinge_embedding_loss self ~target ~margin ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_hinge_embedding_loss (CArray.start out__) self target margin (Int64.of_int reduction);
+  stubs_hinge_embedding_loss (CArray.start out__) self target margin (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
@@ -2680,14 +2680,14 @@ let isnan self =
 
 let kl_div self ~target ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_kl_div (CArray.start out__) self target (Int64.of_int reduction);
+  stubs_kl_div (CArray.start out__) self target (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let kl_div_backward ~grad_output self ~target ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_kl_div_backward (CArray.start out__) grad_output self target (Int64.of_int reduction);
+  stubs_kl_div_backward (CArray.start out__) grad_output self target (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
@@ -2712,28 +2712,28 @@ let kthvalue_out ~values ~indices self ~k ~dim ~keepdim =
 
 let l1_loss self ~target ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_l1_loss (CArray.start out__) self target (Int64.of_int reduction);
+  stubs_l1_loss (CArray.start out__) self target (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let l1_loss_backward ~grad_output self ~target ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_l1_loss_backward (CArray.start out__) grad_output self target (Int64.of_int reduction);
+  stubs_l1_loss_backward (CArray.start out__) grad_output self target (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let l1_loss_backward_out ~grad_input ~grad_output self ~target ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_l1_loss_backward_out (CArray.start out__) grad_input grad_output self target (Int64.of_int reduction);
+  stubs_l1_loss_backward_out (CArray.start out__) grad_input grad_output self target (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let l1_loss_out ~out self ~target ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_l1_loss_out (CArray.start out__) out self target (Int64.of_int reduction);
+  stubs_l1_loss_out (CArray.start out__) out self target (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
@@ -3163,7 +3163,7 @@ let lu_solve_out ~out self ~lu_data ~lu_pivots =
 
 let margin_ranking_loss ~input1 ~input2 ~target ~margin ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_margin_ranking_loss (CArray.start out__) input1 input2 target margin (Int64.of_int reduction);
+  stubs_margin_ranking_loss (CArray.start out__) input1 input2 target margin (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
@@ -3762,28 +3762,28 @@ let mode_out ~values ~indices self ~dim ~keepdim =
 
 let mse_loss self ~target ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_mse_loss (CArray.start out__) self target (Int64.of_int reduction);
+  stubs_mse_loss (CArray.start out__) self target (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let mse_loss_backward ~grad_output self ~target ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_mse_loss_backward (CArray.start out__) grad_output self target (Int64.of_int reduction);
+  stubs_mse_loss_backward (CArray.start out__) grad_output self target (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let mse_loss_backward_out ~grad_input ~grad_output self ~target ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_mse_loss_backward_out (CArray.start out__) grad_input grad_output self target (Int64.of_int reduction);
+  stubs_mse_loss_backward_out (CArray.start out__) grad_input grad_output self target (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let mse_loss_out ~out self ~target ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_mse_loss_out (CArray.start out__) out self target (Int64.of_int reduction);
+  stubs_mse_loss_out (CArray.start out__) out self target (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
@@ -3825,42 +3825,42 @@ let mul_out ~out self other =
 
 let multi_margin_loss_backward ~grad_output self ~target ~p ~margin ~weight ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_multi_margin_loss_backward (CArray.start out__) grad_output self target p margin weight (Int64.of_int reduction);
+  stubs_multi_margin_loss_backward (CArray.start out__) grad_output self target p margin weight (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let multi_margin_loss_backward_out ~grad_input ~grad_output self ~target ~p ~margin ~weight ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_multi_margin_loss_backward_out (CArray.start out__) grad_input grad_output self target p margin weight (Int64.of_int reduction);
+  stubs_multi_margin_loss_backward_out (CArray.start out__) grad_input grad_output self target p margin weight (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let multilabel_margin_loss self ~target ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_multilabel_margin_loss (CArray.start out__) self target (Int64.of_int reduction);
+  stubs_multilabel_margin_loss (CArray.start out__) self target (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let multilabel_margin_loss_backward ~grad_output self ~target ~reduction ~is_target =
   let out__ = CArray.make t 1 in
-  stubs_multilabel_margin_loss_backward (CArray.start out__) grad_output self target (Int64.of_int reduction) is_target;
+  stubs_multilabel_margin_loss_backward (CArray.start out__) grad_output self target (Reduction.to_int reduction |> Int64.of_int) is_target;
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let multilabel_margin_loss_backward_out ~grad_input ~grad_output self ~target ~reduction ~is_target =
   let out__ = CArray.make t 1 in
-  stubs_multilabel_margin_loss_backward_out (CArray.start out__) grad_input grad_output self target (Int64.of_int reduction) is_target;
+  stubs_multilabel_margin_loss_backward_out (CArray.start out__) grad_input grad_output self target (Reduction.to_int reduction |> Int64.of_int) is_target;
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let multilabel_margin_loss_out ~out self ~target ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_multilabel_margin_loss_out (CArray.start out__) out self target (Int64.of_int reduction);
+  stubs_multilabel_margin_loss_out (CArray.start out__) out self target (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
@@ -4004,56 +4004,56 @@ let neg_out ~out self =
 
 let nll_loss self ~target ~weight ~reduction ~ignore_index =
   let out__ = CArray.make t 1 in
-  stubs_nll_loss (CArray.start out__) self target (match weight with | Some v -> v | None -> null) (Int64.of_int reduction) (Int64.of_int ignore_index);
+  stubs_nll_loss (CArray.start out__) self target (match weight with | Some v -> v | None -> null) (Reduction.to_int reduction |> Int64.of_int) (Int64.of_int ignore_index);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let nll_loss2d self ~target ~weight ~reduction ~ignore_index =
   let out__ = CArray.make t 1 in
-  stubs_nll_loss2d (CArray.start out__) self target (match weight with | Some v -> v | None -> null) (Int64.of_int reduction) (Int64.of_int ignore_index);
+  stubs_nll_loss2d (CArray.start out__) self target (match weight with | Some v -> v | None -> null) (Reduction.to_int reduction |> Int64.of_int) (Int64.of_int ignore_index);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let nll_loss2d_backward ~grad_output self ~target ~weight ~reduction ~ignore_index ~total_weight =
   let out__ = CArray.make t 1 in
-  stubs_nll_loss2d_backward (CArray.start out__) grad_output self target (match weight with | Some v -> v | None -> null) (Int64.of_int reduction) (Int64.of_int ignore_index) total_weight;
+  stubs_nll_loss2d_backward (CArray.start out__) grad_output self target (match weight with | Some v -> v | None -> null) (Reduction.to_int reduction |> Int64.of_int) (Int64.of_int ignore_index) total_weight;
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let nll_loss2d_backward_out ~grad_input ~grad_output self ~target ~weight ~reduction ~ignore_index ~total_weight =
   let out__ = CArray.make t 1 in
-  stubs_nll_loss2d_backward_out (CArray.start out__) grad_input grad_output self target (match weight with | Some v -> v | None -> null) (Int64.of_int reduction) (Int64.of_int ignore_index) total_weight;
+  stubs_nll_loss2d_backward_out (CArray.start out__) grad_input grad_output self target (match weight with | Some v -> v | None -> null) (Reduction.to_int reduction |> Int64.of_int) (Int64.of_int ignore_index) total_weight;
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let nll_loss2d_out ~out self ~target ~weight ~reduction ~ignore_index =
   let out__ = CArray.make t 1 in
-  stubs_nll_loss2d_out (CArray.start out__) out self target (match weight with | Some v -> v | None -> null) (Int64.of_int reduction) (Int64.of_int ignore_index);
+  stubs_nll_loss2d_out (CArray.start out__) out self target (match weight with | Some v -> v | None -> null) (Reduction.to_int reduction |> Int64.of_int) (Int64.of_int ignore_index);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let nll_loss_backward ~grad_output self ~target ~weight ~reduction ~ignore_index ~total_weight =
   let out__ = CArray.make t 1 in
-  stubs_nll_loss_backward (CArray.start out__) grad_output self target (match weight with | Some v -> v | None -> null) (Int64.of_int reduction) (Int64.of_int ignore_index) total_weight;
+  stubs_nll_loss_backward (CArray.start out__) grad_output self target (match weight with | Some v -> v | None -> null) (Reduction.to_int reduction |> Int64.of_int) (Int64.of_int ignore_index) total_weight;
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let nll_loss_backward_out ~grad_input ~grad_output self ~target ~weight ~reduction ~ignore_index ~total_weight =
   let out__ = CArray.make t 1 in
-  stubs_nll_loss_backward_out (CArray.start out__) grad_input grad_output self target (match weight with | Some v -> v | None -> null) (Int64.of_int reduction) (Int64.of_int ignore_index) total_weight;
+  stubs_nll_loss_backward_out (CArray.start out__) grad_input grad_output self target (match weight with | Some v -> v | None -> null) (Reduction.to_int reduction |> Int64.of_int) (Int64.of_int ignore_index) total_weight;
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let nll_loss_out ~out self ~target ~weight ~reduction ~ignore_index =
   let out__ = CArray.make t 1 in
-  stubs_nll_loss_out (CArray.start out__) out self target (match weight with | Some v -> v | None -> null) (Int64.of_int reduction) (Int64.of_int ignore_index);
+  stubs_nll_loss_out (CArray.start out__) out self target (match weight with | Some v -> v | None -> null) (Reduction.to_int reduction |> Int64.of_int) (Int64.of_int ignore_index);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
@@ -5416,56 +5416,56 @@ let smm self ~mat2 =
 
 let smooth_l1_loss self ~target ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_smooth_l1_loss (CArray.start out__) self target (Int64.of_int reduction);
+  stubs_smooth_l1_loss (CArray.start out__) self target (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let smooth_l1_loss_backward ~grad_output self ~target ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_smooth_l1_loss_backward (CArray.start out__) grad_output self target (Int64.of_int reduction);
+  stubs_smooth_l1_loss_backward (CArray.start out__) grad_output self target (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let smooth_l1_loss_backward_out ~grad_input ~grad_output self ~target ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_smooth_l1_loss_backward_out (CArray.start out__) grad_input grad_output self target (Int64.of_int reduction);
+  stubs_smooth_l1_loss_backward_out (CArray.start out__) grad_input grad_output self target (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let smooth_l1_loss_out ~out self ~target ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_smooth_l1_loss_out (CArray.start out__) out self target (Int64.of_int reduction);
+  stubs_smooth_l1_loss_out (CArray.start out__) out self target (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let soft_margin_loss self ~target ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_soft_margin_loss (CArray.start out__) self target (Int64.of_int reduction);
+  stubs_soft_margin_loss (CArray.start out__) self target (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let soft_margin_loss_backward ~grad_output self ~target ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_soft_margin_loss_backward (CArray.start out__) grad_output self target (Int64.of_int reduction);
+  stubs_soft_margin_loss_backward (CArray.start out__) grad_output self target (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let soft_margin_loss_backward_out ~grad_input ~grad_output self ~target ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_soft_margin_loss_backward_out (CArray.start out__) grad_input grad_output self target (Int64.of_int reduction);
+  stubs_soft_margin_loss_backward_out (CArray.start out__) grad_input grad_output self target (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
 
 let soft_margin_loss_out ~out self ~target ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_soft_margin_loss_out (CArray.start out__) out self target (Int64.of_int reduction);
+  stubs_soft_margin_loss_out (CArray.start out__) out self target (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
@@ -6150,7 +6150,7 @@ let tril_out ~out self ~diagonal =
 
 let triplet_margin_loss ~anchor ~positive ~negative ~margin ~p ~eps ~swap ~reduction =
   let out__ = CArray.make t 1 in
-  stubs_triplet_margin_loss (CArray.start out__) anchor positive negative margin p eps (if swap then 1 else 0) (Int64.of_int reduction);
+  stubs_triplet_margin_loss (CArray.start out__) anchor positive negative margin p eps (if swap then 1 else 0) (Reduction.to_int reduction |> Int64.of_int);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0

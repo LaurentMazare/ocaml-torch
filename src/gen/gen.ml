@@ -60,7 +60,7 @@ module Func = struct
   let ml_arg_type arg =
     match arg.arg_type with
     | Bool -> "bool"
-    | Int64 -> "int"
+    | Int64 -> if String.( = ) arg.arg_name "reduction" then "Reduction.t" else "int"
     | Double -> "float"
     | Tensor -> "t"
     | TensorOption -> "t option"
@@ -127,7 +127,8 @@ module Func = struct
         | Scalar | Tensor -> "*" ^ arg_name
         | TensorOption -> Printf.sprintf "(%s ? *%s : torch::Tensor())" arg_name arg_name
         | Bool -> "(bool)" ^ arg_name
-        | IntList -> Printf.sprintf "torch::IntArrayRef(%s_data, %s_len)" arg_name arg_name
+        | IntList ->
+          Printf.sprintf "torch::IntArrayRef(%s_data, %s_len)" arg_name arg_name
         | TensorList ->
           Printf.sprintf "of_carray_tensor(%s_data, %s_len)" arg_name arg_name
         | TensorOptions ->
@@ -202,7 +203,10 @@ module Func = struct
         | TensorOptions ->
           Printf.sprintf "(Kind.to_int (fst %s)) (Device.to_int (snd %s))" name name
         | Device -> Printf.sprintf "(Device.to_int %s)" name
-        | Int64 -> Printf.sprintf "(Int64.of_int %s)" name
+        | Int64 ->
+          if String.( = ) name "reduction"
+          then "(Reduction.to_int reduction |> Int64.of_int)"
+          else Printf.sprintf "(Int64.of_int %s)" name
         | TensorOption ->
           Printf.sprintf "(match %s with | Some v -> v | None -> null)" name
         | _ -> name)

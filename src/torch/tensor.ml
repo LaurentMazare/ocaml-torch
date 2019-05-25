@@ -167,12 +167,7 @@ let to_bigarray t ~kind =
   bigarray
 
 let nll_loss ?(reduction = Torch_core.Reduction.Elementwise_mean) xs ~targets =
-  nll_loss
-    xs
-    ~target:targets
-    ~weight:None
-    ~reduction:(Torch_core.Reduction.to_int reduction)
-    ~ignore_index:(-100)
+  nll_loss xs ~target:targets ~weight:None ~reduction ~ignore_index:(-100)
 
 let cross_entropy_for_logits ?reduction logits ~targets =
   nll_loss ?reduction (log_softmax logits ~dim:(-1)) ~targets
@@ -180,19 +175,10 @@ let cross_entropy_for_logits ?reduction logits ~targets =
 let dropout t ~p ~is_training = dropout t ~p ~train:is_training
 
 let bce_loss ?(reduction = Torch_core.Reduction.Elementwise_mean) t ~targets =
-  binary_cross_entropy
-    t
-    ~target:targets
-    ~weight:None
-    ~reduction:(Torch_core.Reduction.to_int reduction)
+  binary_cross_entropy t ~target:targets ~weight:None ~reduction
 
 let mse_loss ?(reduction = Torch_core.Reduction.Elementwise_mean) t1 t2 =
-  let diff = t1 - t2 in
-  let square_error = diff * diff in
-  match reduction with
-  | None -> square_error
-  | Elementwise_mean -> mean square_error
-  | Sum -> sum square_error
+  mse_loss t1 ~target:t2 ~reduction
 
 let huber_loss ?(reduction = Torch_core.Reduction.Elementwise_mean) t1 t2 =
   let d = abs (t1 - t2) in

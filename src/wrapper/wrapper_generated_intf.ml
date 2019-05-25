@@ -644,7 +644,7 @@ module type S = sig
     t ->
     target:t ->
     weight:t option ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val binary_cross_entropy_backward :
@@ -652,7 +652,7 @@ module type S = sig
     t ->
     target:t ->
     weight:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val binary_cross_entropy_backward_out :
@@ -661,7 +661,7 @@ module type S = sig
     t ->
     target:t ->
     weight:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val binary_cross_entropy_out :
@@ -669,7 +669,7 @@ module type S = sig
     t ->
     target:t ->
     weight:t option ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val binary_cross_entropy_with_logits :
@@ -677,7 +677,7 @@ module type S = sig
     target:t ->
     weight:t option ->
     pos_weight:t option ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val binary_cross_entropy_with_logits_backward :
@@ -686,7 +686,7 @@ module type S = sig
     target:t ->
     weight:t option ->
     pos_weight:t option ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val bincount :
@@ -1015,7 +1015,7 @@ module type S = sig
     input2:t ->
     target:t ->
     margin:float ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val cosine_similarity :
@@ -1044,7 +1044,7 @@ module type S = sig
     input_lengths:int list ->
     target_lengths:int list ->
     blank:int ->
-    reduction:int ->
+    reduction:Reduction.t ->
     zero_infinity:bool ->
     t
 
@@ -1054,7 +1054,7 @@ module type S = sig
     input_lengths:t ->
     target_lengths:t ->
     blank:int ->
-    reduction:int ->
+    reduction:Reduction.t ->
     zero_infinity:bool ->
     t
 
@@ -2134,7 +2134,7 @@ module type S = sig
     t ->
     target:t ->
     margin:float ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val histc :
@@ -2305,14 +2305,14 @@ module type S = sig
   val kl_div :
     t ->
     target:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val kl_div_backward :
     grad_output:t ->
     t ->
     target:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val kthvalue :
@@ -2334,14 +2334,14 @@ module type S = sig
   val l1_loss :
     t ->
     target:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val l1_loss_backward :
     grad_output:t ->
     t ->
     target:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val l1_loss_backward_out :
@@ -2349,14 +2349,14 @@ module type S = sig
     grad_output:t ->
     t ->
     target:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val l1_loss_out :
     out:t ->
     t ->
     target:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val layer_norm :
@@ -2704,7 +2704,7 @@ module type S = sig
     input2:t ->
     target:t ->
     margin:float ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val masked_fill :
@@ -3331,14 +3331,14 @@ module type S = sig
   val mse_loss :
     t ->
     target:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val mse_loss_backward :
     grad_output:t ->
     t ->
     target:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val mse_loss_backward_out :
@@ -3346,14 +3346,14 @@ module type S = sig
     grad_output:t ->
     t ->
     target:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val mse_loss_out :
     out:t ->
     t ->
     target:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val mul :
@@ -3389,7 +3389,7 @@ module type S = sig
     p:scalar ->
     margin:scalar ->
     weight:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val multi_margin_loss_backward_out :
@@ -3400,20 +3400,20 @@ module type S = sig
     p:scalar ->
     margin:scalar ->
     weight:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val multilabel_margin_loss :
     t ->
     target:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val multilabel_margin_loss_backward :
     grad_output:t ->
     t ->
     target:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     is_target:t ->
     t
 
@@ -3422,7 +3422,7 @@ module type S = sig
     grad_output:t ->
     t ->
     target:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     is_target:t ->
     t
 
@@ -3430,7 +3430,7 @@ module type S = sig
     out:t ->
     t ->
     target:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val multinomial :
@@ -3545,7 +3545,7 @@ module type S = sig
     t ->
     target:t ->
     weight:t option ->
-    reduction:int ->
+    reduction:Reduction.t ->
     ignore_index:int ->
     t
 
@@ -3553,7 +3553,7 @@ module type S = sig
     t ->
     target:t ->
     weight:t option ->
-    reduction:int ->
+    reduction:Reduction.t ->
     ignore_index:int ->
     t
 
@@ -3562,7 +3562,7 @@ module type S = sig
     t ->
     target:t ->
     weight:t option ->
-    reduction:int ->
+    reduction:Reduction.t ->
     ignore_index:int ->
     total_weight:t ->
     t
@@ -3573,7 +3573,7 @@ module type S = sig
     t ->
     target:t ->
     weight:t option ->
-    reduction:int ->
+    reduction:Reduction.t ->
     ignore_index:int ->
     total_weight:t ->
     t
@@ -3583,7 +3583,7 @@ module type S = sig
     t ->
     target:t ->
     weight:t option ->
-    reduction:int ->
+    reduction:Reduction.t ->
     ignore_index:int ->
     t
 
@@ -3592,7 +3592,7 @@ module type S = sig
     t ->
     target:t ->
     weight:t option ->
-    reduction:int ->
+    reduction:Reduction.t ->
     ignore_index:int ->
     total_weight:t ->
     t
@@ -3603,7 +3603,7 @@ module type S = sig
     t ->
     target:t ->
     weight:t option ->
-    reduction:int ->
+    reduction:Reduction.t ->
     ignore_index:int ->
     total_weight:t ->
     t
@@ -3613,7 +3613,7 @@ module type S = sig
     t ->
     target:t ->
     weight:t option ->
-    reduction:int ->
+    reduction:Reduction.t ->
     ignore_index:int ->
     t
 
@@ -4766,14 +4766,14 @@ module type S = sig
   val smooth_l1_loss :
     t ->
     target:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val smooth_l1_loss_backward :
     grad_output:t ->
     t ->
     target:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val smooth_l1_loss_backward_out :
@@ -4781,27 +4781,27 @@ module type S = sig
     grad_output:t ->
     t ->
     target:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val smooth_l1_loss_out :
     out:t ->
     t ->
     target:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val soft_margin_loss :
     t ->
     target:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val soft_margin_loss_backward :
     grad_output:t ->
     t ->
     target:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val soft_margin_loss_backward_out :
@@ -4809,14 +4809,14 @@ module type S = sig
     grad_output:t ->
     t ->
     target:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val soft_margin_loss_out :
     out:t ->
     t ->
     target:t ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val softmax :
@@ -5380,7 +5380,7 @@ module type S = sig
     p:float ->
     eps:float ->
     swap:bool ->
-    reduction:int ->
+    reduction:Reduction.t ->
     t
 
   val triu :
