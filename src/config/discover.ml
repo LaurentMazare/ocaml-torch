@@ -1,10 +1,12 @@
 open Base
 module C = Configurator.V1
 
-let empty_flags = {C.Pkg_config.cflags = []; libs = []}
+let empty_flags = { C.Pkg_config.cflags = []; libs = [] }
 
 let combine (flags1 : C.Pkg_config.package_conf) (flags2 : C.Pkg_config.package_conf) =
-  {C.Pkg_config.cflags = flags1.cflags @ flags2.cflags; libs = flags1.libs @ flags2.libs}
+  { C.Pkg_config.cflags = flags1.cflags @ flags2.cflags
+  ; libs = flags1.libs @ flags2.libs
+  }
 
 let ( /^ ) = Caml.Filename.concat
 let file_exists = Caml.Sys.file_exists
@@ -18,16 +20,18 @@ let torch_flags () =
       [ "-isystem"
       ; Printf.sprintf "%s" include_dir
       ; "-isystem"
-      ; Printf.sprintf "%s/torch/csrc/api/include" include_dir ]
+      ; Printf.sprintf "%s/torch/csrc/api/include" include_dir
+      ]
     in
     let libs =
       [ Printf.sprintf "-Wl,-rpath,%s" lib_dir
       ; Printf.sprintf "-L%s" lib_dir
       ; "-lc10"
       ; "-lcaffe2"
-      ; "-ltorch" ]
+      ; "-ltorch"
+      ]
     in
-    {C.Pkg_config.cflags; libs}
+    { C.Pkg_config.cflags; libs }
   in
   let conda_config ~conda_prefix =
     let conda_prefix = conda_prefix ^ "/lib" in
@@ -35,14 +39,14 @@ let torch_flags () =
     |> Array.to_list
     |> List.filter_map ~f:(fun filename ->
            if String.is_prefix filename ~prefix:"python"
-           then
+           then (
              let libdir =
                Printf.sprintf "%s/%s/site-packages/torch/lib" conda_prefix filename
              in
              if file_exists libdir && Caml.Sys.is_directory libdir
              then Some libdir
-             else None
-           else None )
+             else None)
+           else None)
     |> function
     | [] -> None
     | lib_dir :: _ -> Some (config ~include_dir:(lib_dir /^ "include") ~lib_dir)
@@ -52,7 +56,7 @@ let torch_flags () =
   | None ->
     let conda_flags =
       Option.bind (Caml.Sys.getenv_opt "CONDA_PREFIX") ~f:(fun conda_prefix ->
-          conda_config ~conda_prefix )
+          conda_config ~conda_prefix)
     in
     (match conda_flags with
     | Some conda_flags -> conda_flags
@@ -68,16 +72,21 @@ let torch_flags () =
 let libcuda_flags ~lcuda ~lnvrtc =
   let cudadir = "/usr/local/cuda/lib64" in
   if file_exists cudadir && Caml.Sys.is_directory cudadir
-  then
-    let libs = [Printf.sprintf "-Wl,-rpath,%s" cudadir; Printf.sprintf "-L%s" cudadir] in
-    let libs = if lcuda then libs @ ["-lcuda"] else libs in
-    let libs = if lnvrtc then libs @ ["-lnvrtc"] else libs in
-    {C.Pkg_config.cflags = []; libs}
+  then (
+    let libs =
+      [ Printf.sprintf "-Wl,-rpath,%s" cudadir; Printf.sprintf "-L%s" cudadir ]
+    in
+    let libs = if lcuda then libs @ [ "-lcuda" ] else libs in
+    let libs = if lnvrtc then libs @ [ "-lnvrtc" ] else libs in
+    { C.Pkg_config.cflags = []; libs })
   else empty_flags
 
 let () =
   C.main ~name:"torch-config" (fun c ->
-      let torch_flags = try torch_flags () with _ -> empty_flags in
+      let torch_flags =
+        try torch_flags () with
+        | _ -> empty_flags
+      in
       let cuda_flags = extract_flags c ~package:"cuda" in
       let nvrtc_flags = extract_flags c ~package:"nvrtc" in
       let cuda_flags =
@@ -92,12 +101,14 @@ let () =
       let conda_libs =
         Option.value_map
           (Caml.Sys.getenv_opt "CONDA_PREFIX")
-          ~f:(fun conda_prefix -> [Printf.sprintf "-Wl,-rpath,%s/lib" conda_prefix])
+          ~f:(fun conda_prefix -> [ Printf.sprintf "-Wl,-rpath,%s/lib" conda_prefix ])
           ~default:[]
       in
       let cxx_abi_flag =
         let cxx_abi =
-          match Caml.Sys.getenv_opt "LIBTORCH_CXX11_ABI" with Some v -> v | None -> "0"
+          match Caml.Sys.getenv_opt "LIBTORCH_CXX11_ABI" with
+          | Some v -> v
+          | None -> "0"
         in
         Printf.sprintf "-D_GLIBCXX_USE_CXX11_ABI=%s" cxx_abi
       in
@@ -106,4 +117,4 @@ let () =
         (cxx_abi_flag :: (torch_flags.cflags @ cuda_flags.cflags));
       C.Flags.write_sexp
         "c_library_flags.sexp"
-        (torch_flags.libs @ conda_libs @ cuda_flags.libs) )
+        (torch_flags.libs @ conda_libs @ cuda_flags.libs))

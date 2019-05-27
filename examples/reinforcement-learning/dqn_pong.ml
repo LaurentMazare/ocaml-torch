@@ -14,7 +14,8 @@ module Transition = struct
     ; action : int
     ; next_state : state
     ; reward : float
-    ; is_done : bool }
+    ; is_done : bool
+    }
 
   let batch_states ts = List.map ts ~f:(fun t -> t.state) |> Tensor.stack ~dim:0
 
@@ -44,9 +45,10 @@ end = struct
   type 'a t =
     { memory : 'a Queue.t
     ; capacity : int
-    ; mutable position : int }
+    ; mutable position : int
+    }
 
-  let create ~capacity = {memory = Queue.create (); capacity; position = 0}
+  let create ~capacity = { memory = Queue.create (); capacity; position = 0 }
   let length t = Queue.length t.memory
 
   let push t elem =
@@ -58,14 +60,14 @@ end = struct
   let sample t ~batch_size =
     List.init batch_size ~f:(fun _ ->
         let index = Random.int (Queue.length t.memory) in
-        Queue.get t.memory index )
+        Queue.get t.memory index)
 end
 
 let model vs actions =
   let linear1 = Layer.linear vs ~input_dim:(80 * 80) 200 in
   let linear2 = Layer.linear vs ~input_dim:200 actions in
   Layer.of_fn (fun xs ->
-      Tensor.flatten xs |> Layer.apply linear1 |> Tensor.relu |> Layer.apply linear2 )
+      Tensor.flatten xs |> Layer.apply linear1 |> Tensor.relu |> Layer.apply linear2)
 
 module DqnAgent : sig
   type t
@@ -86,7 +88,8 @@ end = struct
     ; actions : int
     ; batch_size : int
     ; gamma : float
-    ; optimizer : Optimizer.t }
+    ; optimizer : Optimizer.t
+    }
 
   let create ~actions ~memory_capacity =
     let target_vs = Var_store.create ~frozen:true ~name:"target-dqn" () in
@@ -105,7 +108,8 @@ end = struct
     ; actions
     ; batch_size = 64
     ; gamma = 0.99
-    ; optimizer }
+    ; optimizer
+    }
 
   let var_store t = t.vs
 
@@ -117,18 +121,18 @@ end = struct
     (* epsilon-greedy action choice. *)
     let epsilon = Float.max 0.02 (0.5 -. (Float.of_int total_frames /. 1_000_000.)) in
     if Float.( < ) epsilon (Random.float 1.)
-    then
+    then (
       let qvalues =
         Tensor.no_grad (fun () -> Tensor.unsqueeze state ~dim:0 |> Layer.apply t.model)
       in
       Tensor.argmax qvalues ~dim:1 ~keepdim:false
       |> Tensor.to_int1_exn
-      |> fun xs -> xs.(0)
+      |> fun xs -> xs.(0))
     else Random.int t.actions
 
   let experience_replay t =
     if t.batch_size <= Replay_memory.length t.memory
-    then
+    then (
       let transitions = Replay_memory.sample t.memory ~batch_size:t.batch_size in
       let states = Transition.batch_states transitions in
       let next_states = Transition.batch_next_states transitions in
@@ -137,18 +141,21 @@ end = struct
       let continue = Transition.batch_continue transitions in
       let qvalues =
         Layer.apply t.model states
-        |> Tensor.gather ~dim:1 ~index:(Tensor.unsqueeze actions ~dim:1) ~sparse_grad:false
+        |> Tensor.gather
+             ~dim:1
+             ~index:(Tensor.unsqueeze actions ~dim:1)
+             ~sparse_grad:false
         |> Tensor.squeeze1 ~dim:1
       in
       let next_qvalues =
         Tensor.no_grad (fun () ->
             Layer.apply t.target_model next_states
             |> Tensor.max2 ~dim:1 ~keepdim:false
-            |> fst )
+            |> fst)
       in
       let expected_qvalues = Tensor.(rewards + (f t.gamma * next_qvalues * continue)) in
       let loss = Tensor.mse_loss qvalues expected_qvalues in
-      Optimizer.backward_step t.optimizer ~loss
+      Optimizer.backward_step t.optimizer ~loss)
 
   let transition_feedback t transition = Replay_memory.push t.memory transition
 end
@@ -176,8 +183,8 @@ let preprocess () =
 
 let maybe_load_weights agent =
   match Sys.argv with
-  | [|_|] -> ()
-  | [|_; filename|] ->
+  | [| _ |] -> ()
+  | [| _; filename |] ->
     Serialize.load_multi_
       ~named_tensors:(DqnAgent.var_store agent |> Var_store.all_vars)
       ~filename;
@@ -195,14 +202,14 @@ let () =
     let preprocess = preprocess () in
     let rec loop state acc_reward =
       let action = DqnAgent.action agent state ~total_frames:!total_frames in
-      let {E.obs = next_state; reward; is_done} = E.step env ~action:(2 + action) in
+      let { E.obs = next_state; reward; is_done } = E.step env ~action:(2 + action) in
       if render
       then
         Torch_vision.Image.write_image
           next_state
           ~filename:(Printf.sprintf "out%d.png" !total_frames);
       let next_state = preprocess next_state in
-      DqnAgent.transition_feedback agent {state; action; next_state; reward; is_done};
+      DqnAgent.transition_feedback agent { state; action; next_state; reward; is_done };
       DqnAgent.experience_replay agent;
       Caml.Gc.full_major ();
       Int.incr total_frames;

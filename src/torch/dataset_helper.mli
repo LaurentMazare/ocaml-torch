@@ -3,7 +3,8 @@ type t =
   { train_images : Tensor.t
   ; train_labels : Tensor.t
   ; test_images : Tensor.t
-  ; test_labels : Tensor.t }
+  ; test_labels : Tensor.t
+  }
 
 (** [train_batch ?device ?augmentation t ~batch_size ~batch_idx] returns two tensors
     corresponding to a training batch. The first tensor is for images and the second
@@ -13,9 +14,9 @@ type t =
     The tensors are located on [device] if provided. Random data augmentation is
     performed as specified via [augmentation].
 *)
-val train_batch :
-     ?device:Device.t
-  -> ?augmentation:[`flip | `crop_with_pad of int | `cutout of int] list
+val train_batch
+  :  ?device:Device.t
+  -> ?augmentation:[ `flip | `crop_with_pad of int | `cutout of int ] list
   -> t
   -> batch_size:int
   -> batch_idx:int
@@ -26,11 +27,11 @@ val train_batch :
     [test_or_train].
     Computations are done using batch of length [batch_size].
 *)
-val batch_accuracy :
-     ?device:Device.t
+val batch_accuracy
+  :  ?device:Device.t
   -> ?samples:int
   -> t
-  -> [`test | `train]
+  -> [ `test | `train ]
   -> batch_size:int
   -> predict:(Tensor.t -> Tensor.t)
   -> float
@@ -48,9 +49,9 @@ val batches_per_epoch : t -> batch_size:int -> int
     all the batches from [t] taken with a size [batch_size].
     Random shuffling and augmentation can be specified.
 *)
-val iter :
-     ?device:Device.t
-  -> ?augmentation:[`flip | `crop_with_pad of int | `cutout of int] list
+val iter
+  :  ?device:Device.t
+  -> ?augmentation:[ `flip | `crop_with_pad of int | `cutout of int ] list
   -> ?shuffle:bool
   -> t
   -> f:(int -> batch_images:Tensor.t -> batch_labels:Tensor.t -> unit)
@@ -71,8 +72,8 @@ val random_crop : Tensor.t -> pad:int -> Tensor.t
 (** [shuffle t] returns [t] where training images and labels have been shuffled. *)
 val shuffle : t -> t
 
-val map :
-     ?device:Device.t
+val map
+  :  ?device:Device.t
   -> t
   -> f:(int -> batch_images:Tensor.t -> batch_labels:Tensor.t -> Tensor.t * Tensor.t)
   -> batch_size:int

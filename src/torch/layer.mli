@@ -14,8 +14,8 @@ type activation =
   | Leaky_relu
   | Sigmoid
 
-val linear :
-     Var_store.t
+val linear
+  :  Var_store.t
   -> ?activation:activation (* default: no activation *)
   -> ?use_bias:bool (* default: true *)
   -> ?w_init:Var_store.Init.t
@@ -23,8 +23,8 @@ val linear :
   -> int
   -> t
 
-val conv2d :
-     Var_store.t
+val conv2d
+  :  Var_store.t
   -> ksize:int * int
   -> stride:int * int
   -> ?activation:activation (* default: no activation *)
@@ -36,8 +36,8 @@ val conv2d :
   -> int
   -> t
 
-val conv2d_ :
-     Var_store.t
+val conv2d_
+  :  Var_store.t
   -> ksize:int
   -> stride:int
   -> ?activation:activation (* default: no activation *)
@@ -49,8 +49,8 @@ val conv2d_ :
   -> int
   -> t
 
-val conv_transpose2d :
-     Var_store.t
+val conv_transpose2d
+  :  Var_store.t
   -> ksize:int * int
   -> stride:int * int
   -> ?activation:activation (* default: no activation *)
@@ -63,8 +63,8 @@ val conv_transpose2d :
   -> int
   -> t
 
-val conv_transpose2d_ :
-     Var_store.t
+val conv_transpose2d_
+  :  Var_store.t
   -> ksize:int
   -> stride:int
   -> ?activation:activation (* default: no activation *)
@@ -77,8 +77,8 @@ val conv_transpose2d_ :
   -> int
   -> t
 
-val batch_norm2d :
-     Var_store.t
+val batch_norm2d
+  :  Var_store.t
   -> ?w_init:Var_store.Init.t
   -> ?cudnn_enabled:bool
   -> ?eps:float

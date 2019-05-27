@@ -26,7 +26,7 @@ let features vs =
       |> Tensor.relu
       |> Layer.apply conv5
       |> Tensor.relu
-      |> Tensor.max_pool2d ~ksize:(3, 3) ~stride:(2, 2) )
+      |> Tensor.max_pool2d ~ksize:(3, 3) ~stride:(2, 2))
 
 let classifier ?num_classes vs =
   let linear1 = Layer.linear (sub vs "1") ~input_dim:(256 * 6 * 6) 4096 in
@@ -43,7 +43,7 @@ let classifier ?num_classes vs =
       |> Tensor.dropout ~p:0.5 ~is_training
       |> Layer.apply linear2
       |> Tensor.relu
-      |> Layer.apply linear_or_id )
+      |> Layer.apply linear_or_id)
 
 let alexnet ?num_classes vs =
   let features = features (sub vs "features") in
@@ -51,6 +51,6 @@ let alexnet ?num_classes vs =
   Layer.of_fn_ (fun xs ~is_training ->
       let batch_size = Tensor.shape xs |> List.hd_exn in
       Layer.apply features xs
-      |> Tensor.adaptive_avg_pool2d ~output_size:[6; 6]
-      |> Tensor.view ~size:[batch_size; -1]
-      |> Layer.apply_ classifier ~is_training )
+      |> Tensor.adaptive_avg_pool2d ~output_size:[ 6; 6 ]
+      |> Tensor.view ~size:[ batch_size; -1 ]
+      |> Layer.apply_ classifier ~is_training)

@@ -20,8 +20,8 @@ val load_images : ?resize:int * int -> string -> Tensor.t
     to determine the labels in the resulting dataset.
     [resize] should be used if the images don't have all the same size.
 *)
-val load_dataset :
-     dir:string
+val load_dataset
+  :  dir:string
   -> classes:string list
   -> with_cache:string option
   -> resize:int * int

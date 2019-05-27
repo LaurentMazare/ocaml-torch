@@ -13,8 +13,8 @@ module Tensor : sig
   include Wrapper_generated_intf.S with type t := t and type scalar := Scalar.t
 
   val new_tensor : unit -> t
-  val float_vec : ?kind:[`double | `float | `half] -> float list -> t
-  val int_vec : ?kind:[`int | `int16 | `int64 | `int8 | `uint8] -> int list -> t
+  val float_vec : ?kind:[ `double | `float | `half ] -> float list -> t
+  val int_vec : ?kind:[ `int | `int16 | `int64 | `int8 | `uint8 ] -> int list -> t
   val of_bigarray : (_, _, Bigarray.c_layout) Bigarray.Genarray.t -> t
   val copy_to_bigarray : t -> (_, _, Bigarray.c_layout) Bigarray.Genarray.t -> unit
   val shape : t -> int list
@@ -61,8 +61,8 @@ module Optimizer : sig
 
   val adam : learning_rate:float -> beta1:float -> beta2:float -> weight_decay:float -> t
 
-  val rmsprop :
-       learning_rate:float
+  val rmsprop
+    :  learning_rate:float
     -> alpha:float
     -> eps:float
     -> weight_decay:float
@@ -70,8 +70,8 @@ module Optimizer : sig
     -> centered:bool
     -> t
 
-  val sgd :
-       learning_rate:float
+  val sgd
+    :  learning_rate:float
     -> momentum:float
     -> dampening:float
     -> weight_decay:float

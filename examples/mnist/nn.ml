@@ -18,16 +18,20 @@ let () =
   let model xs = Layer.apply linear1 xs |> Layer.apply linear2 in
   for index = 1 to epochs do
     (* Compute the cross-entropy loss. *)
-    let loss = Tensor.cross_entropy_for_logits (model train_images) ~targets:train_labels in
-
+    let loss =
+      Tensor.cross_entropy_for_logits (model train_images) ~targets:train_labels
+    in
     Optimizer.backward_step adam ~loss;
-
-    if index % 50 = 0 then begin
+    if index % 50 = 0
+    then (
       (* Compute the validation error. *)
       let test_accuracy =
         Dataset_helper.batch_accuracy mnist `test ~batch_size:1000 ~predict:model
       in
-      Stdio.printf "%d %f %.2f%%\n%!" index (Tensor.float_value loss) (100. *. test_accuracy);
-    end;
-    Caml.Gc.full_major ();
+      Stdio.printf
+        "%d %f %.2f%%\n%!"
+        index
+        (Tensor.float_value loss)
+        (100. *. test_accuracy));
+    Caml.Gc.full_major ()
   done

@@ -27,7 +27,8 @@ module Acc = struct
     ; mutable episode_rewards : float list
     ; mutable acc_rewards : float list
     ; mutable sum_rewards : float
-    ; mutable episodes : int }
+    ; mutable episodes : int
+    }
 
   let create () =
     { acc_obs = []
@@ -35,7 +36,8 @@ module Acc = struct
     ; episode_rewards = []
     ; acc_rewards = []
     ; sum_rewards = 0.
-    ; episodes = 0 }
+    ; episodes = 0
+    }
 
   let update t ~obs ~action ~reward =
     t.acc_obs <- Tensor.copy obs :: t.acc_obs;
@@ -48,7 +50,7 @@ module Acc = struct
     let _, episode_rewards =
       List.fold t.episode_rewards ~init:(0., []) ~f:(fun (acc_r, acc) reward ->
           let acc_r = acc_r +. reward in
-          acc_r, acc_r :: acc )
+          acc_r, acc_r :: acc)
     in
     t.acc_rewards <- List.rev_append episode_rewards t.acc_rewards;
     t.episode_rewards <- []
@@ -70,16 +72,16 @@ let () =
             model (Tensor.unsqueeze obs ~dim:0)
             |> Tensor.softmax ~dim:1
             |> Tensor.multinomial ~num_samples:1 ~replacement:true
-            |> Tensor.view ~size:[1]
-            |> Tensor.to_int0_exn )
+            |> Tensor.view ~size:[ 1 ]
+            |> Tensor.to_int0_exn)
       in
-      let {E.obs = next_obs; reward; is_done} = E.step env ~action in
+      let { E.obs = next_obs; reward; is_done } = E.step env ~action in
       Acc.update acc ~obs ~action ~reward;
       if is_done
       then (
         let obs = E.reset env in
         Acc.is_done acc;
-        if Acc.length acc <= batch_size then loop obs )
+        if Acc.length acc <= batch_size then loop obs)
       else loop next_obs
     in
     loop (E.reset env);
@@ -89,12 +91,12 @@ let () =
     in
     let acc_weights = Array.of_list acc.acc_rewards |> Tensor.of_float1 in
     let action_mask =
-      Tensor.zeros [batch_size; n_acts]
+      Tensor.zeros [ batch_size; n_acts ]
       |> Tensor.scatter_ ~dim:1 ~src:(Tensor.f 1.) ~index:acc_actions
     in
     let logits = model (Tensor.stack acc.acc_obs ~dim:0) in
     let log_probs =
-      Tensor.(sum2 (action_mask * log_softmax logits ~dim:1) ~dim:[1] ~keepdim:false)
+      Tensor.(sum2 (action_mask * log_softmax logits ~dim:1) ~dim:[ 1 ] ~keepdim:false)
     in
     let loss = Tensor.(~-(mean (acc_weights * log_probs))) in
     Optimizer.backward_step optimizer ~loss;

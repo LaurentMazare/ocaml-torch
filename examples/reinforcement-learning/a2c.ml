@@ -35,7 +35,9 @@ let model vs ~actions =
       |> Layer.apply linear1
       |> Tensor.relu
     in
-    {Rollout.critic = Layer.apply critic_linear ys; actor = Layer.apply actor_linear ys}
+    { Rollout.critic = Layer.apply critic_linear ys
+    ; actor = Layer.apply actor_linear ys
+    }
 
 let train ~device =
   let rollout = Rollout.create ~atari_game ~num_steps ~num_stack ~num_procs in
@@ -45,14 +47,14 @@ let train ~device =
   let model = model vs ~actions:action_space in
   let optimizer = Optimizer.adam vs ~learning_rate:1e-4 in
   for index = 1 to updates do
-    let {Rollout.states; actions; returns; _} = Rollout.run rollout ~model in
-    let {Rollout.actor; critic} =
+    let { Rollout.states; actions; returns; _ } = Rollout.run rollout ~model in
+    let { Rollout.actor; critic } =
       model
-        ( Tensor.narrow states ~dim:0 ~start:0 ~length:num_steps
-        |> Tensor.view ~size:[num_steps * num_procs; num_stack; 84; 84] )
+        (Tensor.narrow states ~dim:0 ~start:0 ~length:num_steps
+        |> Tensor.view ~size:[ num_steps * num_procs; num_stack; 84; 84 ])
     in
-    let critic = Tensor.view critic ~size:[num_steps; num_procs] in
-    let actor = Tensor.view actor ~size:[num_steps; num_procs; -1] in
+    let critic = Tensor.view critic ~size:[ num_steps; num_procs ] in
+    let actor = Tensor.view actor ~size:[ num_steps; num_procs; -1 ] in
     let log_probs = Tensor.log_softmax actor ~dim:(-1) in
     let probs = Tensor.softmax actor ~dim:(-1) in
     let action_log_probs =
@@ -60,7 +62,7 @@ let train ~device =
       Tensor.gather log_probs ~dim:2 ~index ~sparse_grad:false |> Tensor.squeeze_last
     in
     let dist_entropy =
-      Tensor.(~-(log_probs * probs) |> sum2 ~dim:[-1] ~keepdim:false |> mean)
+      Tensor.(~-(log_probs * probs) |> sum2 ~dim:[ -1 ] ~keepdim:false |> mean)
     in
     let advantages =
       let returns =
@@ -80,9 +82,9 @@ let train ~device =
         ~named_tensors:(Var_store.all_vars vs)
         ~filename:(Printf.sprintf "a2c-%d.ckpt" index);
     if index % 500 = 0
-    then
-      let {Rollout.rewards = r; episodes = e} = Rollout.get_and_reset_totals rollout in
-      Stdio.printf "%d %f (%.0f episodes)\n%!" index (r /. e) e
+    then (
+      let { Rollout.rewards = r; episodes = e } = Rollout.get_and_reset_totals rollout in
+      Stdio.printf "%d %f (%.0f episodes)\n%!" index (r /. e) e)
   done
 
 let valid ~filename ~device =
@@ -92,7 +94,7 @@ let valid ~filename ~device =
   let model = model vs ~actions:action_space in
   Serialize.load_multi_ ~named_tensors:(Var_store.all_vars vs) ~filename;
   let _ = Rollout.run rollout ~model in
-  let {Rollout.rewards = r; episodes = e} = Rollout.get_and_reset_totals rollout in
+  let { Rollout.rewards = r; episodes = e } = Rollout.get_and_reset_totals rollout in
   Stdio.printf "%f (%.0f episodes)\n%!" (r /. e) e
 
 let () =

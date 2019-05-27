@@ -9,8 +9,8 @@ let latest_index_and_filename ~checkpoint_base =
          match String.chop_prefix filename ~prefix:(basename ^ ".") with
          | None -> None
          | Some suffix ->
-           (try Some (Int.of_string suffix, Caml.Filename.concat dirname filename)
-            with _ -> None) )
+           (try Some (Int.of_string suffix, Caml.Filename.concat dirname filename) with
+           | _ -> None))
   |> List.sort ~compare:Caml.Pervasives.compare
   |> List.last
 
@@ -21,7 +21,8 @@ let loop
     ~checkpoint_base
     ?only_keep
     ?(checkpoint_every = `seconds 600.)
-    f =
+    f
+  =
   if start_index < 0 then Printf.invalid_argf "negative start_index %d" start_index ();
   Option.iter only_keep ~f:(fun only_keep ->
       if only_keep <= 0 then Printf.invalid_argf "non-positive only_keep %d" only_keep ()
@@ -30,23 +31,23 @@ let loop
   let latest_index_and_filename = latest_index_and_filename ~checkpoint_base in
   let named_tensors =
     match var_stores with
-    | [vs] -> Var_store.all_vars vs
+    | [ vs ] -> Var_store.all_vars vs
     | var_stores ->
       List.concat_map var_stores ~f:(fun vs ->
           let vs_name = Var_store.name vs in
           Var_store.all_vars vs
           |> List.map ~f:(fun (name, tensor) ->
-                 Printf.sprintf "%s:%s" vs_name name, tensor ) )
+                 Printf.sprintf "%s:%s" vs_name name, tensor))
   in
   Option.iter latest_index_and_filename ~f:(fun (latest_index, filename) ->
       Stdio.eprintf
         "Restoring checkpoint for index %d from '%s'.\n%!"
         latest_index
         filename;
-      Serialize.load_multi_ ~named_tensors ~filename );
+      Serialize.load_multi_ ~named_tensors ~filename);
   let start_index =
     Option.value_map latest_index_and_filename ~default:start_index ~f:(fun (index, _) ->
-        index + 1 )
+        index + 1)
   in
   let only_keep =
     Option.map only_keep ~f:(fun only_keep -> only_keep, Linked_queue.create ())
@@ -64,7 +65,7 @@ let loop
           Linked_queue.dequeue_exn index_queue
           |> Int.to_string
           |> Printf.sprintf "%s.%s" checkpoint_base
-          |> Unix.unlink )
+          |> Unix.unlink)
   in
   let last_checkpoint_time = ref (Unix.time ()) in
   for index = start_index to end_index do
@@ -77,6 +78,6 @@ let loop
     if should_checkpoint
     then (
       save_index index;
-      last_checkpoint_time := Unix.time () )
+      last_checkpoint_time := Unix.time ())
   done;
   save ~suffix:"final"

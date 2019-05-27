@@ -18,7 +18,7 @@ let cv_bn vs ~k ~pad ?(stride = 1) ~input_dim out_dim =
   in
   let bn = Layer.batch_norm2d (sub vs "bn") ~eps:0.001 out_dim in
   Layer.of_fn_ (fun xs ~is_training ->
-      Layer.apply conv xs |> Layer.apply_ bn ~is_training |> Tensor.relu )
+      Layer.apply conv xs |> Layer.apply_ bn ~is_training |> Tensor.relu)
 
 let cv_bn2 vs ~k ~pad ?(stride = 1, 1) ~input_dim out_dim =
   let conv =
@@ -33,7 +33,7 @@ let cv_bn2 vs ~k ~pad ?(stride = 1, 1) ~input_dim out_dim =
   in
   let bn = Layer.batch_norm2d (sub vs "bn") ~eps:0.001 out_dim in
   Layer.of_fn_ (fun xs ~is_training ->
-      Layer.apply conv xs |> Layer.apply_ bn ~is_training |> Tensor.relu )
+      Layer.apply conv xs |> Layer.apply_ bn ~is_training |> Tensor.relu)
 
 let inception_a vs ~input_dim ~pool =
   let b1 = cv_bn (sub vs "branch1x1") ~k:1 ~pad:0 ~input_dim 64 in
@@ -51,7 +51,7 @@ let inception_a vs ~input_dim ~pool =
       let bpool =
         Tensor.avg_pool2d xs ~ksize:(3, 3) ~stride:(1, 1) ~padding:(1, 1) |> apply_ bpool
       in
-      Tensor.cat [b1; b2; b3; bpool] ~dim:1 )
+      Tensor.cat [ b1; b2; b3; bpool ] ~dim:1)
 
 let inception_b vs ~input_dim =
   let b1 = cv_bn (sub vs "branch3x3") ~k:3 ~pad:0 ~stride:2 ~input_dim 384 in
@@ -63,7 +63,7 @@ let inception_b vs ~input_dim =
       let b1 = apply_ b1 xs in
       let b2 = apply_ b2_1 xs |> apply_ b2_2 |> apply_ b2_3 in
       let bpool = max_pool2d xs ~k:3 ~stride:2 in
-      Tensor.cat [b1; b2; bpool] ~dim:1 )
+      Tensor.cat [ b1; b2; bpool ] ~dim:1)
 
 let inception_c vs ~input_dim ~c7 =
   let b1 = cv_bn (sub vs "branch1x1") ~k:1 ~pad:0 ~input_dim 192 in
@@ -86,7 +86,7 @@ let inception_c vs ~input_dim ~c7 =
       let bpool =
         Tensor.avg_pool2d xs ~ksize:(3, 3) ~stride:(1, 1) ~padding:(1, 1) |> apply_ bpool
       in
-      Tensor.cat [b1; b2; b3; bpool] ~dim:1 )
+      Tensor.cat [ b1; b2; b3; bpool ] ~dim:1)
 
 let inception_d vs ~input_dim =
   let b1_1 = cv_bn (sub vs "branch3x3_1") ~k:1 ~pad:0 ~input_dim 192 in
@@ -100,7 +100,7 @@ let inception_d vs ~input_dim =
       let b1 = apply_ b1_1 xs |> apply_ b1_2 in
       let b2 = apply_ b2_1 xs |> apply_ b2_2 |> apply_ b2_3 |> apply_ b2_4 in
       let bpool = max_pool2d xs ~k:3 ~stride:2 in
-      Tensor.cat [b1; b2; bpool] ~dim:1 )
+      Tensor.cat [ b1; b2; bpool ] ~dim:1)
 
 let inception_e vs ~input_dim =
   let b1 = cv_bn (sub vs "branch1x1") ~k:1 ~pad:0 ~input_dim 320 in
@@ -120,13 +120,13 @@ let inception_e vs ~input_dim =
       let apply_ = Layer.apply_ ~is_training in
       let b1 = apply_ b1 xs in
       let b2 = apply_ b2_1 xs in
-      let b2 = Tensor.cat [apply_ b2_2a b2; apply_ b2_2b b2] ~dim:1 in
+      let b2 = Tensor.cat [ apply_ b2_2a b2; apply_ b2_2b b2 ] ~dim:1 in
       let b3 = apply_ b3_1 xs |> apply_ b3_2 in
-      let b3 = Tensor.cat [apply_ b3_3a b3; apply_ b3_3b b3] ~dim:1 in
+      let b3 = Tensor.cat [ apply_ b3_3a b3; apply_ b3_3b b3 ] ~dim:1 in
       let bpool =
         Tensor.avg_pool2d xs ~ksize:(3, 3) ~stride:(1, 1) ~padding:(1, 1) |> apply_ bpool
       in
-      Tensor.cat [b1; b2; b3; bpool] ~dim:1 )
+      Tensor.cat [ b1; b2; b3; bpool ] ~dim:1)
 
 let v3 ?num_classes vs =
   let conv1 = cv_bn (sub vs "Conv2d_1a_3x3") ~k:3 ~pad:0 ~stride:2 ~input_dim:3 32 in
@@ -172,7 +172,7 @@ let v3 ?num_classes vs =
       |> apply_ mixed_7a
       |> apply_ mixed_7b
       |> apply_ mixed_7c
-      |> Tensor.adaptive_avg_pool2d ~output_size:[1; 1]
+      |> Tensor.adaptive_avg_pool2d ~output_size:[ 1; 1 ]
       |> Tensor.dropout ~p:0.5 ~is_training
-      |> Tensor.view ~size:[batch_size; -1]
-      |> Layer.apply final )
+      |> Tensor.view ~size:[ batch_size; -1 ]
+      |> Layer.apply final)

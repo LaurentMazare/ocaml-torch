@@ -7,7 +7,8 @@ type t =
   ; all_tensors_by_name : (string, Tensor.t) Hashtbl.t
   ; subs : (string, t) Hashtbl.t
   ; device : Device.t
-  ; mutable frozen : bool }
+  ; mutable frozen : bool
+  }
 
 let create ?(frozen = false) ?(device = Device.Cpu) ~name () =
   { name
@@ -15,16 +16,17 @@ let create ?(frozen = false) ?(device = Device.Cpu) ~name () =
   ; subs = Hashtbl.create (module String)
   ; all_tensors_by_name = Hashtbl.create (module String)
   ; device
-  ; frozen }
+  ; frozen
+  }
 
 let first_free_name name table =
   if Hashtbl.mem table name
-  then
+  then (
     let rec loop idx =
       let name = Printf.sprintf "%s_%d" name idx in
       if Hashtbl.mem table name then loop (idx + 1) else name
     in
-    loop 1
+    loop 1)
   else name
 
 let sub t sub_name =
@@ -36,20 +38,21 @@ let sub t sub_name =
       ; subs = Hashtbl.create (module String)
       ; all_tensors_by_name = Hashtbl.create (module String)
       ; device = t.device
-      ; frozen = t.frozen } )
+      ; frozen = t.frozen
+      })
 
 let ( / ) = sub
 
 let rec freeze t =
   t.frozen <- true;
   List.iter t.trainable_tensors ~f:(fun tensor ->
-      ignore (Tensor.set_requires_grad tensor ~r:false : Tensor.t) );
+      ignore (Tensor.set_requires_grad tensor ~r:false : Tensor.t));
   Hashtbl.iter t.subs ~f:freeze
 
 let rec unfreeze t =
   t.frozen <- false;
   List.iter t.trainable_tensors ~f:(fun tensor ->
-      ignore (Tensor.set_requires_grad tensor ~r:true : Tensor.t) );
+      ignore (Tensor.set_requires_grad tensor ~r:true : Tensor.t));
   Hashtbl.iter t.subs ~f:unfreeze
 
 let rec trainable_vars t =
@@ -65,7 +68,7 @@ let all_vars t =
     let vars =
       Hashtbl.to_alist t.all_tensors_by_name
       |> List.map ~f:(fun (key, tensor) ->
-             List.rev (key :: path) |> String.concat ~sep:".", tensor )
+             List.rev (key :: path) |> String.concat ~sep:".", tensor)
     in
     vars @ sub_vars
   in
@@ -83,7 +86,7 @@ let copy ~src ~dst =
                 (List.rev (key :: path) |> String.concat ~sep:".")
                 dst.name
                 src.name
-                () );
+                ());
         Hashtbl.iteri dst.subs ~f:(fun ~key ~data:dst ->
             match Hashtbl.find src.subs key with
             | Some src -> walk ~src ~dst (key :: path)
@@ -93,9 +96,9 @@ let copy ~src ~dst =
                 (List.rev (key :: path) |> String.concat ~sep:".")
                 dst.name
                 src.name
-                () )
+                ())
       in
-      walk ~src ~dst [] )
+      walk ~src ~dst [])
 
 let name t = t.name
 let device t = t.device
@@ -105,7 +108,7 @@ module Init = struct
     | Zeros
     | Ones
     | Const of float
-    | Normal of {mean : float; stdev : float}
+    | Normal of { mean : float; stdev : float }
     | Uniform of float * float
     | Copy of Tensor.t
 end
@@ -118,8 +121,9 @@ let new_var ?(trainable = true) t ~shape ~init ~name =
     | Zeros -> Tensor.zeros shape ~requires_grad ~device
     | Ones -> Tensor.ones shape ~requires_grad ~device
     | Const scale -> Tensor.ones shape ~requires_grad ~device ~scale
-    | Normal {mean = 0.; stdev} -> Tensor.randn shape ~scale:stdev ~requires_grad ~device
-    | Normal {mean; stdev} ->
+    | Normal { mean = 0.; stdev } ->
+      Tensor.randn shape ~scale:stdev ~requires_grad ~device
+    | Normal { mean; stdev } ->
       Tensor.( + )
         (Tensor.randn shape ~scale:stdev ~requires_grad ~device)
         (Tensor.f mean)

@@ -72,6 +72,7 @@ val ( .%.[]<- ) : t -> int -> float -> unit
 
 (** [no_grad_ t ~f] runs [f] on [t] without tracking gradients for t. *)
 val no_grad_ : t -> f:(t -> 'a) -> 'a
+
 val no_grad : (unit -> 'a) -> 'a
 val zero_grad : t -> unit
 
@@ -117,7 +118,7 @@ val mm : t -> t -> t
 val f : float -> t
 
 type create =
-     ?requires_grad:bool
+  ?requires_grad:bool
   -> ?kind:Torch_core.Kind.t
   -> ?device:Device.t
   -> ?scale:float
@@ -137,7 +138,7 @@ val rand : create
 val randn : create
 
 (** Creates a tensor from a list of float values. *)
-val float_vec : ?kind:[`double | `float | `half] -> ?device:Device.t -> float list -> t
+val float_vec : ?kind:[ `double | `float | `half ] -> ?device:Device.t -> float list -> t
 
 (** [to_type t ~type_] returns a tensor similar to [t] but converted to kind [type_]. *)
 val to_type : t -> type_:Kind.t -> t
@@ -239,8 +240,8 @@ val of_int2 : int array array -> t
 (** [of_int3 v] creates a three dimension tensor with values vs. *)
 val of_int3 : int array array array -> t
 
-val conv2d :
-     ?padding:int * int
+val conv2d
+  :  ?padding:int * int
   -> ?dilation:int * int
   -> ?groups:int
   -> t (* input *)
@@ -249,8 +250,8 @@ val conv2d :
   -> stride:int * int
   -> t
 
-val conv_transpose2d :
-     ?output_padding:int * int
+val conv_transpose2d
+  :  ?output_padding:int * int
   -> ?padding:int * int
   -> ?dilation:int * int
   -> ?groups:int
@@ -260,8 +261,8 @@ val conv_transpose2d :
   -> stride:int * int
   -> t
 
-val max_pool2d :
-     ?padding:int * int
+val max_pool2d
+  :  ?padding:int * int
   -> ?dilation:int * int
   -> ?ceil_mode:bool
   -> ?stride:int * int
@@ -269,8 +270,8 @@ val max_pool2d :
   -> ksize:int * int
   -> t
 
-val avg_pool2d :
-     ?padding:int * int
+val avg_pool2d
+  :  ?padding:int * int
   -> ?count_include_pad:bool
   -> ?ceil_mode:bool
   -> ?stride:int * int
@@ -293,8 +294,10 @@ val copy_to_bigarray : t -> ('b, 'a, Bigarray.c_layout) Bigarray.Genarray.t -> u
 (** [to_bigarray t ~kind] converts [t] to a bigarray using the c layout. [kind] has
     to be compatible with the element kind of [t].
 *)
-val to_bigarray :
-  t -> kind:('a, 'b) Bigarray.kind -> ('a, 'b, Bigarray.c_layout) Bigarray.Genarray.t
+val to_bigarray
+  :  t
+  -> kind:('a, 'b) Bigarray.kind
+  -> ('a, 'b, Bigarray.c_layout) Bigarray.Genarray.t
 
 val cross_entropy_for_logits : ?reduction:Reduction.t -> t -> targets:t -> t
 
@@ -329,7 +332,8 @@ val huber_loss : ?reduction:Torch_core.Reduction.t -> t -> t -> t
 (** [pp] is a pretty-printer for tensors to be used in top-levels such as utop
     or jupyter.
 *)
-val pp : Format.formatter -> t -> unit [@@ocaml.toplevel_printer]
+val pp : Format.formatter -> t -> unit
+  [@@ocaml.toplevel_printer]
 
 (** [copy t] returns a new copy of [t] with the same size and data which does
     not share storage with t.

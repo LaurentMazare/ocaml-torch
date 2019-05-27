@@ -39,5 +39,5 @@ let of_int_exn = function
   | 10 -> ComplexDouble
   | d -> failwith (Printf.sprintf "unexpected kind %d" d)
 
-let (=) = Pervasives.(=)
-let (<>) = Pervasives.(<>)
+let ( = ) = Pervasives.( = )
+let ( <> ) = Pervasives.( <> )

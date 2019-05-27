@@ -6,11 +6,11 @@ let sub = Var_store.sub
 
 let downsample vs ~stride ~input_dim output_dim =
   if stride <> 1 || input_dim <> output_dim
-  then
+  then (
     let conv = conv2d (sub vs "0") ~stride ~ksize:1 ~padding:0 ~input_dim output_dim in
     let bn = Layer.batch_norm2d (sub vs "1") output_dim in
     Layer.of_fn_ (fun xs ~is_training ->
-        Layer.apply conv xs |> Layer.apply_ bn ~is_training )
+        Layer.apply conv xs |> Layer.apply_ bn ~is_training))
   else Layer.id_
 
 let basic_block vs ~stride ~input_dim output_dim =
@@ -26,7 +26,7 @@ let basic_block vs ~stride ~input_dim output_dim =
       |> Layer.apply conv2
       |> Layer.apply_ bn2 ~is_training
       |> fun ys ->
-      Tensor.( + ) ys (Layer.apply_ downsample xs ~is_training) |> Tensor.relu )
+      Tensor.( + ) ys (Layer.apply_ downsample xs ~is_training) |> Tensor.relu)
 
 let bottleneck_block vs ~expansion ~stride ~input_dim output_dim =
   let expanded_dim = expansion * output_dim in
@@ -57,7 +57,7 @@ let bottleneck_block vs ~expansion ~stride ~input_dim output_dim =
       |> Layer.apply conv3
       |> Layer.apply_ bn3 ~is_training
       |> fun ys ->
-      Tensor.( + ) ys (Layer.apply_ downsample xs ~is_training) |> Tensor.relu )
+      Tensor.( + ) ys (Layer.apply_ downsample xs ~is_training) |> Tensor.relu)
 
 let resnet ?num_classes vs ~block ~layers:(c1, c2, c3, c4) =
   let block, e =
@@ -70,7 +70,7 @@ let resnet ?num_classes vs ~block ~layers:(c1, c2, c3, c4) =
         let vs = sub vs (Int.to_string block_index) in
         if block_index = 0
         then block vs ~stride ~input_dim output_dim
-        else block vs ~stride:1 ~input_dim:(output_dim * e) output_dim )
+        else block vs ~stride:1 ~input_dim:(output_dim * e) output_dim)
     |> Layer.fold_
   in
   let conv1 = conv2d (sub vs "conv1") ~stride:2 ~padding:3 ~ksize:7 ~input_dim:3 64 in
@@ -94,9 +94,9 @@ let resnet ?num_classes vs ~block ~layers:(c1, c2, c3, c4) =
       |> Layer.apply_ layer2 ~is_training
       |> Layer.apply_ layer3 ~is_training
       |> Layer.apply_ layer4 ~is_training
-      |> Tensor.adaptive_avg_pool2d ~output_size:[1; 1]
-      |> Tensor.view ~size:[batch_size; -1]
-      |> Layer.apply fc )
+      |> Tensor.adaptive_avg_pool2d ~output_size:[ 1; 1 ]
+      |> Tensor.view ~size:[ batch_size; -1 ]
+      |> Layer.apply fc)
 
 let resnet18 ?num_classes vs = resnet ?num_classes vs ~block:`basic ~layers:(2, 2, 2, 2)
 let resnet34 ?num_classes vs = resnet ?num_classes vs ~block:`basic ~layers:(3, 4, 6, 3)

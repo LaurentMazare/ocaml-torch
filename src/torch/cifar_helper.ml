@@ -17,14 +17,17 @@ let labels =
   ; "frog"
   ; "horse"
   ; "ship"
-  ; "truck" ]
+  ; "truck"
+  ]
 
 let samples_per_file = 10_000
 
 let read_file filename =
   let content = Dataset_helper.read_char_tensor filename in
-  let images = Tensor.zeros [samples_per_file; image_c; image_w; image_h] ~kind:Uint8 in
-  let labels = Tensor.zeros [samples_per_file] ~kind:Uint8 in
+  let images =
+    Tensor.zeros [ samples_per_file; image_c; image_w; image_h ] ~kind:Uint8
+  in
+  let labels = Tensor.zeros [ samples_per_file ] ~kind:Uint8 in
   for sample = 0 to 9999 do
     let content_offset = 3073 * sample in
     Tensor.copy_
@@ -33,8 +36,8 @@ let read_file filename =
     Tensor.copy_
       (Tensor.narrow images ~dim:0 ~start:sample ~length:1)
       ~src:
-        ( Tensor.narrow content ~dim:0 ~start:(content_offset + 1) ~length:3072
-        |> Tensor.view ~size:[1; image_c; image_w; image_h] )
+        (Tensor.narrow content ~dim:0 ~start:(content_offset + 1) ~length:3072
+        |> Tensor.view ~size:[ 1; image_c; image_w; image_h ])
   done;
   ( Tensor.(((to_type images ~type_:Float / f 255.) - f 0.5) * f 4.)
   , Tensor.to_type labels ~type_:Int64 )
@@ -47,7 +50,8 @@ let read_files ?(dirname = "data") ?(with_caching = false) () =
       ; "data_batch_2.bin"
       ; "data_batch_3.bin"
       ; "data_batch_4.bin"
-      ; "data_batch_5.bin" ]
+      ; "data_batch_5.bin"
+      ]
       |> List.map ~f:read_one
       |> List.unzip
     in
@@ -55,10 +59,11 @@ let read_files ?(dirname = "data") ?(with_caching = false) () =
     { Dataset_helper.train_images = Tensor.cat train_images ~dim:0
     ; train_labels = Tensor.cat train_labels ~dim:0
     ; test_images
-    ; test_labels }
+    ; test_labels
+    }
   in
   if with_caching
-  then
+  then (
     let cache_file = Caml.Filename.concat dirname "cifar-cache.ot" in
-    Dataset_helper.read_with_cache ~cache_file ~read
+    Dataset_helper.read_with_cache ~cache_file ~read)
   else read ()

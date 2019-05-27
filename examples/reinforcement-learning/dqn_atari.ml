@@ -20,7 +20,8 @@ module Transition = struct
     ; action : int
     ; next_state : state
     ; reward : float
-    ; is_done : bool }
+    ; is_done : bool
+    }
 
   let batch_states ts = List.map ts ~f:(fun t -> t.state) |> Tensor.stack ~dim:0
 
@@ -50,9 +51,10 @@ end = struct
   type 'a t =
     { memory : 'a Queue.t
     ; capacity : int
-    ; mutable position : int }
+    ; mutable position : int
+    }
 
-  let create ~capacity = {memory = Queue.create (); capacity; position = 0}
+  let create ~capacity = { memory = Queue.create (); capacity; position = 0 }
   let length t = Queue.length t.memory
 
   let push t elem =
@@ -64,7 +66,7 @@ end = struct
   let sample t ~batch_size =
     List.init batch_size ~f:(fun _ ->
         let index = Random.int (Queue.length t.memory) in
-        Queue.get t.memory index )
+        Queue.get t.memory index)
 end
 
 let model vs actions =
@@ -81,7 +83,7 @@ let model vs actions =
       |> Tensor.flatten
       |> Layer.apply linear1
       |> Tensor.relu
-      |> Layer.apply linear2 )
+      |> Layer.apply linear2)
 
 module DqnAgent : sig
   type t
@@ -102,7 +104,8 @@ end = struct
     ; actions : int
     ; batch_size : int
     ; gamma : float
-    ; optimizer : Optimizer.t }
+    ; optimizer : Optimizer.t
+    }
 
   let create ~actions ~memory_capacity =
     let device = Device.cuda_if_available () in
@@ -120,7 +123,8 @@ end = struct
     ; actions
     ; batch_size = 64
     ; gamma = 0.99
-    ; optimizer }
+    ; optimizer
+    }
 
   let var_store t = t.vs
 
@@ -132,22 +136,22 @@ end = struct
     (* epsilon-greedy action choice. *)
     let epsilon = Float.max 0.02 (0.5 -. (Float.of_int total_frames /. 100_000.)) in
     if Float.( < ) epsilon (Random.float 1.)
-    then
+    then (
       let qvalues =
         let device = Var_store.device t.vs in
         Tensor.no_grad (fun () ->
             Tensor.unsqueeze state ~dim:0
             |> Tensor.to_device ~device
-            |> Layer.apply t.model )
+            |> Layer.apply t.model)
       in
       Tensor.argmax qvalues ~dim:1 ~keepdim:false
       |> Tensor.to_int1_exn
-      |> fun xs -> xs.(0)
+      |> fun xs -> xs.(0))
     else Random.int t.actions
 
   let experience_replay t =
     if t.batch_size <= Replay_memory.length t.memory
-    then
+    then (
       let device = Var_store.device t.vs in
       let transitions = Replay_memory.sample t.memory ~batch_size:t.batch_size in
       let states = Transition.batch_states transitions |> Tensor.to_device ~device in
@@ -159,27 +163,30 @@ end = struct
       let continue = Transition.batch_continue transitions |> Tensor.to_device ~device in
       let qvalues =
         Layer.apply t.model states
-        |> Tensor.gather ~dim:1 ~index:(Tensor.unsqueeze actions ~dim:1) ~sparse_grad:false
+        |> Tensor.gather
+             ~dim:1
+             ~index:(Tensor.unsqueeze actions ~dim:1)
+             ~sparse_grad:false
         |> Tensor.squeeze1 ~dim:1
       in
       let next_qvalues =
         Tensor.no_grad (fun () ->
             if double_dqn
-            then
+            then (
               let actions =
                 Layer.apply t.model next_states |> Tensor.argmax ~dim:1 ~keepdim:true
               in
               Layer.apply t.target_model next_states
               |> Tensor.gather ~dim:1 ~index:actions ~sparse_grad:false
-              |> Tensor.squeeze1 ~dim:1
+              |> Tensor.squeeze1 ~dim:1)
             else
               Layer.apply t.target_model next_states
               |> Tensor.max2 ~dim:1 ~keepdim:false
-              |> fst )
+              |> fst)
       in
       let expected_qvalues = Tensor.(rewards + (f t.gamma * next_qvalues * continue)) in
       let loss = Tensor.huber_loss qvalues expected_qvalues in
-      Optimizer.backward_step t.optimizer ~loss
+      Optimizer.backward_step t.optimizer ~loss)
 
   let transition_feedback t transition = Replay_memory.push t.memory transition
 end
@@ -188,7 +195,7 @@ end
    Use Uint8 for the final result to reduce memory consumption.
 *)
 let preprocess () =
-  let stacked_frames = Tensor.zeros [num_stack; 105; 80] ~kind:Uint8 in
+  let stacked_frames = Tensor.zeros [ num_stack; 105; 80 ] ~kind:Uint8 in
   fun state ->
     let d i ~factor = Tensor.(select state ~dim:2 ~index:i * f factor) in
     let img =
@@ -197,7 +204,7 @@ let preprocess () =
       |> Tensor.slice ~dim:0 ~start:0 ~end_:210 ~step:2
       |> Tensor.slice ~dim:1 ~start:0 ~end_:160 ~step:2
       |> Tensor.to_type ~type_:Uint8
-      |> Tensor.flip ~dims:[0; 1]
+      |> Tensor.flip ~dims:[ 0; 1 ]
     in
     for frame_index = 1 to num_stack - 1 do
       Tensor.copy_
@@ -209,8 +216,8 @@ let preprocess () =
 
 let maybe_load_weights agent =
   match Sys.argv with
-  | [|_|] -> ()
-  | [|_; filename|] ->
+  | [| _ |] -> ()
+  | [| _; filename |] ->
     Serialize.load_multi_
       ~named_tensors:(DqnAgent.var_store agent |> Var_store.all_vars)
       ~filename;
@@ -230,14 +237,17 @@ module E = struct
     ; mutable episode_idx : int
     ; mutable episode_reward : float
     ; mutable episode_frames : int
-    ; mutable total_frames : int }
+    ; mutable total_frames : int
+    }
 
   let create () =
     let env = Env_gym_pyml.create env_name ~action_repeat in
     let actions = Env_gym_pyml.actions env in
     Stdio.printf "actions: %s\n%!" (String.concat ~sep:"," actions);
     let fire_action =
-      List.find_mapi actions ~f:(fun i -> function "FIRE" -> Some i | _ -> None)
+      List.find_mapi actions ~f:(fun i -> function
+        | "FIRE" -> Some i
+        | _ -> None)
     in
     { fire_action
     ; nactions = List.length actions
@@ -247,7 +257,8 @@ module E = struct
     ; episode_idx = 0
     ; episode_reward = 0.
     ; episode_frames = 0
-    ; total_frames = 0 }
+    ; total_frames = 0
+    }
 
   let reset t =
     if t.should_reset
@@ -266,14 +277,14 @@ module E = struct
       t.preprocess
         (match t.fire_action with
         | None -> first_obs
-        | Some action -> Env_gym_pyml.((step t.env ~action).obs)) )
-    else
+        | Some action -> Env_gym_pyml.((step t.env ~action).obs)))
+    else (
       let action = Option.value t.fire_action ~default:0 in
-      t.preprocess Env_gym_pyml.((step t.env ~action).obs)
+      t.preprocess Env_gym_pyml.((step t.env ~action).obs))
 
   let step t ~action =
     let prev_lives = Env_gym_pyml.lives t.env in
-    let {Env_gym_pyml.obs; reward; is_done} = Env_gym_pyml.step t.env ~action in
+    let { Env_gym_pyml.obs; reward; is_done } = Env_gym_pyml.step t.env ~action in
     if render
     then
       Torch_vision.Image.write_image
@@ -295,7 +306,7 @@ let () =
     let rec loop state =
       let action = DqnAgent.action agent state ~total_frames:env.total_frames in
       let next_state, reward, is_done = E.step env ~action in
-      DqnAgent.transition_feedback agent {state; action; next_state; reward; is_done};
+      DqnAgent.transition_feedback agent { state; action; next_state; reward; is_done };
       DqnAgent.experience_replay agent;
       if env.total_frames % 20 = 0 then Caml.Gc.full_major ();
       if env.total_frames % update_target_every = 0

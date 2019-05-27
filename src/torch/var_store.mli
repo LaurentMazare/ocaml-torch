@@ -19,13 +19,13 @@ module Init : sig
     | Zeros
     | Ones
     | Const of float
-    | Normal of {mean : float; stdev : float}
+    | Normal of { mean : float; stdev : float }
     | Uniform of float * float
     | Copy of Tensor.t
 end
 
-val new_var :
-     ?trainable:bool (* default: true *)
+val new_var
+  :  ?trainable:bool (* default: true *)
   -> t
   -> shape:int list
   -> init:Init.t

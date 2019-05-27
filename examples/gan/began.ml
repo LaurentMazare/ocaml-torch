@@ -17,7 +17,7 @@ let conv2d ?(ksize = 3) ?(padding = 1) vs = Layer.conv2d_ ~ksize ~stride:1 ~padd
 
 let upsample xs =
   let _, _, x, y = Tensor.shape4_exn xs in
-  Tensor.upsample_nearest2d xs ~output_size:[2 * x; 2 * y]
+  Tensor.upsample_nearest2d xs ~output_size:[ 2 * x; 2 * y ]
 
 let avg_pool2d = Tensor.avg_pool2d ~ksize:(2, 2) ~stride:(2, 2)
 
@@ -37,7 +37,7 @@ let decoder vs =
   Layer.of_fn (fun xs ->
       Tensor.to_device xs ~device:(Var_store.device vs)
       |> Layer.apply l0
-      |> Tensor.view ~size:[batch_size; num_channel; 8; 8]
+      |> Tensor.view ~size:[ batch_size; num_channel; 8; 8 ]
       |> Layer.apply l1
       |> Tensor.elu
       |> Layer.apply l2
@@ -63,7 +63,7 @@ let decoder vs =
       |> Layer.apply l10
       |> Tensor.elu
       |> Layer.apply l11
-      |> Tensor.tanh )
+      |> Tensor.tanh)
 
 let encoder vs =
   let l0 = conv2d vs ~input_dim:3 num_channel in
@@ -118,22 +118,22 @@ let encoder vs =
       |> Tensor.elu
       |> Layer.apply l10
       |> Tensor.elu
-      |> Tensor.view ~size:[batch_size; 8 * 8 * 4 * num_channel]
+      |> Tensor.view ~size:[ batch_size; 8 * 8 * 4 * num_channel ]
       |> Layer.apply l11
-      |> Tensor.elu )
+      |> Tensor.elu)
 
 let create_discriminator vs =
   let encoder = encoder vs in
   let decoder = decoder vs in
   Layer.of_fn (fun xs -> Layer.apply encoder xs |> Layer.apply decoder)
 
-let z_dist () = Tensor.((rand [batch_size; latent_dim] * f 2.) - f 1.)
+let z_dist () = Tensor.((rand [ batch_size; latent_dim ] * f 2.) - f 1.)
 
 let write_samples samples ~filename =
   List.init 4 ~f:(fun i ->
       List.init 4 ~f:(fun j ->
-          Tensor.narrow samples ~dim:0 ~start:((4 * i) + j) ~length:1 )
-      |> Tensor.cat ~dim:2 )
+          Tensor.narrow samples ~dim:0 ~start:((4 * i) + j) ~length:1)
+      |> Tensor.cat ~dim:2)
   |> Tensor.cat ~dim:3
   |> Torch_vision.Image.write_image ~filename
 
@@ -154,7 +154,7 @@ let () =
   Checkpointing.loop
     ~start_index:1
     ~end_index:batches
-    ~var_stores:[generator_vs; discriminator_vs]
+    ~var_stores:[ generator_vs; discriminator_vs ]
     ~checkpoint_base:"began.ot"
     ~checkpoint_every:(`seconds 600.)
     (fun ~index:batch_idx ->
@@ -165,7 +165,7 @@ let () =
       Optimizer.set_learning_rate opt_g ~learning_rate;
       let x_real =
         let index =
-          Tensor.randint ~high:train_size ~size:[batch_size] ~options:(Int64, Cpu)
+          Tensor.randint ~high:train_size ~size:[ batch_size ] ~options:(Int64, Cpu)
         in
         Tensor.index_select images ~dim:0 ~index
         |> Tensor.to_type ~type_:Float
@@ -210,10 +210,10 @@ let () =
       if batch_idx % 25000 = 0 || (batch_idx < 100000 && batch_idx % 5000 = 0)
       then
         Tensor.no_grad (fun () -> Layer.apply generator z_test)
-        |> Tensor.view ~size:[batch_size; 3; img_size; img_size]
+        |> Tensor.view ~size:[ batch_size; 3; img_size; img_size ]
         |> Tensor.to_device ~device:Cpu
         |> fun xs ->
         Tensor.((xs + f 1.) * f 127.5)
         |> Tensor.clamp ~min:(Scalar.float 0.) ~max:(Scalar.float 255.)
         |> Tensor.to_type ~type_:Uint8
-        |> write_samples ~filename:(Printf.sprintf "out%d.png" batch_idx) )
+        |> write_samples ~filename:(Printf.sprintf "out%d.png" batch_idx))

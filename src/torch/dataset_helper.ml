@@ -1,11 +1,17 @@
 open Base
 
 let read_char_tensor filename =
-  let fd = Unix.openfile filename [Unix.O_RDONLY] 0o640 in
+  let fd = Unix.openfile filename [ Unix.O_RDONLY ] 0o640 in
   let len = Unix.lseek fd 0 Unix.SEEK_END in
   ignore (Unix.lseek fd 0 Unix.SEEK_SET : int);
   let ba =
-    Unix.map_file fd Bigarray.char Bigarray.c_layout false [|len|] ~pos:(Int64.of_int 0)
+    Unix.map_file
+      fd
+      Bigarray.char
+      Bigarray.c_layout
+      false
+      [| len |]
+      ~pos:(Int64.of_int 0)
   in
   Unix.close fd;
   Tensor.of_bigarray ba
@@ -14,18 +20,20 @@ type t =
   { train_images : Tensor.t
   ; train_labels : Tensor.t
   ; test_images : Tensor.t
-  ; test_labels : Tensor.t }
+  ; test_labels : Tensor.t
+  }
 
 let read_with_cache ~cache_file ~read =
   try
     Serialize.load_multi
-      ~names:["traini"; "trainl"; "testi"; "testl"]
+      ~names:[ "traini"; "trainl"; "testi"; "testl" ]
       ~filename:cache_file
     |> function
-    | [train_images; train_labels; test_images; test_labels] ->
-      {train_images; train_labels; test_images; test_labels}
+    | [ train_images; train_labels; test_images; test_labels ] ->
+      { train_images; train_labels; test_images; test_labels }
     | _ -> assert false
-  with _ ->
+  with
+  | _ ->
     Stdio.eprintf "Cannot read from cached file %s, regenerating...\n%!" cache_file;
     let t = read () in
     (try
@@ -35,8 +43,10 @@ let read_with_cache ~cache_file ~read =
            [ "traini", t.train_images
            ; "trainl", t.train_labels
            ; "testi", t.test_images
-           ; "testl", t.test_labels ]
-     with _ -> Stdio.eprintf "Unable to save cached file %s.\n%!" cache_file);
+           ; "testl", t.test_labels
+           ]
+     with
+    | _ -> Stdio.eprintf "Unable to save cached file %s.\n%!" cache_file);
     t
 
 let unexpected_shape ~shape =
@@ -47,12 +57,12 @@ let unexpected_shape ~shape =
 
 let random_flip t =
   match Tensor.shape t with
-  | [batch_size; _; _; _] as shape ->
+  | [ batch_size; _; _; _ ] as shape ->
     let output = Tensor.zeros shape in
     for batch_index = 0 to batch_size - 1 do
       let output_view = Tensor.narrow output ~dim:0 ~start:batch_index ~length:1 in
       let t_view = Tensor.narrow t ~dim:0 ~start:batch_index ~length:1 in
-      let to_copy = if Random.bool () then t_view else Tensor.flip t_view ~dims:[3] in
+      let to_copy = if Random.bool () then t_view else Tensor.flip t_view ~dims:[ 3 ] in
       Tensor.copy_ output_view ~src:to_copy
     done;
     output
@@ -60,8 +70,8 @@ let random_flip t =
 
 let random_crop t ~pad =
   match Tensor.shape t with
-  | [batch_size; _; dim_h; dim_w] as shape ->
-    let padded = Tensor.reflection_pad2d t ~padding:[pad; pad; pad; pad] in
+  | [ batch_size; _; dim_h; dim_w ] as shape ->
+    let padded = Tensor.reflection_pad2d t ~padding:[ pad; pad; pad; pad ] in
     let output = Tensor.zeros shape in
     for batch_index = 0 to batch_size - 1 do
       let output_view = Tensor.narrow output ~dim:0 ~start:batch_index ~length:1 in
@@ -79,7 +89,7 @@ let random_crop t ~pad =
 
 let random_cutout t ~size =
   match Tensor.shape t with
-  | [batch_size; _; dim_h; dim_w] as shape ->
+  | [ batch_size; _; dim_h; dim_w ] as shape ->
     if size > dim_h || size > dim_w
     then
       Printf.failwithf
@@ -102,7 +112,7 @@ let random_cutout t ~size =
   | shape -> unexpected_shape ~shape
 
 let train_batch ?device ?(augmentation = []) t ~batch_size ~batch_idx =
-  let {train_images; train_labels; _} = t in
+  let { train_images; train_labels; _ } = t in
   let train_size = Tensor.shape train_images |> List.hd_exn in
   let start = Int.( % ) (batch_size * batch_idx) (train_size - batch_size) in
   let batch_images = Tensor.narrow train_images ~dim:0 ~start ~length:batch_size in
@@ -112,12 +122,12 @@ let train_batch ?device ?(augmentation = []) t ~batch_size ~batch_idx =
         match augmentation with
         | `flip -> random_flip batch_images
         | `crop_with_pad pad -> random_crop batch_images ~pad
-        | `cutout size -> random_cutout batch_images ~size )
+        | `cutout size -> random_cutout batch_images ~size)
   in
   Tensor.to_device batch_images ?device, Tensor.to_device batch_labels ?device
 
 let test_batch ?device t ~batch_size ~batch_idx =
-  let {test_images; test_labels; _} = t in
+  let { test_images; test_labels; _ } = t in
   let test_size = Tensor.shape test_images |> List.hd_exn in
   let start = Int.( % ) (batch_size * batch_idx) (test_size - batch_size) in
   let batch_images = Tensor.narrow test_images ~dim:0 ~start ~length:batch_size in
@@ -138,7 +148,7 @@ let batch_accuracy ?device ?samples t train_or_test ~batch_size ~predict =
     Caml.Gc.full_major ();
     if samples <= start_index
     then sum_accuracy /. Float.of_int samples
-    else
+    else (
       let batch_size = Int.min batch_size (samples - start_index) in
       let images =
         Tensor.narrow images ~dim:0 ~start:start_index ~length:batch_size
@@ -152,7 +162,7 @@ let batch_accuracy ?device ?samples t train_or_test ~batch_size ~predict =
       let batch_accuracy =
         Tensor.(sum (argmax predicted_labels = labels) |> float_value)
       in
-      loop (start_index + batch_size) (sum_accuracy +. batch_accuracy)
+      loop (start_index + batch_size) (sum_accuracy +. batch_accuracy))
   in
   loop 0 0.
 
@@ -161,7 +171,8 @@ let shuffle_ t =
   let index = Tensor.randperm ~n:batch_size ~options:(Int64, Cpu) in
   { t with
     train_images = Tensor.index_select t.train_images ~dim:0 ~index
-  ; train_labels = Tensor.index_select t.train_labels ~dim:0 ~index }
+  ; train_labels = Tensor.index_select t.train_labels ~dim:0 ~index
+  }
 
 let batches_per_epoch t ~batch_size =
   (Tensor.shape t.train_images |> List.hd_exn) / batch_size
@@ -184,27 +195,28 @@ let map ?device t ~f ~batch_size =
     List.init (batches_per_epoch t ~batch_size) ~f:(fun batch_idx ->
         let batch_images, batch_labels = train_batch ?device t ~batch_size ~batch_idx in
         Caml.Gc.full_major ();
-        f batch_idx ~batch_images ~batch_labels )
+        f batch_idx ~batch_images ~batch_labels)
     |> List.unzip
   in
   let test_images, test_labels =
     List.init (test_batches_per_epoch t ~batch_size) ~f:(fun batch_idx ->
         let batch_images, batch_labels = test_batch ?device t ~batch_size ~batch_idx in
         Caml.Gc.full_major ();
-        f batch_idx ~batch_images ~batch_labels )
+        f batch_idx ~batch_images ~batch_labels)
     |> List.unzip
   in
   { train_images = Tensor.cat train_images ~dim:0
   ; train_labels = Tensor.cat train_labels ~dim:0
   ; test_images = Tensor.cat test_images ~dim:0
-  ; test_labels = Tensor.cat test_labels ~dim:0 }
+  ; test_labels = Tensor.cat test_labels ~dim:0
+  }
 
-let print_summary {train_images; train_labels; test_images; test_labels} =
+let print_summary { train_images; train_labels; test_images; test_labels } =
   Tensor.print_shape ~name:"train-images" train_images;
   Tensor.print_shape ~name:"test-images" test_images;
   Stdio.printf
     "Train labels: %d, test labels: %d.\n"
-    (1 + (Tensor.max_values ~dim:[0] ~keepdim:false train_labels |> Tensor.int_value))
-    (1 + (Tensor.max_values ~dim:[0] ~keepdim:false test_labels |> Tensor.int_value))
+    (1 + (Tensor.max_values ~dim:[ 0 ] ~keepdim:false train_labels |> Tensor.int_value))
+    (1 + (Tensor.max_values ~dim:[ 0 ] ~keepdim:false test_labels |> Tensor.int_value))
 
 let shuffle = shuffle_

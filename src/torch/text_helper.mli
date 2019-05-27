@@ -16,8 +16,8 @@ val create : filename:string -> t
     compared to [xs].
     The dataset is shuffled on each call to [iter].
 *)
-val iter :
-     ?device:Device.t
+val iter
+  :  ?device:Device.t
   -> t
   -> f:(int -> xs:Tensor.t -> ys:Tensor.t -> unit)
   -> seq_len:int

@@ -1,15 +1,15 @@
 open! Base
 
-type t = {apply : Tensor.t -> Tensor.t}
-type t_with_training = {apply_with_training : Tensor.t -> is_training:bool -> Tensor.t}
+type t = { apply : Tensor.t -> Tensor.t }
+type t_with_training = { apply_with_training : Tensor.t -> is_training:bool -> Tensor.t }
 
 let set_training t_with_training ~is_training =
   let apply xs = t_with_training.apply_with_training xs ~is_training in
-  {apply}
+  { apply }
 
 let with_training t =
   let apply_with_training xs ~is_training:_ = t.apply xs in
-  {apply_with_training}
+  { apply_with_training }
 
 type activation =
   | Relu
@@ -22,7 +22,7 @@ type activation =
 let kaiming_uniform vs ~name ~shape ~a =
   let fan_in =
     match shape with
-    | [] | [_] -> failwith "unexpected tensor shape"
+    | [] | [ _ ] -> failwith "unexpected tensor shape"
     | _fan_out :: fan_in :: others ->
       let others = List.fold others ~init:1 ~f:( * ) in
       fan_in * others
@@ -43,26 +43,26 @@ let apply ?activation ys =
 
 let linear vs ?activation ?(use_bias = true) ?w_init ~input_dim output_dim =
   let w =
-    let shape = [output_dim; input_dim] in
+    let shape = [ output_dim; input_dim ] in
     match w_init with
     | None -> kaiming_uniform vs ~shape ~a:(Float.sqrt 5.) ~name:"weight"
     | Some init -> Var_store.new_var vs ~shape ~init ~name:"weight"
   in
   let apply =
     if use_bias
-    then
+    then (
       let bound = 1.0 /. Float.sqrt (Float.of_int input_dim) in
       let b =
         Var_store.new_var
           vs
-          ~shape:[output_dim]
+          ~shape:[ output_dim ]
           ~init:(Uniform (-.bound, bound))
           ~name:"bias"
       in
-      fun xs -> Tensor.(mm xs (tr w) + b) |> apply ?activation
+      fun xs -> Tensor.(mm xs (tr w) + b) |> apply ?activation)
     else fun xs -> Tensor.(mm xs (tr w)) |> apply ?activation
   in
-  {apply}
+  { apply }
 
 let conv2d
     vs
@@ -74,20 +74,21 @@ let conv2d
     ?(padding = 0, 0)
     ?(groups = 1)
     ~input_dim
-    output_dim =
+    output_dim
+  =
   let w =
-    let shape = [output_dim; input_dim / groups; k1; k2] in
+    let shape = [ output_dim; input_dim / groups; k1; k2 ] in
     match w_init with
     | None -> kaiming_uniform vs ~shape ~a:(Float.sqrt 5.) ~name:"weight"
     | Some init -> Var_store.new_var vs ~shape ~init ~name:"weight"
   in
   let b =
     if use_bias
-    then Some (Var_store.new_var vs ~shape:[output_dim] ~init:Zeros ~name:"bias")
+    then Some (Var_store.new_var vs ~shape:[ output_dim ] ~init:Zeros ~name:"bias")
     else None
   in
   let apply xs = Tensor.conv2d xs w b ~padding ~stride ~groups |> apply ?activation in
-  {apply}
+  { apply }
 
 let conv2d_
     vs
@@ -99,7 +100,8 @@ let conv2d_
     ?(padding = 0)
     ?groups
     ~input_dim
-    output_dim =
+    output_dim
+  =
   conv2d
     vs
     ~ksize:(ksize, ksize)
@@ -118,30 +120,31 @@ let conv_transpose2d
     ~stride
     ?activation
     ?(use_bias = true)
-    ?(w_init = Var_store.Init.Normal {mean = 0.; stdev = 0.1})
+    ?(w_init = Var_store.Init.Normal { mean = 0.; stdev = 0.1 })
     ?(padding = 0, 0)
     ?(output_padding = 0, 0)
     ?(groups = 1)
     ~input_dim
-    output_dim =
+    output_dim
+  =
   let w =
     Var_store.new_var
       vs
-      ~shape:[input_dim; output_dim / groups; k1; k2]
+      ~shape:[ input_dim; output_dim / groups; k1; k2 ]
       ~init:w_init
       ~name:"weight"
   in
   let apply =
     let b =
       if use_bias
-      then Some (Var_store.new_var vs ~shape:[output_dim] ~init:Zeros ~name:"bias")
+      then Some (Var_store.new_var vs ~shape:[ output_dim ] ~init:Zeros ~name:"bias")
       else None
     in
     fun xs ->
       Tensor.conv_transpose2d xs w b ~output_padding ~padding ~stride ~groups
       |> apply ?activation
   in
-  {apply}
+  { apply }
 
 let conv_transpose2d_
     vs
@@ -154,7 +157,8 @@ let conv_transpose2d_
     ?(output_padding = 0)
     ?groups
     ~input_dim
-    output_dim =
+    output_dim
+  =
   conv_transpose2d
     vs
     ~ksize:(ksize, ksize)
@@ -174,14 +178,15 @@ let batch_norm2d
     ?(cudnn_enabled = true)
     ?(eps = 1e-5)
     ?(momentum = 0.1)
-    output_dim =
-  let w = Var_store.new_var vs ~shape:[output_dim] ~init:w_init ~name:"weight" in
-  let b = Var_store.new_var vs ~shape:[output_dim] ~init:Zeros ~name:"bias" in
+    output_dim
+  =
+  let w = Var_store.new_var vs ~shape:[ output_dim ] ~init:w_init ~name:"weight" in
+  let b = Var_store.new_var vs ~shape:[ output_dim ] ~init:Zeros ~name:"bias" in
   let running_mean =
     Var_store.new_var
       vs
       ~trainable:false
-      ~shape:[output_dim]
+      ~shape:[ output_dim ]
       ~init:Zeros
       ~name:"running_mean"
   in
@@ -189,7 +194,7 @@ let batch_norm2d
     Var_store.new_var
       vs
       ~trainable:false
-      ~shape:[output_dim]
+      ~shape:[ output_dim ]
       ~init:Ones
       ~name:"running_var"
   in
@@ -205,27 +210,27 @@ let batch_norm2d
       ~eps
       ~cudnn_enabled
   in
-  {apply_with_training}
+  { apply_with_training }
 
 let apply t xs = t.apply xs
 
 let apply_ t_with_training xs ~is_training =
   t_with_training.apply_with_training xs ~is_training
 
-let id = {apply = Fn.id}
-let id_ = {apply_with_training = (fun xs ~is_training:_ -> xs)}
-let of_fn apply = {apply}
-let of_fn_ apply_with_training = {apply_with_training}
+let id = { apply = Fn.id }
+let id_ = { apply_with_training = (fun xs ~is_training:_ -> xs) }
+let of_fn apply = { apply }
+let of_fn_ apply_with_training = { apply_with_training }
 
 let fold t_list =
   let apply xs = List.fold t_list ~init:xs ~f:(fun acc t -> t.apply acc) in
-  {apply}
+  { apply }
 
 let fold_ t_list =
   let apply_with_training xs ~is_training =
     List.fold t_list ~init:xs ~f:(fun acc t -> t.apply_with_training acc ~is_training)
   in
-  {apply_with_training}
+  { apply_with_training }
 
 module Lstm = struct
   type t =
@@ -234,30 +239,35 @@ module Lstm = struct
     ; b_ih : Tensor.t
     ; b_hh : Tensor.t
     ; hidden_size : int
-    ; device : Device.t }
+    ; device : Device.t
+    }
 
   type state = Tensor.t * Tensor.t
 
   let create vs ~input_dim ~hidden_size =
     let gate_size = 4 * hidden_size in
     let w_ih =
-      kaiming_uniform vs ~shape:[gate_size; input_dim] ~a:(Float.sqrt 5.) ~name:"w_ih"
+      kaiming_uniform vs ~shape:[ gate_size; input_dim ] ~a:(Float.sqrt 5.) ~name:"w_ih"
     in
     let w_hh =
-      kaiming_uniform vs ~shape:[gate_size; hidden_size] ~a:(Float.sqrt 5.) ~name:"w_hh"
+      kaiming_uniform
+        vs
+        ~shape:[ gate_size; hidden_size ]
+        ~a:(Float.sqrt 5.)
+        ~name:"w_hh"
     in
-    let b_ih = Var_store.new_var vs ~shape:[gate_size] ~init:Zeros ~name:"b_ih" in
-    let b_hh = Var_store.new_var vs ~shape:[gate_size] ~init:Zeros ~name:"b_hh" in
-    {w_ih; w_hh; b_ih; b_hh; hidden_size; device = Var_store.device vs}
+    let b_ih = Var_store.new_var vs ~shape:[ gate_size ] ~init:Zeros ~name:"b_ih" in
+    let b_hh = Var_store.new_var vs ~shape:[ gate_size ] ~init:Zeros ~name:"b_hh" in
+    { w_ih; w_hh; b_ih; b_hh; hidden_size; device = Var_store.device vs }
 
   let zero_state t ~batch_size =
-    let zeros = Tensor.zeros [batch_size; t.hidden_size] ~device:t.device in
+    let zeros = Tensor.zeros [ batch_size; t.hidden_size ] ~device:t.device in
     zeros, zeros
 
   let step t (h, c) input_ =
     Tensor.lstm_cell
       input_
-      ~hx:[h; c]
+      ~hx:[ h; c ]
       ~w_ih:t.w_ih
       ~w_hh:t.w_hh
       ~b_ih:(Some t.b_ih)
@@ -265,13 +275,13 @@ module Lstm = struct
 
   let seq t input_ =
     let batch_size = Tensor.shape input_ |> List.hd_exn in
-    let h = Tensor.zeros [1; batch_size; t.hidden_size] ~device:t.device in
-    let c = Tensor.zeros [1; batch_size; t.hidden_size] ~device:t.device in
+    let h = Tensor.zeros [ 1; batch_size; t.hidden_size ] ~device:t.device in
+    let c = Tensor.zeros [ 1; batch_size; t.hidden_size ] ~device:t.device in
     let output, h, c =
       Tensor.lstm
         input_
-        ~hx:[h; c]
-        ~params:[t.w_ih; t.w_hh; t.b_ih; t.b_hh]
+        ~hx:[ h; c ]
+        ~params:[ t.w_ih; t.w_hh; t.b_ih; t.b_hh ]
         ~has_biases:true
         ~num_layers:1
         ~dropout:0.

@@ -12,12 +12,12 @@ let () =
   let device = Device.cuda_if_available () in
   let cifar = Cifar_helper.read_files ~with_caching:true () in
   let vs = Var_store.create ~name:"vs" ~device () in
-  let {Model.model; epochs; lr_schedule; model_name; batch_size} =
+  let { Model.model; epochs; lr_schedule; model_name; batch_size } =
     match Sys.argv with
-    | [|_; "densenet"|] -> Densenet.model vs
-    | [|_; "resnet"|] -> Resnet.model vs
-    | [|_; "fast-resnet"|] -> Fast_resnet.model vs
-    | [|_; "preact-resnet"|] | _ -> Preact_resnet.model vs
+    | [| _; "densenet" |] -> Densenet.model vs
+    | [| _; "resnet" |] -> Resnet.model vs
+    | [| _; "fast-resnet" |] -> Fast_resnet.model vs
+    | [| _; "preact-resnet" |] | _ -> Preact_resnet.model vs
   in
   let sgd =
     Optimizer.sgd vs ~learning_rate:0. ~momentum:0.9 ~weight_decay:5e-4 ~nesterov:true
@@ -29,7 +29,7 @@ let () =
   Checkpointing.loop
     ~start_index:1
     ~end_index:epochs
-    ~var_stores:[vs]
+    ~var_stores:[ vs ]
     ~checkpoint_base:(model_name ^ ".ot")
     ~checkpoint_every:(`iters 25)
     (fun ~index:epoch_idx ->
@@ -39,7 +39,7 @@ let () =
         cifar
         ~device
         ~batch_size
-        ~augmentation:[`flip; `crop_with_pad 4; `cutout 8]
+        ~augmentation:[ `flip; `crop_with_pad 4; `cutout 8 ]
         ~f:(fun batch_idx ~batch_images ~batch_labels ->
           Optimizer.set_learning_rate
             sgd
@@ -55,7 +55,7 @@ let () =
             batches_per_epoch
             (!sum_loss /. Float.of_int (1 + batch_idx));
           Tensor.backward loss;
-          Optimizer.step sgd );
+          Optimizer.step sgd);
       (* Compute the validation error. *)
       let test_accuracy =
         Dataset_helper.batch_accuracy cifar `test ~device ~batch_size ~predict:test_model
@@ -65,4 +65,4 @@ let () =
         epoch_idx
         (Unix.gettimeofday () -. start_time)
         (!sum_loss /. Float.of_int batches_per_epoch)
-        (100. *. test_accuracy) )
+        (100. *. test_accuracy))

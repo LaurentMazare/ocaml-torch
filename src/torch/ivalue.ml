@@ -13,8 +13,7 @@ let rec to_raw = function
   | Tensor tensor -> I.tensor tensor
   | Int int -> I.int64 (Int64.of_int int)
   | Double double -> I.double double
-  | Tuple tuple ->
-    I.tuple (List.map ~f:to_raw tuple)
+  | Tuple tuple -> I.tuple (List.map ~f:to_raw tuple)
 
 let rec of_raw ivalue =
   match I.tag ivalue with

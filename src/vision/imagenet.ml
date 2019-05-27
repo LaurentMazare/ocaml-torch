@@ -7,7 +7,10 @@ let imagenet_mean_and_std = function
   | `blue -> 0.406, 0.225
 
 let mean_, std_ =
-  [imagenet_mean_and_std `red; imagenet_mean_and_std `green; imagenet_mean_and_std `blue]
+  [ imagenet_mean_and_std `red
+  ; imagenet_mean_and_std `green
+  ; imagenet_mean_and_std `blue
+  ]
   |> List.unzip
 
 let clamp_ =
@@ -28,8 +31,8 @@ let clamp_ =
     clamp_ `blue 2;
     tensor
 
-let mean_ = lazy (Tensor.float_vec mean_ |> Tensor.view ~size:[3; 1; 1])
-let std_ = lazy (Tensor.float_vec std_ |> Tensor.view ~size:[3; 1; 1])
+let mean_ = lazy (Tensor.float_vec mean_ |> Tensor.view ~size:[ 3; 1; 1 ])
+let std_ = lazy (Tensor.float_vec std_ |> Tensor.view ~size:[ 3; 1; 1 ])
 
 let normalize tensor =
   let mean_ = Lazy.force mean_ in
@@ -56,7 +59,8 @@ let load_dataset ~dir ~classes ?with_cache () =
   let dataset = Image.load_dataset ~dir ~classes ~with_cache ~resize:(224, 224) in
   { dataset with
     Dataset_helper.train_images = normalize dataset.train_images
-  ; test_images = normalize dataset.test_images }
+  ; test_images = normalize dataset.test_images
+  }
 
 let write_image tensor ~filename =
   let tensor = unnormalize tensor in
@@ -1075,19 +1079,20 @@ module Classes = struct
      ; "hen-of-the-woods, hen of the woods, Polyporus frondosus, Grifola frondosa"
      ; "bolete"
      ; "ear, spike, capitulum"
-     ; "toilet tissue, toilet paper, bathroom tissue" |]
+     ; "toilet tissue, toilet paper, bathroom tissue"
+    |]
 
   let top vs ~k =
     let vs =
       match Tensor.shape vs with
-      | [1000] -> vs
-      | [1; 1000] | [1; 1; 1000] -> Tensor.view vs ~size:[1000]
+      | [ 1000 ] -> vs
+      | [ 1; 1000 ] | [ 1; 1; 1000 ] -> Tensor.view vs ~size:[ 1000 ]
       | _ -> Printf.failwithf "unexpected shape %s" (Tensor.shape_str vs) ()
     in
     let _, indexes = Tensor.topk vs ~k ~dim:0 ~largest:true ~sorted:true in
     List.init k ~f:(fun i ->
         let class_index = Tensor.get_int1 indexes i in
-        names.(class_index), Tensor.get_float1 vs class_index )
+        names.(class_index), Tensor.get_float1 vs class_index)
 end
 
 module Loader = struct

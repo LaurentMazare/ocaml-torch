@@ -52,7 +52,9 @@ let model vs ~actions =
       |> Layer.apply linear1
       |> Tensor.relu
     in
-    {Rollout.critic = Layer.apply critic_linear ys; actor = Layer.apply actor_linear ys}
+    { Rollout.critic = Layer.apply critic_linear ys
+    ; actor = Layer.apply actor_linear ys
+    }
 
 let train ~device =
   let rollout = Rollout.create ~atari_game ~num_steps ~num_stack ~num_procs in
@@ -63,33 +65,34 @@ let train ~device =
   let optimizer = Optimizer.adam vs ~learning_rate:1e-4 in
   let train_size = num_steps * num_procs in
   for index = 1 to updates do
-    let {Rollout.states; actions; returns; values} = Rollout.run rollout ~model in
+    let { Rollout.states; actions; returns; values } = Rollout.run rollout ~model in
     let states =
       Tensor.narrow states ~dim:0 ~start:0 ~length:num_steps
-      |> Tensor.view ~size:[train_size; num_stack; 84; 84]
+      |> Tensor.view ~size:[ train_size; num_stack; 84; 84 ]
     in
-    let actions = Tensor.view actions ~size:[train_size] in
-    let _values = Tensor.view values ~size:[train_size] in
+    let actions = Tensor.view actions ~size:[ train_size ] in
+    let _values = Tensor.view values ~size:[ train_size ] in
     let returns =
       Tensor.narrow returns ~dim:0 ~start:0 ~length:num_steps
-      |> Tensor.view ~size:[train_size; 1]
+      |> Tensor.view ~size:[ train_size; 1 ]
     in
     for _index = 1 to optim_epochs do
       let index =
-        Tensor.randint ~high:train_size ~size:[optim_batchsize] ~options:(Int64, Cpu)
+        Tensor.randint ~high:train_size ~size:[ optim_batchsize ] ~options:(Int64, Cpu)
       in
       let states = Tensor.index_select states ~dim:0 ~index in
       let actions = Tensor.index_select actions ~dim:0 ~index in
       let returns = Tensor.index_select returns ~dim:0 ~index in
-      let {Rollout.actor; critic} = model states in
+      let { Rollout.actor; critic } = model states in
       let log_probs = Tensor.log_softmax actor ~dim:(-1) in
       let probs = Tensor.softmax actor ~dim:(-1) in
       let action_log_probs =
         let index = Tensor.unsqueeze actions ~dim:(-1) |> Tensor.to_device ~device in
-        Tensor.gather log_probs ~dim:(-1) ~index ~sparse_grad:false |> Tensor.squeeze_last
+        Tensor.gather log_probs ~dim:(-1) ~index ~sparse_grad:false
+        |> Tensor.squeeze_last
       in
       let dist_entropy =
-        Tensor.(~-(log_probs * probs) |> sum2 ~dim:[-1] ~keepdim:false |> mean)
+        Tensor.(~-(log_probs * probs) |> sum2 ~dim:[ -1 ] ~keepdim:false |> mean)
       in
       let advantages = Tensor.(to_device returns ~device - critic) in
       let value_loss = Tensor.(advantages * advantages) |> Tensor.mean in
@@ -104,9 +107,9 @@ let train ~device =
         ~named_tensors:(Var_store.all_vars vs)
         ~filename:(Printf.sprintf "a2c-%d.ckpt" index);
     if index % 25 = 0
-    then
-      let {Rollout.rewards = r; episodes = e} = Rollout.get_and_reset_totals rollout in
-      Stdio.printf "%d %f (%.0f episodes)\n%!" index (r /. e) e
+    then (
+      let { Rollout.rewards = r; episodes = e } = Rollout.get_and_reset_totals rollout in
+      Stdio.printf "%d %f (%.0f episodes)\n%!" index (r /. e) e)
   done
 
 let valid ~filename ~device =
@@ -116,7 +119,7 @@ let valid ~filename ~device =
   let model = model vs ~actions:action_space in
   Serialize.load_multi_ ~named_tensors:(Var_store.all_vars vs) ~filename;
   let _ = Rollout.run rollout ~model in
-  let {Rollout.rewards = r; episodes = e} = Rollout.get_and_reset_totals rollout in
+  let { Rollout.rewards = r; episodes = e } = Rollout.get_and_reset_totals rollout in
   Stdio.printf "%f (%.0f episodes)\n%!" (r /. e) e
 
 let () =

@@ -20,7 +20,7 @@ let create_generator vs =
       ~use_bias:false
       ~input_dim
       n
-      ~w_init:(Normal {mean = 0.; stdev = 0.02})
+      ~w_init:(Normal { mean = 0.; stdev = 0.02 })
   in
   let batch_norm2d dim = Layer.batch_norm2d vs dim ~w_init:Ones in
   let convt1 = tr2d ~stride:1 ~padding:0 ~input_dim:latent_dim 1024 in
@@ -59,7 +59,7 @@ let create_discriminator vs =
       ~use_bias:false
       ~input_dim
       n
-      ~w_init:(Normal {mean = 0.; stdev = 0.02})
+      ~w_init:(Normal { mean = 0.; stdev = 0.02 })
   in
   let batch_norm2d dim = Layer.batch_norm2d vs dim ~w_init:Ones in
   let leaky_relu xs = Tensor.(max xs (xs * f 0.2)) in
@@ -85,15 +85,15 @@ let create_discriminator vs =
     |> Layer.apply_ bn4 ~is_training:true
     |> leaky_relu
     |> Layer.apply conv5
-    |> Tensor.view ~size:[batch_size]
+    |> Tensor.view ~size:[ batch_size ]
 
-let rand () = Tensor.((f 2. * rand [batch_size; latent_dim; 1; 1]) - f 1.)
+let rand () = Tensor.((f 2. * rand [ batch_size; latent_dim; 1; 1 ]) - f 1.)
 
 let write_samples samples ~filename =
   List.init 4 ~f:(fun i ->
       List.init 4 ~f:(fun j ->
-          Tensor.narrow samples ~dim:0 ~start:((4 * i) + j) ~length:1 )
-      |> Tensor.cat ~dim:2 )
+          Tensor.narrow samples ~dim:0 ~start:((4 * i) + j) ~length:1)
+      |> Tensor.cat ~dim:2)
   |> Tensor.cat ~dim:3
   |> Torch_vision.Image.write_image ~filename
 
@@ -110,7 +110,7 @@ let () =
   let fixed_noise = rand () in
   let next_batch_images () =
     let index =
-      Tensor.randint ~high:train_size ~size:[batch_size] ~options:(Int64, Cpu)
+      Tensor.randint ~high:train_size ~size:[ batch_size ] ~options:(Int64, Cpu)
     in
     Tensor.index_select images ~dim:0 ~index
     |> Tensor.to_type ~type_:Float
@@ -119,7 +119,7 @@ let () =
   Checkpointing.loop
     ~start_index:1
     ~end_index:batches
-    ~var_stores:[generator_vs; discriminator_vs]
+    ~var_stores:[ generator_vs; discriminator_vs ]
     ~checkpoint_base:"relgan.ot"
     ~checkpoint_every:(`seconds 600.)
     (fun ~index ->
@@ -160,10 +160,10 @@ let () =
       if index % 25000 = 0 || (index < 100000 && index % 5000 = 0)
       then
         generator fixed_noise
-        |> Tensor.view ~size:[-1; 3; image_h; image_w]
+        |> Tensor.view ~size:[ -1; 3; image_h; image_w ]
         |> Tensor.to_device ~device:Cpu
         |> fun xs ->
         Tensor.((xs + f 1.) * f 127.5)
         |> Tensor.clamp ~min:(Scalar.float 0.) ~max:(Scalar.float 255.)
         |> Tensor.to_type ~type_:Uint8
-        |> write_samples ~filename:(Printf.sprintf "relout%d.png" index) )
+        |> write_samples ~filename:(Printf.sprintf "relout%d.png" index))

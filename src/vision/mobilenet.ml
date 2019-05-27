@@ -5,7 +5,11 @@ let sub = Var_store.sub
 let relu6 xs = Tensor.(min (relu xs) (f 6.))
 
 let conv_bn sub_vs ~ksize ~stride ~input_dim output_dim =
-  let ksize, padding = match ksize with `k1 -> 1, 0 | `k3 -> 3, 1 in
+  let ksize, padding =
+    match ksize with
+    | `k1 -> 1, 0
+    | `k3 -> 3, 1
+  in
   let conv =
     Layer.conv2d_
       (sub_vs 0)
@@ -18,7 +22,7 @@ let conv_bn sub_vs ~ksize ~stride ~input_dim output_dim =
   in
   let bn = Layer.batch_norm2d (sub_vs 1) output_dim in
   Layer.of_fn_ (fun xs ~is_training ->
-      Layer.apply conv xs |> Layer.apply_ bn ~is_training )
+      Layer.apply conv xs |> Layer.apply_ bn ~is_training)
 
 let inverted_residual vs ~stride ~expand_ratio ~input_dim output_dim =
   let sub_vs ~base i = sub vs (Int.to_string (base + i)) in
@@ -30,7 +34,8 @@ let inverted_residual vs ~stride ~expand_ratio ~input_dim output_dim =
     else
       Layer.fold_
         [ conv_bn (sub_vs ~base:0) ~ksize:`k1 ~stride:1 ~input_dim hidden_dim
-        ; Layer.of_fn_ (fun xs ~is_training:_ -> relu6 xs) ]
+        ; Layer.of_fn_ (fun xs ~is_training:_ -> relu6 xs)
+        ]
   in
   let base = if expand_ratio = 1 then 0 else 3 in
   let conv1 = conv_bn (sub_vs ~base) ~ksize:`k3 ~stride ~input_dim hidden_dim in
@@ -47,7 +52,7 @@ let inverted_residual vs ~stride ~expand_ratio ~input_dim output_dim =
       |> Layer.apply_ conv1 ~is_training
       |> relu6
       |> Layer.apply_ conv2 ~is_training
-      |> fun ys -> if use_residual then Tensor.(xs + ys) else ys )
+      |> fun ys -> if use_residual then Tensor.(xs + ys) else ys)
 
 let v2 vs ~num_classes =
   let input_dim = 32 in
@@ -63,7 +68,8 @@ let v2 vs ~num_classes =
     ; 6, 64, 4, 2
     ; 6, 96, 3, 1
     ; 6, 160, 3, 2
-    ; 6, 320, 1, 1 ]
+    ; 6, 320, 1, 1
+    ]
     |> List.fold_map ~init:input_dim ~f:(fun input_dim (t, c, nn, s) ->
            let layer =
              List.init nn ~f:(fun idx ->
@@ -72,10 +78,10 @@ let v2 vs ~num_classes =
                    Var_store.(vs_features / Int.to_string !layer_idx / "conv")
                  in
                  let input_dim, stride = if idx = 0 then input_dim, s else c, 1 in
-                 inverted_residual sub_vs ~stride ~expand_ratio:t ~input_dim c )
+                 inverted_residual sub_vs ~stride ~expand_ratio:t ~input_dim c)
              |> Layer.fold_
            in
-           c, layer )
+           c, layer)
   in
   let layers = Layer.fold_ layers in
   let final_conv = conv_bn (sub_vs 18) ~ksize:`k1 ~stride:1 ~input_dim last_dim in
@@ -90,5 +96,5 @@ let v2 vs ~num_classes =
       |> Layer.apply_ final_conv ~is_training
       |> relu6
       |> Tensor.dropout ~p:0.2 ~is_training
-      |> Tensor.view ~size:[batch_size; last_dim]
-      |> Layer.apply final_linear )
+      |> Tensor.view ~size:[ batch_size; last_dim ]
+      |> Layer.apply final_linear)

@@ -19,12 +19,12 @@ let dense_layer vs ~bn_size ~growth_rate ~input_dim =
       |> Layer.apply_ bn2 ~is_training
       |> Tensor.relu
       |> Layer.apply conv2
-      |> fun ys -> Tensor.cat [xs; ys] ~dim:1 )
+      |> fun ys -> Tensor.cat [ xs; ys ] ~dim:1)
 
 let dense_block vs ~bn_size ~growth_rate ~num_layers ~input_dim =
   List.init num_layers ~f:(fun i ->
       let vs = sub vs (Printf.sprintf "denselayer%d" (1 + i)) in
-      dense_layer vs ~bn_size ~growth_rate ~input_dim:(input_dim + (i * growth_rate)) )
+      dense_layer vs ~bn_size ~growth_rate ~input_dim:(input_dim + (i * growth_rate)))
   |> Layer.fold_
 
 let transition vs ~input_dim output_dim =
@@ -34,7 +34,7 @@ let transition vs ~input_dim output_dim =
       Layer.apply_ bn xs ~is_training
       |> Tensor.relu
       |> Layer.apply conv
-      |> Tensor.avg_pool2d ~stride:(2, 2) ~ksize:(2, 2) )
+      |> Tensor.avg_pool2d ~stride:(2, 2) ~ksize:(2, 2))
 
 let densenet vs ~growth_rate ~block_config ~init_dim ~bn_size ~num_classes =
   let features_vs = sub vs "features" in
@@ -58,15 +58,15 @@ let densenet vs ~growth_rate ~block_config ~init_dim ~bn_size ~num_classes =
         in
         let num_features = num_features + (num_layers * growth_rate) in
         if i <> last_index
-        then
+        then (
           let trans =
             transition
               (Printf.sprintf "transition%d" (1 + i) |> sub features_vs)
               ~input_dim:num_features
               (num_features / 2)
           in
-          num_features / 2, Layer.fold_ [acc; block; trans]
-        else num_features, Layer.fold_ [acc; block] )
+          num_features / 2, Layer.fold_ [ acc; block; trans ])
+        else num_features, Layer.fold_ [ acc; block ])
   in
   let bn5 = Layer.batch_norm2d (sub features_vs "norm5") num_features in
   let linear = Layer.linear (sub vs "classifier") ~input_dim:num_features num_classes in
@@ -80,17 +80,17 @@ let densenet vs ~growth_rate ~block_config ~init_dim ~bn_size ~num_classes =
       |> fun features ->
       Tensor.relu features
       |> Tensor.avg_pool2d ~stride:(1, 1) ~ksize:(7, 7)
-      |> Tensor.view ~size:[Tensor.shape features |> List.hd_exn; -1]
-      |> Layer.apply linear )
+      |> Tensor.view ~size:[ Tensor.shape features |> List.hd_exn; -1 ]
+      |> Layer.apply linear)
 
 let densenet121 vs =
-  densenet vs ~growth_rate:32 ~init_dim:64 ~block_config:[6; 12; 24; 16] ~bn_size:4
+  densenet vs ~growth_rate:32 ~init_dim:64 ~block_config:[ 6; 12; 24; 16 ] ~bn_size:4
 
 let densenet161 vs =
-  densenet vs ~growth_rate:48 ~init_dim:96 ~block_config:[6; 12; 36; 24] ~bn_size:4
+  densenet vs ~growth_rate:48 ~init_dim:96 ~block_config:[ 6; 12; 36; 24 ] ~bn_size:4
 
 let densenet169 vs =
-  densenet vs ~growth_rate:32 ~init_dim:64 ~block_config:[6; 12; 32; 32] ~bn_size:4
+  densenet vs ~growth_rate:32 ~init_dim:64 ~block_config:[ 6; 12; 32; 32 ] ~bn_size:4
 
 let densenet201 vs =
-  densenet vs ~growth_rate:32 ~init_dim:64 ~block_config:[6; 12; 48; 32] ~bn_size:4
+  densenet vs ~growth_rate:32 ~init_dim:64 ~block_config:[ 6; 12; 48; 32 ] ~bn_size:4

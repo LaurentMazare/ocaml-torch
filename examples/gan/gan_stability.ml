@@ -16,7 +16,7 @@ let conv2d = Layer.conv2d_ ~stride:1
 
 let upsample xs =
   let _, _, x, y = Tensor.shape4_exn xs in
-  Tensor.upsample_nearest2d xs ~output_size:[2 * x; 2 * y]
+  Tensor.upsample_nearest2d xs ~output_size:[ 2 * x; 2 * y ]
 
 let avg_pool2d = Tensor.avg_pool2d ~ksize:(3, 3) ~stride:(2, 2) ~padding:(1, 1)
 
@@ -37,7 +37,7 @@ let resnet_block vs ~input_dim output_dim =
       |> Layer.apply c0
       |> leaky_relu
       |> Layer.apply c1
-      |> fun ys -> Tensor.(Layer.apply shortcut xs + (ys * f 0.1)) )
+      |> fun ys -> Tensor.(Layer.apply shortcut xs + (ys * f 0.1)))
 
 let create_generator vs =
   let s0 = img_size / 32 in
@@ -58,7 +58,7 @@ let create_generator vs =
   fun rand_input ->
     Tensor.to_device rand_input ~device:(Var_store.device vs)
     |> Layer.apply fc
-    |> Tensor.view ~size:[batch_size; 16 * nf; s0; s0]
+    |> Tensor.view ~size:[ batch_size; 16 * nf; s0; s0 ]
     |> Layer.apply rn00
     |> Layer.apply rn01
     |> upsample
@@ -116,28 +116,28 @@ let create_discriminator vs =
     |> avg_pool2d
     |> Layer.apply rn50
     |> Layer.apply rn51
-    |> Tensor.view ~size:[batch_size; 16 * nf * s0 * s0]
+    |> Tensor.view ~size:[ batch_size; 16 * nf * s0 * s0 ]
     |> leaky_relu
     |> Layer.apply fc
 
-let z_dist () = Tensor.randn [batch_size; latent_dim]
+let z_dist () = Tensor.randn [ batch_size; latent_dim ]
 
 let write_samples samples ~filename =
   List.init 4 ~f:(fun i ->
       List.init 4 ~f:(fun j ->
-          Tensor.narrow samples ~dim:0 ~start:((4 * i) + j) ~length:1 )
-      |> Tensor.cat ~dim:2 )
+          Tensor.narrow samples ~dim:0 ~start:((4 * i) + j) ~length:1)
+      |> Tensor.cat ~dim:2)
   |> Tensor.cat ~dim:3
   |> Torch_vision.Image.write_image ~filename
 
 let grad2 d_out x_in =
   let grad_dout =
-    Tensor.run_backward [Tensor.sum d_out] [x_in] ~create_graph:true ~keep_graph:true
+    Tensor.run_backward [ Tensor.sum d_out ] [ x_in ] ~create_graph:true ~keep_graph:true
     |> List.hd_exn
   in
   Tensor.(grad_dout * grad_dout)
-  |> Tensor.view ~size:[batch_size; -1]
-  |> Tensor.sum2 ~dim:[1] ~keepdim:false
+  |> Tensor.view ~size:[ batch_size; -1 ]
+  |> Tensor.sum2 ~dim:[ 1 ] ~keepdim:false
 
 let () =
   let device = Device.cuda_if_available () in
@@ -158,13 +158,13 @@ let () =
   Checkpointing.loop
     ~start_index:1
     ~end_index:batches
-    ~var_stores:[generator_vs; discriminator_vs]
+    ~var_stores:[ generator_vs; discriminator_vs ]
     ~checkpoint_base:"gan-stability.ot"
     ~checkpoint_every:(`seconds 600.)
     (fun ~index:batch_idx ->
       let x_real =
         let index =
-          Tensor.randint ~high:train_size ~size:[batch_size] ~options:(Int64, Cpu)
+          Tensor.randint ~high:train_size ~size:[ batch_size ] ~options:(Int64, Cpu)
         in
         Tensor.index_select images ~dim:0 ~index
         |> Tensor.to_type ~type_:Float
@@ -211,10 +211,10 @@ let () =
       if batch_idx % 25000 = 0 || (batch_idx < 100000 && batch_idx % 5000 = 0)
       then
         Tensor.no_grad (fun () -> generator z_test)
-        |> Tensor.view ~size:[batch_size; 3; img_size; img_size]
+        |> Tensor.view ~size:[ batch_size; 3; img_size; img_size ]
         |> Tensor.to_device ~device:Cpu
         |> fun xs ->
         Tensor.((xs + f 1.) * f 127.5)
         |> Tensor.clamp ~min:(Scalar.float 0.) ~max:(Scalar.float 255.)
         |> Tensor.to_type ~type_:Uint8
-        |> write_samples ~filename:(Printf.sprintf "out%d.png" batch_idx) )
+        |> write_samples ~filename:(Printf.sprintf "out%d.png" batch_idx))

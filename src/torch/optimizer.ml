@@ -9,12 +9,13 @@ end
 
 type t =
   { optimizer : Optimizer.t
-  ; trainable_vars : Tensor.t list }
+  ; trainable_vars : Tensor.t list
+  }
 
 let create optimizer ~vs =
   let trainable_vars = Var_store.trainable_vars vs in
   Optimizer.add_parameters optimizer trainable_vars;
-  {optimizer; trainable_vars}
+  { optimizer; trainable_vars }
 
 let adam ?(beta1 = 0.9) ?(beta2 = 0.999) ?(weight_decay = 0.) vs ~learning_rate =
   Optimizer.adam ~learning_rate ~beta1 ~beta2 ~weight_decay |> create ~vs
@@ -26,7 +27,8 @@ let rmsprop
     ?(momentum = 0.)
     ?(centered = false)
     vs
-    ~learning_rate =
+    ~learning_rate
+  =
   Optimizer.rmsprop ~learning_rate ~alpha ~eps ~weight_decay ~momentum ~centered
   |> create ~vs
 
@@ -36,14 +38,15 @@ let sgd
     ?(weight_decay = 0.)
     ?(nesterov = false)
     vs
-    ~learning_rate =
+    ~learning_rate
+  =
   Optimizer.sgd ~learning_rate ~momentum ~dampening ~weight_decay ~nesterov |> create ~vs
 
 let clip_grad_value_ t ~max_value =
   List.iter t.trainable_vars ~f:(fun tensor ->
       Tensor.grad tensor
       |> Tensor.clamp_ ~min:(Scalar.f (-.max_value)) ~max:(Scalar.f max_value)
-      |> fun tensor -> ignore (tensor : Tensor.t) )
+      |> fun tensor -> ignore (tensor : Tensor.t))
 
 let clip_grad_norm2_ t ~max_norm2 =
   let total_norm =
@@ -52,16 +55,16 @@ let clip_grad_norm2_ t ~max_norm2 =
         let grad_norm =
           if Tensor.defined grad then Tensor.norm grad |> Tensor.float_value else 0.
         in
-        acc +. grad_norm )
+        acc +. grad_norm)
     |> Float.sqrt
   in
   let clip_coef = max_norm2 /. (1e-6 +. total_norm) in
   if Float.( < ) clip_coef 1.
-  then
+  then (
     let clip_coef = Tensor.f clip_coef in
     List.iter t.trainable_vars ~f:(fun tensor ->
         let grad = Tensor.grad tensor in
-        if Tensor.defined grad then ignore (Tensor.mul_ grad clip_coef : Tensor.t) )
+        if Tensor.defined grad then ignore (Tensor.mul_ grad clip_coef : Tensor.t)))
 
 let zero_grad t = Optimizer.zero_grad t.optimizer
 
@@ -83,7 +86,8 @@ let set_learning_rate t ~learning_rate =
 module Linear_interpolation = struct
   type t =
     { xs : float array
-    ; ys : float array }
+    ; ys : float array
+    }
 
   let create vs =
     if List.is_empty vs then failwith "empty knot list";
@@ -92,11 +96,11 @@ module Linear_interpolation = struct
     let _ =
       List.fold vs ~init:None ~f:(fun acc (x, _) ->
           Option.iter acc ~f:(fun prev_x ->
-              if Float.( = ) x prev_x then Printf.failwithf "duplicate key %f" x () );
-          Some x )
+              if Float.( = ) x prev_x then Printf.failwithf "duplicate key %f" x ());
+          Some x)
     in
     let xs, ys = List.unzip vs in
-    {xs = Array.of_list xs; ys = Array.of_list ys}
+    { xs = Array.of_list xs; ys = Array.of_list ys }
 
   let eval t x =
     (* [t] has at least one element. *)
@@ -104,12 +108,12 @@ module Linear_interpolation = struct
     then t.ys.(0)
     else if Float.( <= ) t.xs.(Array.length t.xs - 1) x
     then t.ys.(Array.length t.xs - 1)
-    else
+    else (
       let index =
         Array.binary_search t.xs `First_greater_than_or_equal_to x ~compare:Float.compare
       in
       let index = Option.value_exn index in
       let prev_x, prev_y = t.xs.(index - 1), t.ys.(index - 1) in
       let next_x, next_y = t.xs.(index), t.ys.(index) in
-      ((prev_y *. (next_x -. x)) +. (next_y *. (x -. prev_x))) /. (next_x -. prev_x)
+      ((prev_y *. (next_x -. x)) +. (next_y *. (x -. prev_x))) /. (next_x -. prev_x))
 end

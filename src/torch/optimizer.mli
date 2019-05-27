@@ -6,16 +6,16 @@ module Clip_grad : sig
     | Value of float
 end
 
-val adam :
-     ?beta1:float
+val adam
+  :  ?beta1:float
   -> ?beta2:float
   -> ?weight_decay:float
   -> Var_store.t
   -> learning_rate:float
   -> t
 
-val rmsprop :
-     ?alpha:float
+val rmsprop
+  :  ?alpha:float
   -> ?eps:float
   -> ?weight_decay:float
   -> ?momentum:float
@@ -24,8 +24,8 @@ val rmsprop :
   -> learning_rate:float
   -> t
 
-val sgd :
-     ?momentum:float
+val sgd
+  :  ?momentum:float
   -> ?dampening:float
   -> ?weight_decay:float
   -> ?nesterov:bool

@@ -3,4 +3,6 @@ type t =
   | Cuda
 
 (* Hardcoded, should match Device.h *)
-let to_int = function Cpu -> 0 | Cuda -> 1
+let to_int = function
+  | Cpu -> 0
+  | Cuda -> 1

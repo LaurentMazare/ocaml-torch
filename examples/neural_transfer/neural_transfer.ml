@@ -8,12 +8,12 @@ open Torch_vision
 let style_weight = 1e6
 let learning_rate = 1e-1
 let total_steps = 3000
-let style_indexes = [0; 2; 5; 7; 10]
-let content_indexes = [7]
+let style_indexes = [ 0; 2; 5; 7; 10 ]
+let content_indexes = [ 7 ]
 
 let gram_matrix m =
   let a, b, c, d = Tensor.shape4_exn m in
-  let m = Tensor.view m ~size:[a * b; c * d] in
+  let m = Tensor.view m ~size:[ a * b; c * d ] in
   let g = Tensor.mm m (Tensor.tr m) in
   Tensor.( / ) g (Float.of_int (a * b * c * d) |> Tensor.f)
 
@@ -32,7 +32,7 @@ let () =
   let device = Device.cuda_if_available () in
   let style_img, content_img, filename =
     match Sys.argv with
-    | [|_; style_img; content_img; filename|] -> style_img, content_img, filename
+    | [| _; style_img; content_img; filename |] -> style_img, content_img, filename
     | _ ->
       Printf.failwithf "usage: %s style_img.png content_img.png vgg16.ot" Sys.argv.(0) ()
   in
@@ -55,13 +55,12 @@ let () =
     let input_layers = model input_var in
     let style_loss =
       List.map style_indexes ~f:(fun l ->
-          style_loss (Map.find_exn input_layers l) (Map.find_exn style_layers l) )
+          style_loss (Map.find_exn input_layers l) (Map.find_exn style_layers l))
       |> List.reduce_exn ~f:Tensor.( + )
     in
     let content_loss =
       List.map content_indexes ~f:(fun l ->
-          Tensor.mse_loss (Map.find_exn input_layers l) (Map.find_exn content_layers l)
-      )
+          Tensor.mse_loss (Map.find_exn input_layers l) (Map.find_exn content_layers l))
       |> List.reduce_exn ~f:Tensor.( + )
     in
     let loss = Tensor.((style_loss * f style_weight) + content_loss) in
