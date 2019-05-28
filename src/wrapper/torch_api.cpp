@@ -118,6 +118,7 @@ T at_value_at_indexes(tensor t, int *indexes, int indexes_len) {
     }
     return tensor.item<T>();
   )
+  return T();
 }
 
 double at_double_value_at_indexes(tensor t, int *indexes, int indexes_len) {
