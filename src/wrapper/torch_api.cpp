@@ -21,6 +21,7 @@ tensor at_new_tensor() {
   PROTECT(
     return new torch::Tensor();
   )
+  return nullptr;
 }
 
 tensor at_tensor_of_data(void *vs, int64_t *dims, int ndims, int element_size_in_bytes, int type) {
@@ -32,6 +33,7 @@ tensor at_tensor_of_data(void *vs, int64_t *dims, int ndims, int element_size_in
     memcpy(tensor_data, vs, tensor.numel() * element_size_in_bytes);
     return new torch::Tensor(tensor);
   )
+  return nullptr;
 }
 
 void at_copy_data(tensor tensor, void *vs, int64_t numel, int elt_size_in_bytes) {
@@ -58,6 +60,7 @@ tensor at_float_vec(double *vs, int len, int type) {
     for (int i = 0; i < len; ++i) tensor[i] = vs[i];
     return new torch::Tensor(tensor);
   )
+  return nullptr;
 }
 
 tensor at_int_vec(int64_t *vs, int len, int type) {
@@ -66,14 +69,17 @@ tensor at_int_vec(int64_t *vs, int len, int type) {
     for (int i = 0; i < len; ++i) tensor[i] = vs[i];
     return new torch::Tensor(tensor);
   )
+  return nullptr;
 }
 
 int at_defined(tensor t) {
   PROTECT(return t->defined();)
+  return -1;
 }
 
 int at_dim(tensor t) {
   PROTECT(return t->dim();)
+  return -1;
 }
 
 void at_shape(tensor t, int *dims) {
@@ -95,6 +101,7 @@ void at_backward(tensor t, int keep_graph, int create_graph) {
 
 int at_requires_grad(tensor t) {
   PROTECT(return t->requires_grad();)
+  return -1;
 }
 
 int at_grad_set_enabled(int b) {
@@ -103,10 +110,12 @@ int at_grad_set_enabled(int b) {
     torch::autograd::GradMode::set_enabled(b);
     return is_enabled;
   )
+  return -1;
 }
 
 tensor at_get(tensor t, int index) {
   PROTECT(return new torch::Tensor((*t)[index]);)
+  return nullptr;
 }
 
 template<typename T>
@@ -169,6 +178,7 @@ char *at_to_string(tensor t, int line_size) {
     torch::print(oss, *t, line_size);
     return strdup(oss.str().c_str());
   )
+  return nullptr;
 }
 
 void at_copy_(tensor dst, tensor src) {
@@ -240,6 +250,7 @@ tensor at_load(char *filename) {
     torch::load(tensor, filename);
     return new torch::Tensor(tensor);
   )
+  return nullptr;
 }
 
 void at_free(tensor t) {
@@ -286,6 +297,7 @@ optimizer ato_adam(double learning_rate,
         .weight_decay(weight_decay);
     return new torch::optim::Adam(vector<torch::Tensor>(), options);
   )
+  return nullptr;
 }
 
 optimizer ato_rmsprop(double learning_rate,
@@ -304,6 +316,7 @@ optimizer ato_rmsprop(double learning_rate,
         .centered(centered != 0);
       return new torch::optim::RMSprop(vector<torch::Tensor>(), options);
     )
+  return nullptr;
 }
 
 optimizer ato_sgd(double learning_rate,
@@ -320,6 +333,7 @@ optimizer ato_sgd(double learning_rate,
       .nesterov(nesterov);
     return new torch::optim::SGD(vector<torch::Tensor>(), options);
   )
+  return nullptr;
 }
 
 void ato_add_parameters(optimizer t, tensor *tensors, int ntensors) {
@@ -368,10 +382,12 @@ void ato_free(optimizer t) {
 
 scalar ats_int(int64_t v) {
   PROTECT(return new torch::Scalar(v);)
+  return nullptr;
 }
 
 scalar ats_float(double v) {
   PROTECT(return new torch::Scalar(v);)
+  return nullptr;
 }
 
 void ats_free(scalar s) {
@@ -380,14 +396,17 @@ void ats_free(scalar s) {
 
 int atc_cuda_device_count() {
   PROTECT(return torch::cuda::device_count();)
+  return -1;
 }
 
 int atc_cuda_is_available() {
   PROTECT(return torch::cuda::is_available();)
+  return -1;
 }
 
 int atc_cudnn_is_available() {
   PROTECT(return torch::cuda::cudnn_is_available();)
+  return -1;
 }
 
 void atc_set_benchmark_cudnn(int b) {
@@ -398,6 +417,7 @@ module atm_load(char *filename) {
   PROTECT(
     return new std::shared_ptr<torch::jit::script::Module>(torch::jit::load(filename));
   )
+  return nullptr;
 }
 
 tensor atm_forward(module m, tensor *tensors, int ntensors) {
@@ -410,6 +430,7 @@ tensor atm_forward(module m, tensor *tensors, int ntensors) {
       caml_failwith("forward did not return a tensor");
     return new torch::Tensor(output.toTensor());
   )
+  return nullptr;
 }
 
 ivalue atm_forward_(module m,
@@ -422,6 +443,7 @@ ivalue atm_forward_(module m,
     torch::jit::IValue output = (*m)->forward(inputs);
     return new torch::jit::IValue(output);
   )
+  return nullptr;
 }
 
 void atm_free(module m) {
@@ -432,18 +454,21 @@ ivalue ati_tensor(tensor t) {
   PROTECT(
     return new torch::jit::IValue(*t);
   )
+  return nullptr;
 }
 
 ivalue ati_int(int64_t i) {
   PROTECT(
     return new torch::jit::IValue(i);
   )
+  return nullptr;
 }
 
 ivalue ati_double(double d) {
   PROTECT(
     return new torch::jit::IValue(d);
   )
+  return nullptr;
 }
 
 ivalue ati_tuple(ivalue *is, int nvalues) {
@@ -452,6 +477,7 @@ ivalue ati_tuple(ivalue *is, int nvalues) {
     for (int i = 0; i < nvalues; ++i) vec.push_back(*(is[i]));
     return new torch::jit::IValue(torch::jit::Tuple::create(vec));
   )
+  return nullptr;
 }
 
 int ati_tag(ivalue i) {
@@ -463,30 +489,35 @@ int ati_tag(ivalue i) {
     caml_failwith(("unsupported tag" + i->tagKind()).c_str());
     return -1;
   )
+  return -1;
 }
 
 int64_t ati_to_int(ivalue i) {
   PROTECT(
     return i->toInt();
   )
+  return -1;
 }
 
 double ati_to_double(ivalue i) {
   PROTECT(
     return i->toDouble();
   )
+  return 0.;
 }
 
 tensor ati_to_tensor(ivalue i) {
   PROTECT(
     return new torch::Tensor(i->toTensor());
   )
+  return nullptr;
 }
 
 int ati_tuple_length(ivalue i) {
   PROTECT(
     return i->toTuple()->elements().size();
   )
+  return -1;
 }
 
 void ati_to_tuple(ivalue i,
