@@ -1,8 +1,10 @@
 type t =
   | Cpu
-  | Cuda
+  | Cuda of int
 
-(* Hardcoded, should match Device.h *)
+(* Hardcoded, should match torch_api.cpp *)
 let to_int = function
-  | Cpu -> 0
-  | Cuda -> 1
+  | Cpu -> -1
+  | Cuda i ->
+    if i < 0 then Printf.sprintf "negative index for cuda device" |> failwith;
+    i

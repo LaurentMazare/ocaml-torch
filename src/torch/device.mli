@@ -1,5 +1,5 @@
 type t = Torch_core.Device.t =
   | Cpu
-  | Cuda
+  | Cuda of int
 
 val cuda_if_available : unit -> t

@@ -538,4 +538,9 @@ void ati_free(ivalue i) {
   delete(i);
 }
 
+at::Device device_of_int(int d) {
+    if (d < 0) return at::Device(at::kCPU);
+    return at::Device(at::kCUDA, /*index=*/d);
+}
+
 #include "torch_api_generated.cpp.h"

@@ -1,5 +1,5 @@
 type t = Torch_core.Device.t =
   | Cpu
-  | Cuda
+  | Cuda of int
 
-let cuda_if_available () = if Cuda.is_available () then Cuda else Cpu
+let cuda_if_available () = if Cuda.is_available () then Cuda 0 else Cpu

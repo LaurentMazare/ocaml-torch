@@ -133,11 +133,11 @@ module Func = struct
           Printf.sprintf "of_carray_tensor(%s_data, %s_len)" arg_name arg_name
         | TensorOptions ->
           Printf.sprintf
-            "at::device(at::DeviceType(%s_device)).dtype(at::ScalarType(%s_kind))"
+            "at::device(device_of_int(%s_device)).dtype(at::ScalarType(%s_kind))"
             arg_name
             arg_name
         | ScalarType -> Printf.sprintf "torch::ScalarType(%s)" arg_name
-        | Device -> Printf.sprintf "torch::Device(torch::DeviceType(%s))" arg_name
+        | Device -> Printf.sprintf "device_of_int(%s)" arg_name
         | _ -> arg_name)
     |> String.concat ~sep:", "
 
