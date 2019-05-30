@@ -1,7 +1,14 @@
 (* Evaluation using a pre-trained ResNet model.
    The pre-trained weight file can be found at:
      https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/resnet18.ot
+     https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/resnet34.ot
      https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/densenet121.ot
+     https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/vgg16.ot
+     https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/squeezenet1_0.ot
+     https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/squeezenet1_1.ot
+     https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/alexnet.ot
+     https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/inception-v3.ot
+     https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/mobilenet-v2.ot
 *)
 open Base
 open Torch

@@ -6,12 +6,35 @@
 *)
 type t
 
+(** [create ?frozen ?device ~name ()] creates a new variable store
+    on the specified device (defaulting to cpu).
+*)
 val create : ?frozen:bool -> ?device:Device.t -> name:string -> unit -> t
+
+(** [sub t subname] returns a var-store corresponding to path
+    [subname] in [t].
+*)
 val sub : t -> string -> t
+
+(** [subi] is similar to [sub] but uses an integer for the subname. *)
+val subi : t -> int -> t
+
+(** Same as [sub]. *)
 val ( / ) : t -> string -> t
+
+(** Same as [subi]. *)
+val ( // ) : t -> int -> t
+
+(** [trainable_vars t] returns all the trainable variables stored in [t]. *)
 val trainable_vars : t -> Tensor.t list
+
+(** [all_vars t] returns all the variables stored in [t]. *)
 val all_vars : t -> (string * Tensor.t) list
+
+(** [name t] returns the var-store name. *)
 val name : t -> string
+
+(** [device t] returns the device used to store variables hold by [t]. *)
 val device : t -> Device.t
 
 module Init : sig
@@ -24,6 +47,9 @@ module Init : sig
     | Copy of Tensor.t
 end
 
+(** [new_var ?trainable t ~shape ~init ~name] creates a new variable in [t]    with shape [shape] and the specified initialization.
+    The tensor associated with the variable is returned.
+*)
 val new_var
   :  ?trainable:bool (* default: true *)
   -> t
@@ -32,7 +58,18 @@ val new_var
   -> name:string
   -> Tensor.t
 
+(** [new_var_copy ?trainable t ~src ~name] creates a new variable in [t]
+    by copying tensor [src], so using the same shape, element kind and
+    element values.
+*)
 val new_var_copy : ?trainable:bool -> t -> src:Tensor.t -> name:string -> Tensor.t
+
+(** [freeze t] freezes all variables in the var-store, none of the
+    variables are trainable anymore and their gradients are not tracked.
+*)
 val freeze : t -> unit
+
+(** [unfreeze t] unfreezes the 'trainable' variables from [t]. *)
 val unfreeze : t -> unit
+
 val copy : src:t -> dst:t -> unit

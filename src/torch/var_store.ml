@@ -41,7 +41,9 @@ let sub t sub_name =
       ; frozen = t.frozen
       })
 
+let subi t i = sub t (Int.to_string i)
 let ( / ) = sub
+let ( // ) = subi
 
 let rec freeze t =
   t.frozen <- true;
