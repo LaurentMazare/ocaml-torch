@@ -288,6 +288,61 @@ module Lstm = struct
     output, (h, c)
 end
 
+module Gru = struct
+  type t =
+    { w_ih : Tensor.t
+    ; w_hh : Tensor.t
+    ; b_ih : Tensor.t
+    ; b_hh : Tensor.t
+    ; hidden_size : int
+    ; device : Device.t
+    }
+
+  type state = Tensor.t
+
+  let create vs ~input_dim ~hidden_size =
+    let gate_size = 4 * hidden_size in
+    let w_ih =
+      kaiming_uniform vs ~shape:[ gate_size; input_dim ] ~a:(Float.sqrt 5.) ~name:"w_ih"
+    in
+    let w_hh =
+      kaiming_uniform
+        vs
+        ~shape:[ gate_size; hidden_size ]
+        ~a:(Float.sqrt 5.)
+        ~name:"w_hh"
+    in
+    let b_ih = Var_store.new_var vs ~shape:[ gate_size ] ~init:Zeros ~name:"b_ih" in
+    let b_hh = Var_store.new_var vs ~shape:[ gate_size ] ~init:Zeros ~name:"b_hh" in
+    { w_ih; w_hh; b_ih; b_hh; hidden_size; device = Var_store.device vs }
+
+  let zero_state t ~batch_size =
+    Tensor.zeros [ batch_size; t.hidden_size ] ~device:t.device
+
+  let step t hx input_ =
+    Tensor.gru_cell
+      input_
+      ~hx
+      ~w_ih:t.w_ih
+      ~w_hh:t.w_hh
+      ~b_ih:(Some t.b_ih)
+      ~b_hh:(Some t.b_hh)
+
+  let seq t input_ =
+    let batch_size = Tensor.shape input_ |> List.hd_exn in
+    let hx = Tensor.zeros [ 1; batch_size; t.hidden_size ] ~device:t.device in
+    Tensor.gru
+      input_
+      ~hx
+      ~params:[ t.w_ih; t.w_hh; t.b_ih; t.b_hh ]
+      ~has_biases:true
+      ~num_layers:1
+      ~dropout:0.
+      ~train:false
+      ~bidirectional:false
+      ~batch_first:true
+end
+
 let embeddings
     ?(sparse = false) ?(scale_grad_by_freq = false) vs ~num_embeddings ~embedding_dim
   =

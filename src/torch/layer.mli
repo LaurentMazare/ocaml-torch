@@ -169,35 +169,9 @@ val batch_norm2d
 (** {3 Recurrent Neural Networks } *)
 
 (** A Long Short Term Memory (LSTM) recurrent neural network. *)
-module Lstm : sig
-  type t
-  type state = Tensor.t * Tensor.t
+module Lstm : Rnn_intf.S with type state = Tensor.t * Tensor.t
 
-  (** [create vs ~input_dim ~hidden_size] creates a new LSTM with the
-      specified input dimension and hidden size.
-  *)
-  val create : Var_store.t -> input_dim:int -> hidden_size:int -> t
-
-  (** [step t state input_] applies one step of the LSTM network on the
-      given input using the specified state. The updated state is
-      returned.
-  *)
-  val step : t -> state -> Tensor.t -> state
-
-  (** [seq t inputs] applies multiple steps of the LSTM network starting
-      from a zero state. The hidden states and the final state are
-      returned.
-      [inputs] should have shape [batch_size * timesteps * input_dim],
-      the returned output tensor then has shape
-      [batch_size * timesteps * hidden_size].
-  *)
-  val seq : t -> Tensor.t -> Tensor.t * state
-
-  (** [zero_state t ~batch_size] returns an initial state to be used for
-      a LSTM network.
-  *)
-  val zero_state : t -> batch_size:int -> state
-end
+module Gru : Rnn_intf.S with type state = Tensor.t
 
 (** {3 Embeddings } *)
 
