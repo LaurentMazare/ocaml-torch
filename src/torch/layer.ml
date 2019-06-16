@@ -301,7 +301,7 @@ module Gru = struct
   type state = Tensor.t
 
   let create vs ~input_dim ~hidden_size =
-    let gate_size = 4 * hidden_size in
+    let gate_size = 3 * hidden_size in
     let w_ih =
       kaiming_uniform vs ~shape:[ gate_size; input_dim ] ~a:(Float.sqrt 5.) ~name:"w_ih"
     in
@@ -320,13 +320,7 @@ module Gru = struct
     Tensor.zeros [ batch_size; t.hidden_size ] ~device:t.device
 
   let step t hx input_ =
-    Tensor.gru_cell
-      input_
-      ~hx
-      ~w_ih:t.w_ih
-      ~w_hh:t.w_hh
-      ~b_ih:(Some t.b_ih)
-      ~b_hh:(Some t.b_hh)
+    Tensor.gru_cell input_ ~hx ~w_ih:t.w_ih ~w_hh:t.w_hh ~b_ih:None ~b_hh:None
 
   let seq t input_ =
     let batch_size = Tensor.shape input_ |> List.hd_exn in

@@ -10,6 +10,8 @@
 open! Base
 open Torch
 
+let max_length = 10
+
 module Encoder : sig
   type t
   type state
@@ -68,7 +70,7 @@ end = struct
         |> Tensor.relu
         |> Layer.Gru.step gru hidden
       in
-      Layer.forward linear hidden |> Tensor.softmax ~dim:(-1), hidden
+      hidden, Layer.forward linear hidden |> Tensor.softmax ~dim:(-1)
     in
     forward, Layer.Gru.zero_state gru ~batch_size:1
 
@@ -77,26 +79,47 @@ end = struct
   let of_tensor = Fn.id
 end
 
-let train ~input_ ~target ~encoder ~decoder ~optimizer =
+let predict ~input_ ~encoder ~decoder ~decoder_start ~decoder_eos =
   let encoder_final, encoder_outputs =
     List.fold_map input_ ~init:(Encoder.zero_state encoder) ~f:(fun state idx ->
         let input_tensor = Tensor.of_int1 [| idx |] in
         Encoder.forward encoder input_tensor state)
   in
   let _encoder_outputs = Tensor.stack encoder_outputs ~dim:0 in
-  let loss, _, _ =
-    let use_teacher_forcing = Float.( < ) (Random.float 1.) 0.5 in
-    let decoder_state = Encoder.to_tensor encoder_final |> Decoder.of_tensor in
-    let init = Tensor.of_float0 0., decoder_state, Tensor.of_int1 [||] in
-    List.fold target ~init ~f:(fun (loss, state, prev) idx ->
-        let state, output = Decoder.forward decoder prev state in
-        let target_tensor = Tensor.of_int1 [| idx |] in
-        let loss = Tensor.(loss + nll_loss output ~targets:target_tensor) in
-        let output = if use_teacher_forcing then target_tensor else output in
-        loss, state, output)
+  let decoder_state = Encoder.to_tensor encoder_final |> Decoder.of_tensor in
+  let rec loop ~state ~prevs ~max_length =
+    let state, output = Decoder.forward decoder (List.hd_exn prevs) state in
+    let _, output = Tensor.topk output ~k:1 ~dim:(-1) ~largest:true ~sorted:true in
+    if Tensor.to_int0_exn output = decoder_eos || max_length = 0
+    then List.rev prevs
+    else loop ~state ~prevs:(output :: prevs) ~max_length:(max_length - 1)
   in
-  Optimizer.backward_step optimizer ~loss;
-  Tensor.to_float0_exn loss /. Float.of_int (List.length target)
+  loop ~state:decoder_state ~prevs:[ decoder_start ] ~max_length
+
+let train_loss ~input_ ~target ~encoder ~decoder ~decoder_start ~decoder_eos =
+  let encoder_final, encoder_outputs =
+    List.fold_map input_ ~init:(Encoder.zero_state encoder) ~f:(fun state idx ->
+        let input_tensor = Tensor.of_int1 [| idx |] in
+        Encoder.forward encoder input_tensor state)
+  in
+  let _encoder_outputs = Tensor.stack encoder_outputs ~dim:0 in
+  let use_teacher_forcing = Float.( < ) (Random.float 1.) 0.5 in
+  let decoder_state = Encoder.to_tensor encoder_final |> Decoder.of_tensor in
+  let rec loop ~loss ~state ~prev ~target =
+    match target with
+    | [] -> loss
+    | idx :: target ->
+      let state, output = Decoder.forward decoder prev state in
+      let target_tensor = Tensor.of_int1 [| idx |] in
+      let loss = Tensor.(loss + nll_loss output ~targets:target_tensor) in
+      let _, output = Tensor.topk output ~k:1 ~dim:(-1) ~largest:true ~sorted:true in
+      if Tensor.to_int0_exn output = decoder_eos
+      then loss
+      else (
+        let prev = if use_teacher_forcing then target_tensor else output in
+        loop ~loss ~state ~prev ~target)
+  in
+  loop ~loss:(Tensor.of_float0 0.) ~state:decoder_state ~prev:decoder_start ~target
 
 let hidden_size = 256
 
@@ -121,7 +144,9 @@ module Loss_stats = struct
 end
 
 let () =
-  let dataset = Dataset.create ~input_lang:"eng" ~output_lang:"fra" |> Dataset.reverse in
+  let dataset =
+    Dataset.create ~input_lang:"eng" ~output_lang:"fra" ~max_length |> Dataset.reverse
+  in
   let ilang = Dataset.input_lang dataset in
   let olang = Dataset.output_lang dataset in
   Stdio.printf "Input:  %s %d words.\n%!" (Lang.name ilang) (Lang.length ilang);
@@ -133,9 +158,15 @@ let () =
   let optimizer = Optimizer.sgd vs ~learning_rate:0.01 in
   let pairs = Dataset.pairs dataset in
   let loss_stats = Loss_stats.create () in
+  let decoder_start = Tensor.of_int1 [| Lang.sos_token olang |] in
+  let decoder_eos = Lang.eos_token olang in
   for iter = 1 to 75_000 do
     let input_, target = pairs.(Random.int (Array.length pairs)) in
-    let loss = train ~input_ ~target ~encoder ~decoder ~optimizer in
+    let loss =
+      train_loss ~input_ ~target ~encoder ~decoder ~decoder_start ~decoder_eos
+    in
+    Optimizer.backward_step optimizer ~loss;
+    let loss = Tensor.to_float0_exn loss /. Float.of_int (List.length target) in
     Loss_stats.update loss_stats loss;
     if iter % 1_000 = 0
     then Stdio.printf "%d %f\n%!" iter (Loss_stats.avg_and_reset loss_stats)
