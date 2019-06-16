@@ -3,10 +3,6 @@ open! Base
 type t = { apply : Tensor.t -> Tensor.t }
 type t_with_training = { apply_with_training : Tensor.t -> is_training:bool -> Tensor.t }
 
-let set_training t_with_training ~is_training =
-  let apply xs = t_with_training.apply_with_training xs ~is_training in
-  { apply }
-
 let with_training t =
   let apply_with_training xs ~is_training:_ = t.apply xs in
   { apply_with_training }
@@ -212,9 +208,9 @@ let batch_norm2d
   in
   { apply_with_training }
 
-let apply t xs = t.apply xs
+let forward t xs = t.apply xs
 
-let apply_ t_with_training xs ~is_training =
+let forward_ t_with_training xs ~is_training =
   t_with_training.apply_with_training xs ~is_training
 
 let id = { apply = Fn.id }
@@ -222,11 +218,11 @@ let id_ = { apply_with_training = (fun xs ~is_training:_ -> xs) }
 let of_fn apply = { apply }
 let of_fn_ apply_with_training = { apply_with_training }
 
-let fold t_list =
+let sequential t_list =
   let apply xs = List.fold t_list ~init:xs ~f:(fun acc t -> t.apply acc) in
   { apply }
 
-let fold_ t_list =
+let sequential_ t_list =
   let apply_with_training xs ~is_training =
     List.fold t_list ~init:xs ~f:(fun acc t -> t.apply_with_training acc ~is_training)
   in

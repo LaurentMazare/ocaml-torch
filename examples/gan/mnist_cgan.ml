@@ -23,7 +23,7 @@ let create_generator vs =
   let linear2 =
     Layer.linear vs ~input_dim:generator_hidden_nodes ~activation:Tanh image_dim
   in
-  fun rand_input -> Layer.apply linear1 rand_input |> Layer.apply linear2
+  fun rand_input -> Layer.forward linear1 rand_input |> Layer.forward linear2
 
 (* The discriminator receives as input both an image and a one-hot encoding of labels. *)
 let create_discriminator vs =
@@ -37,7 +37,7 @@ let create_discriminator vs =
   let linear2 =
     Layer.linear vs ~input_dim:discriminator_hidden_nodes 1 ~activation:Sigmoid
   in
-  fun xs -> Layer.apply linear1 xs |> Layer.apply linear2
+  fun xs -> Layer.forward linear1 xs |> Layer.forward linear2
 
 let bce ?(epsilon = 1e-7) ~labels model_values =
   Tensor.(

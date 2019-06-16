@@ -34,10 +34,10 @@ let resnet_block vs ~input_dim output_dim =
   in
   Layer.of_fn (fun xs ->
       leaky_relu xs
-      |> Layer.apply c0
+      |> Layer.forward c0
       |> leaky_relu
-      |> Layer.apply c1
-      |> fun ys -> Tensor.(Layer.apply shortcut xs + (ys * f 0.1)))
+      |> Layer.forward c1
+      |> fun ys -> Tensor.(Layer.forward shortcut xs + (ys * f 0.1)))
 
 let create_generator vs =
   let s0 = img_size / 32 in
@@ -57,27 +57,27 @@ let create_generator vs =
   let conv = conv2d vs ~ksize:3 ~padding:1 ~input_dim:nf 3 in
   fun rand_input ->
     Tensor.to_device rand_input ~device:(Var_store.device vs)
-    |> Layer.apply fc
+    |> Layer.forward fc
     |> Tensor.view ~size:[ batch_size; 16 * nf; s0; s0 ]
-    |> Layer.apply rn00
-    |> Layer.apply rn01
+    |> Layer.forward rn00
+    |> Layer.forward rn01
     |> upsample
-    |> Layer.apply rn10
-    |> Layer.apply rn11
+    |> Layer.forward rn10
+    |> Layer.forward rn11
     |> upsample
-    |> Layer.apply rn20
-    |> Layer.apply rn21
+    |> Layer.forward rn20
+    |> Layer.forward rn21
     |> upsample
-    |> Layer.apply rn30
-    |> Layer.apply rn31
+    |> Layer.forward rn30
+    |> Layer.forward rn31
     |> upsample
-    |> Layer.apply rn40
-    |> Layer.apply rn41
+    |> Layer.forward rn40
+    |> Layer.forward rn41
     |> upsample
-    |> Layer.apply rn50
-    |> Layer.apply rn51
+    |> Layer.forward rn50
+    |> Layer.forward rn51
     |> leaky_relu
-    |> Layer.apply conv
+    |> Layer.forward conv
     |> Tensor.tanh
 
 let create_discriminator vs =
@@ -98,27 +98,27 @@ let create_discriminator vs =
   let fc = Layer.linear vs ~input_dim:(16 * nf * s0 * s0) 1 in
   fun xs ->
     Tensor.to_device xs ~device:(Var_store.device vs)
-    |> Layer.apply conv
-    |> Layer.apply rn00
-    |> Layer.apply rn01
+    |> Layer.forward conv
+    |> Layer.forward rn00
+    |> Layer.forward rn01
     |> avg_pool2d
-    |> Layer.apply rn10
-    |> Layer.apply rn11
+    |> Layer.forward rn10
+    |> Layer.forward rn11
     |> avg_pool2d
-    |> Layer.apply rn20
-    |> Layer.apply rn21
+    |> Layer.forward rn20
+    |> Layer.forward rn21
     |> avg_pool2d
-    |> Layer.apply rn30
-    |> Layer.apply rn31
+    |> Layer.forward rn30
+    |> Layer.forward rn31
     |> avg_pool2d
-    |> Layer.apply rn40
-    |> Layer.apply rn41
+    |> Layer.forward rn40
+    |> Layer.forward rn41
     |> avg_pool2d
-    |> Layer.apply rn50
-    |> Layer.apply rn51
+    |> Layer.forward rn50
+    |> Layer.forward rn51
     |> Tensor.view ~size:[ batch_size; 16 * nf * s0 * s0 ]
     |> leaky_relu
-    |> Layer.apply fc
+    |> Layer.forward fc
 
 let z_dist () = Tensor.randn [ batch_size; latent_dim ]
 

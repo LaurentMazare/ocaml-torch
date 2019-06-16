@@ -14,17 +14,17 @@ let features vs =
   let conv4 = conv2d (sub vs "8") ~ksize:3 ~padding:1 ~stride:1 ~input_dim:384 256 in
   let conv5 = conv2d (sub vs "10") ~ksize:3 ~padding:1 ~stride:1 ~input_dim:256 256 in
   Layer.of_fn (fun xs ->
-      Layer.apply conv1 xs
+      Layer.forward conv1 xs
       |> Tensor.relu
       |> Tensor.max_pool2d ~ksize:(3, 3) ~stride:(2, 2)
-      |> Layer.apply conv2
+      |> Layer.forward conv2
       |> Tensor.relu
       |> Tensor.max_pool2d ~ksize:(3, 3) ~stride:(2, 2)
-      |> Layer.apply conv3
+      |> Layer.forward conv3
       |> Tensor.relu
-      |> Layer.apply conv4
+      |> Layer.forward conv4
       |> Tensor.relu
-      |> Layer.apply conv5
+      |> Layer.forward conv5
       |> Tensor.relu
       |> Tensor.max_pool2d ~ksize:(3, 3) ~stride:(2, 2))
 
@@ -38,19 +38,19 @@ let classifier ?num_classes vs =
   in
   Layer.of_fn_ (fun xs ~is_training ->
       Tensor.dropout xs ~p:0.5 ~is_training
-      |> Layer.apply linear1
+      |> Layer.forward linear1
       |> Tensor.relu
       |> Tensor.dropout ~p:0.5 ~is_training
-      |> Layer.apply linear2
+      |> Layer.forward linear2
       |> Tensor.relu
-      |> Layer.apply linear_or_id)
+      |> Layer.forward linear_or_id)
 
 let alexnet ?num_classes vs =
   let features = features (sub vs "features") in
   let classifier = classifier ?num_classes (sub vs "classifier") in
   Layer.of_fn_ (fun xs ~is_training ->
       let batch_size = Tensor.shape xs |> List.hd_exn in
-      Layer.apply features xs
+      Layer.forward features xs
       |> Tensor.adaptive_avg_pool2d ~output_size:[ 6; 6 ]
       |> Tensor.view ~size:[ batch_size; -1 ]
-      |> Layer.apply_ classifier ~is_training)
+      |> Layer.forward_ classifier ~is_training)

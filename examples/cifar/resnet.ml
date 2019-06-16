@@ -28,16 +28,16 @@ let basic_block vs ~stride ~input_dim output_dim =
     else (
       let conv = conv2d vs ~padding:0 ~ksize:1 ~stride ~input_dim output_dim in
       let bn = Layer.batch_norm2d vs output_dim in
-      fun xs ~is_training -> Layer.apply conv xs |> Layer.apply_ bn ~is_training)
+      fun xs ~is_training -> Layer.forward conv xs |> Layer.forward_ bn ~is_training)
   in
   fun xs ~is_training ->
-    Layer.apply conv2d1 xs
+    Layer.forward conv2d1 xs
     |> Tensor.dropout ~p:dropout_p ~is_training
-    |> Layer.apply_ bn1 ~is_training
+    |> Layer.forward_ bn1 ~is_training
     |> Tensor.relu
-    |> Layer.apply conv2d2
+    |> Layer.forward conv2d2
     |> Tensor.dropout ~p:dropout_p ~is_training
-    |> Layer.apply_ bn2 ~is_training
+    |> Layer.forward_ bn2 ~is_training
     |> fun ys -> Tensor.( + ) ys (shortcut xs ~is_training)
 
 let block_stack vs ~stride ~depth ~input_dim output_dim =
@@ -64,8 +64,8 @@ let resnet vs =
   Layer.of_fn_ (fun xs ~is_training ->
       let batch_size = Tensor.shape xs |> List.hd_exn in
       Tensor.reshape xs ~shape:Cifar_helper.[ -1; image_c; image_w; image_h ]
-      |> Layer.apply conv2d
-      |> Layer.apply_ bn ~is_training
+      |> Layer.forward conv2d
+      |> Layer.forward_ bn ~is_training
       |> Tensor.relu
       |> stack1 ~is_training
       |> stack2 ~is_training
@@ -73,7 +73,7 @@ let resnet vs =
       |> stack4 ~is_training
       |> Tensor.avg_pool2d ~ksize:(4, 4)
       |> Tensor.reshape ~shape:[ batch_size; -1 ]
-      |> Layer.apply linear)
+      |> Layer.forward linear)
 
 let model vs =
   { Model.model_name = "resnet"; model = resnet vs; epochs; lr_schedule; batch_size }

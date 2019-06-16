@@ -33,11 +33,11 @@ module VAE = struct
     }
 
   let encode t xs =
-    let h1 = Layer.apply t.fc1 xs |> Tensor.relu in
-    Layer.apply t.fc21 h1, Layer.apply t.fc22 h1
+    let h1 = Layer.forward t.fc1 xs |> Tensor.relu in
+    Layer.forward t.fc21 h1, Layer.forward t.fc22 h1
 
   let decode t zs =
-    Layer.apply t.fc3 zs |> Tensor.relu |> Layer.apply t.fc4 |> Tensor.sigmoid
+    Layer.forward t.fc3 zs |> Tensor.relu |> Layer.forward t.fc4 |> Tensor.sigmoid
 
   let forward t xs =
     let mu, logvar = encode t (Tensor.view xs ~size:[ -1; 784 ]) in

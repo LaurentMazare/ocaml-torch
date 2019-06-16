@@ -15,14 +15,14 @@ let%expect_test _ =
   let opt = Optimizer.sgd vs ~learning_rate:1e-3 in
   for index = 1 to 100 do
     Optimizer.zero_grad opt;
-    let ys_ = Layer.apply linear xs in
+    let ys_ = Layer.forward linear xs in
     let loss = Tensor.(mean (square (ys - ys_))) in
     if index % 10 = 0
     then Stdio.printf !"%d %{sexp:float}\n" index (Tensor.to_float0_exn loss);
     Tensor.backward loss;
     Optimizer.step opt
   done;
-  let ys_ = Layer.apply linear xs in
+  let ys_ = Layer.forward linear xs in
   let loss = Tensor.(mean ((ys - ys_) * (ys - ys_))) in
   Stdio.printf !"%{sexp:float}\n" (Tensor.to_float0_exn loss);
   [%expect

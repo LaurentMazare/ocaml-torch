@@ -34,19 +34,19 @@ let create_generator vs =
   let convt5 = tr2d ~stride:2 ~padding:1 ~input_dim:128 3 in
   fun rand_input ->
     Tensor.to_device rand_input ~device:(Var_store.device vs)
-    |> Layer.apply convt1
-    |> Layer.apply_ bn1 ~is_training:true
+    |> Layer.forward convt1
+    |> Layer.forward_ bn1 ~is_training:true
     |> Tensor.relu_
-    |> Layer.apply convt2
-    |> Layer.apply_ bn2 ~is_training:true
+    |> Layer.forward convt2
+    |> Layer.forward_ bn2 ~is_training:true
     |> Tensor.relu_
-    |> Layer.apply convt3
-    |> Layer.apply_ bn3 ~is_training:true
+    |> Layer.forward convt3
+    |> Layer.forward_ bn3 ~is_training:true
     |> Tensor.relu_
-    |> Layer.apply convt4
-    |> Layer.apply_ bn4 ~is_training:true
+    |> Layer.forward convt4
+    |> Layer.forward_ bn4 ~is_training:true
     |> Tensor.relu_
-    |> Layer.apply convt5
+    |> Layer.forward convt5
     |> Tensor.tanh
 
 let create_discriminator vs =
@@ -73,18 +73,18 @@ let create_discriminator vs =
   let conv5 = conv2d ~stride:1 ~padding:0 ~input_dim:1024 1 in
   fun xs ->
     Tensor.to_device xs ~device:(Var_store.device vs)
-    |> Layer.apply conv1
+    |> Layer.forward conv1
     |> leaky_relu
-    |> Layer.apply conv2
-    |> Layer.apply_ bn2 ~is_training:true
+    |> Layer.forward conv2
+    |> Layer.forward_ bn2 ~is_training:true
     |> leaky_relu
-    |> Layer.apply conv3
-    |> Layer.apply_ bn3 ~is_training:true
+    |> Layer.forward conv3
+    |> Layer.forward_ bn3 ~is_training:true
     |> leaky_relu
-    |> Layer.apply conv4
-    |> Layer.apply_ bn4 ~is_training:true
+    |> Layer.forward conv4
+    |> Layer.forward_ bn4 ~is_training:true
     |> leaky_relu
-    |> Layer.apply conv5
+    |> Layer.forward conv5
     |> Tensor.view ~size:[ batch_size ]
 
 let rand () = Tensor.((f 2. * rand [ batch_size; latent_dim; 1; 1 ]) - f 1.)

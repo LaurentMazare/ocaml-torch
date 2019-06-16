@@ -27,7 +27,7 @@ let sample ~lstm ~linear ~dataset ~device =
            Tensor.fill_float (Tensor.narrow prev_y ~dim:1 ~start:prev_label ~length:1) 1.;
            let state = Layer.Lstm.step lstm state prev_y in
            let sampled_y =
-             Layer.apply linear (fst state)
+             Layer.forward linear (fst state)
              |> Tensor.softmax ~dim:(-1)
              |> Tensor.multinomial ~num_samples:1 ~replacement:false
            in
@@ -73,7 +73,7 @@ let () =
             |> Tensor.scatter_ ~dim:2 ~src:one ~index:xs
           in
           let lstm_out, _ = Layer.Lstm.seq lstm onehot in
-          let logits = Layer.apply linear lstm_out in
+          let logits = Layer.forward linear lstm_out in
           (* Compute the cross-entropy loss. *)
           let loss =
             Tensor.cross_entropy_for_logits

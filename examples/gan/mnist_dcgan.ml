@@ -39,13 +39,13 @@ let create_generator vs =
       ~activation:Tanh
   in
   fun rand_input ->
-    Layer.apply convt1 rand_input
+    Layer.forward convt1 rand_input
     |> Tensor.const_batch_norm
     |> Tensor.relu
-    |> Layer.apply convt2
+    |> Layer.forward convt2
     |> Tensor.const_batch_norm
     |> Tensor.relu
-    |> Layer.apply convt3
+    |> Layer.forward convt3
 
 let create_discriminator vs =
   let conv1 = Layer.conv2d_ vs ~ksize:4 ~stride:2 ~padding:1 ~input_dim:1 32 in
@@ -54,12 +54,12 @@ let create_discriminator vs =
     Layer.conv2d_ vs ~ksize:7 ~stride:1 ~padding:0 ~input_dim:64 1 ~activation:Sigmoid
   in
   fun xs ->
-    Layer.apply conv1 xs
+    Layer.forward conv1 xs
     |> Tensor.leaky_relu
-    |> Layer.apply conv2
+    |> Layer.forward conv2
     |> Tensor.const_batch_norm
     |> Tensor.leaky_relu
-    |> Layer.apply conv3
+    |> Layer.forward conv3
 
 let bce ?(epsilon = 1e-7) ~labels model_values =
   Tensor.(

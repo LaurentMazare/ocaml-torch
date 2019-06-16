@@ -29,7 +29,7 @@ let precompute_activations dataset ~model_path =
     Stdio.printf "Precomputing activations, this can take a minute...\n%!";
     Dataset_helper.map dataset ~batch_size:4 ~f:(fun _ ~batch_images ~batch_labels ->
         let activations =
-          Layer.apply_ pretrained_model batch_images ~is_training:false
+          Layer.forward_ pretrained_model batch_images ~is_training:false
         in
         Tensor.copy activations, batch_labels)
   in
@@ -44,7 +44,7 @@ let () =
   let dataset = precompute_activations dataset ~model_path:Sys.argv.(1) in
   let train_vs = Var_store.create ~name:"rn-vs" () in
   let fc1 = Layer.linear train_vs ~input_dim:512 (List.length classes) in
-  let model xs = Layer.apply fc1 xs in
+  let model xs = Layer.forward fc1 xs in
   let sgd = Optimizer.sgd train_vs ~learning_rate:0.001 ~momentum:0.9 in
   for epoch_idx = 1 to 20 do
     let sum_loss = ref 0. in

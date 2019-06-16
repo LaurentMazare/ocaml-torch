@@ -139,5 +139,5 @@ let () =
   let resized_image = Image.resize image ~width ~height in
   let resized_image = Tensor.(to_type resized_image ~type_:Float / f 255.) in
   (* Apply the model. *)
-  let predictions = Layer.apply_ model resized_image ~is_training:false in
+  let predictions = Layer.forward_ model resized_image ~is_training:false in
   Tensor.squeeze predictions |> report ~image ~width ~height

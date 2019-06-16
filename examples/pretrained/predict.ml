@@ -43,7 +43,7 @@ let () =
   Stdio.printf "Loading weights from %s\n%!" Sys.argv.(1);
   Serialize.load_multi_ ~named_tensors:(Var_store.all_vars vs) ~filename:Sys.argv.(1);
   let probabilities =
-    Layer.apply_ model image ~is_training:false |> Tensor.softmax ~dim:(-1)
+    Layer.forward_ model image ~is_training:false |> Tensor.softmax ~dim:(-1)
   in
   Imagenet.Classes.top probabilities ~k:5
   |> List.iter ~f:(fun (name, probability) ->

@@ -73,7 +73,7 @@ let precompute_activations dataset ~model_path =
     Serialize.load_multi_
       ~named_tensors:(Var_store.all_vars frozen_vs) ~filename:model_path;
     Dataset_helper.map dataset ~batch_size:4 ~f:(fun _ ~batch_images ~batch_labels ->
-      let activations = Layer.apply_ pretrained_model batch_images ~is_training:false in
+      let activations = Layer.forward_ pretrained_model batch_images ~is_training:false in
       Tensor.copy activations, batch_labels)
   in
   Dataset_helper.print_summary dataset;
@@ -90,7 +90,7 @@ This snippet performs the following steps:
 - `Serialize.load_multi_` loads the weights stored in a given file and copy their values
   to some tensors. Tensors are named in the serialized file in a way that matches
   the names we used when creating the ResNet model.
-- Finally for each tensor of the training and testing datasets, `Layer.apply_ pretrained_model`
+- Finally for each tensor of the training and testing datasets, `Layer.forward_ pretrained_model`
   performs a forward pass on the model and returns the resulting tensor. In this
   case the result is a vector of 512 values per sample.
 
@@ -105,7 +105,7 @@ trainable variables.
 ```ocaml
   let train_vs = Var_store.create ~name:"rn-vs" () in
   let fc1 = Layer.linear train_vs ~input_dim:512 (List.length classes) in
-  let model xs = Layer.apply fc1 xs in
+  let model xs = Layer.forward fc1 xs in
 ```
 
 We will use stochastic gradient descent to minimize the cross-entropy loss

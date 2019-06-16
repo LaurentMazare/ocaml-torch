@@ -25,7 +25,7 @@ let cbr vs ksize ~stride ~input_dim ?(groups = 1) output_dim =
   in
   let bn = Layer.batch_norm2d (subi vs 1) output_dim in
   Layer.of_fn_ (fun xs ~is_training ->
-      Layer.apply conv xs |> Layer.apply_ bn ~is_training |> relu6)
+      Layer.forward conv xs |> Layer.forward_ bn ~is_training |> relu6)
 
 (* Inverted residual block. *)
 let inv vs ~stride ~expand_ratio ~input_dim output_dim =
@@ -49,10 +49,10 @@ let inv vs ~stride ~expand_ratio ~input_dim output_dim =
   in
   let bn = Layer.batch_norm2d (subi vs (nid + 2)) output_dim in
   Layer.of_fn_ (fun xs ~is_training ->
-      Layer.apply_ cbr0 xs ~is_training
-      |> Layer.apply_ cbr1 ~is_training
-      |> Layer.apply conv
-      |> Layer.apply_ bn ~is_training
+      Layer.forward_ cbr0 xs ~is_training
+      |> Layer.forward_ cbr1 ~is_training
+      |> Layer.forward conv
+      |> Layer.forward_ bn ~is_training
       |> fun ys -> if use_residual then Tensor.(xs + ys) else ys)
 
 let blocks =
@@ -80,19 +80,19 @@ let v2 vs ~num_classes =
                  Int.incr layer_idx;
                  let input_dim, stride = if idx = 0 then in_dim, s else c, 1 in
                  inv (subi vs_f !layer_idx) ~stride ~expand_ratio:t ~input_dim c)
-          |> Layer.fold_
+          |> Layer.sequential_
         in
         c, layer)
   in
-  let layers = Layer.fold_ layers in
+  let layers = Layer.sequential_ layers in
   Int.incr layer_idx;
   let final_cbr = cbr (subi vs_f !layer_idx) `k1 ~stride:1 ~input_dim:in_dim last_dim in
   let final_linear = Layer.linear (subi vs_c 1) ~input_dim:last_dim num_classes in
   Layer.of_fn_ (fun xs ~is_training ->
-      Layer.apply_ init_cbr xs ~is_training
-      |> Layer.apply_ layers ~is_training
-      |> Layer.apply_ final_cbr ~is_training
+      Layer.forward_ init_cbr xs ~is_training
+      |> Layer.forward_ layers ~is_training
+      |> Layer.forward_ final_cbr ~is_training
       |> Tensor.dropout ~p:0.2 ~is_training
       |> Tensor.mean2 ~dim:[ 2 ] ~keepdim:false
       |> Tensor.mean2 ~dim:[ 2 ] ~keepdim:false
-      |> Layer.apply final_linear)
+      |> Layer.forward final_linear)

@@ -36,33 +36,33 @@ let decoder vs =
   let l11 = conv2d vs ~input_dim:num_channel 3 in
   Layer.of_fn (fun xs ->
       Tensor.to_device xs ~device:(Var_store.device vs)
-      |> Layer.apply l0
+      |> Layer.forward l0
       |> Tensor.view ~size:[ batch_size; num_channel; 8; 8 ]
-      |> Layer.apply l1
+      |> Layer.forward l1
       |> Tensor.elu
-      |> Layer.apply l2
-      |> Tensor.elu
-      |> upsample
-      |> Layer.apply l3
-      |> Tensor.elu
-      |> Layer.apply l4
+      |> Layer.forward l2
       |> Tensor.elu
       |> upsample
-      |> Layer.apply l5
+      |> Layer.forward l3
       |> Tensor.elu
-      |> Layer.apply l6
-      |> Tensor.elu
-      |> upsample
-      |> Layer.apply l7
-      |> Tensor.elu
-      |> Layer.apply l8
+      |> Layer.forward l4
       |> Tensor.elu
       |> upsample
-      |> Layer.apply l9
+      |> Layer.forward l5
       |> Tensor.elu
-      |> Layer.apply l10
+      |> Layer.forward l6
       |> Tensor.elu
-      |> Layer.apply l11
+      |> upsample
+      |> Layer.forward l7
+      |> Tensor.elu
+      |> Layer.forward l8
+      |> Tensor.elu
+      |> upsample
+      |> Layer.forward l9
+      |> Tensor.elu
+      |> Layer.forward l10
+      |> Tensor.elu
+      |> Layer.forward l11
       |> Tensor.tanh)
 
 let encoder vs =
@@ -88,44 +88,44 @@ let encoder vs =
   let l11 = Layer.linear vs ~input_dim:(8 * 8 * 4 * num_channel) latent_dim in
   Layer.of_fn (fun xs ->
       Tensor.to_device xs ~device:(Var_store.device vs)
-      |> Layer.apply l0
+      |> Layer.forward l0
       |> Tensor.elu
-      |> Layer.apply l1
+      |> Layer.forward l1
       |> Tensor.elu
-      |> Layer.apply l2
+      |> Layer.forward l2
       |> Tensor.elu
-      |> Layer.apply down1
+      |> Layer.forward down1
       |> avg_pool2d
-      |> Layer.apply l3
+      |> Layer.forward l3
       |> Tensor.elu
-      |> Layer.apply l4
+      |> Layer.forward l4
       |> Tensor.elu
-      |> Layer.apply down2
+      |> Layer.forward down2
       |> avg_pool2d
-      |> Layer.apply l5
+      |> Layer.forward l5
       |> Tensor.elu
-      |> Layer.apply l6
+      |> Layer.forward l6
       |> Tensor.elu
-      |> Layer.apply down3
+      |> Layer.forward down3
       |> avg_pool2d
-      |> Layer.apply l7
+      |> Layer.forward l7
       |> Tensor.elu
-      |> Layer.apply l8
+      |> Layer.forward l8
       |> Tensor.elu
-      |> Layer.apply down4
+      |> Layer.forward down4
       |> avg_pool2d
-      |> Layer.apply l9
+      |> Layer.forward l9
       |> Tensor.elu
-      |> Layer.apply l10
+      |> Layer.forward l10
       |> Tensor.elu
       |> Tensor.view ~size:[ batch_size; 8 * 8 * 4 * num_channel ]
-      |> Layer.apply l11
+      |> Layer.forward l11
       |> Tensor.elu)
 
 let create_discriminator vs =
   let encoder = encoder vs in
   let decoder = decoder vs in
-  Layer.of_fn (fun xs -> Layer.apply encoder xs |> Layer.apply decoder)
+  Layer.of_fn (fun xs -> Layer.forward encoder xs |> Layer.forward decoder)
 
 let z_dist () = Tensor.((rand [ batch_size; latent_dim ] * f 2.) - f 1.)
 
@@ -175,9 +175,9 @@ let () =
         Var_store.freeze generator_vs;
         Var_store.unfreeze discriminator_vs;
         Optimizer.zero_grad opt_d;
-        let gen_z = Tensor.no_grad (fun () -> z_dist () |> Layer.apply generator) in
-        let outputs_d_z = Layer.apply discriminator gen_z in
-        let outputs_d_x = Layer.apply discriminator x_real in
+        let gen_z = Tensor.no_grad (fun () -> z_dist () |> Layer.forward generator) in
+        let outputs_d_z = Layer.forward discriminator gen_z in
+        let outputs_d_x = Layer.forward discriminator x_real in
         let real_loss_d = Tensor.(abs (outputs_d_x - x_real) |> mean) in
         let fake_loss_d = Tensor.(abs (outputs_d_z - gen_z) |> mean) in
         let k = Tensor.f !k |> Tensor.to_device ~device in
@@ -190,8 +190,8 @@ let () =
         Var_store.unfreeze generator_vs;
         Var_store.freeze discriminator_vs;
         Optimizer.zero_grad opt_g;
-        let gen_z = z_dist () |> Layer.apply generator in
-        let outputs_g_z = Layer.apply discriminator gen_z in
+        let gen_z = z_dist () |> Layer.forward generator in
+        let outputs_g_z = Layer.forward discriminator gen_z in
         let loss_g = Tensor.(abs (outputs_g_z - gen_z) |> mean) in
         Tensor.backward loss_g;
         Optimizer.step opt_g;
@@ -209,7 +209,7 @@ let () =
       Caml.Gc.full_major ();
       if batch_idx % 25000 = 0 || (batch_idx < 100000 && batch_idx % 5000 = 0)
       then
-        Tensor.no_grad (fun () -> Layer.apply generator z_test)
+        Tensor.no_grad (fun () -> Layer.forward generator z_test)
         |> Tensor.view ~size:[ batch_size; 3; img_size; img_size ]
         |> Tensor.to_device ~device:Cpu
         |> fun xs ->

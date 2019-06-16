@@ -17,7 +17,7 @@ let create_generator vs =
   let linear2 =
     Layer.linear vs image_dim ~activation:Tanh ~input_dim:generator_hidden_nodes
   in
-  fun rand_input -> Layer.apply linear1 rand_input |> Layer.apply linear2
+  fun rand_input -> Layer.forward linear1 rand_input |> Layer.forward linear2
 
 let create_discriminator vs =
   let linear1 =
@@ -30,7 +30,7 @@ let create_discriminator vs =
   let linear2 =
     Layer.linear vs 1 ~activation:Sigmoid ~input_dim:discriminator_hidden_nodes
   in
-  fun xs -> Layer.apply linear1 xs |> Layer.apply linear2
+  fun xs -> Layer.forward linear1 xs |> Layer.forward linear2
 
 let bce ?(epsilon = 1e-7) ~labels model_values =
   Tensor.(

@@ -17,14 +17,14 @@ let () =
   let adam = Optimizer.adam vs ~learning_rate in
   let model xs ~is_training =
     Tensor.reshape xs ~shape:[ -1; 1; 28; 28 ]
-    |> Layer.apply conv2d1
+    |> Layer.forward conv2d1
     |> Tensor.max_pool2d ~ksize:(2, 2)
-    |> Layer.apply conv2d2
+    |> Layer.forward conv2d2
     |> Tensor.max_pool2d ~ksize:(2, 2)
     |> Tensor.reshape ~shape:[ -1; 1024 ]
-    |> Layer.apply linear1
+    |> Layer.forward linear1
     |> Tensor.dropout ~p:0.5 ~is_training
-    |> Layer.apply linear2
+    |> Layer.forward linear2
   in
   let train_model = model ~is_training:true in
   let test_model = model ~is_training:false in

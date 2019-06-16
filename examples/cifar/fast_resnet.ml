@@ -18,7 +18,7 @@ let lr_schedule =
 
 let conv_bn vs ~c_in ~c_out =
   let open Layer in
-  fold_
+  sequential_
     [ conv2d_ vs ~ksize:3 ~stride:1 ~padding:1 ~use_bias:false ~input_dim:c_in c_out
       |> with_training
     ; batch_norm2d vs c_out ~w_init:Ones
@@ -30,9 +30,9 @@ let layer vs ~c_in ~c_out =
   let block1 = conv_bn vs ~c_in:c_out ~c_out in
   let block2 = conv_bn vs ~c_in:c_out ~c_out in
   Layer.of_fn_ (fun xs ~is_training ->
-      let pre = Layer.apply_ pre xs ~is_training |> Tensor.max_pool2d ~ksize:(2, 2) in
-      Layer.apply_ block1 pre ~is_training
-      |> Layer.apply_ block2 ~is_training
+      let pre = Layer.forward_ pre xs ~is_training |> Tensor.max_pool2d ~ksize:(2, 2) in
+      Layer.forward_ block1 pre ~is_training
+      |> Layer.forward_ block2 ~is_training
       |> fun ys -> Tensor.( + ) pre ys)
 
 let fast_resnet vs =
@@ -43,14 +43,14 @@ let fast_resnet vs =
   let linear = Layer.linear vs ~use_bias:false ~input_dim:512 10 in
   Layer.of_fn_ (fun xs ~is_training ->
       let batch_size = Tensor.shape xs |> List.hd_exn in
-      Layer.apply_ pre xs ~is_training
-      |> Layer.apply_ layer1 ~is_training
-      |> Layer.apply_ inter ~is_training
+      Layer.forward_ pre xs ~is_training
+      |> Layer.forward_ layer1 ~is_training
+      |> Layer.forward_ inter ~is_training
       |> Tensor.max_pool2d ~ksize:(2, 2)
-      |> Layer.apply_ layer2 ~is_training
+      |> Layer.forward_ layer2 ~is_training
       |> Tensor.max_pool2d ~ksize:(4, 4)
       |> Tensor.reshape ~shape:[ batch_size; -1 ]
-      |> Layer.apply linear
+      |> Layer.forward linear
       |> fun logits -> Tensor.(logits * f 0.125))
 
 let model vs =

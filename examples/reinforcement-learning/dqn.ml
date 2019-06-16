@@ -65,11 +65,11 @@ let linear_model vs ~input_dim actions_dim =
   let linear2 = Layer.linear vs ~input_dim:24 24 in
   let linear3 = Layer.linear vs ~input_dim:24 actions_dim in
   Layer.of_fn (fun xs ->
-      Layer.apply linear1 xs
+      Layer.forward linear1 xs
       |> Tensor.relu
-      |> Layer.apply linear2
+      |> Layer.forward linear2
       |> Tensor.relu
-      |> Layer.apply linear3)
+      |> Layer.forward linear3)
 
 module DqnAgent : sig
   type t
@@ -112,7 +112,7 @@ end = struct
     if Float.( < ) t.epsilon (Random.float 1.)
     then (
       let qvalues =
-        Tensor.no_grad (fun () -> Tensor.unsqueeze state ~dim:0 |> Layer.apply t.model)
+        Tensor.no_grad (fun () -> Tensor.unsqueeze state ~dim:0 |> Layer.forward t.model)
       in
       Tensor.argmax qvalues ~dim:1 ~keepdim:false
       |> Tensor.to_int1_exn
@@ -129,7 +129,7 @@ end = struct
       let rewards = Transition.batch_rewards transitions in
       let continue = Transition.batch_continue transitions in
       let qvalues =
-        Layer.apply t.model states
+        Layer.forward t.model states
         |> Tensor.gather
              ~dim:1
              ~index:(Tensor.unsqueeze actions ~dim:1)
@@ -138,7 +138,8 @@ end = struct
       in
       let next_qvalues =
         Tensor.no_grad (fun () ->
-            Layer.apply t.model next_states |> Tensor.max2 ~dim:1 ~keepdim:false |> fst)
+            Layer.forward t.model next_states |> Tensor.max2 ~dim:1 ~keepdim:false |> fst
+        )
       in
       let expected_qvalues = Tensor.(rewards + (f t.gamma * next_qvalues * continue)) in
       let loss = Tensor.mse_loss qvalues expected_qvalues in

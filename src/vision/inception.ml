@@ -18,7 +18,7 @@ let cv_bn vs ~k ~pad ?(stride = 1) ~input_dim out_dim =
   in
   let bn = Layer.batch_norm2d (sub vs "bn") ~eps:0.001 out_dim in
   Layer.of_fn_ (fun xs ~is_training ->
-      Layer.apply conv xs |> Layer.apply_ bn ~is_training |> Tensor.relu)
+      Layer.forward conv xs |> Layer.forward_ bn ~is_training |> Tensor.relu)
 
 let cv_bn2 vs ~k ~pad ?(stride = 1, 1) ~input_dim out_dim =
   let conv =
@@ -33,7 +33,7 @@ let cv_bn2 vs ~k ~pad ?(stride = 1, 1) ~input_dim out_dim =
   in
   let bn = Layer.batch_norm2d (sub vs "bn") ~eps:0.001 out_dim in
   Layer.of_fn_ (fun xs ~is_training ->
-      Layer.apply conv xs |> Layer.apply_ bn ~is_training |> Tensor.relu)
+      Layer.forward conv xs |> Layer.forward_ bn ~is_training |> Tensor.relu)
 
 let inception_a vs ~input_dim ~pool =
   let b1 = cv_bn (sub vs "branch1x1") ~k:1 ~pad:0 ~input_dim 64 in
@@ -44,7 +44,7 @@ let inception_a vs ~input_dim ~pool =
   let b3_3 = cv_bn (sub vs "branch3x3dbl_3") ~k:3 ~pad:1 ~input_dim:96 96 in
   let bpool = cv_bn (sub vs "branch_pool") ~k:1 ~pad:0 ~input_dim pool in
   Layer.of_fn_ (fun xs ~is_training ->
-      let apply_ = Layer.apply_ ~is_training in
+      let apply_ = Layer.forward_ ~is_training in
       let b1 = apply_ b1 xs in
       let b2 = apply_ b2_1 xs |> apply_ b2_2 in
       let b3 = apply_ b3_1 xs |> apply_ b3_2 |> apply_ b3_3 in
@@ -59,7 +59,7 @@ let inception_b vs ~input_dim =
   let b2_2 = cv_bn (sub vs "branch3x3dbl_2") ~k:3 ~pad:1 ~input_dim:64 96 in
   let b2_3 = cv_bn (sub vs "branch3x3dbl_3") ~k:3 ~pad:0 ~stride:2 ~input_dim:96 96 in
   Layer.of_fn_ (fun xs ~is_training ->
-      let apply_ = Layer.apply_ ~is_training in
+      let apply_ = Layer.forward_ ~is_training in
       let b1 = apply_ b1 xs in
       let b2 = apply_ b2_1 xs |> apply_ b2_2 |> apply_ b2_3 in
       let bpool = max_pool2d xs ~k:3 ~stride:2 in
@@ -77,7 +77,7 @@ let inception_c vs ~input_dim ~c7 =
   let b3_5 = cv_bn2 (sub vs "branch7x7dbl_5") ~k:(1, 7) ~pad:(0, 3) ~input_dim:c7 192 in
   let bpool = cv_bn (sub vs "branch_pool") ~k:1 ~pad:0 ~input_dim 192 in
   Layer.of_fn_ (fun xs ~is_training ->
-      let apply_ = Layer.apply_ ~is_training in
+      let apply_ = Layer.forward_ ~is_training in
       let b1 = apply_ b1 xs in
       let b2 = apply_ b2_1 xs |> apply_ b2_2 |> apply_ b2_3 in
       let b3 =
@@ -96,7 +96,7 @@ let inception_d vs ~input_dim =
   let b2_3 = cv_bn2 (sub vs "branch7x7x3_3") ~k:(7, 1) ~pad:(3, 0) ~input_dim:192 192 in
   let b2_4 = cv_bn (sub vs "branch7x7x3_4") ~k:3 ~pad:0 ~stride:2 ~input_dim:192 192 in
   Layer.of_fn_ (fun xs ~is_training ->
-      let apply_ = Layer.apply_ ~is_training in
+      let apply_ = Layer.forward_ ~is_training in
       let b1 = apply_ b1_1 xs |> apply_ b1_2 in
       let b2 = apply_ b2_1 xs |> apply_ b2_2 |> apply_ b2_3 |> apply_ b2_4 in
       let bpool = max_pool2d xs ~k:3 ~stride:2 in
@@ -117,7 +117,7 @@ let inception_e vs ~input_dim =
   in
   let bpool = cv_bn (sub vs "branch_pool") ~k:1 ~pad:0 ~input_dim 192 in
   Layer.of_fn_ (fun xs ~is_training ->
-      let apply_ = Layer.apply_ ~is_training in
+      let apply_ = Layer.forward_ ~is_training in
       let b1 = apply_ b1 xs in
       let b2 = apply_ b2_1 xs in
       let b2 = Tensor.cat [ apply_ b2_2a b2; apply_ b2_2b b2 ] ~dim:1 in
@@ -151,7 +151,7 @@ let v3 ?num_classes vs =
     | Some num_classes -> Layer.linear (sub vs "fc") ~input_dim:2048 num_classes
   in
   Layer.of_fn_ (fun xs ~is_training ->
-      let apply_ = Layer.apply_ ~is_training in
+      let apply_ = Layer.forward_ ~is_training in
       let batch_size = Tensor.shape xs |> List.hd_exn in
       apply_ conv1 xs
       |> apply_ conv2a
@@ -175,4 +175,4 @@ let v3 ?num_classes vs =
       |> Tensor.adaptive_avg_pool2d ~output_size:[ 1; 1 ]
       |> Tensor.dropout ~p:0.5 ~is_training
       |> Tensor.view ~size:[ batch_size; -1 ]
-      |> Layer.apply final)
+      |> Layer.forward final)

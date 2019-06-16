@@ -223,7 +223,8 @@ let build_model vs t =
             match block with
             | `layers layers ->
               let ys =
-                List.fold layers ~init:xs ~f:(fun xs l -> Layer.apply_ l xs ~is_training)
+                List.fold layers ~init:xs ~f:(fun xs l ->
+                    Layer.forward_ l xs ~is_training)
               in
               ys, detections
             | `route layers ->

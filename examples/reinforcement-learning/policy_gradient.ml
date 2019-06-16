@@ -18,7 +18,7 @@ let epochs = 50
 let model vs ~obs_dim ~n_acts =
   let linear1 = Layer.linear vs ~input_dim:obs_dim 32 in
   let linear2 = Layer.linear vs ~input_dim:32 n_acts in
-  fun xs -> Layer.apply linear1 xs |> Tensor.tanh |> Layer.apply linear2
+  fun xs -> Layer.forward linear1 xs |> Tensor.tanh |> Layer.forward linear2
 
 module Acc = struct
   type t =

@@ -31,15 +31,15 @@ let basic_block vs ~stride ~input_dim output_dim =
     then fun ~xs ~out:_ -> xs
     else (
       let conv2d = conv2d vs ~padding:0 ~ksize:1 ~stride ~input_dim output_dim in
-      fun ~xs:_ ~out -> Layer.apply conv2d out)
+      fun ~xs:_ ~out -> Layer.forward conv2d out)
   in
   fun xs ~is_training ->
-    let out = Layer.apply_ bn1 ~is_training xs |> Tensor.relu in
+    let out = Layer.forward_ bn1 ~is_training xs |> Tensor.relu in
     let shortcut = shortcut ~xs ~out in
-    Layer.apply conv2d1 out
-    |> Layer.apply_ bn2 ~is_training
+    Layer.forward conv2d1 out
+    |> Layer.forward_ bn2 ~is_training
     |> Tensor.relu
-    |> Layer.apply conv2d2
+    |> Layer.forward conv2d2
     |> fun ys -> Tensor.( + ) ys shortcut
 
 let block_stack vs ~stride ~depth ~input_dim output_dim =
@@ -68,14 +68,14 @@ let resnet vs =
   Layer.of_fn_ (fun xs ~is_training ->
       let batch_size = Tensor.shape xs |> List.hd_exn in
       Tensor.reshape xs ~shape:Cifar_helper.[ -1; image_c; image_w; image_h ]
-      |> Layer.apply conv2d
+      |> Layer.forward conv2d
       |> stack1 ~is_training
       |> stack2 ~is_training
       |> stack3 ~is_training
       |> stack4 ~is_training
       |> Tensor.avg_pool2d ~ksize:(4, 4)
       |> Tensor.reshape ~shape:[ batch_size; -1 ]
-      |> Layer.apply linear)
+      |> Layer.forward linear)
 
 let model vs =
   { Model.model_name = "preact-resnet"

@@ -22,8 +22,8 @@ let () =
   let sgd =
     Optimizer.sgd vs ~learning_rate:0. ~momentum:0.9 ~weight_decay:5e-4 ~nesterov:true
   in
-  let train_model xs = Layer.apply_ model xs ~is_training:true in
-  let test_model xs = Layer.apply_ model xs ~is_training:false in
+  let train_model xs = Layer.forward_ model xs ~is_training:true in
+  let test_model xs = Layer.forward_ model xs ~is_training:false in
   let batches_per_epoch = Dataset_helper.batches_per_epoch cifar ~batch_size in
   Stdio.printf "Training %s for %d epochs.\n%!" model_name epochs;
   Checkpointing.loop

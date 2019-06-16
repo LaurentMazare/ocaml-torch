@@ -76,14 +76,14 @@ let model vs actions =
   let linear2 = Layer.linear vs ~input_dim:256 actions in
   Layer.of_fn (fun xs ->
       Tensor.(to_type xs ~type_:Float * f (1. /. 255.))
-      |> Layer.apply conv1
+      |> Layer.forward conv1
       |> Tensor.relu
-      |> Layer.apply conv2
+      |> Layer.forward conv2
       |> Tensor.relu
       |> Tensor.flatten
-      |> Layer.apply linear1
+      |> Layer.forward linear1
       |> Tensor.relu
-      |> Layer.apply linear2)
+      |> Layer.forward linear2)
 
 module DqnAgent : sig
   type t
@@ -142,7 +142,7 @@ end = struct
         Tensor.no_grad (fun () ->
             Tensor.unsqueeze state ~dim:0
             |> Tensor.to_device ~device
-            |> Layer.apply t.model)
+            |> Layer.forward t.model)
       in
       Tensor.argmax qvalues ~dim:1 ~keepdim:false
       |> Tensor.to_int1_exn
@@ -162,7 +162,7 @@ end = struct
       let rewards = Transition.batch_rewards transitions |> Tensor.to_device ~device in
       let continue = Transition.batch_continue transitions |> Tensor.to_device ~device in
       let qvalues =
-        Layer.apply t.model states
+        Layer.forward t.model states
         |> Tensor.gather
              ~dim:1
              ~index:(Tensor.unsqueeze actions ~dim:1)
@@ -174,13 +174,13 @@ end = struct
             if double_dqn
             then (
               let actions =
-                Layer.apply t.model next_states |> Tensor.argmax ~dim:1 ~keepdim:true
+                Layer.forward t.model next_states |> Tensor.argmax ~dim:1 ~keepdim:true
               in
-              Layer.apply t.target_model next_states
+              Layer.forward t.target_model next_states
               |> Tensor.gather ~dim:1 ~index:actions ~sparse_grad:false
               |> Tensor.squeeze1 ~dim:1)
             else
-              Layer.apply t.target_model next_states
+              Layer.forward t.target_model next_states
               |> Tensor.max2 ~dim:1 ~keepdim:false
               |> fst)
       in

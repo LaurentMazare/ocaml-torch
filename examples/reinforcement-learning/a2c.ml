@@ -25,18 +25,18 @@ let model vs ~actions =
   fun xs ->
     let ys =
       Tensor.to_device xs ~device:(Var_store.device vs)
-      |> Layer.apply conv1
+      |> Layer.forward conv1
       |> Tensor.relu
-      |> Layer.apply conv2
+      |> Layer.forward conv2
       |> Tensor.relu
-      |> Layer.apply conv3
+      |> Layer.forward conv3
       |> Tensor.relu
       |> Tensor.flatten
-      |> Layer.apply linear1
+      |> Layer.forward linear1
       |> Tensor.relu
     in
-    { Rollout.critic = Layer.apply critic_linear ys
-    ; actor = Layer.apply actor_linear ys
+    { Rollout.critic = Layer.forward critic_linear ys
+    ; actor = Layer.forward actor_linear ys
     }
 
 let train ~device =

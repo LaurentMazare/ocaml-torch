@@ -91,22 +91,22 @@ let vgg ~num_classes vs cfg ~batch_norm =
   let cls_vs i = Var_store.(vs / "classifier" / Int.to_string i) in
   let layers =
     make_layers (Var_store.sub vs "features") cfg ~batch_norm ~in_place_relu:true
-    |> Layer.fold_
+    |> Layer.sequential_
   in
   let fc1 = Layer.linear (cls_vs 0) ~input_dim:(512 * 7 * 7) 4096 in
   let fc2 = Layer.linear (cls_vs 3) ~input_dim:4096 4096 in
   let fc3 = Layer.linear (cls_vs 6) ~input_dim:4096 num_classes in
   Layer.of_fn_ (fun xs ~is_training ->
       let batch_size = Tensor.shape xs |> List.hd_exn in
-      Layer.apply_ layers xs ~is_training
+      Layer.forward_ layers xs ~is_training
       |> Tensor.view ~size:[ batch_size; -1 ]
-      |> Layer.apply fc1
+      |> Layer.forward fc1
       |> Tensor.relu
       |> Tensor.dropout ~p:0.5 ~is_training
-      |> Layer.apply fc2
+      |> Layer.forward fc2
       |> Tensor.relu
       |> Tensor.dropout ~p:0.5 ~is_training
-      |> Layer.apply fc3)
+      |> Layer.forward fc3)
 
 let vgg11 vs ~num_classes = vgg ~num_classes vs `A ~batch_norm:false
 let vgg11_bn vs ~num_classes = vgg ~num_classes vs `A ~batch_norm:true
@@ -127,6 +127,6 @@ let vgg16_layers ?(max_layer = Int.max_value) vs ~batch_norm =
      only be applied on the first call to this function. *)
   Staged.stage (fun xs ->
       List.fold_mapi layers ~init:xs ~f:(fun i xs layer ->
-          let xs = Layer.apply_ layer xs ~is_training:false in
+          let xs = Layer.forward_ layer xs ~is_training:false in
           xs, (i, xs))
       |> fun (_, indexed_layers) -> Map.of_alist_exn (module Int) indexed_layers)
