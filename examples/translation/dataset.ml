@@ -1,3 +1,13 @@
+(* TODO: handle unicode characters in the same way the python code
+   does, e.g.
+   ```python
+    def unicodeToAscii(s):
+        return ''.join(
+            c for c in unicodedata.normalize('NFD', s)
+            if unicodedata.category(c) != 'Mn'
+        )
+    ```
+*)
 open Base
 
 type t =
@@ -6,7 +16,6 @@ type t =
   ; pairs : (string * string) list
   }
 
-(* TODO: handle special chars ? *)
 let normalize str =
   String.lowercase str
   |> String.concat_map ~f:(fun c ->
@@ -19,6 +28,10 @@ let normalize str =
            | '?' -> " ?"
            | _ -> " "))
 
+(* We only consider a subset of the dataset that starts with the
+   following prefixes as this makes the dataset smaller and the translation
+   task easier to learn
+*)
 let filter_prefix =
   let prefixes =
     [ "i am "

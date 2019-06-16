@@ -2,17 +2,25 @@
 
    This follows the line of the PyTorch tutorial:
    https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html
+   And trains a Sequence to Sequence (seq2seq) model using attention to
+   perform translation between French and English.
 
    The dataset can be downloaded from the following link:
    https://download.pytorch.org/tutorial/data.zip
    The eng-fra.txt file should be moved in the data directory.
 *)
-open! Base
+open Base
 open Torch
 
+(* Texts with more than this number of words will be discarded. *)
 let max_length = 10
 
-module Encoder : sig
+(* The seq2seq model that we build uses an encoder based on a GRU to
+   produce a vector representing the whole input text.
+   This vector is the final hidden state of the GRU and is passed as
+   initial state to the decoder which is also based on a GRU.
+*)
+module Enc : sig
   type t
   type state
 
@@ -44,33 +52,27 @@ end = struct
   let to_tensor = Fn.id
 end
 
-(* Decoder without attention. *)
-module Decoder : sig
+type 'state decode_fn =
+  Tensor.t
+  -> hidden:'state
+  -> enc_outputs:Tensor.t
+  -> is_training:bool
+  -> 'state * Tensor.t
+
+module type Decoder = sig
   type t
   type state
 
   val create : Var_store.t -> hidden_size:int -> output_size:int -> t
-
-  val forward
-    :  t
-    -> Tensor.t
-    -> hidden:state
-    -> encoder_outputs:Tensor.t
-    -> is_training:bool
-    -> state * Tensor.t
-
+  val forward : t -> state decode_fn
   val zero_state : t -> state
   val of_tensor : Tensor.t -> state
-end = struct
-  type state = Tensor.t
+end
 
-  type t =
-    (Tensor.t
-     -> hidden:state
-     -> encoder_outputs:Tensor.t
-     -> is_training:bool
-     -> state * Tensor.t)
-    * state
+(* Decoder module without the attention part. *)
+module Dec : Decoder = struct
+  type state = Tensor.t
+  type t = state decode_fn * state
 
   let create vs ~hidden_size ~output_size =
     let embedding =
@@ -78,7 +80,7 @@ end = struct
     in
     let gru = Layer.Gru.create vs ~input_dim:hidden_size ~hidden_size in
     let linear = Layer.linear vs ~input_dim:hidden_size output_size in
-    let forward input_ ~hidden ~encoder_outputs:_ ~is_training:_ =
+    let forward input_ ~hidden ~enc_outputs:_ ~is_training:_ =
       let hidden =
         Layer.forward embedding input_
         |> Tensor.view ~size:[ 1; -1 ]
@@ -94,33 +96,10 @@ end = struct
   let of_tensor = Fn.id
 end
 
-(* Decoder with attention. *)
-module Decoder_attn : sig
-  type t
-  type state
-
-  val create : Var_store.t -> hidden_size:int -> output_size:int -> t
-
-  val forward
-    :  t
-    -> Tensor.t
-    -> hidden:state
-    -> encoder_outputs:Tensor.t
-    -> is_training:bool
-    -> state * Tensor.t
-
-  val zero_state : t -> state
-  val of_tensor : Tensor.t -> state
-end = struct
+(* Decoder module with the attention part. *)
+module Dec_attn : Decoder = struct
   type state = Tensor.t
-
-  type t =
-    (Tensor.t
-     -> hidden:state
-     -> encoder_outputs:Tensor.t
-     -> is_training:bool
-     -> state * Tensor.t)
-    * state
+  type t = state decode_fn * state
 
   let create vs ~hidden_size ~output_size =
     let embedding =
@@ -130,7 +109,7 @@ end = struct
     let attn = Layer.linear vs ~input_dim:(hidden_size * 2) max_length in
     let attn_combine = Layer.linear vs ~input_dim:(hidden_size * 2) hidden_size in
     let linear = Layer.linear vs ~input_dim:hidden_size output_size in
-    let forward input_ ~hidden ~encoder_outputs ~is_training =
+    let forward input_ ~hidden ~enc_outputs ~is_training =
       let embedded =
         Layer.forward embedding input_
         |> Tensor.dropout ~p:0.1 ~is_training
@@ -141,17 +120,15 @@ end = struct
         |> Layer.forward attn
         |> Tensor.unsqueeze ~dim:0
       in
-      let sz1, sz2, sz3 = Tensor.shape3_exn encoder_outputs in
-      let encoder_outputs =
+      let sz1, sz2, sz3 = Tensor.shape3_exn enc_outputs in
+      let enc_outputs =
         if sz2 = max_length
-        then encoder_outputs
+        then enc_outputs
         else
-          Tensor.cat
-            [ encoder_outputs; Tensor.zeros [ sz1; max_length - sz2; sz3 ] ]
-            ~dim:1
+          Tensor.cat [ enc_outputs; Tensor.zeros [ sz1; max_length - sz2; sz3 ] ] ~dim:1
       in
       let attn_applied =
-        Tensor.bmm attn_weights ~mat2:encoder_outputs |> Tensor.squeeze1 ~dim:1
+        Tensor.bmm attn_weights ~mat2:enc_outputs |> Tensor.squeeze1 ~dim:1
       in
       let output =
         Tensor.cat [ embedded; attn_applied ] ~dim:1
@@ -168,55 +145,61 @@ end = struct
   let of_tensor = Fn.id
 end
 
-module D = Decoder_attn
+module D = Dec_attn
 
-let predict ~input_ ~encoder ~decoder ~decoder_start ~decoder_eos =
-  let encoder_final, encoder_outputs =
-    List.fold_map input_ ~init:(Encoder.zero_state encoder) ~f:(fun state idx ->
+(* Apply the model to an input and get back the predicted word indexes. *)
+let predict ~input_ ~enc ~dec ~dec_start ~dec_eos =
+  let enc_final, enc_outputs =
+    List.fold_map input_ ~init:(Enc.zero_state enc) ~f:(fun state idx ->
         let input_tensor = Tensor.of_int1 [| idx |] in
-        Encoder.forward encoder input_tensor ~hidden:state)
+        Enc.forward enc input_tensor ~hidden:state)
   in
-  let encoder_outputs = Tensor.stack encoder_outputs ~dim:1 in
-  let decoder_state = Encoder.to_tensor encoder_final |> D.of_tensor in
+  let enc_outputs = Tensor.stack enc_outputs ~dim:1 in
+  let dec_state = Enc.to_tensor enc_final |> D.of_tensor in
   let rec loop ~state ~prevs ~max_length =
     let state, output =
       let prev = List.hd_exn prevs in
-      D.forward decoder prev ~hidden:state ~encoder_outputs ~is_training:false
+      D.forward dec prev ~hidden:state ~enc_outputs ~is_training:false
     in
     let _, output = Tensor.topk output ~k:1 ~dim:(-1) ~largest:true ~sorted:true in
-    if Tensor.to_int0_exn output = decoder_eos || max_length = 0
+    if Tensor.to_int0_exn output = dec_eos || max_length = 0
     then List.rev prevs
     else loop ~state ~prevs:(output :: prevs) ~max_length:(max_length - 1)
   in
-  loop ~state:decoder_state ~prevs:[ decoder_start ] ~max_length
+  loop ~state:dec_state ~prevs:[ dec_start ] ~max_length
   |> List.map ~f:Tensor.to_int0_exn
 
-let train_loss ~input_ ~target ~encoder ~decoder ~decoder_start ~decoder_eos =
-  let encoder_final, encoder_outputs =
-    List.fold_map input_ ~init:(Encoder.zero_state encoder) ~f:(fun state idx ->
+(* Compute the training loss on a pair of texts. *)
+let train_loss ~input_ ~target ~enc ~dec ~dec_start ~dec_eos =
+  let enc_final, enc_outputs =
+    List.fold_map input_ ~init:(Enc.zero_state enc) ~f:(fun state idx ->
         let input_tensor = Tensor.of_int1 [| idx |] in
-        Encoder.forward encoder input_tensor ~hidden:state)
+        Enc.forward enc input_tensor ~hidden:state)
   in
-  let encoder_outputs = Tensor.stack encoder_outputs ~dim:1 in
+  let enc_outputs = Tensor.stack enc_outputs ~dim:1 in
+  (* When [use_teacher_forcing] is [true], use the target words as input
+     for each step of the decoder rather than the decoder output for the
+     previous step. *)
   let use_teacher_forcing = Float.( < ) (Random.float 1.) 0.5 in
-  let decoder_state = Encoder.to_tensor encoder_final |> D.of_tensor in
+  let dec_state = Enc.to_tensor enc_final |> D.of_tensor in
+  (* Loop until the target sequence ends or the model returns EOS. *)
   let rec loop ~loss ~state ~prev ~target =
     match target with
     | [] -> loss
     | idx :: target ->
       let state, output =
-        D.forward decoder prev ~hidden:state ~encoder_outputs ~is_training:true
+        D.forward dec prev ~hidden:state ~enc_outputs ~is_training:true
       in
       let target_tensor = Tensor.of_int1 [| idx |] in
       let loss = Tensor.(loss + nll_loss output ~targets:target_tensor) in
       let _, output = Tensor.topk output ~k:1 ~dim:(-1) ~largest:true ~sorted:true in
-      if Tensor.to_int0_exn output = decoder_eos
+      if Tensor.to_int0_exn output = dec_eos
       then loss
       else (
         let prev = if use_teacher_forcing then target_tensor else output in
         loop ~loss ~state ~prev ~target)
   in
-  loop ~loss:(Tensor.of_float0 0.) ~state:decoder_state ~prev:decoder_start ~target
+  loop ~loss:(Tensor.of_float0 0.) ~state:dec_state ~prev:dec_start ~target
 
 let hidden_size = 256
 
@@ -250,29 +233,29 @@ let () =
   Stdio.printf "Output: %s %d words.\n%!" (Lang.name olang) (Lang.length olang);
   let device = Device.cuda_if_available () in
   let vs = Var_store.create ~name:"seq2seq" ~device () in
-  let encoder = Encoder.create vs ~input_size:(Lang.length ilang) ~hidden_size in
-  let decoder = D.create vs ~output_size:(Lang.length olang) ~hidden_size in
+  let enc = Enc.create vs ~input_size:(Lang.length ilang) ~hidden_size in
+  let dec = D.create vs ~output_size:(Lang.length olang) ~hidden_size in
   let optimizer = Optimizer.sgd vs ~learning_rate:0.01 in
   let pairs = Dataset.pairs dataset in
   let loss_stats = Loss_stats.create () in
-  let decoder_start = Tensor.of_int1 [| Lang.sos_token olang |] in
-  let decoder_eos = Lang.eos_token olang in
+  let dec_start = Tensor.of_int1 [| Lang.sos_token olang |] in
+  let dec_eos = Lang.eos_token olang in
   for iter = 1 to 75_000 do
     let input_, target = pairs.(Random.int (Array.length pairs)) in
-    let loss =
-      train_loss ~input_ ~target ~encoder ~decoder ~decoder_start ~decoder_eos
-    in
+    let loss = train_loss ~input_ ~target ~enc ~dec ~dec_start ~dec_eos in
     Optimizer.backward_step optimizer ~loss;
     let loss = Tensor.to_float0_exn loss /. Float.of_int (List.length target) in
     Loss_stats.update loss_stats loss;
     if iter % 1_000 = 0
     then (
-      (* In sample testing. *)
-      let input_, target = pairs.(Random.int (Array.length pairs)) in
-      let predict = predict ~input_ ~encoder ~decoder ~decoder_start ~decoder_eos in
       let to_str l lang = List.map l ~f:(Lang.get_word lang) |> String.concat ~sep:" " in
-      Stdio.printf "%d %f\n%!" iter (Loss_stats.avg_and_reset loss_stats);
-      Stdio.printf "in:  %s\n%!" (to_str input_ ilang);
-      Stdio.printf "tgt: %s\n%!" (to_str target olang);
-      Stdio.printf "out: %s\n%!" (to_str predict olang))
+      for _pred_index = 1 to 5 do
+        (* In sample testing. *)
+        let input_, target = pairs.(Random.int (Array.length pairs)) in
+        let predict = predict ~input_ ~enc ~dec ~dec_start ~dec_eos in
+        Stdio.printf "%d %f\n%!" iter (Loss_stats.avg_and_reset loss_stats);
+        Stdio.printf "in:  %s\n%!" (to_str input_ ilang);
+        Stdio.printf "tgt: %s\n%!" (to_str target olang);
+        Stdio.printf "out: %s\n%!" (to_str predict olang)
+      done)
   done
