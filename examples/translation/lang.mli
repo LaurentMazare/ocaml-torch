@@ -7,3 +7,4 @@ val sos_token : t -> int
 val eos_token : t -> int
 val length : t -> int
 val name : t -> string
+val get_index : t -> string -> int option

@@ -69,7 +69,17 @@ let create ~input_lang ~output_lang =
 
 let input_lang t = t.input_lang
 let output_lang t = t.output_lang
-let pairs t = t.pairs
+
+let pairs t =
+  Array.of_list t.pairs
+  |> Array.map ~f:(fun (lhs, rhs) ->
+         let lhs =
+           String.split lhs ~on:' ' |> List.filter_map ~f:(Lang.get_index t.input_lang)
+         in
+         let rhs =
+           String.split rhs ~on:' ' |> List.filter_map ~f:(Lang.get_index t.output_lang)
+         in
+         lhs, rhs)
 
 let reverse t =
   { input_lang = t.output_lang

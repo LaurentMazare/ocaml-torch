@@ -35,3 +35,4 @@ let sos_token t = Hashtbl.find_exn t.word_to_index_and_count sos_token |> fst
 let eos_token t = Hashtbl.find_exn t.word_to_index_and_count eos_token |> fst
 let length t = Hashtbl.length t.word_to_index_and_count
 let name t = t.name
+let get_index t word = Hashtbl.find t.word_to_index_and_count word |> Option.map ~f:fst
