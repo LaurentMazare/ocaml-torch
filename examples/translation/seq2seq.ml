@@ -70,7 +70,7 @@ end = struct
         |> Tensor.relu
         |> Layer.Gru.step gru hidden
       in
-      hidden, Layer.forward linear hidden |> Tensor.softmax ~dim:(-1)
+      hidden, Layer.forward linear hidden |> Tensor.log_softmax ~dim:(-1)
     in
     forward, Layer.Gru.zero_state gru ~batch_size:1
 
