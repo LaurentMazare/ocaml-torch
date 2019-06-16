@@ -17,19 +17,19 @@ module Encoder : sig
   type state
 
   val create : Var_store.t -> input_size:int -> hidden_size:int -> t
-  val forward : t -> Tensor.t -> state -> state * Tensor.t
+  val forward : t -> Tensor.t -> hidden:state -> state * Tensor.t
   val zero_state : t -> state
   val to_tensor : state -> Tensor.t
 end = struct
   type state = Tensor.t
-  type t = (Tensor.t -> state -> state * Tensor.t) * state
+  type t = (Tensor.t -> hidden:state -> state * Tensor.t) * state
 
   let create vs ~input_size ~hidden_size =
     let embedding =
       Layer.embeddings vs ~num_embeddings:input_size ~embedding_dim:hidden_size
     in
     let gru = Layer.Gru.create vs ~input_dim:hidden_size ~hidden_size in
-    let forward input_ hidden =
+    let forward input_ ~hidden =
       let hidden =
         Layer.forward embedding input_
         |> Tensor.view ~size:[ 1; -1 ]
@@ -50,12 +50,27 @@ module Decoder : sig
   type state
 
   val create : Var_store.t -> hidden_size:int -> output_size:int -> t
-  val forward : t -> Tensor.t -> state -> state * Tensor.t
+
+  val forward
+    :  t
+    -> Tensor.t
+    -> hidden:state
+    -> encoder_outputs:Tensor.t
+    -> is_training:bool
+    -> state * Tensor.t
+
   val zero_state : t -> state
   val of_tensor : Tensor.t -> state
 end = struct
   type state = Tensor.t
-  type t = (Tensor.t -> state -> state * Tensor.t) * state
+
+  type t =
+    (Tensor.t
+     -> hidden:state
+     -> encoder_outputs:Tensor.t
+     -> is_training:bool
+     -> state * Tensor.t)
+    * state
 
   let create vs ~hidden_size ~output_size =
     let embedding =
@@ -63,7 +78,7 @@ end = struct
     in
     let gru = Layer.Gru.create vs ~input_dim:hidden_size ~hidden_size in
     let linear = Layer.linear vs ~input_dim:hidden_size output_size in
-    let forward input_ hidden =
+    let forward input_ ~hidden ~encoder_outputs:_ ~is_training:_ =
       let hidden =
         Layer.forward embedding input_
         |> Tensor.view ~size:[ 1; -1 ]
@@ -79,16 +94,95 @@ end = struct
   let of_tensor = Fn.id
 end
 
+(* Decoder with attention. *)
+module Decoder_attn : sig
+  type t
+  type state
+
+  val create : Var_store.t -> hidden_size:int -> output_size:int -> t
+
+  val forward
+    :  t
+    -> Tensor.t
+    -> hidden:state
+    -> encoder_outputs:Tensor.t
+    -> is_training:bool
+    -> state * Tensor.t
+
+  val zero_state : t -> state
+  val of_tensor : Tensor.t -> state
+end = struct
+  type state = Tensor.t
+
+  type t =
+    (Tensor.t
+     -> hidden:state
+     -> encoder_outputs:Tensor.t
+     -> is_training:bool
+     -> state * Tensor.t)
+    * state
+
+  let create vs ~hidden_size ~output_size =
+    let embedding =
+      Layer.embeddings vs ~num_embeddings:output_size ~embedding_dim:hidden_size
+    in
+    let gru = Layer.Gru.create vs ~input_dim:hidden_size ~hidden_size in
+    let attn = Layer.linear vs ~input_dim:(hidden_size * 2) max_length in
+    let attn_combine = Layer.linear vs ~input_dim:(hidden_size * 2) hidden_size in
+    let linear = Layer.linear vs ~input_dim:hidden_size output_size in
+    let forward input_ ~hidden ~encoder_outputs ~is_training =
+      let embedded =
+        Layer.forward embedding input_
+        |> Tensor.dropout ~p:0.1 ~is_training
+        |> Tensor.view ~size:[ 1; -1 ]
+      in
+      let attn_weights =
+        Tensor.cat [ embedded; hidden ] ~dim:1
+        |> Layer.forward attn
+        |> Tensor.unsqueeze ~dim:0
+      in
+      let sz1, sz2, sz3 = Tensor.shape3_exn encoder_outputs in
+      let encoder_outputs =
+        if sz2 = max_length
+        then encoder_outputs
+        else
+          Tensor.cat
+            [ encoder_outputs; Tensor.zeros [ sz1; max_length - sz2; sz3 ] ]
+            ~dim:1
+      in
+      let attn_applied =
+        Tensor.bmm attn_weights ~mat2:encoder_outputs |> Tensor.squeeze1 ~dim:1
+      in
+      let output =
+        Tensor.cat [ embedded; attn_applied ] ~dim:1
+        |> Layer.forward attn_combine
+        |> Tensor.relu
+      in
+      let hidden = Layer.Gru.step gru hidden output in
+      hidden, Layer.forward linear hidden |> Tensor.log_softmax ~dim:(-1)
+    in
+    forward, Layer.Gru.zero_state gru ~batch_size:1
+
+  let forward = fst
+  let zero_state = snd
+  let of_tensor = Fn.id
+end
+
+module D = Decoder_attn
+
 let predict ~input_ ~encoder ~decoder ~decoder_start ~decoder_eos =
   let encoder_final, encoder_outputs =
     List.fold_map input_ ~init:(Encoder.zero_state encoder) ~f:(fun state idx ->
         let input_tensor = Tensor.of_int1 [| idx |] in
-        Encoder.forward encoder input_tensor state)
+        Encoder.forward encoder input_tensor ~hidden:state)
   in
-  let _encoder_outputs = Tensor.stack encoder_outputs ~dim:0 in
-  let decoder_state = Encoder.to_tensor encoder_final |> Decoder.of_tensor in
+  let encoder_outputs = Tensor.stack encoder_outputs ~dim:1 in
+  let decoder_state = Encoder.to_tensor encoder_final |> D.of_tensor in
   let rec loop ~state ~prevs ~max_length =
-    let state, output = Decoder.forward decoder (List.hd_exn prevs) state in
+    let state, output =
+      let prev = List.hd_exn prevs in
+      D.forward decoder prev ~hidden:state ~encoder_outputs ~is_training:false
+    in
     let _, output = Tensor.topk output ~k:1 ~dim:(-1) ~largest:true ~sorted:true in
     if Tensor.to_int0_exn output = decoder_eos || max_length = 0
     then List.rev prevs
@@ -100,16 +194,18 @@ let train_loss ~input_ ~target ~encoder ~decoder ~decoder_start ~decoder_eos =
   let encoder_final, encoder_outputs =
     List.fold_map input_ ~init:(Encoder.zero_state encoder) ~f:(fun state idx ->
         let input_tensor = Tensor.of_int1 [| idx |] in
-        Encoder.forward encoder input_tensor state)
+        Encoder.forward encoder input_tensor ~hidden:state)
   in
-  let _encoder_outputs = Tensor.stack encoder_outputs ~dim:0 in
+  let encoder_outputs = Tensor.stack encoder_outputs ~dim:1 in
   let use_teacher_forcing = Float.( < ) (Random.float 1.) 0.5 in
-  let decoder_state = Encoder.to_tensor encoder_final |> Decoder.of_tensor in
+  let decoder_state = Encoder.to_tensor encoder_final |> D.of_tensor in
   let rec loop ~loss ~state ~prev ~target =
     match target with
     | [] -> loss
     | idx :: target ->
-      let state, output = Decoder.forward decoder prev state in
+      let state, output =
+        D.forward decoder prev ~hidden:state ~encoder_outputs ~is_training:true
+      in
       let target_tensor = Tensor.of_int1 [| idx |] in
       let loss = Tensor.(loss + nll_loss output ~targets:target_tensor) in
       let _, output = Tensor.topk output ~k:1 ~dim:(-1) ~largest:true ~sorted:true in
@@ -154,7 +250,7 @@ let () =
   let device = Device.cuda_if_available () in
   let vs = Var_store.create ~name:"seq2seq" ~device () in
   let encoder = Encoder.create vs ~input_size:(Lang.length ilang) ~hidden_size in
-  let decoder = Decoder.create vs ~output_size:(Lang.length olang) ~hidden_size in
+  let decoder = D.create vs ~output_size:(Lang.length olang) ~hidden_size in
   let optimizer = Optimizer.sgd vs ~learning_rate:0.01 in
   let pairs = Dataset.pairs dataset in
   let loss_stats = Loss_stats.create () in
