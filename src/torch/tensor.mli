@@ -217,28 +217,28 @@ val to_int2_exn : t -> int array array
 val to_int3_exn : t -> int array array array
 
 (** [of_float0 v] creates a scalar (0-dimension) tensor with value v. *)
-val of_float0 : float -> t
+val of_float0 : ?device:Device.t -> float -> t
 
 (** [of_float1 v] creates a single dimension tensor with values vs. *)
-val of_float1 : float array -> t
+val of_float1 : ?device:Device.t -> float array -> t
 
 (** [of_float2 v] creates a two dimension tensor with values vs. *)
-val of_float2 : float array array -> t
+val of_float2 : ?device:Device.t -> float array array -> t
 
 (** [of_float3 v] creates a three dimension tensor with values vs. *)
-val of_float3 : float array array array -> t
+val of_float3 : ?device:Device.t -> float array array array -> t
 
 (** [of_int0 v] creates a scalar (0-dimension) tensor with value v. *)
-val of_int0 : int -> t
+val of_int0 : ?device:Device.t -> int -> t
 
 (** [of_int1 v] creates a single dimension tensor with values vs. *)
-val of_int1 : int array -> t
+val of_int1 : ?device:Device.t -> int array -> t
 
 (** [of_int2 v] creates a two dimension tensor with values vs. *)
-val of_int2 : int array array -> t
+val of_int2 : ?device:Device.t -> int array array -> t
 
 (** [of_int3 v] creates a three dimension tensor with values vs. *)
-val of_int3 : int array array array -> t
+val of_int3 : ?device:Device.t -> int array array array -> t
 
 val conv2d
   :  ?padding:int * int
@@ -284,7 +284,7 @@ val const_batch_norm : ?momentum:float -> ?eps:float -> t -> t
 (** [of_bigarray ba] returns a tensor which shape and kind are based on
     [ba] and holding the same data.
 *)
-val of_bigarray : ('a, 'b, Bigarray.c_layout) Bigarray.Genarray.t -> t
+val of_bigarray : ?device:Device.t -> ('a, 'b, Bigarray.c_layout) Bigarray.Genarray.t -> t
 
 (** [copy_to_bigarray t ba] copies the data from [t] to [ba]. The dimensions of
     [ba] and its kind of element must match the dimension and kind of [t].

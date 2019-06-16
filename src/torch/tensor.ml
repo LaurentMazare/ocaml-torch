@@ -305,37 +305,47 @@ let to_int0 t =
   try int_value t |> Option.some with
   | _ -> None
 
-let of_float0 f =
+let of_bigarray ?device ba = of_bigarray ba |> to_device ?device
+
+let of_float0 ?device f =
   Bigarray.Array0.of_value Float32 C_layout f
   |> Bigarray.genarray_of_array0
-  |> of_bigarray
+  |> of_bigarray ?device
 
-let of_float1 f =
+let of_float1 ?device f =
   Bigarray.Array1.of_array Float32 C_layout f
   |> Bigarray.genarray_of_array1
-  |> of_bigarray
+  |> of_bigarray ?device
 
-let of_float2 f =
+let of_float2 ?device f =
   Bigarray.Array2.of_array Float32 C_layout f
   |> Bigarray.genarray_of_array2
-  |> of_bigarray
+  |> of_bigarray ?device
 
-let of_float3 f =
+let of_float3 ?device f =
   Bigarray.Array3.of_array Float32 C_layout f
   |> Bigarray.genarray_of_array3
-  |> of_bigarray
+  |> of_bigarray ?device
 
-let of_int0 f =
-  Bigarray.Array0.of_value Int C_layout f |> Bigarray.genarray_of_array0 |> of_bigarray
+let of_int0 ?device f =
+  Bigarray.Array0.of_value Int C_layout f
+  |> Bigarray.genarray_of_array0
+  |> of_bigarray ?device
 
-let of_int1 f =
-  Bigarray.Array1.of_array Int C_layout f |> Bigarray.genarray_of_array1 |> of_bigarray
+let of_int1 ?device f =
+  Bigarray.Array1.of_array Int C_layout f
+  |> Bigarray.genarray_of_array1
+  |> of_bigarray ?device
 
-let of_int2 f =
-  Bigarray.Array2.of_array Int C_layout f |> Bigarray.genarray_of_array2 |> of_bigarray
+let of_int2 ?device f =
+  Bigarray.Array2.of_array Int C_layout f
+  |> Bigarray.genarray_of_array2
+  |> of_bigarray ?device
 
-let of_int3 f =
-  Bigarray.Array3.of_array Int C_layout f |> Bigarray.genarray_of_array3 |> of_bigarray
+let of_int3 ?device f =
+  Bigarray.Array3.of_array Int C_layout f
+  |> Bigarray.genarray_of_array3
+  |> of_bigarray ?device
 
 let minimum t = view t ~size:[ -1 ] |> min_values ~dim:[ 0 ] ~keepdim:false
 let maximum t = view t ~size:[ -1 ] |> max_values ~dim:[ 0 ] ~keepdim:false

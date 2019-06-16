@@ -102,6 +102,7 @@ module Dec_attn : Decoder = struct
   type t = state decode_fn * state
 
   let create vs ~hidden_size ~output_size =
+    let device = Var_store.device vs in
     let embedding =
       Layer.embeddings vs ~num_embeddings:output_size ~embedding_dim:hidden_size
     in
@@ -125,7 +126,9 @@ module Dec_attn : Decoder = struct
         if sz2 = max_length
         then enc_outputs
         else
-          Tensor.cat [ enc_outputs; Tensor.zeros [ sz1; max_length - sz2; sz3 ] ] ~dim:1
+          Tensor.cat
+            [ enc_outputs; Tensor.zeros [ sz1; max_length - sz2; sz3 ] ~device ]
+            ~dim:1
       in
       let attn_applied =
         Tensor.bmm attn_weights ~mat2:enc_outputs |> Tensor.squeeze1 ~dim:1
@@ -148,10 +151,10 @@ end
 module D = Dec_attn
 
 (* Apply the model to an input and get back the predicted word indexes. *)
-let predict ~input_ ~enc ~dec ~dec_start ~dec_eos =
+let predict ~input_ ~enc ~dec ~dec_start ~dec_eos ~device =
   let enc_final, enc_outputs =
     List.fold_map input_ ~init:(Enc.zero_state enc) ~f:(fun state idx ->
-        let input_tensor = Tensor.of_int1 [| idx |] in
+        let input_tensor = Tensor.of_int1 [| idx |] ~device in
         Enc.forward enc input_tensor ~hidden:state)
   in
   let enc_outputs = Tensor.stack enc_outputs ~dim:1 in
@@ -170,10 +173,10 @@ let predict ~input_ ~enc ~dec ~dec_start ~dec_eos =
   |> List.map ~f:Tensor.to_int0_exn
 
 (* Compute the training loss on a pair of texts. *)
-let train_loss ~input_ ~target ~enc ~dec ~dec_start ~dec_eos =
+let train_loss ~input_ ~target ~enc ~dec ~dec_start ~dec_eos ~device =
   let enc_final, enc_outputs =
     List.fold_map input_ ~init:(Enc.zero_state enc) ~f:(fun state idx ->
-        let input_tensor = Tensor.of_int1 [| idx |] in
+        let input_tensor = Tensor.of_int1 [| idx |] ~device in
         Enc.forward enc input_tensor ~hidden:state)
   in
   let enc_outputs = Tensor.stack enc_outputs ~dim:1 in
@@ -190,7 +193,7 @@ let train_loss ~input_ ~target ~enc ~dec ~dec_start ~dec_eos =
       let state, output =
         D.forward dec prev ~hidden:state ~enc_outputs ~is_training:true
       in
-      let target_tensor = Tensor.of_int1 [| idx |] in
+      let target_tensor = Tensor.of_int1 [| idx |] ~device in
       let loss = Tensor.(loss + nll_loss output ~targets:target_tensor) in
       let _, output = Tensor.topk output ~k:1 ~dim:(-1) ~largest:true ~sorted:true in
       if Tensor.to_int0_exn output = dec_eos
@@ -199,7 +202,7 @@ let train_loss ~input_ ~target ~enc ~dec ~dec_start ~dec_eos =
         let prev = if use_teacher_forcing then target_tensor else output in
         loop ~loss ~state ~prev ~target)
   in
-  loop ~loss:(Tensor.of_float0 0.) ~state:dec_state ~prev:dec_start ~target
+  loop ~loss:(Tensor.of_float0 0. ~device) ~state:dec_state ~prev:dec_start ~target
 
 let hidden_size = 256
 
@@ -238,22 +241,22 @@ let () =
   let optimizer = Optimizer.sgd vs ~learning_rate:0.01 in
   let pairs = Dataset.pairs dataset in
   let loss_stats = Loss_stats.create () in
-  let dec_start = Tensor.of_int1 [| Lang.sos_token olang |] in
+  let dec_start = Tensor.of_int1 [| Lang.sos_token olang |] ~device in
   let dec_eos = Lang.eos_token olang in
   for iter = 1 to 75_000 do
     let input_, target = pairs.(Random.int (Array.length pairs)) in
-    let loss = train_loss ~input_ ~target ~enc ~dec ~dec_start ~dec_eos in
+    let loss = train_loss ~input_ ~target ~enc ~dec ~dec_start ~dec_eos ~device in
     Optimizer.backward_step optimizer ~loss;
     let loss = Tensor.to_float0_exn loss /. Float.of_int (List.length target) in
     Loss_stats.update loss_stats loss;
     if iter % 1_000 = 0
     then (
+      Stdio.printf "%d %f\n%!" iter (Loss_stats.avg_and_reset loss_stats);
       let to_str l lang = List.map l ~f:(Lang.get_word lang) |> String.concat ~sep:" " in
       for _pred_index = 1 to 5 do
         (* In sample testing. *)
         let input_, target = pairs.(Random.int (Array.length pairs)) in
-        let predict = predict ~input_ ~enc ~dec ~dec_start ~dec_eos in
-        Stdio.printf "%d %f\n%!" iter (Loss_stats.avg_and_reset loss_stats);
+        let predict = predict ~input_ ~enc ~dec ~dec_start ~dec_eos ~device in
         Stdio.printf "in:  %s\n%!" (to_str input_ ilang);
         Stdio.printf "tgt: %s\n%!" (to_str target olang);
         Stdio.printf "out: %s\n%!" (to_str predict olang)
