@@ -287,3 +287,18 @@ module Lstm = struct
     in
     output, (h, c)
 end
+
+let embeddings
+    ?(sparse = false) ?(scale_grad_by_freq = false) vs ~num_embeddings ~embedding_dim
+  =
+  let weight =
+    Var_store.new_var
+      vs
+      ~shape:[ num_embeddings; embedding_dim ]
+      ~init:(Normal { mean = 0.; stdev = 1. })
+      ~name:"embeddings"
+  in
+  let apply indices =
+    Tensor.embedding ~weight ~indices ~padding_idx:(-1) ~sparse ~scale_grad_by_freq
+  in
+  { apply }

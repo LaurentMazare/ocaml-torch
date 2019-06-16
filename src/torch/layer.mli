@@ -1,5 +1,7 @@
 open Base
 
+(** {3 Layer Types and Conversions } *)
+
 (** A layer takes as input a tensor and returns a tensor through the
     [forward] function.
     Layers can hold variables, these are created and registered using
@@ -20,6 +22,38 @@ type t_with_training
     This is useful when sequencing multiple layers via [fold].
 *)
 val with_training : t -> t_with_training
+
+(** {3 Basic Layer Creation } *)
+
+(** The identity layer. [forward id tensor] returns [tensor]. *)
+val id : t
+
+(** The identity layer with an [is_training] argument. *)
+val id_ : t_with_training
+
+(** [of_fn f] creates a layer based on a function from tensors to tensors.
+*)
+val of_fn : (Tensor.t -> Tensor.t) -> t
+
+(** [of_fn_ f] creates a layer based on a function from tensors to tensors.
+    [f] also has access to the [is_training] flag.
+*)
+val of_fn_ : (Tensor.t -> is_training:bool -> Tensor.t) -> t_with_training
+
+(** [sequential ts] applies sequentially a list of layers [ts]. *)
+val sequential : t list -> t
+
+(** [sequential_ ts] applies sequentially a list of layers [ts]. *)
+val sequential_ : t_with_training list -> t_with_training
+
+(** [forward t tensor] applies layer [t] to [tensor]. *)
+val forward : t -> Tensor.t -> Tensor.t
+
+(** [forward_ t tensor ~is_training] applies layer [t] to [tensor] with
+    the specified [is_training] flag. *)
+val forward_ : t_with_training -> Tensor.t -> is_training:bool -> Tensor.t
+
+(** {3 Linear and Convolution Layers } *)
 
 (** The different kind of activations supported by the various layers
     below.
@@ -117,6 +151,8 @@ val conv_transpose2d_
   -> int
   -> t
 
+(** {3 Batch Normalization } *)
+
 (** [batch_norm2d vs dim] creates a batch norm 2D layer. This layer
     applies Batch Normalization over a 4D input
     [batch_size * dim * h * w]. The returned tensor has the same shape.
@@ -130,33 +166,7 @@ val batch_norm2d
   -> int
   -> t_with_training
 
-(** The identity layer. [forward id tensor] returns [tensor]. *)
-val id : t
-
-(** The identity layer with an [is_training] argument. *)
-val id_ : t_with_training
-
-(** [of_fn f] creates a layer based on a function from tensors to tensors.
-*)
-val of_fn : (Tensor.t -> Tensor.t) -> t
-
-(** [of_fn_ f] creates a layer based on a function from tensors to tensors.
-    [f] also has access to the [is_training] flag.
-*)
-val of_fn_ : (Tensor.t -> is_training:bool -> Tensor.t) -> t_with_training
-
-(** [sequential ts] applies sequentially a list of layers [ts]. *)
-val sequential : t list -> t
-
-(** [sequential_ ts] applies sequentially a list of layers [ts]. *)
-val sequential_ : t_with_training list -> t_with_training
-
-(** [forward t tensor] applies layer [t] to [tensor]. *)
-val forward : t -> Tensor.t -> Tensor.t
-
-(** [forward_ t tensor ~is_training] applies layer [t] to [tensor] with
-    the specified [is_training] flag. *)
-val forward_ : t_with_training -> Tensor.t -> is_training:bool -> Tensor.t
+(** {3 Recurrent Neural Networks } *)
 
 (** A Long Short Term Memory (LSTM) recurrent neural network. *)
 module Lstm : sig
@@ -188,3 +198,13 @@ module Lstm : sig
   *)
   val zero_state : t -> batch_size:int -> state
 end
+
+(** {3 Embeddings } *)
+
+val embeddings
+  :  ?sparse:bool
+  -> ?scale_grad_by_freq:bool
+  -> Var_store.t
+  -> num_embeddings:int
+  -> embedding_dim:int
+  -> t
