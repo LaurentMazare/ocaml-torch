@@ -189,6 +189,7 @@ let predict ~input_ ~encoder ~decoder ~decoder_start ~decoder_eos =
     else loop ~state ~prevs:(output :: prevs) ~max_length:(max_length - 1)
   in
   loop ~state:decoder_state ~prevs:[ decoder_start ] ~max_length
+  |> List.map ~f:Tensor.to_int0_exn
 
 let train_loss ~input_ ~target ~encoder ~decoder ~decoder_start ~decoder_eos =
   let encoder_final, encoder_outputs =
@@ -265,5 +266,13 @@ let () =
     let loss = Tensor.to_float0_exn loss /. Float.of_int (List.length target) in
     Loss_stats.update loss_stats loss;
     if iter % 1_000 = 0
-    then Stdio.printf "%d %f\n%!" iter (Loss_stats.avg_and_reset loss_stats)
+    then (
+      (* In sample testing. *)
+      let input_, target = pairs.(Random.int (Array.length pairs)) in
+      let predict = predict ~input_ ~encoder ~decoder ~decoder_start ~decoder_eos in
+      let to_str l lang = List.map l ~f:(Lang.get_word lang) |> String.concat ~sep:" " in
+      Stdio.printf "%d %f\n%!" iter (Loss_stats.avg_and_reset loss_stats);
+      Stdio.printf "in:  %s\n%!" (to_str input_ ilang);
+      Stdio.printf "tgt: %s\n%!" (to_str target olang);
+      Stdio.printf "out: %s\n%!" (to_str predict olang))
   done
