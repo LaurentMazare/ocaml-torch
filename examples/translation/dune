@@ -1,0 +1,3 @@
+(executables
+  (names seq2seq)
+  (libraries base torch_core torch stdio))
