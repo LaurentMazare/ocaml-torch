@@ -2,6 +2,7 @@ module Checkpointing = Checkpointing
 module Cifar_helper = Cifar_helper
 module Dataset_helper = Dataset_helper
 module Device = Device
+module Ivalue = Ivalue
 module Layer = Layer
 module Mnist_helper = Mnist_helper
 module Module = Module
