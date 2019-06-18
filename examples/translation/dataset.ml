@@ -1,13 +1,3 @@
-(* TODO: handle unicode characters in the same way the python code
-   does, e.g.
-   ```python
-    def unicodeToAscii(s):
-        return ''.join(
-            c for c in unicodedata.normalize('NFD', s)
-            if unicodedata.category(c) != 'Mn'
-        )
-    ```
-*)
 open Base
 
 type t =
@@ -61,9 +51,18 @@ let filter_pair lhs rhs ~max_length =
   then Some (lhs, rhs)
   else None
 
+let read_unicode_lines filename =
+  let command = Printf.sprintf "iconv -f utf8 -t ascii//TRANSLIT \"%s\"" filename in
+  let in_channel = Unix.open_process_in command in
+  let lines = Stdio.In_channel.input_lines in_channel in
+  match Unix.close_process_in in_channel with
+  | WEXITED 0 -> lines
+  | WSIGNALED _ | WSTOPPED _ | WEXITED _ ->
+    Printf.failwithf "command %s stopped with non-zero return code" command ()
+
 let read_pairs ~input_lang ~output_lang ~max_length =
   let filename = Printf.sprintf "data/%s-%s.txt" input_lang output_lang in
-  let lines = Stdio.In_channel.read_lines filename in
+  let lines = read_unicode_lines filename in
   List.filter_map lines ~f:(fun line ->
       match String.split line ~on:'\t' with
       | [ lhs; rhs ] -> filter_pair (normalize lhs) (normalize rhs) ~max_length
