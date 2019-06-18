@@ -41,15 +41,15 @@ let create_generator vs =
   let linear1 = Layer.Linear.create vs ~input_dim:latent_dim generator_hidden_nodes in
   let linear2 = Layer.Linear.create vs ~input_dim:generator_hidden_nodes image_dim in
   fun rand_input ->
-    Layer.Linear.apply linear1 rand_input ~activation:Leaky_relu
-    |> Layer.Linear.apply linear2 ~activation:Tanh
+    Layer.forward linear1 rand_input ~activation:Leaky_relu
+    |> Layer.forward linear2 ~activation:Tanh
 
 let create_discriminator vs =
   let linear1 = Layer.Linear.create vs ~input_dim:image_dim discriminator_hidden_nodes in
   let linear2 = Layer.Linear.create vs ~input_dim:discriminator_hidden_nodes 1 in
   fun xs ->
-    Layer.Linear.apply linear1 xs ~activation:Leaky_relu
-    |> Layer.Linear.apply linear2 ~activation:Sigmoid
+    Layer.forward linear1 xs ~activation:Leaky_relu
+    |> Layer.forward linear2 ~activation:Sigmoid
 ```
 
 During each training step the Discriminator and Generator are trained independently.
@@ -112,25 +112,25 @@ let create_generator vs =
   let convt2 = Layer.ConvTranspose2D.create_ vs ~ksize:4 ~stride:2 ~padding:1 ~input_dim:64 32 in
   let convt3 = Layer.ConvTranspose2D.create_ vs ~ksize:4 ~stride:2 ~padding:1 ~input_dim:32 1 in
   fun rand_input ->
-    Layer.ConvTranspose2D.apply convt1 rand_input
+    Layer.forward convt1 rand_input
     |> Tensor.const_batch_norm
     |> Tensor.relu
-    |> Layer.ConvTranspose2D.apply convt2
+    |> Layer.forward convt2
     |> Tensor.const_batch_norm
     |> Tensor.relu
-    |> Layer.ConvTranspose2D.apply convt3 ~activation:Tanh
+    |> Layer.forward convt3 ~activation:Tanh
 
 let create_discriminator vs =
   let conv1 = Layer.Conv2D.create_ vs ~ksize:4 ~stride:2 ~padding:1 ~input_dim:1 32 in
   let conv2 = Layer.Conv2D.create_ vs ~ksize:4 ~stride:2 ~padding:1 ~input_dim:32 64 in
   let conv3 = Layer.Conv2D.create_ vs ~ksize:7 ~stride:1 ~padding:0 ~input_dim:64 1 in
   fun xs ->
-    Layer.Conv2D.apply conv1 xs
+    Layer.forward conv1 xs
     |> Tensor.leaky_relu
-    |> Layer.Conv2D.apply conv2
+    |> Layer.forward conv2
     |> Tensor.const_batch_norm
     |> Tensor.leaky_relu
-    |> Layer.Conv2D.apply conv3 ~activation:Sigmoid
+    |> Layer.forward conv3 ~activation:Sigmoid
 ```
 
 The rest of the training code is mostly unchanged and can be found in
