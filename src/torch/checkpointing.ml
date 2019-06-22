@@ -11,7 +11,7 @@ let latest_index_and_filename ~checkpoint_base =
          | Some suffix ->
            (try Some (Int.of_string suffix, Caml.Filename.concat dirname filename) with
            | _ -> None))
-  |> List.sort ~compare:Caml.Pervasives.compare
+  |> List.sort ~compare:Stdlib.compare
   |> List.last
 
 let loop
