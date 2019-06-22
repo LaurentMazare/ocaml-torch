@@ -17,7 +17,7 @@ run-test: [
 ]
 
 depends: [
-  "base" {>= "0.12.0"}
+  "base" {>= "v0.11.0" & < "v0.13"}
   "cmdliner"
   "ctypes" {>= "0.5"}
   "ctypes-foreign"
