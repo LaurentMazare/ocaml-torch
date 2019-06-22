@@ -30,7 +30,6 @@ depends: [
   "ppx_expect"
   "ppx_sexp_conv"
   "sexplib"
-  "stb_image"
   "stdio"
 ]
 

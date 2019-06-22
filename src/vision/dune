@@ -1,5 +1,5 @@
 (library
   (name torch_vision)
   (public_name torch.vision)
-  (c_names ml_stb_image_resize ml_stb_image_write)
-  (libraries base stb_image stdio torch_core torch))
+  (c_names ml_stb_image ml_stb_image_resize ml_stb_image_write)
+  (libraries base stdio torch_core torch))
