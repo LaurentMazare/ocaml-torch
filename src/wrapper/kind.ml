@@ -10,6 +10,7 @@ type t =
   | ComplexHalf
   | ComplexFloat
   | ComplexDouble
+  | Bool
 
 (* Hardcoded, should match ScalarType.h *)
 let to_int = function
@@ -24,6 +25,7 @@ let to_int = function
   | ComplexHalf -> 8
   | ComplexFloat -> 9
   | ComplexDouble -> 10
+  | Bool -> 11
 
 let of_int_exn = function
   | 0 -> Uint8
@@ -37,6 +39,7 @@ let of_int_exn = function
   | 8 -> ComplexHalf
   | 9 -> ComplexFloat
   | 10 -> ComplexDouble
+  | 11 -> Bool
   | d -> failwith (Printf.sprintf "unexpected kind %d" d)
 
 let ( = ) = Stdlib.( = )

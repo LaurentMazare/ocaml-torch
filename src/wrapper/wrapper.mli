@@ -1,16 +1,16 @@
 val manual_seed : int -> unit
 
 module Scalar : sig
-  type t
+  type _ t
 
-  val int : int -> t
-  val float : float -> t
+  val int : int -> int t
+  val float : float -> float t
 end
 
 module Tensor : sig
   type t
 
-  include Wrapper_generated_intf.S with type t := t and type scalar := Scalar.t
+  include Wrapper_generated_intf.S with type t := t and type 'a scalar := 'a Scalar.t
 
   val new_tensor : unit -> t
   val float_vec : ?kind:[ `double | `float | `half ] -> float list -> t

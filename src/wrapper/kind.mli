@@ -10,6 +10,7 @@ type t =
   | ComplexHalf
   | ComplexFloat
   | ComplexDouble
+  | Bool
 
 val to_int : t -> int
 val of_int_exn : int -> t

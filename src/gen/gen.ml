@@ -70,7 +70,7 @@ module Func = struct
     | IntList -> "int list"
     | TensorList -> "t list"
     | TensorOptions -> "Kind.t * Device.t"
-    | Scalar -> "scalar"
+    | Scalar -> "'a scalar"
     | ScalarType -> "Kind.t"
     | Device -> "Device.t"
 
@@ -404,7 +404,7 @@ let write_wrapper funcs filename =
           pi "";
           pi "module type S = sig";
           pi "  type t";
-          pi "  type scalar";
+          pi "  type _ scalar";
           pi "";
           Map.iteri funcs ~f:(fun ~key:exported_name ~data:func ->
               let caml_name = Func.caml_name exported_name in

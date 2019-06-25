@@ -2,7 +2,7 @@
 
 module type S = sig
   type t
-  type scalar
+  type _ scalar
 
   val abs :
     t ->
@@ -130,7 +130,7 @@ module type S = sig
 
   val add1 :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val add_ :
@@ -140,7 +140,7 @@ module type S = sig
 
   val add_1 :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val add_out :
@@ -324,32 +324,32 @@ module type S = sig
     t
 
   val arange :
-    end_:scalar ->
+    end_:'a scalar ->
     options:Kind.t * Device.t ->
     t
 
   val arange1 :
-    start:scalar ->
-    end_:scalar ->
+    start:'a scalar ->
+    end_:'a scalar ->
     options:Kind.t * Device.t ->
     t
 
   val arange2 :
-    start:scalar ->
-    end_:scalar ->
-    step:scalar ->
+    start:'a scalar ->
+    end_:'a scalar ->
+    step:'a scalar ->
     options:Kind.t * Device.t ->
     t
 
   val arange_out :
     out:t ->
-    end_:scalar ->
+    end_:'a scalar ->
     t
 
   val arange_out1 :
     out:t ->
-    start:scalar ->
-    end_:scalar ->
+    start:'a scalar ->
+    end_:'a scalar ->
     t
 
   val argmax :
@@ -816,53 +816,53 @@ module type S = sig
 
   val clamp :
     t ->
-    min:scalar ->
-    max:scalar ->
+    min:'a scalar ->
+    max:'a scalar ->
     t
 
   val clamp_ :
     t ->
-    min:scalar ->
-    max:scalar ->
+    min:'a scalar ->
+    max:'a scalar ->
     t
 
   val clamp_max :
     t ->
-    max:scalar ->
+    max:'a scalar ->
     t
 
   val clamp_max_ :
     t ->
-    max:scalar ->
+    max:'a scalar ->
     t
 
   val clamp_max_out :
     out:t ->
     t ->
-    max:scalar ->
+    max:'a scalar ->
     t
 
   val clamp_min :
     t ->
-    min:scalar ->
+    min:'a scalar ->
     t
 
   val clamp_min_ :
     t ->
-    min:scalar ->
+    min:'a scalar ->
     t
 
   val clamp_min_out :
     out:t ->
     t ->
-    min:scalar ->
+    min:'a scalar ->
     t
 
   val clamp_out :
     out:t ->
     t ->
-    min:scalar ->
-    max:scalar ->
+    min:'a scalar ->
+    max:'a scalar ->
     t
 
   val clone :
@@ -1306,7 +1306,7 @@ module type S = sig
 
   val div1 :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val div_ :
@@ -1316,7 +1316,7 @@ module type S = sig
 
   val div_1 :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val div_out :
@@ -1370,18 +1370,18 @@ module type S = sig
 
   val elu_backward :
     grad_output:t ->
-    alpha:scalar ->
-    scale:scalar ->
-    input_scale:scalar ->
+    alpha:'a scalar ->
+    scale:'a scalar ->
+    input_scale:'a scalar ->
     output:t ->
     t
 
   val elu_backward_out :
     grad_input:t ->
     grad_output:t ->
-    alpha:scalar ->
-    scale:scalar ->
-    input_scale:scalar ->
+    alpha:'a scalar ->
+    scale:'a scalar ->
+    input_scale:'a scalar ->
     output:t ->
     t
 
@@ -1467,7 +1467,7 @@ module type S = sig
 
   val eq :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val eq1 :
@@ -1477,7 +1477,7 @@ module type S = sig
 
   val eq_ :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val eq_1 :
@@ -1488,7 +1488,7 @@ module type S = sig
   val eq_out :
     out:t ->
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val eq_out1 :
@@ -1605,8 +1605,8 @@ module type S = sig
     weight:t ->
     packed:t ->
     col_offsets:t ->
-    weight_scale:scalar ->
-    weight_zero_point:scalar ->
+    weight_scale:'a scalar ->
+    weight_zero_point:'a scalar ->
     bias:t ->
     t
 
@@ -1648,7 +1648,7 @@ module type S = sig
 
   val fill_ :
     t ->
-    value:scalar ->
+    value:'a scalar ->
     t
 
   val fill_1 :
@@ -1682,7 +1682,7 @@ module type S = sig
 
   val fmod :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val fmod1 :
@@ -1692,7 +1692,7 @@ module type S = sig
 
   val fmod_ :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val fmod_1 :
@@ -1703,7 +1703,7 @@ module type S = sig
   val fmod_out :
     out:t ->
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val fmod_out1 :
@@ -1810,25 +1810,25 @@ module type S = sig
 
   val full :
     size:int list ->
-    fill_value:scalar ->
+    fill_value:'a scalar ->
     options:Kind.t * Device.t ->
     t
 
   val full_like :
     t ->
-    fill_value:scalar ->
+    fill_value:'a scalar ->
     t
 
   val full_like1 :
     t ->
-    fill_value:scalar ->
+    fill_value:'a scalar ->
     options:Kind.t * Device.t ->
     t
 
   val full_out :
     out:t ->
     size:int list ->
-    fill_value:scalar ->
+    fill_value:'a scalar ->
     t
 
   val gather :
@@ -1848,7 +1848,7 @@ module type S = sig
 
   val ge :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val ge1 :
@@ -1858,7 +1858,7 @@ module type S = sig
 
   val ge_ :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val ge_1 :
@@ -1869,7 +1869,7 @@ module type S = sig
   val ge_out :
     out:t ->
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val ge_out1 :
@@ -2025,7 +2025,7 @@ module type S = sig
 
   val gt :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val gt1 :
@@ -2035,7 +2035,7 @@ module type S = sig
 
   val gt_ :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val gt_1 :
@@ -2046,7 +2046,7 @@ module type S = sig
   val gt_out :
     out:t ->
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val gt_out1 :
@@ -2099,7 +2099,7 @@ module type S = sig
   val hardshrink_backward :
     grad_out:t ->
     t ->
-    lambd:scalar ->
+    lambd:'a scalar ->
     t
 
   val hardtanh :
@@ -2113,16 +2113,16 @@ module type S = sig
   val hardtanh_backward :
     grad_output:t ->
     t ->
-    min_val:scalar ->
-    max_val:scalar ->
+    min_val:'a scalar ->
+    max_val:'a scalar ->
     t
 
   val hardtanh_backward_out :
     grad_input:t ->
     grad_output:t ->
     t ->
-    min_val:scalar ->
-    max_val:scalar ->
+    min_val:'a scalar ->
+    max_val:'a scalar ->
     t
 
   val hardtanh_out :
@@ -2202,7 +2202,7 @@ module type S = sig
     t ->
     dim:int ->
     index:t ->
-    value:scalar ->
+    value:'a scalar ->
     t
 
   val index_fill1 :
@@ -2216,7 +2216,7 @@ module type S = sig
     t ->
     dim:int ->
     index:t ->
-    value:scalar ->
+    value:'a scalar ->
     t
 
   val index_fill_1 :
@@ -2370,7 +2370,7 @@ module type S = sig
 
   val le :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val le1 :
@@ -2380,7 +2380,7 @@ module type S = sig
 
   val le_ :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val le_1 :
@@ -2391,7 +2391,7 @@ module type S = sig
   val le_out :
     out:t ->
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val le_out1 :
@@ -2411,14 +2411,14 @@ module type S = sig
   val leaky_relu_backward :
     grad_output:t ->
     t ->
-    negative_slope:scalar ->
+    negative_slope:'a scalar ->
     t
 
   val leaky_relu_backward_out :
     grad_input:t ->
     grad_output:t ->
     t ->
-    negative_slope:scalar ->
+    negative_slope:'a scalar ->
     t
 
   val leaky_relu_out :
@@ -2429,7 +2429,7 @@ module type S = sig
   val lerp :
     t ->
     end_:t ->
-    weight:scalar ->
+    weight:'a scalar ->
     t
 
   val lerp1 :
@@ -2441,7 +2441,7 @@ module type S = sig
   val lerp_ :
     t ->
     end_:t ->
-    weight:scalar ->
+    weight:'a scalar ->
     t
 
   val lerp_1 :
@@ -2454,7 +2454,7 @@ module type S = sig
     out:t ->
     t ->
     end_:t ->
-    weight:scalar ->
+    weight:'a scalar ->
     t
 
   val lerp_out1 :
@@ -2484,16 +2484,16 @@ module type S = sig
     t
 
   val linspace :
-    start:scalar ->
-    end_:scalar ->
+    start:'a scalar ->
+    end_:'a scalar ->
     steps:int ->
     options:Kind.t * Device.t ->
     t
 
   val linspace_out :
     out:t ->
-    start:scalar ->
-    end_:scalar ->
+    start:'a scalar ->
+    end_:'a scalar ->
     steps:int ->
     t
 
@@ -2593,8 +2593,8 @@ module type S = sig
     t
 
   val logspace :
-    start:scalar ->
-    end_:scalar ->
+    start:'a scalar ->
+    end_:'a scalar ->
     steps:int ->
     base:float ->
     options:Kind.t * Device.t ->
@@ -2602,8 +2602,8 @@ module type S = sig
 
   val logspace_out :
     out:t ->
-    start:scalar ->
-    end_:scalar ->
+    start:'a scalar ->
+    end_:'a scalar ->
     steps:int ->
     base:float ->
     t
@@ -2656,7 +2656,7 @@ module type S = sig
 
   val lt :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val lt1 :
@@ -2666,7 +2666,7 @@ module type S = sig
 
   val lt_ :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val lt_1 :
@@ -2677,7 +2677,7 @@ module type S = sig
   val lt_out :
     out:t ->
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val lt_out1 :
@@ -2710,7 +2710,7 @@ module type S = sig
   val masked_fill :
     t ->
     mask:t ->
-    value:scalar ->
+    value:'a scalar ->
     t
 
   val masked_fill1 :
@@ -2722,7 +2722,7 @@ module type S = sig
   val masked_fill_ :
     t ->
     mask:t ->
-    value:scalar ->
+    value:'a scalar ->
     t
 
   val masked_fill_1 :
@@ -3363,7 +3363,7 @@ module type S = sig
 
   val mul1 :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val mul_ :
@@ -3373,7 +3373,7 @@ module type S = sig
 
   val mul_1 :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val mul_out :
@@ -3386,8 +3386,8 @@ module type S = sig
     grad_output:t ->
     t ->
     target:t ->
-    p:scalar ->
-    margin:scalar ->
+    p:'a scalar ->
+    margin:'a scalar ->
     weight:t ->
     reduction:Reduction.t ->
     t
@@ -3397,8 +3397,8 @@ module type S = sig
     grad_output:t ->
     t ->
     target:t ->
-    p:scalar ->
-    margin:scalar ->
+    p:'a scalar ->
+    margin:'a scalar ->
     weight:t ->
     reduction:Reduction.t ->
     t
@@ -3498,7 +3498,7 @@ module type S = sig
 
   val ne :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val ne1 :
@@ -3508,7 +3508,7 @@ module type S = sig
 
   val ne_ :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val ne_1 :
@@ -3519,7 +3519,7 @@ module type S = sig
   val ne_out :
     out:t ->
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val ne_out1 :
@@ -3632,20 +3632,20 @@ module type S = sig
 
   val norm1 :
     t ->
-    p:scalar ->
+    p:'a scalar ->
     dtype:Kind.t ->
     t
 
   val norm2 :
     t ->
-    p:scalar ->
+    p:'a scalar ->
     dim:int list ->
     keepdim:bool ->
     t
 
   val norm3 :
     t ->
-    p:scalar ->
+    p:'a scalar ->
     dim:int list ->
     keepdim:bool ->
     dtype:Kind.t ->
@@ -3660,7 +3660,7 @@ module type S = sig
   val norm_out :
     out:t ->
     t ->
-    p:scalar ->
+    p:'a scalar ->
     dim:int list ->
     keepdim:bool ->
     t
@@ -3668,7 +3668,7 @@ module type S = sig
   val norm_out1 :
     out:t ->
     t ->
-    p:scalar ->
+    p:'a scalar ->
     dim:int list ->
     keepdim:bool ->
     dtype:Kind.t ->
@@ -3830,7 +3830,7 @@ module type S = sig
 
   val pow :
     t ->
-    exponent:scalar ->
+    exponent:'a scalar ->
     t
 
   val pow1 :
@@ -3839,13 +3839,13 @@ module type S = sig
     t
 
   val pow2 :
-    scalar ->
+    'a scalar ->
     exponent:t ->
     t
 
   val pow_ :
     t ->
-    exponent:scalar ->
+    exponent:'a scalar ->
     t
 
   val pow_1 :
@@ -3856,7 +3856,7 @@ module type S = sig
   val pow_out :
     out:t ->
     t ->
-    exponent:scalar ->
+    exponent:'a scalar ->
     t
 
   val pow_out1 :
@@ -3867,7 +3867,7 @@ module type S = sig
 
   val pow_out2 :
     out:t ->
-    scalar ->
+    'a scalar ->
     exponent:t ->
     t
 
@@ -3978,10 +3978,10 @@ module type S = sig
     packed_hh:t ->
     col_offsets_ih:t ->
     col_offsets_hh:t ->
-    scale_ih:scalar ->
-    scale_hh:scalar ->
-    zero_point_ih:scalar ->
-    zero_point_hh:scalar ->
+    scale_ih:'a scalar ->
+    scale_hh:'a scalar ->
+    zero_point_ih:'a scalar ->
+    zero_point_hh:'a scalar ->
     t
 
   val quantized_lstm :
@@ -4007,10 +4007,10 @@ module type S = sig
     packed_hh:t ->
     col_offsets_ih:t ->
     col_offsets_hh:t ->
-    scale_ih:scalar ->
-    scale_hh:scalar ->
-    zero_point_ih:scalar ->
-    zero_point_hh:scalar ->
+    scale_ih:'a scalar ->
+    scale_hh:'a scalar ->
+    zero_point_ih:'a scalar ->
+    zero_point_hh:'a scalar ->
     t * t
 
   val quantized_rnn_relu_cell :
@@ -4024,10 +4024,10 @@ module type S = sig
     packed_hh:t ->
     col_offsets_ih:t ->
     col_offsets_hh:t ->
-    scale_ih:scalar ->
-    scale_hh:scalar ->
-    zero_point_ih:scalar ->
-    zero_point_hh:scalar ->
+    scale_ih:'a scalar ->
+    scale_hh:'a scalar ->
+    zero_point_ih:'a scalar ->
+    zero_point_hh:'a scalar ->
     t
 
   val quantized_rnn_tanh_cell :
@@ -4041,10 +4041,10 @@ module type S = sig
     packed_hh:t ->
     col_offsets_ih:t ->
     col_offsets_hh:t ->
-    scale_ih:scalar ->
-    scale_hh:scalar ->
-    zero_point_ih:scalar ->
-    zero_point_hh:scalar ->
+    scale_ih:'a scalar ->
+    scale_hh:'a scalar ->
+    zero_point_ih:'a scalar ->
+    zero_point_hh:'a scalar ->
     t
 
   val rand :
@@ -4161,21 +4161,21 @@ module type S = sig
     t
 
   val range :
-    start:scalar ->
-    end_:scalar ->
+    start:'a scalar ->
+    end_:'a scalar ->
     options:Kind.t * Device.t ->
     t
 
   val range1 :
-    start:scalar ->
-    end_:scalar ->
+    start:'a scalar ->
+    end_:'a scalar ->
     options:Kind.t * Device.t ->
     t
 
   val range_out :
     out:t ->
-    start:scalar ->
-    end_:scalar ->
+    start:'a scalar ->
+    end_:'a scalar ->
     t
 
   val reciprocal :
@@ -4249,7 +4249,7 @@ module type S = sig
 
   val remainder :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val remainder1 :
@@ -4259,7 +4259,7 @@ module type S = sig
 
   val remainder_ :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val remainder_1 :
@@ -4270,7 +4270,7 @@ module type S = sig
   val remainder_out :
     out:t ->
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val remainder_out1 :
@@ -4281,24 +4281,24 @@ module type S = sig
 
   val renorm :
     t ->
-    p:scalar ->
+    p:'a scalar ->
     dim:int ->
-    maxnorm:scalar ->
+    maxnorm:'a scalar ->
     t
 
   val renorm_ :
     t ->
-    p:scalar ->
+    p:'a scalar ->
     dim:int ->
-    maxnorm:scalar ->
+    maxnorm:'a scalar ->
     t
 
   val renorm_out :
     out:t ->
     t ->
-    p:scalar ->
+    p:'a scalar ->
     dim:int ->
-    maxnorm:scalar ->
+    maxnorm:'a scalar ->
     t
 
   val repeat :
@@ -4538,8 +4538,8 @@ module type S = sig
     grad_output:t ->
     t ->
     noise:t ->
-    lower:scalar ->
-    upper:scalar ->
+    lower:'a scalar ->
+    upper:'a scalar ->
     training:bool ->
     t
 
@@ -4548,8 +4548,8 @@ module type S = sig
     grad_output:t ->
     t ->
     noise:t ->
-    lower:scalar ->
-    upper:scalar ->
+    lower:'a scalar ->
+    upper:'a scalar ->
     training:bool ->
     t
 
@@ -4580,7 +4580,7 @@ module type S = sig
 
   val rsub1 :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val s_copy_ :
@@ -4609,7 +4609,7 @@ module type S = sig
     t
 
   val scalar_tensor :
-    s:scalar ->
+    s:'a scalar ->
     options:Kind.t * Device.t ->
     t
 
@@ -4624,7 +4624,7 @@ module type S = sig
     t ->
     dim:int ->
     index:t ->
-    value:scalar ->
+    value:'a scalar ->
     t
 
   val scatter_ :
@@ -4638,7 +4638,7 @@ module type S = sig
     t ->
     dim:int ->
     index:t ->
-    value:scalar ->
+    value:'a scalar ->
     t
 
   val scatter_add :
@@ -4837,8 +4837,8 @@ module type S = sig
   val softplus_backward :
     grad_output:t ->
     t ->
-    beta:scalar ->
-    threshold:scalar ->
+    beta:'a scalar ->
+    threshold:'a scalar ->
     output:t ->
     t
 
@@ -4846,8 +4846,8 @@ module type S = sig
     grad_input:t ->
     grad_output:t ->
     t ->
-    beta:scalar ->
-    threshold:scalar ->
+    beta:'a scalar ->
+    threshold:'a scalar ->
     output:t ->
     t
 
@@ -4863,14 +4863,14 @@ module type S = sig
   val softshrink_backward :
     grad_output:t ->
     t ->
-    lambd:scalar ->
+    lambd:'a scalar ->
     t
 
   val softshrink_backward_out :
     grad_input:t ->
     grad_output:t ->
     t ->
-    lambd:scalar ->
+    lambd:'a scalar ->
     t
 
   val softshrink_out :
@@ -5040,7 +5040,7 @@ module type S = sig
 
   val sub1 :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val sub_ :
@@ -5050,7 +5050,7 @@ module type S = sig
 
   val sub_1 :
     t ->
-    scalar ->
+    'a scalar ->
     t
 
   val sub_out :
@@ -5208,27 +5208,27 @@ module type S = sig
 
   val threshold :
     t ->
-    threshold:scalar ->
-    value:scalar ->
+    threshold:'a scalar ->
+    value:'a scalar ->
     t
 
   val threshold_ :
     t ->
-    threshold:scalar ->
-    value:scalar ->
+    threshold:'a scalar ->
+    value:'a scalar ->
     t
 
   val threshold_backward :
     grad_output:t ->
     t ->
-    threshold:scalar ->
+    threshold:'a scalar ->
     t
 
   val threshold_out :
     out:t ->
     t ->
-    threshold:scalar ->
-    value:scalar ->
+    threshold:'a scalar ->
+    value:'a scalar ->
     t
 
   val to_ :

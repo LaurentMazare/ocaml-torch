@@ -192,7 +192,16 @@ module Tensor = struct
 end
 
 module Scalar = struct
-  include Wrapper_generated.C.Scalar
+  module S = Wrapper_generated.C.Scalar
+
+  include (
+    S :
+      module type of struct
+        include S
+      end
+      with type t := S.t)
+
+  type nonrec _ t = S.t
 
   let int i =
     let t = int (Int64.of_int i) in
