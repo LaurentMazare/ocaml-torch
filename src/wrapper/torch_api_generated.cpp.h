@@ -1199,16 +1199,16 @@ void atg_ctc_loss1(tensor *out__, tensor log_probs, tensor targets, tensor input
   )
 }
 
-void atg_cudnn_affine_grid_generator(tensor *out__, tensor theta, int64_t N, int64_t C, int64_t H, int64_t W) {
+void atg_cudnn_affine_grid_generator(tensor *out__, tensor theta, int64_t n, int64_t C, int64_t H, int64_t W) {
   PROTECT(
-    auto outputs__ = torch::cudnn_affine_grid_generator(*theta, N, C, H, W);
+    auto outputs__ = torch::cudnn_affine_grid_generator(*theta, n, C, H, W);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
 
-void atg_cudnn_affine_grid_generator_backward(tensor *out__, tensor grad, int64_t N, int64_t C, int64_t H, int64_t W) {
+void atg_cudnn_affine_grid_generator_backward(tensor *out__, tensor grad, int64_t n, int64_t C, int64_t H, int64_t W) {
   PROTECT(
-    auto outputs__ = torch::cudnn_affine_grid_generator_backward(*grad, N, C, H, W);
+    auto outputs__ = torch::cudnn_affine_grid_generator_backward(*grad, n, C, H, W);
     out__[0] = new torch::Tensor(outputs__);
   )
 }
@@ -1846,9 +1846,9 @@ void atg_fbgemm_linear_int8_weight(tensor *out__, tensor input, tensor weight, t
   )
 }
 
-void atg_fbgemm_pack_quantized_matrix(tensor *out__, tensor input, int64_t K, int64_t N) {
+void atg_fbgemm_pack_quantized_matrix(tensor *out__, tensor input, int64_t K, int64_t n) {
   PROTECT(
-    auto outputs__ = torch::fbgemm_pack_quantized_matrix(*input, K, N);
+    auto outputs__ = torch::fbgemm_pack_quantized_matrix(*input, K, n);
     out__[0] = new torch::Tensor(outputs__);
   )
 }

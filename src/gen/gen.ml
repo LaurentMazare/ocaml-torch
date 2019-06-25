@@ -35,6 +35,9 @@ let extract_map = function
 
 let extract_string = function
   | `String s -> s
+  (* The yaml spec for torch uses n which is converted to a bool. *)
+  | `Bool b -> if b then "y" else "n"
+  | `Float f -> Float.to_string f
   | yaml -> yaml_error yaml ~msg:"expected string"
 
 module Func = struct
