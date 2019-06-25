@@ -5,4 +5,4 @@ open Torch
    this last layer are returned - this is useful to use these models as feature
    extractors.
 *)
-val alexnet : ?num_classes:int -> Var_store.t -> Layer.t_with_training
+val alexnet : ?num_classes:int -> Var_store.t -> ('a, 'a) Layer.t_with_training
