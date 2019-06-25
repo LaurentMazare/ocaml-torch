@@ -14,8 +14,7 @@
 *)
 open Bigarray
 
-type 'a result = ('a, [`Msg of string]) Result.t
-
+type 'a result = ('a, [ `Msg of string ]) Base.Result.t
 
 (*##############################*)
 (** {1 Image representation} *)
@@ -28,8 +27,7 @@ type 'a result = ('a, [`Msg of string]) Result.t
     Two kind of pixel buffers are manipulated:
     - int8 for images with 8-bit channels
     - float32 for images with floating point channels *)
-type 'kind buffer = ('a, 'b, c_layout) Array1.t
-  constraint 'kind = ('a, 'b) kind
+type 'kind buffer = ('a, 'b, c_layout) Array1.t constraint 'kind = ('a, 'b) kind
 
 type float32 = (float, float32_elt) kind
 type int8 = (int, int8_unsigned_elt) kind
@@ -40,42 +38,47 @@ type int8 = (int, int8_unsigned_elt) kind
     - each pixel is made of [channels] items
     - each line is made of [width] pixels
     - image is made of [height] lines *)
-type 'kind t = private {
-  width: int;
-  height: int;
-  channels: int;
-  offset: int;
-  stride: int;
-  data: 'kind buffer;
-}
+type 'kind t = private
+  { width : int
+  ; height : int
+  ; channels : int
+  ; offset : int
+  ; stride : int
+  ; data : 'kind buffer
+  }
 
 (** {2 Creating image} *)
 
-val image : width:int -> height:int -> channels:int ->
-            ?offset:int -> ?stride:int ->
-            'kind buffer -> 'kind t result
+val image
+  :  width:int
+  -> height:int
+  -> channels:int
+  -> ?offset:int
+  -> ?stride:int
+  -> 'kind buffer
+  -> 'kind t result
 
 (** {2 Image accessors} *)
 
-val width    : _ t -> int
-val height   : _ t -> int
+val width : _ t -> int
+val height : _ t -> int
 val channels : _ t -> int
-val data     : 'kind t -> 'kind buffer
+val data : 'kind t -> 'kind buffer
 
 (** {1 Image decoding} *)
 
 (** Load an 8-bit per channel image from a filename.
     If [channels] is specified, it has to be between 1 and 4 and the decoded image
     will be processed to have the requested number of channels. *)
-val load    : ?channels:int -> string   -> int8 t result
+val load : ?channels:int -> string -> int8 t result
 
 (** Load a floating point channel image from a filename.
     See [load] for [channels] parameter. *)
-val loadf   : ?channels:int -> string   -> float32 t result
+val loadf : ?channels:int -> string -> float32 t result
 
 (** Decode an 8-bit per channel image from a buffer.
     See [load] for [channels] parameter. *)
-val decode  : ?channels:int -> _ buffer -> int8 t result
+val decode : ?channels:int -> _ buffer -> int8 t result
 
 (** Decode a floating point channel image from a buffer.
     See [load] for [channels] parameter. *)
@@ -90,11 +93,11 @@ val decodef : ?channels:int -> _ buffer -> float32 t result
     responsibility.
     Use at your own risk! *)
 
-val load_unmanaged    : ?channels:int -> string   -> int8 t result
-val loadf_unmanaged   : ?channels:int -> string   -> float32 t result
-val decode_unmanaged  : ?channels:int -> _ buffer -> int8 t result
+val load_unmanaged : ?channels:int -> string -> int8 t result
+val loadf_unmanaged : ?channels:int -> string -> float32 t result
+val decode_unmanaged : ?channels:int -> _ buffer -> int8 t result
 val decodef_unmanaged : ?channels:int -> _ buffer -> float32 t result
-val free_unmanaged: _ t -> unit
+val free_unmanaged : _ t -> unit
 
 (** {2 Image filtering} *)
 
