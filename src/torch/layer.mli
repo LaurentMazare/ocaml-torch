@@ -7,7 +7,7 @@ open Base
     Layers can hold variables, these are created and registered using
     a [Var_store.t] when creating the layer.
 *)
-type t
+type ('a, 'b) t
 
 (** A layer of type [t_with_training] is similar to a layer of type [t]
     except that it is also given a boolean argument when applying it to
@@ -15,43 +15,43 @@ type t
     training or in testing mode.
     This is typically the case for batch normalization or dropout.
 *)
-type t_with_training
+type ('a, 'b) t_with_training
 
 (** [with_training t] returns a layer using the [is_training] argument
     from a standard layer. The [is_training] argument is discarded.
     This is useful when sequencing multiple layers via [fold].
 *)
-val with_training : t -> t_with_training
+val with_training : ('a, 'b) t -> ('a, 'b) t_with_training
 
 (** {3 Basic Layer Creation } *)
 
 (** The identity layer. [forward id tensor] returns [tensor]. *)
-val id : t
+val id : ('a, 'a) t
 
 (** The identity layer with an [is_training] argument. *)
-val id_ : t_with_training
+val id_ : ('a, 'a) t_with_training
 
 (** [of_fn f] creates a layer based on a function from tensors to tensors.
 *)
-val of_fn : ('a Tensor.t -> 'a Tensor.t) -> t
+val of_fn : ('a Tensor.t -> 'b Tensor.t) -> ('a, 'b) t
 
 (** [of_fn_ f] creates a layer based on a function from tensors to tensors.
     [f] also has access to the [is_training] flag.
 *)
-val of_fn_ : ('a Tensor.t -> is_training:bool -> 'a Tensor.t) -> t_with_training
+val of_fn_ : ('a Tensor.t -> is_training:bool -> 'b Tensor.t) -> ('a, 'b) t_with_training
 
 (** [sequential ts] applies sequentially a list of layers [ts]. *)
-val sequential : t list -> t
+val sequential : ('a, 'a) t list -> ('a, 'a) t
 
 (** [sequential_ ts] applies sequentially a list of layers [ts]. *)
-val sequential_ : t_with_training list -> t_with_training
+val sequential_ : ('a, 'a) t_with_training list -> ('a, 'a) t_with_training
 
 (** [forward t tensor] applies layer [t] to [tensor]. *)
-val forward : t -> 'a Tensor.t -> 'a Tensor.t
+val forward : ('a, 'b) t -> 'a Tensor.t -> 'b Tensor.t
 
 (** [forward_ t tensor ~is_training] applies layer [t] to [tensor] with
     the specified [is_training] flag. *)
-val forward_ : t_with_training -> 'a Tensor.t -> is_training:bool -> 'a Tensor.t
+val forward_ : ('a, 'b) t_with_training -> 'a Tensor.t -> is_training:bool -> 'b Tensor.t
 
 (** {3 Linear and Convolution Layers } *)
 
@@ -74,10 +74,10 @@ val linear
   :  Var_store.t
   -> ?activation:activation (* default: no activation *)
   -> ?use_bias:bool (* default: true *)
-  -> ?w_init:Var_store.Init.t
+  -> ?w_init:'a Var_store.Init.t
   -> input_dim:int
   -> int
-  -> t
+  -> ('a, 'a) t
 
 (** [conv2d vs ~ksize ~stride ~input_dim output_dim] returns a 2 dimension
     convolution layer.  [ksize] specifies the kernel size and [stride] the
@@ -92,12 +92,12 @@ val conv2d
   -> stride:int * int
   -> ?activation:activation (* default: no activation *)
   -> ?use_bias:bool (* default: true *)
-  -> ?w_init:Var_store.Init.t
+  -> ?w_init:'a Var_store.Init.t
   -> ?padding:int * int
   -> ?groups:int
   -> input_dim:int
   -> int
-  -> t
+  -> ('a, 'a) t
 
 (** [conv2d_] is similar to [conv2d] but uses the same kernel size,
     stride, and padding on both the height and width dimensions, so a
@@ -109,12 +109,12 @@ val conv2d_
   -> stride:int
   -> ?activation:activation (* default: no activation *)
   -> ?use_bias:bool (* default: true *)
-  -> ?w_init:Var_store.Init.t
+  -> ?w_init:'a Var_store.Init.t
   -> ?padding:int
   -> ?groups:int
   -> input_dim:int
   -> int
-  -> t
+  -> ('a, 'a) t
 
 (** [conv_transpose2d] creates a 2D transposed convolution layer, this
     is sometimes also called 'deconvolution'.
@@ -125,13 +125,13 @@ val conv_transpose2d
   -> stride:int * int
   -> ?activation:activation (* default: no activation *)
   -> ?use_bias:bool (* default: true *)
-  -> ?w_init:Var_store.Init.t
+  -> ?w_init:'a Var_store.Init.t
   -> ?padding:int * int
   -> ?output_padding:int * int
   -> ?groups:int
   -> input_dim:int
   -> int
-  -> t
+  -> ('a, 'a) t
 
 (** [conv_transpose2d_] is similar to [conv_transpose2d] but uses a single
     value for the height and width dimension for the kernel size, stride,
@@ -143,13 +143,13 @@ val conv_transpose2d_
   -> stride:int
   -> ?activation:activation (* default: no activation *)
   -> ?use_bias:bool (* default: true *)
-  -> ?w_init:Var_store.Init.t
+  -> ?w_init:'a Var_store.Init.t
   -> ?padding:int
   -> ?output_padding:int
   -> ?groups:int
   -> input_dim:int
   -> int
-  -> t
+  -> ('a, 'a) t
 
 (** {3 Batch Normalization } *)
 
@@ -159,19 +159,19 @@ val conv_transpose2d_
 *)
 val batch_norm2d
   :  Var_store.t
-  -> ?w_init:Var_store.Init.t
+  -> ?w_init:'a Var_store.Init.t
   -> ?cudnn_enabled:bool
   -> ?eps:float
   -> ?momentum:float
   -> int
-  -> t_with_training
+  -> ('a, 'a) t_with_training
 
 (** {3 Recurrent Neural Networks } *)
 
 (** A Long Short Term Memory (LSTM) recurrent neural network. *)
-module Lstm : Rnn_intf.S with type state = 'a Tensor.t * 'a Tensor.t
+module Lstm : Rnn_intf.S with type state = unit Tensor.t * unit Tensor.t
 
-module Gru : Rnn_intf.S with type state = 'a Tensor.t
+module Gru : Rnn_intf.S with type state = unit Tensor.t
 
 (** {3 Embeddings } *)
 
@@ -181,4 +181,4 @@ val embeddings
   -> Var_store.t
   -> num_embeddings:int
   -> embedding_dim:int
-  -> t
+  -> ('a, 'a) t
