@@ -24,7 +24,7 @@ let no_grad_ t ~f =
     let t = set_requires_grad t ~r:false in
     Exn.protect
       ~f:(fun () -> f t)
-      ~finally:(fun () -> ignore (set_requires_grad t ~r:true : t)))
+      ~finally:(fun () -> ignore (set_requires_grad t ~r:true : _ t)))
   else f t
 
 let no_grad f =
@@ -35,16 +35,16 @@ let zero_grad t =
   let grad = grad t in
   if defined grad
   then (
-    ignore (detach_ grad : t);
-    ignore (zero_ grad : t))
+    ignore (detach_ grad : _ t);
+    ignore (zero_ grad : _ t))
 
-type create =
+type 'a create =
   ?requires_grad:bool
   -> ?kind:Torch_core.Kind.packed
   -> ?device:Device.t
   -> ?scale:float
   -> int list
-  -> t
+  -> 'a t
 
 let type_ = kind
 let to_type t ~type_ = totype t ~scalar_type:type_
@@ -57,15 +57,14 @@ let to_device ?device t =
 
 let float_vec ?kind ?device dims = float_vec ?kind dims |> to_device ?device
 
-let gen
-    ~f
+let zeros
     ?(requires_grad = false)
     ?(kind = Torch_core.Kind.(T Float))
     ?(device = Device.Cpu)
     ?scale
     size
   =
-  let t = f ~size ~options:(kind, device) in
+  let t = zeros ~size ~options:(kind, device) in
   let t =
     Option.value_map
       scale
@@ -74,10 +73,54 @@ let gen
   in
   if requires_grad then set_requires_grad t ~r:true else t
 
-let zeros = gen ~f:zeros
-let ones = gen ~f:ones
-let rand = gen ~f:rand
-let randn = gen ~f:randn
+let ones
+    ?(requires_grad = false)
+    ?(kind = Torch_core.Kind.(T Float))
+    ?(device = Device.Cpu)
+    ?scale
+    size
+  =
+  let t = ones ~size ~options:(kind, device) in
+  let t =
+    Option.value_map
+      scale
+      ~f:(fun scale -> mul t (float_vec [ scale ] ~device))
+      ~default:t
+  in
+  if requires_grad then set_requires_grad t ~r:true else t
+
+let rand
+    ?(requires_grad = false)
+    ?(kind = Torch_core.Kind.(T Float))
+    ?(device = Device.Cpu)
+    ?scale
+    size
+  =
+  let t = rand ~size ~options:(kind, device) in
+  let t =
+    Option.value_map
+      scale
+      ~f:(fun scale -> mul t (float_vec [ scale ] ~device))
+      ~default:t
+  in
+  if requires_grad then set_requires_grad t ~r:true else t
+
+let randn
+    ?(requires_grad = false)
+    ?(kind = Torch_core.Kind.(T Float))
+    ?(device = Device.Cpu)
+    ?scale
+    size
+  =
+  let t = randn ~size ~options:(kind, device) in
+  let t =
+    Option.value_map
+      scale
+      ~f:(fun scale -> mul t (float_vec [ scale ] ~device))
+      ~default:t
+  in
+  if requires_grad then set_requires_grad t ~r:true else t
+
 let f v = float_vec [ v ] |> reshape ~shape:[]
 let mm = matmul
 let ( + ) = add
@@ -85,10 +128,10 @@ let ( - ) = sub
 let ( * ) = mul
 let ( / ) = div
 let ( ~- ) = neg
-let ( -= ) t other = ignore (sub_ t other : t)
-let ( += ) t other = ignore (add_ t other : t)
-let ( /= ) t other = ignore (div_ t other : t)
-let ( *= ) t other = ignore (mul_ t other : t)
+let ( -= ) t other = ignore (sub_ t other : _ t)
+let ( += ) t other = ignore (add_ t other : _ t)
+let ( /= ) t other = ignore (div_ t other : _ t)
+let ( *= ) t other = ignore (mul_ t other : _ t)
 let ( = ) = eq1
 let pair_to_list (p1, p2) = [ p1; p2 ]
 

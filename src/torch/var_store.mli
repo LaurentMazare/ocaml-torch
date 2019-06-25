@@ -26,10 +26,10 @@ val ( / ) : t -> string -> t
 val ( // ) : t -> int -> t
 
 (** [trainable_vars t] returns all the trainable variables stored in [t]. *)
-val trainable_vars : t -> Tensor.t list
+val trainable_vars : t -> Tensor.packed list
 
 (** [all_vars t] returns all the variables stored in [t]. *)
-val all_vars : t -> (string * Tensor.t) list
+val all_vars : t -> (string * Tensor.packed) list
 
 (** [name t] returns the var-store name. *)
 val name : t -> string
@@ -38,13 +38,13 @@ val name : t -> string
 val device : t -> Device.t
 
 module Init : sig
-  type t =
+  type 'a t =
     | Zeros
     | Ones
     | Const of float
     | Normal of { mean : float; stdev : float }
     | Uniform of float * float
-    | Copy of Tensor.t
+    | Copy of 'a Tensor.t
 end
 
 (** [new_var ?trainable t ~shape ~init ~name] creates a new variable in [t]    with shape [shape] and the specified initialization.
@@ -54,15 +54,15 @@ val new_var
   :  ?trainable:bool (* default: true *)
   -> t
   -> shape:int list
-  -> init:Init.t
+  -> init:'a Init.t
   -> name:string
-  -> Tensor.t
+  -> 'a Tensor.t
 
 (** [new_var_copy ?trainable t ~src ~name] creates a new variable in [t]
     by copying tensor [src], so using the same shape, element kind and
     element values.
 *)
-val new_var_copy : ?trainable:bool -> t -> src:Tensor.t -> name:string -> Tensor.t
+val new_var_copy : ?trainable:bool -> t -> src:'a Tensor.t -> name:string -> 'a Tensor.t
 
 (** [freeze t] freezes all variables in the var-store, none of the
     variables are trainable anymore and their gradients are not tracked.

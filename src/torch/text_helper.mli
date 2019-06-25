@@ -1,6 +1,6 @@
 open! Base
 
-type t
+type _ t
 
 (** [create ~filename] reads text file [filename] and stores its content in
     [t].
@@ -8,7 +8,7 @@ type t
     use n different characters, the values used in the tensors will range from
     0 to n-1.
 *)
-val create : filename:string -> t
+val create : filename:string -> _ t
 
 (** [iter t ~f ~seq_len ~batch_size] iterates [f] over the whole
     dataset. [f] is given two different tensors [xs] and [ys] which
@@ -18,8 +18,8 @@ val create : filename:string -> t
 *)
 val iter
   :  ?device:Device.t
-  -> t
-  -> f:(int -> xs:Tensor.t -> ys:Tensor.t -> unit)
+  -> 'a t
+  -> f:(int -> xs:'a Tensor.t -> ys:'a Tensor.t -> unit)
   -> seq_len:int
   -> batch_size:int
   -> unit
@@ -27,11 +27,11 @@ val iter
 (** [char t ~label] returns the character from the original file that has been
     mapped to [label].
 *)
-val char : t -> label:int -> char
+val char : _ t -> label:int -> char
 
-val total_length : t -> int
+val total_length : _ t -> int
 
 (** [labels t] returns the number of different labels, i.e. the number of
     distinct chars in the original file.
 *)
-val labels : t -> int
+val labels : _ t -> int

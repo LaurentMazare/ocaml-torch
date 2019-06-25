@@ -8,52 +8,54 @@ module Scalar : sig
 end
 
 module Tensor : sig
-  type t
+  include Wrapper_generated_intf.S with type 'a scalar := 'a Scalar.t
+  type packed = T : _ t -> packed
 
-  include Wrapper_generated_intf.S with type t := t and type 'a scalar := 'a Scalar.t
+  val extract : packed -> kind:'a Kind.t -> 'a t option
 
-  val new_tensor : unit -> t
-  val float_vec : ?kind:[ `double | `float | `half ] -> float list -> t
-  val int_vec : ?kind:[ `int | `int16 | `int64 | `int8 | `uint8 ] -> int list -> t
-  val of_bigarray : (_, _, Bigarray.c_layout) Bigarray.Genarray.t -> t
-  val copy_to_bigarray : t -> (_, _, Bigarray.c_layout) Bigarray.Genarray.t -> unit
-  val shape : t -> int list
-  val size : t -> int list
-  val shape1_exn : t -> int
-  val shape2_exn : t -> int * int
-  val shape3_exn : t -> int * int * int
-  val shape4_exn : t -> int * int * int * int
-  val kind : t -> Kind.packed
-  val requires_grad : t -> bool
+  val new_tensor : unit -> _ t
+  val float_vec : ?kind:[ `double | `float | `half ] -> float list -> _ t
+  val int_vec : ?kind:[ `int | `int16 | `int64 | `int8 | `uint8 ] -> int list -> _ t
+  val of_bigarray : (_, _, Bigarray.c_layout) Bigarray.Genarray.t -> _ t
+  val copy_to_bigarray : _ t -> (_, _, Bigarray.c_layout) Bigarray.Genarray.t -> unit
+  val shape : _ t -> int list
+  val size : _ t -> int list
+  val shape1_exn : _ t -> int
+  val shape2_exn : _ t -> int * int
+  val shape3_exn : _ t -> int * int * int
+  val shape4_exn : _ t -> int * int * int * int
+  val kind : _ t -> Kind.packed
+  val requires_grad : _ t -> bool
   val grad_set_enabled : bool -> bool
 
   (* returns the previous state. *)
-  val get : t -> int -> t
-  val select : t -> dim:int -> index:int -> t
-  val float_value : t -> float
-  val int_value : t -> int
-  val float_get : t -> int list -> float
-  val int_get : t -> int list -> int
-  val float_set : t -> int list -> float -> unit
-  val int_set : t -> int list -> int -> unit
-  val fill_float : t -> float -> unit
-  val fill_int : t -> int -> unit
-  val backward : ?keep_graph:bool -> ?create_graph:bool -> t -> unit
+  val get : 'a t -> int -> 'a t
+  val select : 'a t -> dim:int -> index:int -> 'a t
+  val float_value : _ t -> float
+  val int_value : _ t -> int
+  val float_get : _ t -> int list -> float
+  val int_get : _ t -> int list -> int
+  val float_set : _ t -> int list -> float -> unit
+  val int_set : _ t -> int list -> int -> unit
+  val fill_float : _ t -> float -> unit
+  val fill_int : _ t -> int -> unit
+  val backward : ?keep_graph:bool -> ?create_graph:bool -> _ t -> unit
 
   (* Computes and returns the sum of gradients of outputs w.r.t. the inputs.
      If [create_graph] is set to true, graph of the derivative will be constructed,
      allowing to compute higher order derivative products.
   *)
-  val run_backward : ?keep_graph:bool -> ?create_graph:bool -> t list -> t list -> t list
-  val print : t -> unit
-  val to_string : t -> line_size:int -> string
-  val sum : t -> t
-  val mean : t -> t
-  val argmax : ?dim:int -> ?keepdim:bool -> t -> t
-  val defined : t -> bool
-  val copy_ : t -> src:t -> unit
-  val max : t -> t -> t
-  val min : t -> t -> t
+  val run_backward : ?keep_graph:bool -> ?create_graph:bool -> 'a t list -> 'a t list -> 'a t list
+  val print : _ t -> unit
+  val to_string : _ t -> line_size:int -> string
+  val sum : 'a t -> 'a t
+  val mean : 'a t -> 'a t
+  val argmax : ?dim:int -> ?keepdim:bool -> 'a t -> 'a t
+  val defined : _ t -> bool
+  (* TODO: more restrictive types. *)
+  val copy_ : 'a t -> src:'b t -> unit
+  val max : 'a t -> 'a t -> 'a t
+  val min : 'a t -> 'a t -> 'a t
 end
 
 module Optimizer : sig
@@ -80,18 +82,18 @@ module Optimizer : sig
 
   val set_learning_rate : t -> float -> unit
   val set_momentum : t -> float -> unit
-  val add_parameters : t -> Tensor.t list -> unit
+  val add_parameters : t -> _ Tensor.t list -> unit
   val zero_grad : t -> unit
   val step : t -> unit
 end
 
 module Serialize : sig
-  val save : Tensor.t -> filename:string -> unit
-  val load : filename:string -> Tensor.t
-  val save_multi : named_tensors:(string * Tensor.t) list -> filename:string -> unit
-  val load_multi : names:string list -> filename:string -> Tensor.t list
-  val load_multi_ : named_tensors:(string * Tensor.t) list -> filename:string -> unit
-  val load_all : filename:string -> (string * Tensor.t) list
+  val save : _ Tensor.t -> filename:string -> unit
+  val load : filename:string -> Tensor.packed
+  val save_multi : named_tensors:(string * Tensor.packed) list -> filename:string -> unit
+  val load_multi : names:string list -> filename:string -> Tensor.packed list
+  val load_multi_ : named_tensors:(string * Tensor.packed) list -> filename:string -> unit
+  val load_all : filename:string -> (string * Tensor.packed) list
 end
 
 module Cuda : sig
@@ -112,12 +114,12 @@ module Ivalue : sig
 
   type t
 
-  val tensor : Tensor.t -> t
+  val tensor : _ Tensor.t -> t
   val int64 : Int64.t -> t
   val double : float -> t
   val tuple : t list -> t
   val tag : t -> Tag.t
-  val to_tensor : t -> Tensor.t
+  val to_tensor : t -> Tensor.packed
   val to_int64 : t -> Int64.t
   val to_double : t -> float
   val to_tuple : t -> t list
@@ -127,6 +129,6 @@ module Module : sig
   type t
 
   val load : string -> t
-  val forward : t -> Tensor.t list -> Tensor.t
+  val forward : t -> _ Tensor.t list -> _ Tensor.t
   val forward_ : t -> Ivalue.t list -> Ivalue.t
 end

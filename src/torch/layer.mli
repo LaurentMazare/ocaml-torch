@@ -33,12 +33,12 @@ val id_ : t_with_training
 
 (** [of_fn f] creates a layer based on a function from tensors to tensors.
 *)
-val of_fn : (Tensor.t -> Tensor.t) -> t
+val of_fn : ('a Tensor.t -> 'a Tensor.t) -> t
 
 (** [of_fn_ f] creates a layer based on a function from tensors to tensors.
     [f] also has access to the [is_training] flag.
 *)
-val of_fn_ : (Tensor.t -> is_training:bool -> Tensor.t) -> t_with_training
+val of_fn_ : ('a Tensor.t -> is_training:bool -> 'a Tensor.t) -> t_with_training
 
 (** [sequential ts] applies sequentially a list of layers [ts]. *)
 val sequential : t list -> t
@@ -47,11 +47,11 @@ val sequential : t list -> t
 val sequential_ : t_with_training list -> t_with_training
 
 (** [forward t tensor] applies layer [t] to [tensor]. *)
-val forward : t -> Tensor.t -> Tensor.t
+val forward : t -> 'a Tensor.t -> 'a Tensor.t
 
 (** [forward_ t tensor ~is_training] applies layer [t] to [tensor] with
     the specified [is_training] flag. *)
-val forward_ : t_with_training -> Tensor.t -> is_training:bool -> Tensor.t
+val forward_ : t_with_training -> 'a Tensor.t -> is_training:bool -> 'a Tensor.t
 
 (** {3 Linear and Convolution Layers } *)
 
@@ -169,9 +169,9 @@ val batch_norm2d
 (** {3 Recurrent Neural Networks } *)
 
 (** A Long Short Term Memory (LSTM) recurrent neural network. *)
-module Lstm : Rnn_intf.S with type state = Tensor.t * Tensor.t
+module Lstm : Rnn_intf.S with type state = 'a Tensor.t * 'a Tensor.t
 
-module Gru : Rnn_intf.S with type state = Tensor.t
+module Gru : Rnn_intf.S with type state = 'a Tensor.t
 
 (** {3 Embeddings } *)
 

@@ -3,7 +3,7 @@ open Base
 type raw = Torch_core.Wrapper.Ivalue.t
 
 type t =
-  | Tensor of Tensor.t
+  | Tensor of Tensor.packed
   | Int of int
   | Double of float
   | Tuple of t list
