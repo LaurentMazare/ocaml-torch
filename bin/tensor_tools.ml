@@ -64,10 +64,10 @@ let pytorch_to_npz pytorch_src npz_dst =
         Npy.Npz.write npz_file tensor_name tensor
       in
       match Tensor.kind tensor with
-      | Float -> write Bigarray.float32
-      | Double -> write Bigarray.float64
-      | Int -> write Bigarray.int32
-      | Int64 -> write Bigarray.int64
+      | T Float -> write Bigarray.float32
+      | T Double -> write Bigarray.float64
+      | T Int -> write Bigarray.int32
+      | T Int64 -> write Bigarray.int64
       | _ -> Printf.failwithf "unsupported tensor kind for %s" tensor_name ());
   Npy.Npz.close_out npz_file
 

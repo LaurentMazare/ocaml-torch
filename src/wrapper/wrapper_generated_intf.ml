@@ -325,20 +325,20 @@ module type S = sig
 
   val arange :
     end_:'a scalar ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val arange1 :
     start:'a scalar ->
     end_:'a scalar ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val arange2 :
     start:'a scalar ->
     end_:'a scalar ->
     step:'a scalar ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val arange_out :
@@ -536,13 +536,13 @@ module type S = sig
 
   val bartlett_window :
     window_length:int ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val bartlett_window1 :
     window_length:int ->
     periodic:bool ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val batch_norm :
@@ -697,13 +697,13 @@ module type S = sig
 
   val blackman_window :
     window_length:int ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val blackman_window1 :
     window_length:int ->
     periodic:bool ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val bmm :
@@ -1195,7 +1195,7 @@ module type S = sig
   val cumprod1 :
     t ->
     dim:int ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     t
 
   val cumprod_out :
@@ -1208,7 +1208,7 @@ module type S = sig
     out:t ->
     t ->
     dim:int ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     t
 
   val cumsum :
@@ -1219,7 +1219,7 @@ module type S = sig
   val cumsum1 :
     t ->
     dim:int ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     t
 
   val cumsum_out :
@@ -1232,7 +1232,7 @@ module type S = sig
     out:t ->
     t ->
     dim:int ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     t
 
   val dequantize :
@@ -1442,7 +1442,7 @@ module type S = sig
 
   val empty :
     size:int list ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val empty_like :
@@ -1451,7 +1451,7 @@ module type S = sig
 
   val empty_like1 :
     t ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val empty_out :
@@ -1462,7 +1462,7 @@ module type S = sig
   val empty_strided :
     size:int list ->
     stride:int list ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val eq :
@@ -1580,13 +1580,13 @@ module type S = sig
 
   val eye :
     n:int ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val eye1 :
     n:int ->
     m:int ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val eye_out :
@@ -1811,7 +1811,7 @@ module type S = sig
   val full :
     size:int list ->
     fill_value:'a scalar ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val full_like :
@@ -1822,7 +1822,7 @@ module type S = sig
   val full_like1 :
     t ->
     fill_value:'a scalar ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val full_out :
@@ -2057,20 +2057,20 @@ module type S = sig
 
   val hamming_window :
     window_length:int ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val hamming_window1 :
     window_length:int ->
     periodic:bool ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val hamming_window2 :
     window_length:int ->
     periodic:bool ->
     alpha:float ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val hamming_window3 :
@@ -2078,18 +2078,18 @@ module type S = sig
     periodic:bool ->
     alpha:float ->
     beta:float ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val hann_window :
     window_length:int ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val hann_window1 :
     window_length:int ->
     periodic:bool ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val hardshrink :
@@ -2487,7 +2487,7 @@ module type S = sig
     start:'a scalar ->
     end_:'a scalar ->
     steps:int ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val linspace_out :
@@ -2585,7 +2585,7 @@ module type S = sig
   val log_softmax1 :
     t ->
     dim:int ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     t
 
   val logdet :
@@ -2597,7 +2597,7 @@ module type S = sig
     end_:'a scalar ->
     steps:int ->
     base:float ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val logspace_out :
@@ -3008,7 +3008,7 @@ module type S = sig
 
   val mean1 :
     t ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     t
 
   val mean2 :
@@ -3020,14 +3020,14 @@ module type S = sig
   val mean3 :
     t ->
     dim:int list ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     t
 
   val mean4 :
     t ->
     dim:int list ->
     keepdim:bool ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     t
 
   val mean_out :
@@ -3041,7 +3041,7 @@ module type S = sig
     out:t ->
     t ->
     dim:int list ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     t
 
   val mean_out2 :
@@ -3049,7 +3049,7 @@ module type S = sig
     t ->
     dim:int list ->
     keepdim:bool ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     t
 
   val median :
@@ -3633,7 +3633,7 @@ module type S = sig
   val norm1 :
     t ->
     p:'a scalar ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     t
 
   val norm2 :
@@ -3648,7 +3648,7 @@ module type S = sig
     p:'a scalar ->
     dim:int list ->
     keepdim:bool ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     t
 
   val norm_except_dim :
@@ -3671,7 +3671,7 @@ module type S = sig
     p:'a scalar ->
     dim:int list ->
     keepdim:bool ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     t
 
   val normal :
@@ -3731,7 +3731,7 @@ module type S = sig
 
   val ones :
     size:int list ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val ones_like :
@@ -3740,7 +3740,7 @@ module type S = sig
 
   val ones_like1 :
     t ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val ones_out :
@@ -3888,7 +3888,7 @@ module type S = sig
 
   val prod1 :
     t ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     t
 
   val prod2 :
@@ -3900,14 +3900,14 @@ module type S = sig
   val prod3 :
     t ->
     dim:int ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     t
 
   val prod4 :
     t ->
     dim:int ->
     keepdim:bool ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     t
 
   val prod_out :
@@ -3921,7 +3921,7 @@ module type S = sig
     out:t ->
     t ->
     dim:int ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     t
 
   val prod_out2 :
@@ -3929,7 +3929,7 @@ module type S = sig
     t ->
     dim:int ->
     keepdim:bool ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     t
 
   val pstrf :
@@ -4049,7 +4049,7 @@ module type S = sig
 
   val rand :
     size:int list ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val rand_like :
@@ -4058,7 +4058,7 @@ module type S = sig
 
   val rand_like1 :
     t ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val rand_out :
@@ -4069,14 +4069,14 @@ module type S = sig
   val randint :
     high:int ->
     size:int list ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val randint1 :
     low:int ->
     high:int ->
     size:int list ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val randint_like :
@@ -4093,14 +4093,14 @@ module type S = sig
   val randint_like2 :
     t ->
     high:int ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val randint_like3 :
     t ->
     low:int ->
     high:int ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val randint_out :
@@ -4118,7 +4118,7 @@ module type S = sig
 
   val randn :
     size:int list ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val randn_like :
@@ -4127,7 +4127,7 @@ module type S = sig
 
   val randn_like1 :
     t ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val randn_out :
@@ -4152,7 +4152,7 @@ module type S = sig
 
   val randperm :
     n:int ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val randperm_out :
@@ -4163,13 +4163,13 @@ module type S = sig
   val range :
     start:'a scalar ->
     end_:'a scalar ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val range1 :
     start:'a scalar ->
     end_:'a scalar ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val range_out :
@@ -4610,7 +4610,7 @@ module type S = sig
 
   val scalar_tensor :
     s:'a scalar ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val scatter :
@@ -4827,7 +4827,7 @@ module type S = sig
   val softmax1 :
     t ->
     dim:int ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     t
 
   val softplus :
@@ -4906,20 +4906,20 @@ module type S = sig
 
   val sparse_coo_tensor :
     size:int list ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val sparse_coo_tensor1 :
     indices:t ->
     values:t ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val sparse_coo_tensor2 :
     indices:t ->
     values:t ->
     size:int list ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val sparse_resize_ :
@@ -5065,7 +5065,7 @@ module type S = sig
 
   val sum1 :
     t ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     t
 
   val sum2 :
@@ -5077,14 +5077,14 @@ module type S = sig
   val sum3 :
     t ->
     dim:int list ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     t
 
   val sum4 :
     t ->
     dim:int list ->
     keepdim:bool ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     t
 
   val sum_out :
@@ -5098,7 +5098,7 @@ module type S = sig
     out:t ->
     t ->
     dim:int list ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     t
 
   val sum_out2 :
@@ -5106,7 +5106,7 @@ module type S = sig
     t ->
     dim:int list ->
     keepdim:bool ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     t
 
   val sum_to_size :
@@ -5238,14 +5238,14 @@ module type S = sig
 
   val to1 :
     t ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     non_blocking:bool ->
     copy:bool ->
     t
 
   val to2 :
     t ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     non_blocking:bool ->
     copy:bool ->
     t
@@ -5260,7 +5260,7 @@ module type S = sig
   val to4 :
     t ->
     device:Device.t ->
-    dtype:Kind.t ->
+    dtype:Kind.packed ->
     non_blocking:bool ->
     copy:bool ->
     t
@@ -5312,7 +5312,7 @@ module type S = sig
 
   val totype :
     t ->
-    scalar_type:Kind.t ->
+    scalar_type:Kind.packed ->
     t
 
   val trace :
@@ -5363,7 +5363,7 @@ module type S = sig
     row:int ->
     col:int ->
     offset:int ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val tril_out :
@@ -5397,7 +5397,7 @@ module type S = sig
     row:int ->
     col:int ->
     offset:int ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val triu_out :
@@ -5704,7 +5704,7 @@ module type S = sig
 
   val zeros :
     size:int list ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val zeros_like :
@@ -5713,7 +5713,7 @@ module type S = sig
 
   val zeros_like1 :
     t ->
-    options:Kind.t * Device.t ->
+    options:Kind.packed * Device.t ->
     t
 
   val zeros_out :

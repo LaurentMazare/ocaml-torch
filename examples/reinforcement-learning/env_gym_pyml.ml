@@ -25,7 +25,7 @@ let to_tensor t np_array =
   Py.Object.call_method np_array "astype" [| Py.Module.get t.np "float32" |]
   |> Numpy.to_bigarray Float32 C_layout
   |> Tensor.of_bigarray
-  |> Tensor.to_type ~type_:Float
+  |> Tensor.to_type ~type_:(T Float)
 
 let reset t =
   let reset_fn = Py.Object.get_attr_string t.env "reset" in

@@ -23,7 +23,7 @@ module Tensor : sig
   val shape2_exn : t -> int * int
   val shape3_exn : t -> int * int * int
   val shape4_exn : t -> int * int * int * int
-  val kind : t -> Kind.t
+  val kind : t -> Kind.packed
   val requires_grad : t -> bool
   val grad_set_enabled : bool -> bool
 

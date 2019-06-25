@@ -11,7 +11,7 @@ let write_and_read tensor ~print_tensor =
 
 let%expect_test _ =
   let print_tensor tensor = Stdio.printf "%d\n" (Tensor.to_int0_exn tensor) in
-  Tensor.randint ~high:42 ~size:[ 3; 1; 4 ] ~options:(Int64, Cpu)
+  Tensor.randint ~high:42 ~size:[ 3; 1; 4 ] ~options:(T Int64, Cpu)
   |> write_and_read ~print_tensor;
   [%expect {|
         0
@@ -39,8 +39,8 @@ let write_and_read named_tensors =
   List.iter2_exn named_tensors ys ~f:(fun (name, tensor) y ->
       let l2 = Tensor.((tensor - y) * (tensor - y)) |> Tensor.sum in
       match Tensor.kind l2 with
-      | Int64 | Int -> Stdio.printf "%s %d\n%!" name (Tensor.to_int0_exn l2)
-      | Float | Double -> Stdio.printf "%s %f\n%!" name (Tensor.to_float0_exn l2)
+      | T Int64 | T Int -> Stdio.printf "%s %d\n%!" name (Tensor.to_int0_exn l2)
+      | T Float | T Double -> Stdio.printf "%s %f\n%!" name (Tensor.to_float0_exn l2)
       | _ -> assert false);
   Unix.unlink filename
 

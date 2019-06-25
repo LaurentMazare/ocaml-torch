@@ -162,7 +162,7 @@ let detect xs ~image_height ~anchors ~classes ~device =
     |> Tensor.contiguous
     |> Tensor.view ~size:[ bsize; grid_size * grid_size * num_anchors; bbox_attrs ]
   in
-  let grid = Tensor.arange ~end_:(Scalar.int grid_size) ~options:(Float, device) in
+  let grid = Tensor.arange ~end_:(Scalar.int grid_size) ~options:(T Float, device) in
   let a = Tensor.repeat grid ~repeats:[ grid_size; 1 ] in
   let b = Tensor.tr a |> Tensor.contiguous in
   let x_offset = Tensor.view a ~size:[ -1; 1 ] in

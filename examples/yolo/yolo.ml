@@ -90,7 +90,7 @@ let report predictions ~image ~width ~height =
                in
                if drop then acc_bboxes else bbox :: acc_bboxes))
   in
-  let image = Tensor.(to_type image ~type_:Float / f 255.) in
+  let image = Tensor.(to_type image ~type_:(T Float) / f 255.) in
   let _, _, initial_height, initial_width = Tensor.shape4_exn image in
   let resize_and_clamp v ~initial_max ~max =
     Int.of_float (v *. Float.of_int initial_max /. Float.of_int max)
@@ -137,7 +137,7 @@ let () =
   let width, height = Darknet.width darknet, Darknet.height darknet in
   let image = Image.load_image Sys.argv.(2) |> Or_error.ok_exn in
   let resized_image = Image.resize image ~width ~height in
-  let resized_image = Tensor.(to_type resized_image ~type_:Float / f 255.) in
+  let resized_image = Tensor.(to_type resized_image ~type_:(T Float) / f 255.) in
   (* Apply the model. *)
   let predictions = Layer.forward_ model resized_image ~is_training:false in
   Tensor.squeeze predictions |> report ~image ~width ~height

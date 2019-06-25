@@ -32,7 +32,7 @@ let labels t = Map.length t.char_for_label
 let iter ?device t ~f ~seq_len ~batch_size =
   let total_length = total_length t in
   let start_indexes =
-    Tensor.randperm ~n:(total_length - seq_len) ~options:(Int64, Cpu)
+    Tensor.randperm ~n:(total_length - seq_len) ~options:(T Int64, Cpu)
   in
   for index = 0 to ((total_length - seq_len - 1) / batch_size) - 1 do
     let xs, ys =
@@ -45,7 +45,7 @@ let iter ?device t ~f ~seq_len ~batch_size =
       |> List.unzip
     in
     let stack v =
-      Tensor.stack v ~dim:0 |> Tensor.to_device ?device |> Tensor.to_type ~type_:Int64
+      Tensor.stack v ~dim:0 |> Tensor.to_device ?device |> Tensor.to_type ~type_:(T Int64)
     in
     f index ~xs:(stack xs) ~ys:(stack ys);
     Caml.Gc.full_major ()

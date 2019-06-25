@@ -15,7 +15,7 @@ end = struct
     }
 
   let create ~num_procs ~num_stack =
-    { data = Tensor.zeros [ num_procs; num_stack; 84; 84 ] ~kind:Float
+    { data = Tensor.zeros [ num_procs; num_stack; 84; 84 ] ~kind:(T Float)
     ; num_procs
     ; num_stack
     }
@@ -66,7 +66,7 @@ let create ~atari_game ~num_steps ~num_stack ~num_procs =
   Tensor.print_shape obs ~name:"obs";
   ignore (Frame_stack.update frame_stack obs : Tensor.t);
   let s_states =
-    Tensor.zeros [ num_steps + 1; num_procs; num_stack; 84; 84 ] ~kind:Float
+    Tensor.zeros [ num_steps + 1; num_procs; num_stack; 84; 84 ] ~kind:(T Float)
   in
   { envs
   ; num_steps
@@ -85,7 +85,7 @@ let run t ~model =
   set t.s_states 0 (Tensor.get t.s_states (-1));
   let s_values = Tensor.zeros [ t.num_steps; t.num_procs ] in
   let s_rewards = Tensor.zeros [ t.num_steps; t.num_procs ] in
-  let s_actions = Tensor.zeros [ t.num_steps; t.num_procs ] ~kind:Int64 in
+  let s_actions = Tensor.zeros [ t.num_steps; t.num_procs ] ~kind:(T Int64) in
   let s_masks = Tensor.zeros [ t.num_steps; t.num_procs ] in
   for s = 0 to t.num_steps - 1 do
     let { actor; critic } = Tensor.no_grad (fun () -> model (Tensor.get t.s_states s)) in

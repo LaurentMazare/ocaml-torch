@@ -24,11 +24,11 @@ module Tensor = struct
     let values = CArray.of_list double values |> CArray.start in
     let kind =
       match kind with
-      | `float -> Kind.Float
-      | `double -> Double
-      | `half -> Half
+      | `float -> Kind.T Float
+      | `double -> Kind.T Double
+      | `half -> Kind.T Half
     in
-    let t = float_vec values values_len (Kind.to_int kind) in
+    let t = float_vec values values_len (Kind.packed_to_int kind) in
     Gc.finalise free t;
     t
 
@@ -39,13 +39,13 @@ module Tensor = struct
     in
     let kind =
       match kind with
-      | `uint8 -> Kind.Uint8
-      | `int8 -> Int8
-      | `int16 -> Int16
-      | `int -> Int
-      | `int64 -> Int64
+      | `uint8 -> Kind.T Uint8
+      | `int8 -> Kind.T Int8
+      | `int16 -> Kind.T Int16
+      | `int -> Kind.T Int
+      | `int64 -> Kind.T Int64
     in
-    let t = int_vec values values_len (Kind.to_int kind) in
+    let t = int_vec values values_len (Kind.packed_to_int kind) in
     Gc.finalise free t;
     t
 
@@ -54,15 +54,15 @@ module Tensor = struct
     let kind = Bigarray.Genarray.kind ga in
     let tensor_kind =
       match kind with
-      | Bigarray.Float32 -> Kind.Float
-      | Bigarray.Float64 -> Double
-      | Bigarray.Int8_signed -> Int8
-      | Bigarray.Int8_unsigned -> Uint8
-      | Bigarray.Char -> Uint8
-      | Bigarray.Int16_signed -> Int16
-      | Bigarray.Int32 -> Int
-      | Bigarray.Int -> Int64
-      | Bigarray.Int64 -> Int64
+      | Bigarray.Float32 -> Kind.T Float
+      | Bigarray.Float64 -> Kind.T Double
+      | Bigarray.Int8_signed -> Kind.T Int8
+      | Bigarray.Int8_unsigned -> Kind.T Uint8
+      | Bigarray.Char -> Kind.T Uint8
+      | Bigarray.Int16_signed -> Kind.T Int16
+      | Bigarray.Int32 -> Kind.T Int
+      | Bigarray.Int -> Kind.T Int64
+      | Bigarray.Int64 -> Kind.T Int64
       | _ -> failwith "unsupported bigarray kind"
     in
     let t =
@@ -74,7 +74,7 @@ module Tensor = struct
         |> CArray.start)
         (Array.length dims)
         (Bigarray.kind_size_in_bytes kind)
-        (Kind.to_int tensor_kind)
+        (Kind.packed_to_int tensor_kind)
     in
     Gc.finalise free t;
     t

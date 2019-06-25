@@ -119,7 +119,7 @@ val f : float -> t
 
 type create =
   ?requires_grad:bool
-  -> ?kind:Torch_core.Kind.t
+  -> ?kind:Torch_core.Kind.packed
   -> ?device:Device.t
   -> ?scale:float
   -> int list
@@ -141,13 +141,13 @@ val randn : create
 val float_vec : ?kind:[ `double | `float | `half ] -> ?device:Device.t -> float list -> t
 
 (** [to_type t ~type_] returns a tensor similar to [t] but converted to kind [type_]. *)
-val to_type : t -> type_:Kind.t -> t
+val to_type : t -> type_:Kind.packed -> t
 
 (** [to_kind t ~kind] returns a tensor similar to [t] but converted to kind [kind]. *)
-val to_kind : t -> kind:Kind.t -> t
+val to_kind : t -> kind:Kind.packed -> t
 
 (** [kind t] returns the kind of elements hold in tensor [t]. *)
-val type_ : t -> Kind.t
+val type_ : t -> Kind.packed
 
 (** [to_device t ~device] returns a tensor identical to [t] but placed on device [device]. *)
 val to_device : ?device:Device.t -> t -> t

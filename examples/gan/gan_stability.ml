@@ -164,10 +164,10 @@ let () =
     (fun ~index:batch_idx ->
       let x_real =
         let index =
-          Tensor.randint ~high:train_size ~size:[ batch_size ] ~options:(Int64, Cpu)
+          Tensor.randint ~high:train_size ~size:[ batch_size ] ~options:(T Int64, Cpu)
         in
         Tensor.index_select images ~dim:0 ~index
-        |> Tensor.to_type ~type_:Float
+        |> Tensor.to_type ~type_:(T Float)
         |> fun xs -> Tensor.((xs / f 127.5) - f 1.)
       in
       let discriminator_loss =
@@ -216,5 +216,5 @@ let () =
         |> fun xs ->
         Tensor.((xs + f 1.) * f 127.5)
         |> Tensor.clamp ~min:(Scalar.float 0.) ~max:(Scalar.float 255.)
-        |> Tensor.to_type ~type_:Uint8
+        |> Tensor.to_type ~type_:(T Uint8)
         |> write_samples ~filename:(Printf.sprintf "out%d.png" batch_idx))

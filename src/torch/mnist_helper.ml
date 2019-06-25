@@ -19,7 +19,7 @@ let read_images filename =
   let rows = int32_be content ~offset:8 in
   let columns = int32_be content ~offset:12 in
   Tensor.narrow content ~dim:0 ~start:16 ~length:(samples * rows * columns)
-  |> Tensor.to_type ~type_:Float
+  |> Tensor.to_type ~type_:(T Float)
   |> fun images ->
   Tensor.(images / f 255.) |> Tensor.view ~size:[ samples; rows * columns ]
 
@@ -29,7 +29,7 @@ let read_labels filename =
   if magic_number <> 2049
   then Printf.failwithf "Incorrect magic number in %s: %d" filename magic_number ();
   let samples = int32_be content ~offset:4 in
-  Tensor.narrow content ~dim:0 ~start:8 ~length:samples |> Tensor.to_type ~type_:Int64
+  Tensor.narrow content ~dim:0 ~start:8 ~length:samples |> Tensor.to_type ~type_:(T Int64)
 
 let read_files ?(prefix = "data") () =
   let filename = Caml.Filename.concat prefix in

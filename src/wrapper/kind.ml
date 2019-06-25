@@ -1,19 +1,21 @@
-type t =
-  | Uint8
-  | Int8
-  | Int16
-  | Int
-  | Int64
-  | Half
-  | Float
-  | Double
-  | ComplexHalf
-  | ComplexFloat
-  | ComplexDouble
-  | Bool
+type _ t =
+  | Uint8 : [ `u8 ] t
+  | Int8 : [ `i8 ] t
+  | Int16 : [ `i16 ] t
+  | Int : [ `i32 ] t
+  | Int64 : [ `i64 ] t
+  | Half : [ `f16 ] t
+  | Float : [ `f32 ] t
+  | Double : [ `f64 ] t
+  | ComplexHalf : [ `c16 ] t
+  | ComplexFloat : [ `c32 ] t
+  | ComplexDouble : [ `c64 ] t
+  | Bool : [ `bool ] t
+
+type packed = T : _ t -> packed
 
 (* Hardcoded, should match ScalarType.h *)
-let to_int = function
+let to_int : type a. a t -> int = function
   | Uint8 -> 0
   | Int8 -> 1
   | Int16 -> 2
@@ -27,20 +29,22 @@ let to_int = function
   | ComplexDouble -> 10
   | Bool -> 11
 
+let packed_to_int (T t) = to_int t
+
 let of_int_exn = function
-  | 0 -> Uint8
-  | 1 -> Int8
-  | 2 -> Int16
-  | 3 -> Int
-  | 4 -> Int64
-  | 5 -> Half
-  | 6 -> Float
-  | 7 -> Double
-  | 8 -> ComplexHalf
-  | 9 -> ComplexFloat
-  | 10 -> ComplexDouble
-  | 11 -> Bool
+  | 0 -> T Uint8
+  | 1 -> T Int8
+  | 2 -> T Int16
+  | 3 -> T Int
+  | 4 -> T Int64
+  | 5 -> T Half
+  | 6 -> T Float
+  | 7 -> T Double
+  | 8 -> T ComplexHalf
+  | 9 -> T ComplexFloat
+  | 10 -> T ComplexDouble
+  | 11 -> T Bool
   | d -> failwith (Printf.sprintf "unexpected kind %d" d)
 
-let ( = ) = Stdlib.( = )
-let ( <> ) = Stdlib.( <> )
+let (<>) packed1 packed2 =
+  packed_to_int packed1 <> packed_to_int packed2

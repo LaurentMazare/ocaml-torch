@@ -69,9 +69,9 @@ module Func = struct
     | TensorOption -> "t option"
     | IntList -> "int list"
     | TensorList -> "t list"
-    | TensorOptions -> "Kind.t * Device.t"
+    | TensorOptions -> "Kind.packed * Device.t"
     | Scalar -> "'a scalar"
-    | ScalarType -> "Kind.t"
+    | ScalarType -> "Kind.packed"
     | Device -> "Device.t"
 
   let named_arg arg =
@@ -202,9 +202,9 @@ module Func = struct
             name
             name
         | Bool -> Printf.sprintf "(if %s then 1 else 0)" name
-        | ScalarType -> Printf.sprintf "(Kind.to_int %s)" name
+        | ScalarType -> Printf.sprintf "(Kind.packed_to_int %s)" name
         | TensorOptions ->
-          Printf.sprintf "(Kind.to_int (fst %s)) (Device.to_int (snd %s))" name name
+          Printf.sprintf "(Kind.packed_to_int (fst %s)) (Device.to_int (snd %s))" name name
         | Device -> Printf.sprintf "(Device.to_int %s)" name
         | Int64 ->
           if String.( = ) name "reduction"

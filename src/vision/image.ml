@@ -98,7 +98,7 @@ let load_dataset ~dir ~classes ~with_cache ~resize =
     let load_tv tv =
       List.mapi classes ~f:(fun class_index class_dir ->
           let images = load tv class_dir in
-          let labels = Tensor.zeros [ Tensor.shape images |> List.hd_exn ] ~kind:Int64 in
+          let labels = Tensor.zeros [ Tensor.shape images |> List.hd_exn ] ~kind:(T Int64) in
           Tensor.fill_int labels class_index;
           images, labels)
       |> List.unzip
@@ -130,7 +130,7 @@ let write_image tensor ~filename =
       else tensor
     in
     Tensor.view tensor ~size:[ channels * height * width ]
-    |> Tensor.to_type ~type_:Uint8
+    |> Tensor.to_type ~type_:(T Uint8)
     |> Tensor.to_bigarray ~kind:Int8_unsigned
     |> Bigarray.array1_of_genarray
   in
@@ -206,7 +206,7 @@ let resize tensor ~height ~width =
         Tensor.permute tensor ~dims:[ 1; 2; 0 ]
         |> Tensor.contiguous
         |> Tensor.view ~size:[ c * h * w ]
-        |> Tensor.to_type ~type_:Uint8
+        |> Tensor.to_type ~type_:(T Uint8)
         |> Tensor.to_bigarray ~kind:Int8_unsigned
         |> Bigarray.array1_of_genarray
       in

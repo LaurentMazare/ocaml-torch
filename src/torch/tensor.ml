@@ -40,7 +40,7 @@ let zero_grad t =
 
 type create =
   ?requires_grad:bool
-  -> ?kind:Torch_core.Kind.t
+  -> ?kind:Torch_core.Kind.packed
   -> ?device:Device.t
   -> ?scale:float
   -> int list
@@ -60,7 +60,7 @@ let float_vec ?kind ?device dims = float_vec ?kind dims |> to_device ?device
 let gen
     ~f
     ?(requires_grad = false)
-    ?(kind = Torch_core.Kind.Float)
+    ?(kind = Torch_core.Kind.(T Float))
     ?(device = Device.Cpu)
     ?scale
     size
@@ -253,38 +253,38 @@ let bigarray_to_array3 bigarray ~f =
 
 let to_float1 t =
   match kind t with
-  | Float -> to_bigarray t ~kind:Bigarray.float32 |> bigarray_to_array1 ~f:Fn.id
-  | Double -> to_bigarray t ~kind:Bigarray.float64 |> bigarray_to_array1 ~f:Fn.id
+  | T Float -> to_bigarray t ~kind:Bigarray.float32 |> bigarray_to_array1 ~f:Fn.id
+  | T Double -> to_bigarray t ~kind:Bigarray.float64 |> bigarray_to_array1 ~f:Fn.id
   | _ -> None
 
 let to_float2 t =
   match kind t with
-  | Float -> to_bigarray t ~kind:Bigarray.float32 |> bigarray_to_array2 ~f:Fn.id
-  | Double -> to_bigarray t ~kind:Bigarray.float64 |> bigarray_to_array2 ~f:Fn.id
+  | T Float -> to_bigarray t ~kind:Bigarray.float32 |> bigarray_to_array2 ~f:Fn.id
+  | T Double -> to_bigarray t ~kind:Bigarray.float64 |> bigarray_to_array2 ~f:Fn.id
   | _ -> None
 
 let to_float3 t =
   match kind t with
-  | Float -> to_bigarray t ~kind:Bigarray.float32 |> bigarray_to_array3 ~f:Fn.id
-  | Double -> to_bigarray t ~kind:Bigarray.float64 |> bigarray_to_array3 ~f:Fn.id
+  | T Float -> to_bigarray t ~kind:Bigarray.float32 |> bigarray_to_array3 ~f:Fn.id
+  | T Double -> to_bigarray t ~kind:Bigarray.float64 |> bigarray_to_array3 ~f:Fn.id
   | _ -> None
 
 let to_int1 t =
   match kind t with
-  | Int -> to_bigarray t ~kind:Bigarray.int32 |> bigarray_to_array1 ~f:Int32.to_int_exn
-  | Int64 -> to_bigarray t ~kind:Bigarray.int64 |> bigarray_to_array1 ~f:Int64.to_int_exn
+  | T Int -> to_bigarray t ~kind:Bigarray.int32 |> bigarray_to_array1 ~f:Int32.to_int_exn
+  | T Int64 -> to_bigarray t ~kind:Bigarray.int64 |> bigarray_to_array1 ~f:Int64.to_int_exn
   | _ -> None
 
 let to_int2 t =
   match kind t with
-  | Int -> to_bigarray t ~kind:Bigarray.int32 |> bigarray_to_array2 ~f:Int32.to_int_exn
-  | Int64 -> to_bigarray t ~kind:Bigarray.int64 |> bigarray_to_array2 ~f:Int64.to_int_exn
+  | T Int -> to_bigarray t ~kind:Bigarray.int32 |> bigarray_to_array2 ~f:Int32.to_int_exn
+  | T Int64 -> to_bigarray t ~kind:Bigarray.int64 |> bigarray_to_array2 ~f:Int64.to_int_exn
   | _ -> None
 
 let to_int3 t =
   match kind t with
-  | Int -> to_bigarray t ~kind:Bigarray.int32 |> bigarray_to_array3 ~f:Int32.to_int_exn
-  | Int64 -> to_bigarray t ~kind:Bigarray.int64 |> bigarray_to_array3 ~f:Int64.to_int_exn
+  | T Int -> to_bigarray t ~kind:Bigarray.int32 |> bigarray_to_array3 ~f:Int32.to_int_exn
+  | T Int64 -> to_bigarray t ~kind:Bigarray.int64 |> bigarray_to_array3 ~f:Int64.to_int_exn
   | _ -> None
 
 let to_int1_exn t = Option.value_exn (to_int1 t)

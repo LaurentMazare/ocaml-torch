@@ -168,7 +168,7 @@ let batch_accuracy ?device ?samples t train_or_test ~batch_size ~predict =
 
 let shuffle_ t =
   let batch_size = Tensor.shape t.train_images |> List.hd_exn in
-  let index = Tensor.randperm ~n:batch_size ~options:(Int64, Cpu) in
+  let index = Tensor.randperm ~n:batch_size ~options:(T Int64, Cpu) in
   { t with
     train_images = Tensor.index_select t.train_images ~dim:0 ~index
   ; train_labels = Tensor.index_select t.train_labels ~dim:0 ~index

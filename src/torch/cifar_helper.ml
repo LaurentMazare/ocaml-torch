@@ -25,9 +25,9 @@ let samples_per_file = 10_000
 let read_file filename =
   let content = Dataset_helper.read_char_tensor filename in
   let images =
-    Tensor.zeros [ samples_per_file; image_c; image_w; image_h ] ~kind:Uint8
+    Tensor.zeros [ samples_per_file; image_c; image_w; image_h ] ~kind:(T Uint8)
   in
-  let labels = Tensor.zeros [ samples_per_file ] ~kind:Uint8 in
+  let labels = Tensor.zeros [ samples_per_file ] ~kind:(T Uint8) in
   for sample = 0 to 9999 do
     let content_offset = 3073 * sample in
     Tensor.copy_
@@ -39,8 +39,8 @@ let read_file filename =
         (Tensor.narrow content ~dim:0 ~start:(content_offset + 1) ~length:3072
         |> Tensor.view ~size:[ 1; image_c; image_w; image_h ])
   done;
-  ( Tensor.(((to_type images ~type_:Float / f 255.) - f 0.5) * f 4.)
-  , Tensor.to_type labels ~type_:Int64 )
+  ( Tensor.(((to_type images ~type_:(T Float) / f 255.) - f 0.5) * f 4.)
+  , Tensor.to_type labels ~type_:(T Int64) )
 
 let read_files ?(dirname = "data") ?(with_caching = false) () =
   let read_one filename = Caml.Filename.concat dirname filename |> read_file in

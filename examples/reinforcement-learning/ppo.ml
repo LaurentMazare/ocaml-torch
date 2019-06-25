@@ -78,7 +78,7 @@ let train ~device =
     in
     for _index = 1 to optim_epochs do
       let index =
-        Tensor.randint ~high:train_size ~size:[ optim_batchsize ] ~options:(Int64, Cpu)
+        Tensor.randint ~high:train_size ~size:[ optim_batchsize ] ~options:(T Int64, Cpu)
       in
       let states = Tensor.index_select states ~dim:0 ~index in
       let actions = Tensor.index_select actions ~dim:0 ~index in
