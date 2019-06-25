@@ -12,6 +12,19 @@ type _ t =
   | ComplexDouble : [ `c64 ] t
   | Bool : [ `bool ] t
 
+let u8 = Uint8
+let i8 = Int8
+let i16 = Int16
+let i32 = Int
+let i64 = Int64
+let f16 = Half
+let f32 = Float
+let f64 = Double
+let c16 = ComplexHalf
+let c32 = ComplexFloat
+let c64 = ComplexDouble
+let bool = Bool
+
 type packed = T : _ t -> packed
 
 (* Hardcoded, should match ScalarType.h *)
