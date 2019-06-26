@@ -17,8 +17,8 @@ type ('a, 'b) t
 *)
 type ('a, 'b) t_with_training
 
-type t_f32 = ([ `f32 ], [ `f32 ]) t
-type t_with_training_f32 = ([ `f32 ], [ `f32 ]) t_with_training
+type f32 = ([ `f32 ], [ `f32 ]) t
+type f32_with_training = ([ `f32 ], [ `f32 ]) t_with_training
 
 (** [with_training t] returns a layer using the [is_training] argument
     from a standard layer. The [is_training] argument is discarded.
@@ -172,9 +172,9 @@ val batch_norm2d
 (** {3 Recurrent Neural Networks } *)
 
 (** A Long Short Term Memory (LSTM) recurrent neural network. *)
-module Lstm : Rnn_intf.S with type state = Tensor.t_f32 * Tensor.t_f32
+module Lstm : Rnn_intf.S with type state = Tensor.f32 * Tensor.f32
 
-module Gru : Rnn_intf.S with type state = Tensor.t_f32
+module Gru : Rnn_intf.S with type state = Tensor.f32
 
 (** {3 Embeddings } *)
 

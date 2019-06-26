@@ -1,11 +1,11 @@
 include Base
 include Torch_core.Wrapper.Tensor
 
-type t_f64 = [ `f64 ] t
-type t_f32 = [ `f32 ] t
-type t_i64 = [ `i64 ] t
-type t_i32 = [ `i32 ] t
-type t_u8 = [ `u8 ] t
+type f64 = [ `f64 ] t
+type f32 = [ `f32 ] t
+type i64 = [ `i64 ] t
+type i32 = [ `i32 ] t
+type u8 = [ `u8 ] t
 
 let set_float2 t i j value = float_set t [ i; j ] value
 let set_float1 t i value = float_set t [ i ] value
@@ -427,10 +427,11 @@ let to_list t =
 let extract packed ~kind =
   match extract packed ~kind with
   | None ->
-      let T t = packed in
-      Or_error.errorf "type mismatch %s <> %s"
-        (Torch_core.Kind.to_string kind)
-        (Torch_core.Kind.packed_to_string (type_ t))
+    let (T t) = packed in
+    Or_error.errorf
+      "type mismatch %s <> %s"
+      (Torch_core.Kind.to_string kind)
+      (Torch_core.Kind.packed_to_string (type_ t))
   | Some t -> Ok t
 
 let extract_exn packed ~kind = extract packed ~kind |> Or_error.ok_exn

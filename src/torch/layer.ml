@@ -5,8 +5,8 @@ type ('a, 'b) t = { apply : 'a Tensor.t -> 'b Tensor.t }
 type ('a, 'b) t_with_training =
   { apply_with_training : 'a Tensor.t -> is_training:bool -> 'b Tensor.t }
 
-type t_f32 = ([ `f32 ], [ `f32 ]) t
-type t_with_training_f32 = ([ `f32 ], [ `f32 ]) t_with_training
+type f32 = ([ `f32 ], [ `f32 ]) t
+type f32_with_training = ([ `f32 ], [ `f32 ]) t_with_training
 
 let with_training t =
   let apply_with_training xs ~is_training:_ = t.apply xs in
@@ -235,15 +235,15 @@ let sequential_ t_list =
 
 module Lstm = struct
   type t =
-    { w_ih : Tensor.t_f32
-    ; w_hh : Tensor.t_f32
-    ; b_ih : Tensor.t_f32
-    ; b_hh : Tensor.t_f32
+    { w_ih : Tensor.f32
+    ; w_hh : Tensor.f32
+    ; b_ih : Tensor.f32
+    ; b_hh : Tensor.f32
     ; hidden_size : int
     ; device : Device.t
     }
 
-  type state = Tensor.t_f32 * Tensor.t_f32
+  type state = Tensor.f32 * Tensor.f32
 
   let create vs ~input_dim ~hidden_size =
     let gate_size = 4 * hidden_size in
@@ -295,15 +295,15 @@ end
 
 module Gru = struct
   type t =
-    { w_ih : Tensor.t_f32
-    ; w_hh : Tensor.t_f32
-    ; b_ih : Tensor.t_f32
-    ; b_hh : Tensor.t_f32
+    { w_ih : Tensor.f32
+    ; w_hh : Tensor.f32
+    ; b_ih : Tensor.f32
+    ; b_hh : Tensor.f32
     ; hidden_size : int
     ; device : Device.t
     }
 
-  type state = Tensor.t_f32
+  type state = Tensor.f32
 
   let create vs ~input_dim ~hidden_size =
     let gate_size = 3 * hidden_size in

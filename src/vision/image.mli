@@ -7,13 +7,13 @@ open Torch
     When [resize] is set, the image is first resized preserving its original ratio
     then a center crop is taken.
 *)
-val load_image : ?resize:int * int -> string -> Tensor.t_u8 Or_error.t
+val load_image : ?resize:int * int -> string -> Tensor.u8 Or_error.t
 
 (** [load_images ?resize dir_name] is similar to applying [load_image] to all the images
     in [dir_name].
     The resulting tensor has dimensions NCHW where N is the number of images.
 *)
-val load_images : ?resize:int * int -> string -> Tensor.t_u8
+val load_images : ?resize:int * int -> string -> Tensor.u8
 
 (** [load_dataset ~dir ~classes ~with_cache ~resize] loads the images contained in
     directories [dir/class] where class ranges over [classes]. The class is used
@@ -51,4 +51,4 @@ end
     have dimensions NCH'W' with [H' = height] and [W' = width].
     The input and output tensors have values between 0 and 255.
 *)
-val resize : _ Tensor.t -> height:int -> width:int -> Tensor.t_u8
+val resize : _ Tensor.t -> height:int -> width:int -> Tensor.u8
