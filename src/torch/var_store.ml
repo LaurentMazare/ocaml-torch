@@ -81,7 +81,9 @@ let copy ~src ~dst =
       let rec walk ~src ~dst path =
         Hashtbl.iteri dst.all_tensors_by_name ~f:(fun ~key ~data:(Tensor.T data) ->
             match Hashtbl.find src.all_tensors_by_name key with
-            | Some (Tensor.T src) -> Tensor.copy_ data ~src
+            | Some src ->
+              let src = Tensor.extract_exn src ~kind:(Tensor.kind data) in
+              Tensor.copy_ data ~src
             | None ->
               Printf.failwithf
                 "cannot find var %s from var-store %s in %s"

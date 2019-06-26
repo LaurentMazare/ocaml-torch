@@ -53,8 +53,7 @@ module Tensor : sig
   val mean : 'a t -> 'a t
   val argmax : ?dim:int -> ?keepdim:bool -> 'a t -> 'a t
   val defined : _ t -> bool
-  (* TODO: more restrictive types. *)
-  val copy_ : 'a t -> src:'b t -> unit
+  val copy_ : 'a t -> src:'a t -> unit
   val max : 'a t -> 'a t -> 'a t
   val min : 'a t -> 'a t -> 'a t
 end
