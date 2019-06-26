@@ -82,7 +82,7 @@ module Optimizer : sig
 
   val set_learning_rate : t -> float -> unit
   val set_momentum : t -> float -> unit
-  val add_parameters : t -> _ Tensor.t list -> unit
+  val add_parameters : t -> Tensor.packed list -> unit
   val zero_grad : t -> unit
   val step : t -> unit
 end

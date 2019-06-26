@@ -247,6 +247,7 @@ module Optimizer = struct
     t
 
   let add_parameters t tensors =
+    let tensors = List.map (fun (Tensor.T t) -> t) tensors in
     add_parameters
       t
       CArray.(of_list Wrapper_generated.C.Tensor.t tensors |> start)

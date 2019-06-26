@@ -14,9 +14,7 @@ type t =
 
 let create optimizer ~vs =
   let trainable_vars = Var_store.trainable_vars vs in
-  (* TODO: get back to doing a single call. *)
-  List.iter trainable_vars ~f:(fun (Tensor.T v) ->
-    Optimizer.add_parameters optimizer [ v ]);
+  Optimizer.add_parameters optimizer trainable_vars;
   { optimizer; trainable_vars }
 
 let adam ?(beta1 = 0.9) ?(beta2 = 0.999) ?(weight_decay = 0.) vs ~learning_rate =
