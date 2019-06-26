@@ -10,7 +10,7 @@ val load_dataset
   -> classes:string list
   -> ?with_cache:string
   -> unit
-  -> ('a, 'a) Dataset_helper.t
+  -> ([ `f32 ], 'a) Dataset_helper.t
 
 val write_image : Tensor.t_f32 -> filename:string -> unit
 

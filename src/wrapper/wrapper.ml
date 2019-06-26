@@ -21,10 +21,7 @@ module Tensor = struct
   type packed = T : _ t -> packed
 
   let kind t = scalar_type t |> Kind.of_int_exn
-  let extract (T t) ~kind:kind_ =
-    if Kind.(<>) (kind t) (T kind_)
-    then None
-    else Some t
+  let extract (T t) ~kind:kind_ = if Kind.( <> ) (kind t) (T kind_) then None else Some t
 
   let float_vec ?(kind = `float) values =
     let values_len = List.length values in

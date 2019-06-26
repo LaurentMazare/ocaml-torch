@@ -24,7 +24,7 @@ let clamp_ =
       let min, max = min_max kind in
       Tensor.narrow tensor ~dim:1 ~start:index ~length:1
       |> Tensor.clamp ~min:(Scalar.float min) ~max:(Scalar.float max)
-      |> fun (_ : Tensor.t) -> ()
+      |> fun (_ : _ Tensor.t) -> ()
     in
     clamp_ `red 0;
     clamp_ `green 1;

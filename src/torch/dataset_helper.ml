@@ -29,8 +29,11 @@ let read_with_cache ~cache_file ~read =
       ~names:[ "traini"; "trainl"; "testi"; "testl" ]
       ~filename:cache_file
     |> function
-    | [ train_images; train_labels; test_images; test_labels ] ->
+    | [ _train_images; _train_labels; _test_images; _test_labels ] ->
+      failwith "TODO: fix this"
+    (*
       { train_images; train_labels; test_images; test_labels }
+      *)
     | _ -> assert false
   with
   | _ ->
@@ -40,10 +43,10 @@ let read_with_cache ~cache_file ~read =
        Serialize.save_multi
          ~filename:cache_file
          ~named_tensors:
-           [ "traini", t.train_images
-           ; "trainl", t.train_labels
-           ; "testi", t.test_images
-           ; "testl", t.test_labels
+           [ "traini", Tensor.T t.train_images
+           ; "trainl", Tensor.T t.train_labels
+           ; "testi", Tensor.T t.test_images
+           ; "testl", Tensor.T t.test_labels
            ]
      with
     | _ -> Stdio.eprintf "Unable to save cached file %s.\n%!" cache_file);

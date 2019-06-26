@@ -151,7 +151,7 @@ val to_type : _ t -> type_:Kind.packed -> _ t
 (** [to_kind t ~kind] returns a tensor similar to [t] but converted to kind [kind]. *)
 val to_kind : _ t -> kind:Kind.packed -> _ t
 
-(** [kind t] returns the kind of elements hold in tensor [t]. *)
+(** [type_ t] returns the kind of elements hold in tensor [t]. *)
 val type_ : _ t -> Kind.packed
 
 (** [to_device t ~device] returns a tensor identical to [t] but placed on device [device]. *)
