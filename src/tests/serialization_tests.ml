@@ -33,7 +33,6 @@ let%expect_test _ =
         0.000000
       |}]
 
-(* TODO: reactivate this.
 let write_and_read named_tensors =
   let filename = Caml.Filename.temp_file "torchtest" ".ot" in
   Serialize.save_multi ~named_tensors ~filename;
@@ -43,16 +42,17 @@ let write_and_read named_tensors =
       let tensor = Tensor.extract_exn tensor ~kind:(Tensor.kind y) in
       let l2 = Tensor.((tensor - y) * (tensor - y)) |> Tensor.sum in
       match Tensor.kind l2 with
-      | Int64 | Int -> Stdio.printf "%s %d\n%!" name (Tensor.to_int0_exn l2)
-      | Float | Double -> Stdio.printf "%s %f\n%!" name (Tensor.to_float0_exn l2)
+      | Int64 -> Stdio.printf "%s %d\n%!" name (Tensor.to_int0_exn l2)
+      | Float -> Stdio.printf "%s %f\n%!" name (Tensor.to_float0_exn l2)
       | _ -> assert false);
   Unix.unlink filename
 
 let%expect_test _ =
   write_and_read
-    [ "tensor-1", Tensor.of_float1 [| 3.; 14.; 15.; 9265.35 |]
-    ; "another", Tensor.of_int0 42
-    ; "and yet another", Tensor.of_int2 [| [| 3; -1; -51234 |]; [| 2718; 2818; 28 |] |]
+    [ "tensor-1", Tensor.T (Tensor.of_float1 [| 3.; 14.; 15.; 9265.35 |])
+    ; "another", Tensor.T (Tensor.of_int0 42)
+    ; ( "and yet another"
+      , Tensor.T (Tensor.of_int2 [| [| 3; -1; -51234 |]; [| 2718; 2818; 28 |] |]) )
     ];
   [%expect
     {|
@@ -60,4 +60,3 @@ let%expect_test _ =
         another 0
         and yet another 0
       |}]
-*)
