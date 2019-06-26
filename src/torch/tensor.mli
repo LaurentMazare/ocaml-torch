@@ -3,6 +3,11 @@ open Torch_core
 (* TODO: proper types for Tensor1D, Tensor2D, Tensor3D, ... ? *)
 (* TODO: GADT for array element types ? *)
 type 'a t = 'a Torch_core.Wrapper.Tensor.t
+type t_f64 = [ `f64 ] t
+type t_f32 = [ `f32 ] t
+type t_i64 = [ `i64 ] t
+type t_i32 = [ `i32 ] t
+type t_u8 = [ `u8 ] t
 
 include module type of Torch_core.Wrapper.Tensor with type 'a t := 'a t
 

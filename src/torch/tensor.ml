@@ -1,6 +1,12 @@
 include Base
 include Torch_core.Wrapper.Tensor
 
+type t_f64 = [ `f64 ] t
+type t_f32 = [ `f32 ] t
+type t_i64 = [ `i64 ] t
+type t_i32 = [ `i32 ] t
+type t_u8 = [ `u8 ] t
+
 let set_float2 t i j value = float_set t [ i; j ] value
 let set_float1 t i value = float_set t [ i ] value
 let set_int2 t i j value = int_set t [ i; j ] value
@@ -315,19 +321,22 @@ let to_float3 t =
 let to_int1 t =
   match kind t with
   | T Int -> to_bigarray t ~kind:Bigarray.int32 |> bigarray_to_array1 ~f:Int32.to_int_exn
-  | T Int64 -> to_bigarray t ~kind:Bigarray.int64 |> bigarray_to_array1 ~f:Int64.to_int_exn
+  | T Int64 ->
+    to_bigarray t ~kind:Bigarray.int64 |> bigarray_to_array1 ~f:Int64.to_int_exn
   | _ -> None
 
 let to_int2 t =
   match kind t with
   | T Int -> to_bigarray t ~kind:Bigarray.int32 |> bigarray_to_array2 ~f:Int32.to_int_exn
-  | T Int64 -> to_bigarray t ~kind:Bigarray.int64 |> bigarray_to_array2 ~f:Int64.to_int_exn
+  | T Int64 ->
+    to_bigarray t ~kind:Bigarray.int64 |> bigarray_to_array2 ~f:Int64.to_int_exn
   | _ -> None
 
 let to_int3 t =
   match kind t with
   | T Int -> to_bigarray t ~kind:Bigarray.int32 |> bigarray_to_array3 ~f:Int32.to_int_exn
-  | T Int64 -> to_bigarray t ~kind:Bigarray.int64 |> bigarray_to_array3 ~f:Int64.to_int_exn
+  | T Int64 ->
+    to_bigarray t ~kind:Bigarray.int64 |> bigarray_to_array3 ~f:Int64.to_int_exn
   | _ -> None
 
 let to_int1_exn t = Option.value_exn (to_int1 t)
