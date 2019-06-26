@@ -3,7 +3,12 @@
    Images have shape [ samples; 32; 32; 3 ]. Labels are one-hot encoded with
    shape [ samples; 10 ].
 *)
-val read_files : ?dirname:string -> ?with_caching:bool -> unit -> ('a, 'a) Dataset_helper.t
+val read_files
+  :  ?dirname:string
+  -> ?with_caching:bool
+  -> unit
+  -> ([ `f32 ], [ `i64 ]) Dataset_helper.t
+
 val image_c : int
 val image_w : int
 val image_h : int

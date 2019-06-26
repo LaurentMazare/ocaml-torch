@@ -1,7 +1,7 @@
 open Base
 
-type 'a t =
-  { content : 'a Tensor.t
+type t =
+  { content : [ `u8 ] Tensor.t
   ; char_for_label : char Map.M(Int).t
   }
 
@@ -45,7 +45,7 @@ let iter ?device t ~f ~seq_len ~batch_size =
       |> List.unzip
     in
     let stack v =
-      Tensor.stack v ~dim:0 |> Tensor.to_device ?device |> Tensor.to_type ~type_:(T Int64)
+      Tensor.stack v ~dim:0 |> Tensor.to_device ?device |> Tensor.to_type ~type_:Int64
     in
     f index ~xs:(stack xs) ~ys:(stack ys);
     Caml.Gc.full_major ()

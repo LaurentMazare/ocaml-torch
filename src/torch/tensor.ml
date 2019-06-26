@@ -1,5 +1,6 @@
 include Base
 include Torch_core.Wrapper.Tensor
+module Kind = Torch_core.Kind
 
 type f64 = [ `f64 ] t
 type f32 = [ `f32 ] t
@@ -46,15 +47,15 @@ let zero_grad t =
 
 type 'a create =
   ?requires_grad:bool
-  -> ?kind:Torch_core.Kind.packed
+  -> ?kind:Kind.packed
   -> ?device:Device.t
   -> ?scale:float
   -> int list
   -> 'a t
 
 let type_ = kind
-let to_type t ~type_ = totype t ~scalar_type:type_
-let to_kind t ~kind = totype t ~scalar_type:kind
+let to_type t ~type_ = totype t ~scalar_type:(Kind.T type_)
+let to_kind t ~kind = totype t ~scalar_type:(Kind.T kind)
 
 let to_device ?device t =
   match device with

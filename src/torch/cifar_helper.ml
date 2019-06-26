@@ -39,8 +39,8 @@ let read_file filename =
         (Tensor.narrow content ~dim:0 ~start:(content_offset + 1) ~length:3072
         |> Tensor.view ~size:[ 1; image_c; image_w; image_h ])
   done;
-  ( Tensor.(((to_type images ~type_:(T Float) / f 255.) - f 0.5) * f 4.)
-  , Tensor.to_type labels ~type_:(T Int64) )
+  ( Tensor.(((to_type images ~type_:Float / f 255.) - f 0.5) * f 4.)
+  , Tensor.to_type labels ~type_:Int64 )
 
 let read_files ?(dirname = "data") ?(with_caching = false) () =
   let read_one filename = Caml.Filename.concat dirname filename |> read_file in

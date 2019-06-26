@@ -121,7 +121,7 @@ let%expect_test _ =
 
 let%expect_test _ =
   let vs = Tensor.of_int1 [| 3; 1; 4 |] in
-  let ws = Tensor.to_type vs ~type_:(T Float) in
+  let ws = Tensor.to_type vs ~type_:Float in
   let xs = Tensor.reshape vs ~shape:[ -1; 1 ] in
   Stdio.printf
     "%b %b %b %b\n"

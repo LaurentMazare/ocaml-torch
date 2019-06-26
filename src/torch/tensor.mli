@@ -16,66 +16,66 @@ val extract_exn : packed -> kind:'a Kind.t -> 'a t
 (** [set_float2 t i j v] sets the element at index [i] and [j] of
     bidimensional tensor [t] to [v].
 *)
-val set_float2 : _ t -> int -> int -> float -> unit
+val set_float2 : [< `f16 | `f32 | `f64] t -> int -> int -> float -> unit
 
 (** [set_float1 t i v] sets the element at index [i] of single
     dimension tensor [t] to [v].
 *)
-val set_float1 : _ t -> int -> float -> unit
+val set_float1 : [< `f16 | `f32 | `f64 ] t -> int -> float -> unit
 
 (** [set_int2 t i j v] sets the element at index [i] and [j] of
     bidimensional tensor [t] to [v].
 *)
-val set_int2 : _ t -> int -> int -> int -> unit
+val set_int2 : [< `u8 | `i32 | `i64] t -> int -> int -> int -> unit
 
 (** [set_int1 t i v] sets the element at index [i] of single
     dimension tensor [t] to [v].
 *)
-val set_int1 : _ t -> int -> int -> unit
+val set_int1 : [< `u8 | `i32 | `i64 ] t -> int -> int -> unit
 
 (** [get_float2 t i j] returns the current value from bidimensional tensor [t]
     at index [i] and [j].
 *)
-val get_float2 : _ t -> int -> int -> float
+val get_float2 : [< `f16 | `f32 | `f64 ] t -> int -> int -> float
 
 (** [get_float1 t i j] returns the current value from single dimension tensor [t]
     at index [i].
 *)
-val get_float1 : _ t -> int -> float
+val get_float1 : [< `f16 | `f32 | `f64 ] t -> int -> float
 
 (** [get_int2 t i j] returns the current value from bidimensional tensor [t]
     at indexex [i] and [j].
 *)
-val get_int2 : _ t -> int -> int -> int
+val get_int2 : [< `u8 | `i32 | `i64 ] t -> int -> int -> int
 
 (** [get_int1 t i j] returns the current value from single dimension tensor [t]
     at index [i].
 *)
-val get_int1 : _ t -> int -> int
+val get_int1 : [< `u8 | `i32 | `i64 ] t -> int -> int
 
 (** Gets an integer element from an arbitrary dimension tensor. *)
-val ( .%{} ) : _ t -> int list -> int
+val ( .%{} ) : [< `u8 | `i32 | `i64 ] t -> int list -> int
 
 (** Sets an integer element on an arbitrary dimension tensor. *)
-val ( .%{}<- ) : _ t -> int list -> int -> unit
+val ( .%{}<- ) : [< `u8 | `i32 | `i64 ] t -> int list -> int -> unit
 
 (** Gets a float element from an arbitrary dimension tensor. *)
-val ( .%.{} ) : _ t -> int list -> float
+val ( .%.{} ) : [< `f16 | `f32 | `f64 ] t -> int list -> float
 
 (** Sets a float element on an arbitrary dimension tensor. *)
-val ( .%.{}<- ) : _ t -> int list -> float -> unit
+val ( .%.{}<- ) : [< `f16 | `f32 | `f64 ] t -> int list -> float -> unit
 
 (** Gets an integer element from a single dimension tensor. *)
-val ( .%[] ) : _ t -> int -> int
+val ( .%[] ) : [< `u8 | `i32 | `i64 ] t -> int -> int
 
 (** Sets an integer element on a single dimension tensor. *)
-val ( .%[]<- ) : _ t -> int -> int -> unit
+val ( .%[]<- ) : [< `u8 | `i32 | `i64 ] t -> int -> int -> unit
 
 (** Gets a float element from a single dimension tensor. *)
-val ( .%.[] ) : _ t -> int -> float
+val ( .%.[] ) : [< `f16 | `f32 | `f64 ] t -> int -> float
 
 (** Sets a float element on a single dimension tensor. *)
-val ( .%.[]<- ) : _ t -> int -> float -> unit
+val ( .%.[]<- ) : [< `f16 | `f32 | `f64 ] t -> int -> float -> unit
 
 (** [no_grad_ t ~f] runs [f] on [t] without tracking gradients for t. *)
 val no_grad_ : 'b t -> f:('b t -> 'a) -> 'a
@@ -111,7 +111,7 @@ val ( /= ) : 'a t -> 'a t -> unit
 val ( ~- ) : 'a t -> 'a t
 
 (** Pointwise equality. *)
-val ( = ) : 'a t -> 'a t -> 'a t
+val ( = ) : 'a t -> 'a t -> [ `u8 ] t
 
 (** [eq t1 t2] returns true if [t1] and [t2] have the same kind, shape, and
     all their elements are identical.
@@ -148,10 +148,10 @@ val randn : _ create
 val float_vec : ?kind:[ `double | `float | `half ] -> ?device:Device.t -> float list -> _ t
 
 (** [to_type t ~type_] returns a tensor similar to [t] but converted to kind [type_]. *)
-val to_type : _ t -> type_:Kind.packed -> _ t
+val to_type : _ t -> type_:'a Kind.t -> 'a t
 
 (** [to_kind t ~kind] returns a tensor similar to [t] but converted to kind [kind]. *)
-val to_kind : _ t -> kind:Kind.packed -> _ t
+val to_kind : _ t -> kind:'a Kind.t -> 'a t
 
 (** [type_ t] returns the kind of elements hold in tensor [t]. *)
 val type_ : 'a t -> 'a Kind.t

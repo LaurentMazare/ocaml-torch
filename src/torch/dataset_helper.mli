@@ -39,7 +39,7 @@ val batch_accuracy
 (** [read_with_cache ~cache_file ~read] either returns the content of [cache_file] if
     present or regenerate the file using [read] if not.
 *)
-val read_with_cache : cache_file:string -> read:(unit -> ('a, 'a) t) -> ('a, 'a) t
+val read_with_cache : cache_file:string -> read:(unit -> ('a, 'b) t) -> ('a, 'b) t
 
 (** [batches_per_epoch t ~batch_size] returns the total number of batches of size
     [batch_size] in [t]. *)
@@ -74,8 +74,11 @@ val shuffle : ('a, 'b) t -> ('a, 'b) t
 
 val map
   :  ?device:Device.t
-  -> ('a , 'b) t
-  -> f:(int -> batch_images:'a Tensor.t -> batch_labels:'b Tensor.t -> 'c Tensor.t * 'd Tensor.t)
+  -> ('a, 'b) t
+  -> f:(int
+        -> batch_images:'a Tensor.t
+        -> batch_labels:'b Tensor.t
+        -> 'c Tensor.t * 'd Tensor.t)
   -> batch_size:int
   -> ('c, 'd) t
 

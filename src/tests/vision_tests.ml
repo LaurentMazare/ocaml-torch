@@ -15,7 +15,7 @@ let%expect_test _ =
   let image_tensor = Tensor.(image_tensor * f 255.) in
   Image.write_image image_tensor ~filename;
   let loaded_tensor =
-    Image.load_image filename |> Or_error.ok_exn |> Tensor.to_type ~type_:(T Float)
+    Image.load_image filename |> Or_error.ok_exn |> Tensor.to_type ~type_:Float
   in
   Stdio.printf
     "%f %f\n%!"

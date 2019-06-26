@@ -37,7 +37,7 @@ let std_ = lazy (Tensor.float_vec std_ |> Tensor.view ~size:[ 3; 1; 1 ])
 let normalize tensor =
   let mean_ = Lazy.force mean_ in
   let std_ = Lazy.force std_ in
-  let tensor = Tensor.to_type tensor ~type_:(T Float) in
+  let tensor = Tensor.to_type tensor ~type_:Float in
   Tensor.(((tensor / f 255.) - mean_) / std_)
 
 let unnormalize tensor =
@@ -45,7 +45,7 @@ let unnormalize tensor =
   let std_ = Lazy.force std_ in
   Tensor.(((tensor * std_) + mean_) * f 255.)
   |> Tensor.clamp ~min:(Scalar.float 0.) ~max:(Scalar.float 255.)
-  |> Tensor.to_type ~type_:(T Uint8)
+  |> Tensor.to_type ~type_:Uint8
 
 let load_image filename =
   Image.load_image filename ~resize:(224, 224) |> Or_error.ok_exn |> normalize
