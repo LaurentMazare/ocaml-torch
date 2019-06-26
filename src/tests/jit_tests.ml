@@ -20,8 +20,8 @@ let%expect_test _ =
     | Tuple [ Tensor t1; Tensor t2 ] -> t1, t2
     | _ -> assert false
   in
-  let t1 = Option.value_exn (Tensor.extract t1 ~kind:Kind.f32) in
-  let t2 = Option.value_exn (Tensor.extract t2 ~kind:Kind.f32) in
+  let t1 = Tensor.extract_exn t1 ~kind:Kind.f32 in
+  let t2 = Tensor.extract_exn t2 ~kind:Kind.f32 in
   Stdio.printf
     !"%{sexp:float} %{sexp:float}\n"
     (Tensor.to_float0_exn t1)

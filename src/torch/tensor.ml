@@ -423,3 +423,14 @@ let to_list t =
     | size :: _ -> size
   in
   List.init size ~f:(get t)
+
+let extract packed ~kind =
+  match extract packed ~kind with
+  | None ->
+      let T t = packed in
+      Or_error.errorf "type mismatch %s <> %s"
+        (Torch_core.Kind.to_string kind)
+        (Torch_core.Kind.packed_to_string (type_ t))
+  | Some t -> Ok t
+
+let extract_exn packed ~kind = extract packed ~kind |> Or_error.ok_exn

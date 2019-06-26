@@ -1,7 +1,6 @@
 open Torch_core
 
 (* TODO: proper types for Tensor1D, Tensor2D, Tensor3D, ... ? *)
-(* TODO: GADT for array element types ? *)
 type 'a t = 'a Torch_core.Wrapper.Tensor.t
 type t_f64 = [ `f64 ] t
 type t_f32 = [ `f32 ] t
@@ -10,6 +9,9 @@ type t_i32 = [ `i32 ] t
 type t_u8 = [ `u8 ] t
 
 include module type of Torch_core.Wrapper.Tensor with type 'a t := 'a t
+
+val extract : packed -> kind:'a Kind.t -> 'a t Base.Or_error.t
+val extract_exn : packed -> kind:'a Kind.t -> 'a t
 
 (** [set_float2 t i j v] sets the element at index [i] and [j] of
     bidimensional tensor [t] to [v].

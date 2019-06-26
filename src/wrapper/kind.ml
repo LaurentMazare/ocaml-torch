@@ -59,5 +59,21 @@ let of_int_exn = function
   | 11 -> T Bool
   | d -> failwith (Printf.sprintf "unexpected kind %d" d)
 
+let to_string : type a. a t -> string = function
+  | Uint8 -> "u8"
+  | Int8 -> "i8"
+  | Int16 -> "i16"
+  | Int -> "i32"
+  | Int64 -> "i64"
+  | Half -> "f16"
+  | Float -> "f32"
+  | Double -> "f64"
+  | ComplexHalf -> "c16"
+  | ComplexFloat -> "c32"
+  | ComplexDouble -> "c64"
+  | Bool -> "bool"
+
+let packed_to_string (T t) = to_string t
+
 let (<>) packed1 packed2 =
   packed_to_int packed1 <> packed_to_int packed2

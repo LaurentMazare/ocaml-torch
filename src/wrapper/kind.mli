@@ -28,6 +28,9 @@ val bool : [ `bool ] t
 type packed = T : _ t -> packed
 
 val to_int : _ t -> int
-val packed_to_int : packed -> int
+val to_string : _ t -> string
 val of_int_exn : int -> packed
+
+val packed_to_int : packed -> int
+val packed_to_string : packed -> string
 val (<>) : packed -> packed -> bool
