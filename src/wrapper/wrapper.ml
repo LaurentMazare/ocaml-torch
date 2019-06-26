@@ -20,8 +20,18 @@ module Tensor = struct
   type nonrec _ t = t
   type packed = T : _ t -> packed
 
-  let kind t = scalar_type t |> Kind.of_int_exn
-  let extract (T t) ~kind:kind_ = if Kind.( <> ) (kind t) (T kind_) then None else Some t
+  let kind_p t = scalar_type t |> Kind.of_int_exn
+
+  (* Currently the [Kind.t] GADT is not embedded in [Tensor.t] so we go
+     through this [Obj.magic] hack.
+  *)
+  let kind : type a. a t -> a Kind.t =
+   fun t ->
+    let (Kind.T k) = kind_p t in
+    (Obj.magic k : a Kind.t)
+
+  let extract (T t) ~kind:kind_ =
+    if Kind.( <> ) (kind_p t) (T kind_) then None else Some t
 
   let float_vec ?(kind = `float) values =
     let values_len = List.length values in

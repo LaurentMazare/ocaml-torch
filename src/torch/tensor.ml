@@ -266,7 +266,7 @@ let pp formatter t =
     |> Caml.Format.pp_print_string formatter
 
 let copy t =
-  let t_ = zeros (shape t) ~kind:(kind t) in
+  let t_ = zeros (shape t) ~kind:(kind_p t) in
   copy_ t_ ~src:t;
   t_
 
@@ -301,39 +301,39 @@ let bigarray_to_array3 bigarray ~f =
   | Invalid_argument _ -> None
 
 let to_float1 t =
-  match kind t with
+  match kind_p t with
   | T Float -> to_bigarray t ~kind:Bigarray.float32 |> bigarray_to_array1 ~f:Fn.id
   | T Double -> to_bigarray t ~kind:Bigarray.float64 |> bigarray_to_array1 ~f:Fn.id
   | _ -> None
 
 let to_float2 t =
-  match kind t with
+  match kind_p t with
   | T Float -> to_bigarray t ~kind:Bigarray.float32 |> bigarray_to_array2 ~f:Fn.id
   | T Double -> to_bigarray t ~kind:Bigarray.float64 |> bigarray_to_array2 ~f:Fn.id
   | _ -> None
 
 let to_float3 t =
-  match kind t with
+  match kind_p t with
   | T Float -> to_bigarray t ~kind:Bigarray.float32 |> bigarray_to_array3 ~f:Fn.id
   | T Double -> to_bigarray t ~kind:Bigarray.float64 |> bigarray_to_array3 ~f:Fn.id
   | _ -> None
 
 let to_int1 t =
-  match kind t with
+  match kind_p t with
   | T Int -> to_bigarray t ~kind:Bigarray.int32 |> bigarray_to_array1 ~f:Int32.to_int_exn
   | T Int64 ->
     to_bigarray t ~kind:Bigarray.int64 |> bigarray_to_array1 ~f:Int64.to_int_exn
   | _ -> None
 
 let to_int2 t =
-  match kind t with
+  match kind_p t with
   | T Int -> to_bigarray t ~kind:Bigarray.int32 |> bigarray_to_array2 ~f:Int32.to_int_exn
   | T Int64 ->
     to_bigarray t ~kind:Bigarray.int64 |> bigarray_to_array2 ~f:Int64.to_int_exn
   | _ -> None
 
 let to_int3 t =
-  match kind t with
+  match kind_p t with
   | T Int -> to_bigarray t ~kind:Bigarray.int32 |> bigarray_to_array3 ~f:Int32.to_int_exn
   | T Int64 ->
     to_bigarray t ~kind:Bigarray.int64 |> bigarray_to_array3 ~f:Int64.to_int_exn
@@ -410,7 +410,7 @@ let squeeze_last t = squeeze1 t ~dim:(-1)
 let scale t f = mul1 t (Scalar.float f)
 
 let eq t1 t2 =
-  if Torch_core.Kind.( <> ) (kind t1) (kind t2)
+  if Torch_core.Kind.( <> ) (kind_p t1) (kind_p t2)
   then false
   else if Caml.( <> ) (shape t1) (shape t2)
   then false
@@ -431,7 +431,7 @@ let extract packed ~kind =
     Or_error.errorf
       "type mismatch %s <> %s"
       (Torch_core.Kind.to_string kind)
-      (Torch_core.Kind.packed_to_string (type_ t))
+      (Torch_core.Kind.packed_to_string (kind_p t))
   | Some t -> Ok t
 
 let extract_exn packed ~kind = extract packed ~kind |> Or_error.ok_exn

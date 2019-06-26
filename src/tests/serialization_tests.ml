@@ -33,18 +33,18 @@ let%expect_test _ =
         0.000000
       |}]
 
-(* TODO: reactivate this bit.
-
+(* TODO: reactivate this.
 let write_and_read named_tensors =
   let filename = Caml.Filename.temp_file "torchtest" ".ot" in
   Serialize.save_multi ~named_tensors ~filename;
   let ys = Serialize.load_multi ~names:(List.map named_tensors ~f:fst) ~filename in
   List.iter2_exn named_tensors ys ~f:(fun (name, tensor) y ->
-      let y = Tensor.extract_unsafe y in
+      let (Tensor.T y) = y in
+      let tensor = Tensor.extract_exn tensor ~kind:(Tensor.kind y) in
       let l2 = Tensor.((tensor - y) * (tensor - y)) |> Tensor.sum in
       match Tensor.kind l2 with
-      | T Int64 | T Int -> Stdio.printf "%s %d\n%!" name (Tensor.to_int0_exn l2)
-      | T Float | T Double -> Stdio.printf "%s %f\n%!" name (Tensor.to_float0_exn l2)
+      | Int64 | Int -> Stdio.printf "%s %d\n%!" name (Tensor.to_int0_exn l2)
+      | Float | Double -> Stdio.printf "%s %f\n%!" name (Tensor.to_float0_exn l2)
       | _ -> assert false);
   Unix.unlink filename
 
