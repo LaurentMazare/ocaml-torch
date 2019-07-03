@@ -39,8 +39,10 @@ let write_and_read named_tensors =
   List.iter2_exn named_tensors ys ~f:(fun (name, tensor) y ->
       let l2 = Tensor.((tensor - y) * (tensor - y)) |> Tensor.sum in
       match Tensor.kind l2 with
-      | T Int64 | T Int -> Stdio.printf "%s %d\n%!" name (Tensor.to_int0_exn l2)
-      | T Float | T Double -> Stdio.printf "%s %f\n%!" name (Tensor.to_float0_exn l2)
+      | T Int64 -> Stdio.printf "%s %d\n%!" name (Tensor.to_int0_exn l2)
+      | T Int -> Stdio.printf "%s %d\n%!" name (Tensor.to_int0_exn l2)
+      | T Float -> Stdio.printf "%s %f\n%!" name (Tensor.to_float0_exn l2)
+      | T Double -> Stdio.printf "%s %f\n%!" name (Tensor.to_float0_exn l2)
       | _ -> assert false);
   Unix.unlink filename
 

@@ -195,7 +195,7 @@ end
    Use Uint8 for the final result to reduce memory consumption.
 *)
 let preprocess () =
-  let stacked_frames = Tensor.zeros [ num_stack; 105; 80 ] ~kind:Uint8 in
+  let stacked_frames = Tensor.zeros [ num_stack; 105; 80 ] ~kind:(T Uint8) in
   fun state ->
     let d i ~factor = Tensor.(select state ~dim:2 ~index:i * f factor) in
     let img =
