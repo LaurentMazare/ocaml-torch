@@ -35,7 +35,7 @@ val sgd
 
 val step : ?clip_grad:Clip_grad.t -> t -> unit
 val zero_grad : t -> unit
-val backward_step : ?clip_grad:Clip_grad.t -> t -> loss:_ Tensor.t -> unit
+val backward_step : ?clip_grad:Clip_grad.t -> t -> loss:Tensor.t -> unit
 val set_learning_rate : t -> learning_rate:float -> unit
 
 module Linear_interpolation : sig

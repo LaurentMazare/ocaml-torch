@@ -1,6 +1,6 @@
 (* Images have shape [ samples; 728 ]. Labels are one-hot encoded with
    shape [ samples; 10 ]. *)
-val read_files : ?prefix:string -> unit -> (_, _) Dataset_helper.t
+val read_files : ?prefix:string -> unit -> Dataset_helper.t
 val image_w : int
 val image_h : int
 val image_dim : int

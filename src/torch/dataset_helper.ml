@@ -16,11 +16,11 @@ let read_char_tensor filename =
   Unix.close fd;
   Tensor.of_bigarray ba
 
-type ('a, 'b) t =
-  { train_images : 'a Tensor.t
-  ; train_labels : 'b Tensor.t
-  ; test_images : 'a Tensor.t
-  ; test_labels : 'b Tensor.t
+type t =
+  { train_images : Tensor.t
+  ; train_labels : Tensor.t
+  ; test_images : Tensor.t
+  ; test_labels : Tensor.t
   }
 
 let read_with_cache ~cache_file ~read =

@@ -17,14 +17,7 @@ module Tensor = struct
   include Wrapper_generated
   open! C.Tensor
 
-  type nonrec _ t = t
-  type packed = T : _ t -> packed
-
-  let kind t = scalar_type t |> Kind.of_int_exn
-  let extract (T t) ~kind:kind_ =
-    if Kind.(<>) (kind t) (T kind_)
-    then None
-    else Some t
+  type nonrec t = t
 
   let float_vec ?(kind = `float) values =
     let values_len = List.length values in
@@ -126,6 +119,7 @@ module Tensor = struct
     | [ s1; s2; s3; s4 ] -> s1, s2, s3, s4
     | shape -> unexpected_shape shape
 
+  let kind t = scalar_type t |> Kind.of_int_exn
   let requires_grad t = if requires_grad t <> 0 then true else false
   let grad_set_enabled b = grad_set_enabled (if b then 1 else 0) <> 0
 
@@ -268,12 +262,11 @@ module Serialize = struct
   let load ~filename =
     let t = load filename in
     Gc.finalise Wrapper_generated.C.Tensor.free t;
-    Tensor.T t
+    t
 
   let save_multi ~named_tensors ~filename =
     let names, tensors = List.split named_tensors in
     let names = List.map escape names in
-    let tensors = List.map (fun (Tensor.T t) -> t) tensors in
     save_multi
       CArray.(of_list Wrapper_generated.C.Tensor.t tensors |> start)
       (ptr_of_strings names)
@@ -287,12 +280,11 @@ module Serialize = struct
     load_multi (CArray.start tensors) (ptr_of_strings names) ntensors filename;
     let tensors = CArray.to_list tensors in
     List.iter (Gc.finalise Wrapper_generated.C.Tensor.free) tensors;
-    List.map (fun t -> Tensor.T t) tensors
+    tensors
 
   let load_multi_ ~named_tensors ~filename =
     let names, tensors = List.split named_tensors in
     let names = List.map escape names in
-    let tensors = List.map (fun (Tensor.T t) -> t) tensors in
     load_multi_
       CArray.(of_list Wrapper_generated.C.Tensor.t tensors |> start)
       (ptr_of_strings names)
@@ -307,7 +299,7 @@ module Serialize = struct
         (static_funptr (string @-> Wrapper_generated.C.Tensor.t @-> returning void))
         (fun tensor_name tensor ->
           Gc.finalise Wrapper_generated.C.Tensor.free tensor;
-          all_tensors := (unescape tensor_name, Tensor.T tensor) :: !all_tensors)
+          all_tensors := (unescape tensor_name, tensor) :: !all_tensors)
     in
     load_callback filename callback;
     !all_tensors
@@ -363,7 +355,7 @@ module Ivalue = struct
   let to_tensor t =
     let tensor = to_tensor t in
     Gc.finalise Wrapper_generated.C.Tensor.free tensor;
-    Tensor.T tensor
+    tensor
 
   let to_tuple t =
     let noutputs = tuple_length t in

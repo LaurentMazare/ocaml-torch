@@ -1,9 +1,9 @@
 (* An annotated dataset for images. *)
-type ('a, 'b) t =
-  { train_images : 'a Tensor.t
-  ; train_labels : 'b Tensor.t
-  ; test_images : 'a Tensor.t
-  ; test_labels : 'b Tensor.t
+type t =
+  { train_images : Tensor.t
+  ; train_labels : Tensor.t
+  ; test_images : Tensor.t
+  ; test_labels : Tensor.t
   }
 
 (** [train_batch ?device ?augmentation t ~batch_size ~batch_idx] returns two tensors
@@ -17,10 +17,10 @@ type ('a, 'b) t =
 val train_batch
   :  ?device:Device.t
   -> ?augmentation:[ `flip | `crop_with_pad of int | `cutout of int ] list
-  -> ('a, 'b) t
+  -> t
   -> batch_size:int
   -> batch_idx:int
-  -> 'a Tensor.t * 'b Tensor.t
+  -> Tensor.t * Tensor.t
 
 (** [batch_accuracy ?device ?samples t test_or_train ~batch_size ~predict] computes
     the accuracy of applying [predict] to test or train images as specified by
@@ -30,20 +30,20 @@ val train_batch
 val batch_accuracy
   :  ?device:Device.t
   -> ?samples:int
-  -> ('a, 'b) t
+  -> t
   -> [ `test | `train ]
   -> batch_size:int
-  -> predict:('a Tensor.t -> 'b Tensor.t)
+  -> predict:(Tensor.t -> Tensor.t)
   -> float
 
 (** [read_with_cache ~cache_file ~read] either returns the content of [cache_file] if
     present or regenerate the file using [read] if not.
 *)
-val read_with_cache : cache_file:string -> read:(unit -> ('a, 'a) t) -> ('a, 'a) t
+val read_with_cache : cache_file:string -> read:(unit -> t) -> t
 
 (** [batches_per_epoch t ~batch_size] returns the total number of batches of size
     [batch_size] in [t]. *)
-val batches_per_epoch : (_, _) t -> batch_size:int -> int
+val batches_per_epoch : t -> batch_size:int -> int
 
 (** [iter ?device ?augmentation ?shuffle t ~f ~batch_size] iterates function [f] on
     all the batches from [t] taken with a size [batch_size].
@@ -53,35 +53,35 @@ val iter
   :  ?device:Device.t
   -> ?augmentation:[ `flip | `crop_with_pad of int | `cutout of int ] list
   -> ?shuffle:bool
-  -> ('a, 'b) t
-  -> f:(int -> batch_images:'a Tensor.t -> batch_labels:'b Tensor.t -> unit)
+  -> t
+  -> f:(int -> batch_images:Tensor.t -> batch_labels:Tensor.t -> unit)
   -> batch_size:int
   -> unit
 
 (** [random_flip t] applies some random flips to a tensor of dimension [ N; H; C; W].
     The last dimension related to width can be flipped.
 *)
-val random_flip : 'a Tensor.t -> 'a Tensor.t
+val random_flip : Tensor.t -> Tensor.t
 
 (** [random_crop t ~pad] performs some data augmentation by padding [t] with zeros on
     the two last dimensions with [pad] new values on each side, then performs some
     random crop to go back to the original shape.
 *)
-val random_crop : 'a Tensor.t -> pad:int -> 'a Tensor.t
+val random_crop : Tensor.t -> pad:int -> Tensor.t
 
 (** [shuffle t] returns [t] where training images and labels have been shuffled. *)
-val shuffle : ('a, 'b) t -> ('a, 'b) t
+val shuffle : t -> t
 
 val map
   :  ?device:Device.t
-  -> ('a , 'b) t
-  -> f:(int -> batch_images:'a Tensor.t -> batch_labels:'b Tensor.t -> 'c Tensor.t * 'd Tensor.t)
+  -> t
+  -> f:(int -> batch_images:Tensor.t -> batch_labels:Tensor.t -> Tensor.t * Tensor.t)
   -> batch_size:int
-  -> ('c, 'd) t
+  -> t
 
-val print_summary : (_, _) t -> unit
+val print_summary : t -> unit
 
 (** [read_char_tensor filename] returns a tensor of char containing the specified
     file.
 *)
-val read_char_tensor : string -> _ Tensor.t
+val read_char_tensor : string -> Tensor.t

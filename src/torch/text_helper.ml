@@ -1,7 +1,7 @@
 open Base
 
-type 'a t =
-  { content : 'a Tensor.t
+type t =
+  { content : Tensor.t
   ; char_for_label : char Map.M(Int).t
   }
 

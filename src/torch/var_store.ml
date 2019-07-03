@@ -3,8 +3,8 @@ open Base
 (* Maybe we should also store the full path in the var stores ? *)
 type t =
   { name : string
-  ; mutable trainable_tensors : Tensor.packed list
-  ; all_tensors_by_name : (string, Tensor.packed) Hashtbl.t
+  ; mutable trainable_tensors : Tensor.t list
+  ; all_tensors_by_name : (string, Tensor.t) Hashtbl.t
   ; subs : (string, t) Hashtbl.t
   ; device : Device.t
   ; mutable frozen : bool
@@ -47,14 +47,14 @@ let ( // ) = subi
 
 let rec freeze t =
   t.frozen <- true;
-  List.iter t.trainable_tensors ~f:(fun (Tensor.T tensor) ->
-      ignore (Tensor.set_requires_grad tensor ~r:false : _ Tensor.t));
+  List.iter t.trainable_tensors ~f:(fun tensor ->
+      ignore (Tensor.set_requires_grad tensor ~r:false : Tensor.t));
   Hashtbl.iter t.subs ~f:freeze
 
 let rec unfreeze t =
   t.frozen <- false;
-  List.iter t.trainable_tensors ~f:(fun (Tensor.T tensor) ->
-      ignore (Tensor.set_requires_grad tensor ~r:true : _ Tensor.t));
+  List.iter t.trainable_tensors ~f:(fun tensor ->
+      ignore (Tensor.set_requires_grad tensor ~r:true : Tensor.t));
   Hashtbl.iter t.subs ~f:unfreeze
 
 let rec trainable_vars t =
@@ -79,9 +79,9 @@ let all_vars t =
 let copy ~src ~dst =
   Tensor.no_grad (fun () ->
       let rec walk ~src ~dst path =
-        Hashtbl.iteri dst.all_tensors_by_name ~f:(fun ~key ~data:(Tensor.T data) ->
+        Hashtbl.iteri dst.all_tensors_by_name ~f:(fun ~key ~data ->
             match Hashtbl.find src.all_tensors_by_name key with
-            | Some (Tensor.T src) -> Tensor.copy_ data ~src
+            | Some src -> Tensor.copy_ data ~src
             | None ->
               Printf.failwithf
                 "cannot find var %s from var-store %s in %s"
@@ -106,20 +106,20 @@ let name t = t.name
 let device t = t.device
 
 module Init = struct
-  type 'a t =
+  type t =
     | Zeros
     | Ones
     | Const of float
     | Normal of { mean : float; stdev : float }
     | Uniform of float * float
-    | Copy of 'a Tensor.t
+    | Copy of Tensor.t
 end
 
 let new_var ?(trainable = true) t ~shape ~init ~name =
   let device = device t in
   let requires_grad = trainable && not t.frozen in
   let tensor =
-    match (init : _ Init.t) with
+    match (init : Init.t) with
     | Zeros -> Tensor.zeros shape ~requires_grad ~device
     | Ones -> Tensor.ones shape ~requires_grad ~device
     | Const scale -> Tensor.ones shape ~requires_grad ~device ~scale
@@ -141,8 +141,8 @@ let new_var ?(trainable = true) t ~shape ~init ~name =
   if String.contains name '.'
   then Printf.failwithf "tensor names cannot contain ., %s" name ();
   let name = first_free_name name t.all_tensors_by_name in
-  Hashtbl.add_exn t.all_tensors_by_name ~key:name ~data:(Tensor.T tensor);
-  if trainable then t.trainable_tensors <- Tensor.T tensor :: t.trainable_tensors;
+  Hashtbl.add_exn t.all_tensors_by_name ~key:name ~data:tensor;
+  if trainable then t.trainable_tensors <- tensor :: t.trainable_tensors;
   tensor
 
 let new_var_copy ?trainable t ~src ~name =

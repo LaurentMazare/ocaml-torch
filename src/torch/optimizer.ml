@@ -9,14 +9,12 @@ end
 
 type t =
   { optimizer : Optimizer.t
-  ; trainable_vars : Tensor.packed list
+  ; trainable_vars : Tensor.t list
   }
 
 let create optimizer ~vs =
   let trainable_vars = Var_store.trainable_vars vs in
-  (* TODO: get back to doing a single call. *)
-  List.iter trainable_vars ~f:(fun (Tensor.T v) ->
-    Optimizer.add_parameters optimizer [ v ]);
+  Optimizer.add_parameters optimizer trainable_vars;
   { optimizer; trainable_vars }
 
 let adam ?(beta1 = 0.9) ?(beta2 = 0.999) ?(weight_decay = 0.) vs ~learning_rate =
@@ -45,14 +43,14 @@ let sgd
   Optimizer.sgd ~learning_rate ~momentum ~dampening ~weight_decay ~nesterov |> create ~vs
 
 let clip_grad_value_ t ~max_value =
-  List.iter t.trainable_vars ~f:(fun (T tensor) ->
+  List.iter t.trainable_vars ~f:(fun tensor ->
       Tensor.grad tensor
       |> Tensor.clamp_ ~min:(Scalar.f (-.max_value)) ~max:(Scalar.f max_value)
-      |> fun tensor -> ignore (tensor : _ Tensor.t))
+      |> fun tensor -> ignore (tensor : Tensor.t))
 
 let clip_grad_norm2_ t ~max_norm2 =
   let total_norm =
-    List.fold t.trainable_vars ~init:0. ~f:(fun acc (Tensor.T tensor) ->
+    List.fold t.trainable_vars ~init:0. ~f:(fun acc tensor ->
         let grad = Tensor.grad tensor in
         let grad_norm =
           if Tensor.defined grad then Tensor.norm grad |> Tensor.float_value else 0.
@@ -64,9 +62,9 @@ let clip_grad_norm2_ t ~max_norm2 =
   if Float.( < ) clip_coef 1.
   then (
     let clip_coef = Tensor.f clip_coef in
-    List.iter t.trainable_vars ~f:(fun (Tensor.T tensor) ->
+    List.iter t.trainable_vars ~f:(fun tensor ->
         let grad = Tensor.grad tensor in
-        if Tensor.defined grad then ignore (Tensor.mul_ grad clip_coef : _ Tensor.t)))
+        if Tensor.defined grad then ignore (Tensor.mul_ grad clip_coef : Tensor.t)))
 
 let zero_grad t = Optimizer.zero_grad t.optimizer
 

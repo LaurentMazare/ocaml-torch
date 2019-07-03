@@ -12,7 +12,7 @@ module type S = sig
       given input using the specified state. The updated state is
       returned.
   *)
-  val step : t -> state -> _ Tensor.t -> state
+  val step : t -> state -> Tensor.t -> state
 
   (** [seq t inputs] applies multiple steps of the RNN starting
       from a zero state. The hidden states and the final state are
@@ -21,7 +21,7 @@ module type S = sig
       the returned output tensor then has shape
       [batch_size * timesteps * hidden_size].
   *)
-  val seq : t -> 'a Tensor.t -> 'a Tensor.t * state
+  val seq : t -> Tensor.t -> Tensor.t * state
 
   (** [zero_state t ~batch_size] returns an initial state to be used for
       a RNN.
