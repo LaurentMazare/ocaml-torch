@@ -13,6 +13,7 @@ let excluded_functions =
     ; "log_softmax_backward_data"
     ; "softmax_backward_data"
     ; "copy_"
+    ; "broadcast_tensors"
     ]
 
 let excluded_prefixes = [ "_"; "thnn_"; "th_" ]
@@ -86,6 +87,11 @@ module Func = struct
         [ `fixed of int | `dynamic ]
     ; kind : [ `function_ | `method_ ]
     }
+
+  let caml_kind t =
+    match t.kind with
+    | `method_ -> "self.kind"
+    | `function_ -> "Kind.Float"
 
   let arg_type_of_string str ~is_nullable =
     match String.lowercase str with
@@ -198,7 +204,7 @@ module Func = struct
             name
         | TensorList ->
           Printf.sprintf
-            "(CArray.of_list t %s |> CArray.start) (List.length %s)"
+            "(List.map (fun t -> t.c_ptr) %s |> CArray.of_list t |> CArray.start) (List.length %s)"
             name
             name
         | Bool -> Printf.sprintf "(if %s then 1 else 0)" name
@@ -211,7 +217,8 @@ module Func = struct
           then "(Reduction.to_int reduction |> Int64.of_int)"
           else Printf.sprintf "(Int64.of_int %s)" name
         | TensorOption ->
-          Printf.sprintf "(match %s with | Some v -> v | None -> null)" name
+          Printf.sprintf "(match %s with | Some v -> v.c_ptr | None -> null)" name
+        | Tensor -> name ^ ".c_ptr"
         | _ -> name)
     |> String.concat ~sep:" "
 end
@@ -386,14 +393,19 @@ let write_wrapper funcs filename =
           pm "module C = Torch_bindings.C(Torch_generated)";
           pm "open C.TensorG";
           pm "";
-          pm "let to_tensor_list ptr =";
+          pm "type 'a t =";
+          pm "  { c_ptr : C.TensorG.t";
+          pm "  ; kind : 'a Kind.t";
+          pm "  }";
+          pm "";
+          pm "let to_tensor_list ptr ~kind =";
           pm "  let rec loop ptr acc =";
           pm "    let tensor = !@ptr in";
           pm "    if is_null tensor";
           pm "    then acc";
           pm "    else begin";
           pm "      Gc.finalise C.Tensor.free tensor;";
-          pm "      loop (ptr +@ 1) (tensor :: acc)";
+          pm "      loop (ptr +@ 1) ({ c_ptr = tensor; kind } :: acc)";
           pm "    end";
           pm "  in";
           pm "  let result = loop ptr [] in";
@@ -420,13 +432,14 @@ let write_wrapper funcs filename =
                   pm "  let t%d = CArray.get out__ %d in" i i;
                   pm "  Gc.finalise C.Tensor.free t%d;" i
                 done;
+                pm "  let kind = %s in" (Func.caml_kind func);
                 pm
                   "  %s"
-                  (List.init ntensors ~f:(Printf.sprintf "t%d")
+                  (List.init ntensors ~f:(Printf.sprintf "{ c_ptr = t%d; kind }")
                   |> String.concat ~sep:", ")
               | `dynamic ->
                 pm
-                  "  stubs_%s %s |> to_tensor_list"
+                  "  stubs_%s %s |> to_tensor_list ~kind"
                   caml_name
                   (Func.caml_binding_args func));
               pm "";

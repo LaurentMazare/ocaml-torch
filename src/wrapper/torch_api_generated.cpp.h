@@ -802,18 +802,6 @@ void atg_bmm_out(tensor *out__, tensor out, tensor self, tensor mat2) {
   )
 }
 
-tensor *atg_broadcast_tensors(tensor *tensors_data, int tensors_len) {
-  PROTECT(
-    auto outputs__ = torch::broadcast_tensors(of_carray_tensor(tensors_data, tensors_len));
-    int sz = outputs__.size();
-    torch::Tensor **out__ = (torch::Tensor**)malloc((sz + 1) * sizeof(torch::Tensor*));
-    for (int i = 0; i < sz; ++i)
-      out__[i] = new torch::Tensor(outputs__[i]);
-    out__[sz] = nullptr;
-    return out__;
-  )
-}
-
 void atg_cartesian_prod(tensor *out__, tensor *tensors_data, int tensors_len) {
   PROTECT(
     auto outputs__ = torch::cartesian_prod(of_carray_tensor(tensors_data, tensors_len));

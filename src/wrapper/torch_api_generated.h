@@ -113,7 +113,6 @@ void atg_blackman_window(tensor *, int64_t window_length, int options_kind, int 
 void atg_blackman_window1(tensor *, int64_t window_length, int periodic, int options_kind, int options_device);
 void atg_bmm(tensor *, tensor self, tensor mat2);
 void atg_bmm_out(tensor *, tensor out, tensor self, tensor mat2);
-tensor *atg_broadcast_tensors(tensor *tensors_data, int tensors_len);
 void atg_cartesian_prod(tensor *, tensor *tensors_data, int tensors_len);
 void atg_cat(tensor *, tensor *tensors_data, int tensors_len, int64_t dim);
 void atg_cat_out(tensor *, tensor out, tensor *tensors_data, int tensors_len, int64_t dim);

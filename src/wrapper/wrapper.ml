@@ -14,24 +14,41 @@ let ptr_of_strings strings =
   start
 
 module Tensor = struct
-  include Wrapper_generated
+  module W = Wrapper_generated
+  include W
   open! C.Tensor
 
-  type nonrec _ t = t
+  type 'a t = 'a W.t =
+    { c_ptr : C.TensorG.t
+    ; kind : 'a Kind.t
+    }
+
   type packed = T : _ t -> packed
 
-  let kind_p t = scalar_type t |> Kind.of_int_exn
+  let kind_c c_ptr = scalar_type c_ptr |> Kind.of_int_exn
+  let packed_of_c_ptr c_ptr =
+    let Kind.T kind = kind_c c_ptr in
+    T { c_ptr; kind }
 
-  (* Currently the [Kind.t] GADT is not embedded in [Tensor.t] so we go
-     through this [Obj.magic] hack.
-  *)
-  let kind : type a. a t -> a Kind.t =
-   fun t ->
-    let (Kind.T k) = kind_p t in
-    (Obj.magic k : a Kind.t)
+  let kind_p t = kind_c t.c_ptr
+  let kind t = t.kind
 
-  let extract (T t) ~kind:kind_ =
-    if Kind.( <> ) (kind_p t) (T kind_) then None else Some t
+  let extract : type a. packed -> kind:a Kind.t -> a t option = fun packed ~kind ->
+    let T t = packed in
+    match kind, t.kind with
+    | Kind.Uint8, Kind.Uint8 -> Some t
+    | Kind.Int8, Kind.Int8 -> Some t
+    | Kind.Int16, Kind.Int16 -> Some t
+    | Kind.Int, Kind.Int -> Some t
+    | Kind.Int64, Kind.Int64 -> Some t
+    | Kind.Half, Kind.Half -> Some t
+    | Kind.Float, Kind.Float -> Some t
+    | Kind.Double, Kind.Double -> Some t
+    | Kind.ComplexHalf, Kind.ComplexHalf -> Some t
+    | Kind.ComplexFloat, Kind.ComplexFloat -> Some t
+    | Kind.ComplexDouble, Kind.ComplexDouble -> Some t
+    | Kind.Bool, Kind.Bool -> Some t
+    | _, _ -> None
 
   let float_vec ?(kind = `float) values =
     let values_len = List.length values in
@@ -247,7 +264,7 @@ module Optimizer = struct
     t
 
   let add_parameters t tensors =
-    let tensors = List.map (fun (Tensor.T t) -> t) tensors in
+    let tensors = List.map (fun (Tensor.T t) -> t.c_ptr) tensors in
     add_parameters
       t
       CArray.(of_list Wrapper_generated.C.Tensor.t tensors |> start)
@@ -274,14 +291,14 @@ module Serialize = struct
       s
 
   let load ~filename =
-    let t = load filename in
-    Gc.finalise Wrapper_generated.C.Tensor.free t;
-    Tensor.T t
+    let c_ptr = load filename in
+    Gc.finalise Wrapper_generated.C.Tensor.free c_ptr;
+    Tensor.packed_of_c_ptr c_ptr
 
   let save_multi ~named_tensors ~filename =
     let names, tensors = List.split named_tensors in
     let names = List.map escape names in
-    let tensors = List.map (fun (Tensor.T t) -> t) tensors in
+    let tensors = List.map (fun (Tensor.T t) -> t.c_ptr) tensors in
     save_multi
       CArray.(of_list Wrapper_generated.C.Tensor.t tensors |> start)
       (ptr_of_strings names)
@@ -295,12 +312,12 @@ module Serialize = struct
     load_multi (CArray.start tensors) (ptr_of_strings names) ntensors filename;
     let tensors = CArray.to_list tensors in
     List.iter (Gc.finalise Wrapper_generated.C.Tensor.free) tensors;
-    List.map (fun t -> Tensor.T t) tensors
+    List.map Tensor.packed_of_c_ptr tensors
 
   let load_multi_ ~named_tensors ~filename =
     let names, tensors = List.split named_tensors in
     let names = List.map escape names in
-    let tensors = List.map (fun (Tensor.T t) -> t) tensors in
+    let tensors = List.map (fun (Tensor.T t) -> t.c_ptr) tensors in
     load_multi_
       CArray.(of_list Wrapper_generated.C.Tensor.t tensors |> start)
       (ptr_of_strings names)
@@ -313,9 +330,9 @@ module Serialize = struct
       coerce
         (Foreign.funptr (string @-> Wrapper_generated.C.Tensor.t @-> returning void))
         (static_funptr (string @-> Wrapper_generated.C.Tensor.t @-> returning void))
-        (fun tensor_name tensor ->
-          Gc.finalise Wrapper_generated.C.Tensor.free tensor;
-          all_tensors := (unescape tensor_name, Tensor.T tensor) :: !all_tensors)
+        (fun tensor_name c_ptr ->
+          Gc.finalise Wrapper_generated.C.Tensor.free c_ptr;
+          all_tensors := (unescape tensor_name, Tensor.packed_of_c_ptr c_ptr) :: !all_tensors)
     in
     load_callback filename callback;
     !all_tensors
@@ -371,7 +388,7 @@ module Ivalue = struct
   let to_tensor t =
     let tensor = to_tensor t in
     Gc.finalise Wrapper_generated.C.Tensor.free tensor;
-    Tensor.T tensor
+    Tensor.packed_of_c_ptr tensor
 
   let to_tuple t =
     let noutputs = tuple_length t in

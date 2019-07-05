@@ -717,10 +717,6 @@ module type S = sig
     mat2:_ t ->
     _ t
 
-  val broadcast_tensors :
-    _ t list ->
-    _ t list
-
   val cartesian_prod :
     _ t list ->
     _ t

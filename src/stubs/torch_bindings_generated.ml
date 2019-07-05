@@ -460,10 +460,6 @@ module C(F: Cstubs.FOREIGN) = struct
     foreign "atg_bmm_out"
     (ptr t @-> t @-> t @-> t @-> returning void)
 
-  let stubs_broadcast_tensors =
-    foreign "atg_broadcast_tensors"
-    (ptr t @-> int @-> returning (ptr t))
-
   let stubs_cartesian_prod =
     foreign "atg_cartesian_prod"
     (ptr t @-> ptr t @-> int @-> returning void)
