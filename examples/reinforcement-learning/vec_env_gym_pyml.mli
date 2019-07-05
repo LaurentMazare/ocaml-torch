@@ -3,7 +3,8 @@ open Torch
 type step =
   { obs : Tensor.t
   ; reward : Tensor.t
-  ; is_done : Tensor.t }
+  ; is_done : Tensor.t
+  }
 
 type t
 

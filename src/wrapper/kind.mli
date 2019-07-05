@@ -30,4 +30,4 @@ type packed = T : _ t -> packed
 val to_int : _ t -> int
 val packed_to_int : packed -> int
 val of_int_exn : int -> packed
-val (<>) : packed -> packed -> bool
+val ( <> ) : packed -> packed -> bool

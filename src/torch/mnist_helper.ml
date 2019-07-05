@@ -29,7 +29,8 @@ let read_labels filename =
   if magic_number <> 2049
   then Printf.failwithf "Incorrect magic number in %s: %d" filename magic_number ();
   let samples = int32_be content ~offset:4 in
-  Tensor.narrow content ~dim:0 ~start:8 ~length:samples |> Tensor.to_type ~type_:(T Int64)
+  Tensor.narrow content ~dim:0 ~start:8 ~length:samples
+  |> Tensor.to_type ~type_:(T Int64)
 
 let read_files ?(prefix = "data") () =
   let filename = Caml.Filename.concat prefix in

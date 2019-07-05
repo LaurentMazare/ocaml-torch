@@ -204,7 +204,10 @@ module Func = struct
         | Bool -> Printf.sprintf "(if %s then 1 else 0)" name
         | ScalarType -> Printf.sprintf "(Kind.packed_to_int %s)" name
         | TensorOptions ->
-          Printf.sprintf "(Kind.packed_to_int (fst %s)) (Device.to_int (snd %s))" name name
+          Printf.sprintf
+            "(Kind.packed_to_int (fst %s)) (Device.to_int (snd %s))"
+            name
+            name
         | Device -> Printf.sprintf "(Device.to_int %s)" name
         | Int64 ->
           if String.( = ) name "reduction"
@@ -290,8 +293,7 @@ let read_yaml filename =
                        in
                        match Func.arg_type_of_string arg_type ~is_nullable with
                        | Some Scalar when Option.is_some default_value && not is_nullable
-                         ->
-                         None
+                         -> None
                        | Some arg_type -> Some { Func.arg_name; arg_type; default_value }
                        | None ->
                          if Option.is_some default_value

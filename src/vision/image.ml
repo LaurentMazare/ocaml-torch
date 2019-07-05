@@ -98,7 +98,9 @@ let load_dataset ~dir ~classes ~with_cache ~resize =
     let load_tv tv =
       List.mapi classes ~f:(fun class_index class_dir ->
           let images = load tv class_dir in
-          let labels = Tensor.zeros [ Tensor.shape images |> List.hd_exn ] ~kind:(T Int64) in
+          let labels =
+            Tensor.zeros [ Tensor.shape images |> List.hd_exn ] ~kind:(T Int64)
+          in
           Tensor.fill_int labels class_index;
           images, labels)
       |> List.unzip

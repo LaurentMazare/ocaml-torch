@@ -59,5 +59,4 @@ let of_int_exn = function
   | 11 -> T Bool
   | d -> failwith (Printf.sprintf "unexpected kind %d" d)
 
-let (<>) packed1 packed2 =
-  packed_to_int packed1 <> packed_to_int packed2
+let ( <> ) packed1 packed2 = packed_to_int packed1 <> packed_to_int packed2

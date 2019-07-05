@@ -245,7 +245,8 @@ module E = struct
     let actions = Env_gym_pyml.actions env in
     Stdio.printf "actions: %s\n%!" (String.concat ~sep:"," actions);
     let fire_action =
-      List.find_mapi actions ~f:(fun i -> function
+      List.find_mapi actions ~f:(fun i ->
+        function
         | "FIRE" -> Some i
         | _ -> None)
     in

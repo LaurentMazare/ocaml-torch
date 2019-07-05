@@ -338,7 +338,11 @@ module Gru = struct
 end
 
 let embeddings
-    ?(sparse = false) ?(scale_grad_by_freq = false) vs ~num_embeddings ~embedding_dim
+    ?(sparse = false)
+    ?(scale_grad_by_freq = false)
+    vs
+    ~num_embeddings
+    ~embedding_dim
   =
   let weight =
     Var_store.new_var

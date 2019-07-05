@@ -25,8 +25,7 @@ let loop
   =
   if start_index < 0 then Printf.invalid_argf "negative start_index %d" start_index ();
   Option.iter only_keep ~f:(fun only_keep ->
-      if only_keep <= 0 then Printf.invalid_argf "non-positive only_keep %d" only_keep ()
-  );
+      if only_keep <= 0 then Printf.invalid_argf "non-positive only_keep %d" only_keep ());
   let temp_checkpoint = checkpoint_base ^ ".tmp" in
   let latest_index_and_filename = latest_index_and_filename ~checkpoint_base in
   let named_tensors =

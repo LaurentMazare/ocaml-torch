@@ -2,17 +2,20 @@ open Torch
 
 type actor_critic =
   { actor : Tensor.t
-  ; critic : Tensor.t }
+  ; critic : Tensor.t
+  }
 
 type totals =
   { rewards : float
-  ; episodes : float }
+  ; episodes : float
+  }
 
 type rollout =
   { states : Tensor.t
   ; returns : Tensor.t
   ; actions : Tensor.t
-  ; values : Tensor.t }
+  ; values : Tensor.t
+  }
 
 type t
 

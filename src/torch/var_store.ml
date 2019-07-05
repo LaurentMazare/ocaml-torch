@@ -110,7 +110,10 @@ module Init = struct
     | Zeros
     | Ones
     | Const of float
-    | Normal of { mean : float; stdev : float }
+    | Normal of
+        { mean : float
+        ; stdev : float
+        }
     | Uniform of float * float
     | Copy of Tensor.t
 end

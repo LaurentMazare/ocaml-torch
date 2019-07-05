@@ -123,7 +123,12 @@ let conv_transpose2d
     ~dilation:(pair_to_list dilation)
 
 let max_pool2d
-    ?(padding = 0, 0) ?(dilation = 1, 1) ?(ceil_mode = false) ?stride self ~ksize
+    ?(padding = 0, 0)
+    ?(dilation = 1, 1)
+    ?(ceil_mode = false)
+    ?stride
+    self
+    ~ksize
   =
   max_pool2d
     self
@@ -245,8 +250,7 @@ let bigarray_to_array3 bigarray ~f =
     let bigarray = Bigarray.array3_of_genarray bigarray in
     Array.init (Bigarray.Array3.dim1 bigarray) ~f:(fun i ->
         Array.init (Bigarray.Array3.dim2 bigarray) ~f:(fun j ->
-            Array.init (Bigarray.Array3.dim3 bigarray) ~f:(fun k -> f bigarray.{i, j, k})
-        ))
+            Array.init (Bigarray.Array3.dim3 bigarray) ~f:(fun k -> f bigarray.{i, j, k})))
     |> Option.some
   with
   | Invalid_argument _ -> None
@@ -272,19 +276,22 @@ let to_float3 t =
 let to_int1 t =
   match kind t with
   | T Int -> to_bigarray t ~kind:Bigarray.int32 |> bigarray_to_array1 ~f:Int32.to_int_exn
-  | T Int64 -> to_bigarray t ~kind:Bigarray.int64 |> bigarray_to_array1 ~f:Int64.to_int_exn
+  | T Int64 ->
+    to_bigarray t ~kind:Bigarray.int64 |> bigarray_to_array1 ~f:Int64.to_int_exn
   | _ -> None
 
 let to_int2 t =
   match kind t with
   | T Int -> to_bigarray t ~kind:Bigarray.int32 |> bigarray_to_array2 ~f:Int32.to_int_exn
-  | T Int64 -> to_bigarray t ~kind:Bigarray.int64 |> bigarray_to_array2 ~f:Int64.to_int_exn
+  | T Int64 ->
+    to_bigarray t ~kind:Bigarray.int64 |> bigarray_to_array2 ~f:Int64.to_int_exn
   | _ -> None
 
 let to_int3 t =
   match kind t with
   | T Int -> to_bigarray t ~kind:Bigarray.int32 |> bigarray_to_array3 ~f:Int32.to_int_exn
-  | T Int64 -> to_bigarray t ~kind:Bigarray.int64 |> bigarray_to_array3 ~f:Int64.to_int_exn
+  | T Int64 ->
+    to_bigarray t ~kind:Bigarray.int64 |> bigarray_to_array3 ~f:Int64.to_int_exn
   | _ -> None
 
 let to_int1_exn t = Option.value_exn (to_int1 t)

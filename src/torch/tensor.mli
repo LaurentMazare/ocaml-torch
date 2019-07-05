@@ -284,7 +284,10 @@ val const_batch_norm : ?momentum:float -> ?eps:float -> t -> t
 (** [of_bigarray ba] returns a tensor which shape and kind are based on
     [ba] and holding the same data.
 *)
-val of_bigarray : ?device:Device.t -> ('a, 'b, Bigarray.c_layout) Bigarray.Genarray.t -> t
+val of_bigarray
+  :  ?device:Device.t
+  -> ('a, 'b, Bigarray.c_layout) Bigarray.Genarray.t
+  -> t
 
 (** [copy_to_bigarray t ba] copies the data from [t] to [ba]. The dimensions of
     [ba] and its kind of element must match the dimension and kind of [t].

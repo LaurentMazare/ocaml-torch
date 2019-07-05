@@ -67,8 +67,7 @@ let model vs actions =
   let linear1 = Layer.linear vs ~input_dim:(80 * 80) 200 in
   let linear2 = Layer.linear vs ~input_dim:200 actions in
   Layer.of_fn (fun xs ->
-      Tensor.flatten xs |> Layer.forward linear1 |> Tensor.relu |> Layer.forward linear2
-  )
+      Tensor.flatten xs |> Layer.forward linear1 |> Tensor.relu |> Layer.forward linear2)
 
 module DqnAgent : sig
   type t

@@ -31,8 +31,7 @@ let fire vs in_planes squeeze_planes exp1_planes exp3_planes =
       let xs = Layer.forward squeeze xs |> Tensor.relu_ in
       Tensor.cat
         ~dim:1
-        [ Layer.forward exp1 xs |> Tensor.relu_; Layer.forward exp3 xs |> Tensor.relu_ ]
-  )
+        [ Layer.forward exp1 xs |> Tensor.relu_; Layer.forward exp3 xs |> Tensor.relu_ ])
 
 let squeezenet vs ~version ~num_classes =
   let features =

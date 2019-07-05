@@ -138,8 +138,7 @@ end = struct
       in
       let next_qvalues =
         Tensor.no_grad (fun () ->
-            Layer.forward t.model next_states |> Tensor.max2 ~dim:1 ~keepdim:false |> fst
-        )
+            Layer.forward t.model next_states |> Tensor.max2 ~dim:1 ~keepdim:false |> fst)
       in
       let expected_qvalues = Tensor.(rewards + (f t.gamma * next_qvalues * continue)) in
       let loss = Tensor.mse_loss qvalues expected_qvalues in

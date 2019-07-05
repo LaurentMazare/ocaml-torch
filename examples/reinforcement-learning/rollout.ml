@@ -98,7 +98,7 @@ let run t ~model =
     in
     Tensor.(t.sum_rewards += reward);
     t.total_rewards
-    <- (t.total_rewards +. Tensor.(sum (t.sum_rewards * is_done) |> to_float0_exn));
+      <- (t.total_rewards +. Tensor.(sum (t.sum_rewards * is_done) |> to_float0_exn));
     t.total_episodes <- (t.total_episodes +. Tensor.(sum is_done |> to_float0_exn));
     let masks = Tensor.(f 1. - is_done) in
     Tensor.(t.sum_rewards *= masks);
