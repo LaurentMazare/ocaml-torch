@@ -250,7 +250,8 @@ let bigarray_to_array3 bigarray ~f =
     let bigarray = Bigarray.array3_of_genarray bigarray in
     Array.init (Bigarray.Array3.dim1 bigarray) ~f:(fun i ->
         Array.init (Bigarray.Array3.dim2 bigarray) ~f:(fun j ->
-            Array.init (Bigarray.Array3.dim3 bigarray) ~f:(fun k -> f bigarray.{i, j, k})))
+            Array.init (Bigarray.Array3.dim3 bigarray) ~f:(fun k -> f bigarray.{i, j, k})
+        ))
     |> Option.some
   with
   | Invalid_argument _ -> None
@@ -363,6 +364,7 @@ let flatten t =
 
 let squeeze_last t = squeeze1 t ~dim:(-1)
 let scale t f = mul1 t (Scalar.float f)
+let eq_scalar = eq
 
 let eq t1 t2 =
   if Torch_core.Kind.( <> ) (kind t1) (kind t2)

@@ -111,6 +111,8 @@ val ( = ) : t -> t -> t
 *)
 val eq : t -> t -> bool
 
+val eq_scalar : t -> _ Scalar.t -> t
+
 (** [mm t1 t2] returns the dot product or matrix multiplication between [t1] and [t2]. *)
 val mm : t -> t -> t
 
