@@ -11,7 +11,6 @@
 *)
 
 open Base
-open Matplotlib
 open Torch
 
 let batch_size = 128
@@ -64,22 +63,8 @@ let write_samples samples ~filename =
   |> Torch_vision.Image.write_image ~filename
 
 let () =
-  Mpl.set_backend Agg;
   let device = Device.cuda_if_available () in
   let mnist = Mnist_helper.read_files () in
-  let _fig, ax = Fig.create_with_ax () in
-  let data =
-    let data = Tensor.view mnist.train_images ~size:[ -1; 28; 28 ] in
-    List.init 8 ~f:(fun i ->
-        List.init 8 ~f:(fun j ->
-            Tensor.narrow data ~dim:0 ~start:((4 * i) + j) ~length:1)
-        |> Tensor.cat ~dim:1)
-    |> Tensor.cat ~dim:2
-    |> Tensor.squeeze
-    |> Tensor.to_float2_exn
-  in
-  Ax.imshow ax Imshow_data.(scalar float data);
-  Mpl.savefig "/tmp/test.png";
   let vs = Var_store.create ~name:"vae" ~device () in
   let vae = VAE.create vs in
   let opt = Optimizer.adam vs ~learning_rate:1e-3 in
@@ -95,7 +80,8 @@ let () =
         let loss = loss ~recon_x ~x:batch_images ~mu ~logvar in
         Optimizer.backward_step ~loss opt;
         train_loss := !train_loss +. Tensor.float_value loss;
-        samples := !samples +. (Tensor.shape batch_images |> List.hd_exn |> Float.of_int));
+        samples := !samples +. (Tensor.shape batch_images |> List.hd_exn |> Float.of_int)
+    );
     Stdio.printf "epoch %4d  loss: %12.6f\n%!" epoch_idx (!train_loss /. !samples);
     Tensor.randn [ 64; 20 ] ~device
     |> VAE.decode vae
