@@ -14,15 +14,14 @@ let layer_norm vs dim =
       let sigma = Tensor.std1 xs ~dim:[ -1 ] ~unbiased:true ~keepdim:true in
       Tensor.((a * (xs - mu) / (sigma + f 1e-6)) + b))
 
-let sublayer_connection vs sublayer dim ~dropout =
+let sublayer_connection vs dim ~dropout =
   let layer_norm = layer_norm vs dim in
-  Layer.of_fn_ (fun xs ~is_training ->
-      let ys =
-        Layer.forward layer_norm xs
-        |> Layer.forward sublayer
-        |> Tensor.dropout ~is_training ~p:dropout
-      in
-      Tensor.(xs + ys))
+  fun xs ~sublayer ~is_training ->
+    let ys =
+      Layer.forward layer_norm xs
+      |> fun xs -> sublayer xs ~is_training |> Tensor.dropout ~is_training ~p:dropout
+    in
+    Tensor.(xs + ys)
 
 let attention ~query ~key ~value ~mask ~dropout ~is_training =
   let sqrt_d_k = Tensor.size query |> List.last_exn |> Float.of_int |> Float.sqrt in
@@ -58,4 +57,58 @@ let multi_headed_attention vs dim ~heads ~dropout =
     |> Tensor.view ~size:[ batch_size; -1; heads * d_k ]
     |> Layer.forward linear_out
 
-let () = ignore (sublayer_connection, multi_headed_attention)
+let positionwise_feed_forward vs dim ~dim_ff ~dropout =
+  let linear_1 = Layer.linear vs ~input_dim:dim dim_ff in
+  let linear_2 = Layer.linear vs ~input_dim:dim_ff dim in
+  Layer.of_fn_ (fun xs ~is_training ->
+      Layer.forward linear_1 xs
+      |> Tensor.relu
+      |> Tensor.dropout ~p:dropout ~is_training
+      |> Layer.forward linear_2)
+
+let encoder_layer vs dim ~heads ~dim_ff ~dropout =
+  let attn = multi_headed_attention vs dim ~heads ~dropout in
+  let feed_forward = positionwise_feed_forward vs dim ~dim_ff ~dropout in
+  let sl1 = sublayer_connection vs dim ~dropout in
+  let sl2 = sublayer_connection vs dim ~dropout in
+  fun xs mask ~is_training ->
+    sl1 xs ~sublayer:(fun xs -> attn ~query:xs ~key:xs ~value:xs ~mask) ~is_training
+    |> sl2 ~sublayer:(Layer.forward_ feed_forward) ~is_training
+
+let encoder vs dim ~n ~heads ~dim_ff ~dropout =
+  let norm = layer_norm vs dim in
+  let layers =
+    List.init n ~f:(fun _index -> encoder_layer vs dim ~heads ~dim_ff ~dropout)
+  in
+  fun xs mask ~is_training ->
+    List.fold layers ~init:xs ~f:(fun acc layer -> layer acc mask ~is_training)
+    |> Layer.forward norm
+
+let decoder_layer vs dim ~heads ~dim_ff ~dropout =
+  let attn1 = multi_headed_attention vs dim ~heads ~dropout in
+  let attn2 = multi_headed_attention vs dim ~heads ~dropout in
+  let feed_forward = positionwise_feed_forward vs dim ~dim_ff ~dropout in
+  let sl1 = sublayer_connection vs dim ~dropout in
+  let sl2 = sublayer_connection vs dim ~dropout in
+  let sl3 = sublayer_connection vs dim ~dropout in
+  fun xs ~mem ~tgt_mask ~src_mask ~is_training ->
+    sl1
+      xs
+      ~sublayer:(fun xs -> attn1 ~query:xs ~key:xs ~value:xs ~mask:tgt_mask)
+      ~is_training
+    |> sl2
+         ~sublayer:(fun xs -> attn2 ~query:xs ~key:mem ~value:mem ~mask:src_mask)
+         ~is_training
+    |> sl3 ~sublayer:(Layer.forward_ feed_forward) ~is_training
+
+let decoder vs dim ~n ~heads ~dim_ff ~dropout =
+  let norm = layer_norm vs dim in
+  let layers =
+    List.init n ~f:(fun _index -> decoder_layer vs dim ~heads ~dim_ff ~dropout)
+  in
+  fun xs ~mem ~src_mask ~tgt_mask ~is_training ->
+    List.fold layers ~init:xs ~f:(fun acc layer ->
+        layer acc ~mem ~src_mask ~tgt_mask ~is_training)
+    |> Layer.forward norm
+
+let () = ignore (encoder, decoder)
