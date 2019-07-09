@@ -80,7 +80,7 @@ let encoder vs dim ~n ~heads ~dim_ff ~dropout =
   let layers =
     List.init n ~f:(fun _index -> encoder_layer vs dim ~heads ~dim_ff ~dropout)
   in
-  fun xs mask ~is_training ->
+  fun xs ~mask ~is_training ->
     List.fold layers ~init:xs ~f:(fun acc layer -> layer acc mask ~is_training)
     |> Layer.forward norm
 
@@ -111,4 +111,60 @@ let decoder vs dim ~n ~heads ~dim_ff ~dropout =
         layer acc ~mem ~src_mask ~tgt_mask ~is_training)
     |> Layer.forward norm
 
-let () = ignore (encoder, decoder)
+let positional_encoding ?(max_len = 5000) vs dim ~dropout =
+  let position = Tensor.arange ~end_:(Scalar.i max_len) ~options:(T Float, Cpu) in
+  let div_term =
+    Tensor.arange2
+      ~start:(Scalar.i 0)
+      ~end_:(Scalar.i max_len)
+      ~step:(Scalar.i 2)
+      ~options:(T Float, Cpu)
+    |> fun xs -> Tensor.(xs * f (-.Float.log 10000.0 /. Float.of_int dim)) |> Tensor.exp
+  in
+  let sin = Tensor.(sin (position * div_term)) in
+  let cos = Tensor.(cos (position * div_term)) in
+  let pe =
+    List.init dim ~f:(fun i -> if i % 2 = 0 then sin else cos)
+    |> Tensor.stack ~dim:1
+    |> Tensor.unsqueeze ~dim:0
+    |> Tensor.to_device ~device:(Var_store.device vs)
+    |> Tensor.detach
+  in
+  Layer.of_fn_ (fun xs ~is_training ->
+      let _, sz, _ = Tensor.shape3_exn xs in
+      Tensor.(xs + Tensor.narrow pe ~dim:1 ~start:0 ~length:sz)
+      |> Tensor.dropout ~p:dropout ~is_training)
+
+let make_model vs ~src_vocab ~tgt_vocab ~n ~dim_ff ~dim_model ~heads ~dropout =
+  let position = positional_encoding vs dim_model ~dropout in
+  let encoder = encoder vs dim_model ~n ~heads ~dim_ff ~dropout in
+  let decoder = decoder vs dim_model ~n ~heads ~dim_ff ~dropout in
+  let src_e = Layer.embeddings vs ~num_embeddings:dim_model ~embedding_dim:src_vocab in
+  let tgt_e = Layer.embeddings vs ~num_embeddings:dim_model ~embedding_dim:tgt_vocab in
+  fun ~src ~tgt ~src_mask ~tgt_mask ~is_training ->
+    let mem =
+      Layer.forward src_e src
+      |> Layer.forward_ position ~is_training
+      |> encoder ~mask:src_mask ~is_training
+    in
+    Layer.forward tgt_e tgt
+    |> Layer.forward_ position ~is_training
+    |> decoder ~mem ~src_mask ~tgt_mask ~is_training
+
+let () =
+  (* Simple copy task. *)
+  let device = Device.cuda_if_available () in
+  let vs = Var_store.create ~name:"transformer" ~device () in
+  let _model =
+    make_model
+      vs
+      ~src_vocab:11
+      ~tgt_vocab:11
+      ~n:6
+      ~dim_model:512
+      ~dim_ff:2048
+      ~heads:8
+      ~dropout:0.1
+  in
+  let _optimizer = Optimizer.adam vs ~learning_rate:0.0001 in
+  ()
