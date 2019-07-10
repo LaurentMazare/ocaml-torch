@@ -113,18 +113,13 @@ let decoder vs dim ~n ~heads ~dim_ff ~dropout =
 
 let positional_encoding ?(max_len = 5000) vs dim ~dropout =
   let position = Tensor.arange ~end_:(Scalar.i max_len) ~options:(T Float, Cpu) in
-  let div_term =
-    Tensor.arange2
-      ~start:(Scalar.i 0)
-      ~end_:(Scalar.i max_len)
-      ~step:(Scalar.i 2)
-      ~options:(T Float, Cpu)
-    |> fun xs -> Tensor.(xs * f (-.Float.log 10000.0 /. Float.of_int dim)) |> Tensor.exp
+  let div_term i =
+    Float.exp (-2. *. Float.of_int i *. Float.log 10000.0 /. Float.of_int dim)
   in
-  let sin = Tensor.(sin (position * div_term)) in
-  let cos = Tensor.(cos (position * div_term)) in
+  let sin i = Tensor.(sin (position * f (div_term i))) in
+  let cos i = Tensor.(cos (position * f (div_term i))) in
   let pe =
-    List.init dim ~f:(fun i -> if i % 2 = 0 then sin else cos)
+    List.init dim ~f:(fun i -> if i % 2 = 0 then sin (i / 2) else cos (i / 2))
     |> Tensor.stack ~dim:1
     |> Tensor.unsqueeze ~dim:0
     |> Tensor.to_device ~device:(Var_store.device vs)
