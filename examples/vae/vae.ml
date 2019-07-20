@@ -80,8 +80,7 @@ let () =
         let loss = loss ~recon_x ~x:batch_images ~mu ~logvar in
         Optimizer.backward_step ~loss opt;
         train_loss := !train_loss +. Tensor.float_value loss;
-        samples := !samples +. (Tensor.shape batch_images |> List.hd_exn |> Float.of_int)
-    );
+        samples := !samples +. (Tensor.shape batch_images |> List.hd_exn |> Float.of_int));
     Stdio.printf "epoch %4d  loss: %12.6f\n%!" epoch_idx (!train_loss /. !samples);
     Tensor.randn [ 64; 20 ] ~device
     |> VAE.decode vae

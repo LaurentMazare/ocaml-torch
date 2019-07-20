@@ -250,8 +250,7 @@ let bigarray_to_array3 bigarray ~f =
     let bigarray = Bigarray.array3_of_genarray bigarray in
     Array.init (Bigarray.Array3.dim1 bigarray) ~f:(fun i ->
         Array.init (Bigarray.Array3.dim2 bigarray) ~f:(fun j ->
-            Array.init (Bigarray.Array3.dim3 bigarray) ~f:(fun k -> f bigarray.{i, j, k})
-        ))
+            Array.init (Bigarray.Array3.dim3 bigarray) ~f:(fun k -> f bigarray.{i, j, k})))
     |> Option.some
   with
   | Invalid_argument _ -> None

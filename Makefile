@@ -37,8 +37,10 @@ rl: .FORCE
 	dune build $(RL)
 
 gen: .FORCE
-	dune build src/gen/gen.exe
-	./_build/default/src/gen/gen.exe
+	dune exe src/gen/gen.exe
+	ocamlformat src/wrapper/wrapper_generated.ml --inplace
+	ocamlformat src/wrapper/wrapper_generated_intf.ml --inplace
+	ocamlformat src/stubs/torch_bindings_generated.ml --inplace
 
 utop: .FORCE
 	dune utop

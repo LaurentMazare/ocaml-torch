@@ -4,5721 +4,2574 @@ module type S = sig
   type t
   type _ scalar
 
-  val abs :
-    t ->
-    t
-
-  val abs_ :
-    t ->
-    t
-
-  val abs_out :
-    out:t ->
-    t ->
-    t
-
-  val acos :
-    t ->
-    t
-
-  val acos_ :
-    t ->
-    t
-
-  val acos_out :
-    out:t ->
-    t ->
-    t
-
-  val adaptive_avg_pool1d :
-    t ->
-    output_size:int list ->
-    t
-
-  val adaptive_avg_pool2d :
-    t ->
-    output_size:int list ->
-    t
-
-  val adaptive_avg_pool2d_out :
-    out:t ->
-    t ->
-    output_size:int list ->
-    t
-
-  val adaptive_avg_pool3d :
-    t ->
-    output_size:int list ->
-    t
-
-  val adaptive_avg_pool3d_backward :
-    grad_output:t ->
-    t ->
-    t
-
-  val adaptive_avg_pool3d_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    t
-
-  val adaptive_avg_pool3d_out :
-    out:t ->
-    t ->
-    output_size:int list ->
-    t
-
-  val adaptive_max_pool1d :
-    t ->
-    output_size:int list ->
-    t * t
-
-  val adaptive_max_pool2d :
-    t ->
-    output_size:int list ->
-    t * t
-
-  val adaptive_max_pool2d_backward :
-    grad_output:t ->
-    t ->
-    indices:t ->
-    t
-
-  val adaptive_max_pool2d_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    indices:t ->
-    t
-
-  val adaptive_max_pool2d_out :
-    out:t ->
-    indices:t ->
-    t ->
-    output_size:int list ->
-    t * t
-
-  val adaptive_max_pool3d :
-    t ->
-    output_size:int list ->
-    t * t
-
-  val adaptive_max_pool3d_backward :
-    grad_output:t ->
-    t ->
-    indices:t ->
-    t
-
-  val adaptive_max_pool3d_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    indices:t ->
-    t
-
-  val adaptive_max_pool3d_out :
-    out:t ->
-    indices:t ->
-    t ->
-    output_size:int list ->
-    t * t
-
-  val add :
-    t ->
-    t ->
-    t
-
-  val add1 :
-    t ->
-    'a scalar ->
-    t
-
-  val add_ :
-    t ->
-    t ->
-    t
-
-  val add_1 :
-    t ->
-    'a scalar ->
-    t
-
-  val add_out :
-    out:t ->
-    t ->
-    t ->
-    t
-
-  val addbmm :
-    t ->
-    batch1:t ->
-    batch2:t ->
-    t
-
-  val addbmm_ :
-    t ->
-    batch1:t ->
-    batch2:t ->
-    t
-
-  val addbmm_out :
-    out:t ->
-    t ->
-    batch1:t ->
-    batch2:t ->
-    t
-
-  val addcdiv :
-    t ->
-    tensor1:t ->
-    tensor2:t ->
-    t
-
-  val addcdiv_ :
-    t ->
-    tensor1:t ->
-    tensor2:t ->
-    t
-
-  val addcdiv_out :
-    out:t ->
-    t ->
-    tensor1:t ->
-    tensor2:t ->
-    t
-
-  val addcmul :
-    t ->
-    tensor1:t ->
-    tensor2:t ->
-    t
-
-  val addcmul_ :
-    t ->
-    tensor1:t ->
-    tensor2:t ->
-    t
-
-  val addcmul_out :
-    out:t ->
-    t ->
-    tensor1:t ->
-    tensor2:t ->
-    t
-
-  val addmm :
-    t ->
-    mat1:t ->
-    mat2:t ->
-    t
-
-  val addmm_ :
-    t ->
-    mat1:t ->
-    mat2:t ->
-    t
-
-  val addmm_out :
-    out:t ->
-    t ->
-    mat1:t ->
-    mat2:t ->
-    t
-
-  val addmv :
-    t ->
-    mat:t ->
-    vec:t ->
-    t
-
-  val addmv_ :
-    t ->
-    mat:t ->
-    vec:t ->
-    t
-
-  val addmv_out :
-    out:t ->
-    t ->
-    mat:t ->
-    vec:t ->
-    t
-
-  val addr :
-    t ->
-    vec1:t ->
-    vec2:t ->
-    t
-
-  val addr_ :
-    t ->
-    vec1:t ->
-    vec2:t ->
-    t
-
-  val addr_out :
-    out:t ->
-    t ->
-    vec1:t ->
-    vec2:t ->
-    t
-
-  val affine_grid_generator :
-    theta:t ->
-    size:int list ->
-    t
-
-  val affine_grid_generator_backward :
-    grad:t ->
-    size:int list ->
-    t
-
-  val alias :
-    t ->
-    t
-
-  val all :
-    t ->
-    t
-
-  val all1 :
-    t ->
-    dim:int ->
-    keepdim:bool ->
-    t
-
-  val all_out :
-    out:t ->
-    t ->
-    dim:int ->
-    keepdim:bool ->
-    t
-
-  val alpha_dropout :
-    t ->
-    p:float ->
-    train:bool ->
-    t
-
-  val alpha_dropout_ :
-    t ->
-    p:float ->
-    train:bool ->
-    t
-
-  val any :
-    t ->
-    t
-
-  val any1 :
-    t ->
-    dim:int ->
-    keepdim:bool ->
-    t
-
-  val any_out :
-    out:t ->
-    t ->
-    dim:int ->
-    keepdim:bool ->
-    t
-
-  val arange :
-    end_:'a scalar ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val arange1 :
-    start:'a scalar ->
-    end_:'a scalar ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val arange2 :
-    start:'a scalar ->
-    end_:'a scalar ->
-    step:'a scalar ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val arange_out :
-    out:t ->
-    end_:'a scalar ->
-    t
-
-  val arange_out1 :
-    out:t ->
-    start:'a scalar ->
-    end_:'a scalar ->
-    t
-
-  val argmax :
-    t ->
-    dim:int ->
-    keepdim:bool ->
-    t
-
-  val argmin :
-    t ->
-    dim:int ->
-    keepdim:bool ->
-    t
-
-  val argsort :
-    t ->
-    dim:int ->
-    descending:bool ->
-    t
-
-  val as_strided :
-    t ->
-    size:int list ->
-    stride:int list ->
-    storage_offset:int ->
-    t
-
-  val as_strided_ :
-    t ->
-    size:int list ->
-    stride:int list ->
-    storage_offset:int ->
-    t
-
-  val asin :
-    t ->
-    t
-
-  val asin_ :
-    t ->
-    t
-
-  val asin_out :
-    out:t ->
-    t ->
-    t
-
-  val atan :
-    t ->
-    t
-
-  val atan2 :
-    t ->
-    t ->
-    t
-
-  val atan2_ :
-    t ->
-    t ->
-    t
-
-  val atan2_out :
-    out:t ->
-    t ->
-    t ->
-    t
-
-  val atan_ :
-    t ->
-    t
-
-  val atan_out :
-    out:t ->
-    t ->
-    t
-
-  val avg_pool1d :
-    t ->
-    kernel_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    ceil_mode:bool ->
-    count_include_pad:bool ->
-    t
-
-  val avg_pool2d :
-    t ->
-    kernel_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    ceil_mode:bool ->
-    count_include_pad:bool ->
-    t
-
-  val avg_pool2d_backward :
-    grad_output:t ->
-    t ->
-    kernel_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    ceil_mode:bool ->
-    count_include_pad:bool ->
-    t
-
-  val avg_pool2d_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    kernel_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    ceil_mode:bool ->
-    count_include_pad:bool ->
-    t
-
-  val avg_pool2d_out :
-    out:t ->
-    t ->
-    kernel_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    ceil_mode:bool ->
-    count_include_pad:bool ->
-    t
-
-  val avg_pool3d :
-    t ->
-    kernel_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    ceil_mode:bool ->
-    count_include_pad:bool ->
-    t
-
-  val avg_pool3d_backward :
-    grad_output:t ->
-    t ->
-    kernel_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    ceil_mode:bool ->
-    count_include_pad:bool ->
-    t
-
-  val avg_pool3d_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    kernel_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    ceil_mode:bool ->
-    count_include_pad:bool ->
-    t
-
-  val avg_pool3d_out :
-    out:t ->
-    t ->
-    kernel_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    ceil_mode:bool ->
-    count_include_pad:bool ->
-    t
-
-  val baddbmm :
-    t ->
-    batch1:t ->
-    batch2:t ->
-    t
-
-  val baddbmm_ :
-    t ->
-    batch1:t ->
-    batch2:t ->
-    t
-
-  val baddbmm_out :
-    out:t ->
-    t ->
-    batch1:t ->
-    batch2:t ->
-    t
-
-  val bartlett_window :
-    window_length:int ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val bartlett_window1 :
-    window_length:int ->
-    periodic:bool ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val batch_norm :
-    t ->
-    weight:t option ->
-    bias:t option ->
-    running_mean:t option ->
-    running_var:t option ->
-    training:bool ->
-    momentum:float ->
-    eps:float ->
-    cudnn_enabled:bool ->
-    t
-
-  val batch_norm_backward_elemt :
-    grad_out:t ->
-    t ->
-    mean:t ->
-    invstd:t ->
-    weight:t option ->
-    mean_dy:t ->
-    mean_dy_xmu:t ->
-    t
-
-  val batch_norm_backward_reduce :
-    grad_out:t ->
-    t ->
-    mean:t ->
-    invstd:t ->
-    input_g:bool ->
-    weight_g:bool ->
-    bias_g:bool ->
-    t * t * t * t
-
-  val batch_norm_elemt :
-    t ->
-    weight:t option ->
-    bias:t option ->
-    mean:t ->
-    invstd:t ->
-    eps:float ->
-    t
-
-  val batch_norm_gather_stats :
-    t ->
-    mean:t ->
-    invstd:t ->
-    running_mean:t option ->
-    running_var:t option ->
-    momentum:float ->
-    eps:float ->
-    count:int ->
-    t * t
-
-  val batch_norm_stats :
-    t ->
-    eps:float ->
-    t * t
-
-  val batch_norm_update_stats :
-    t ->
-    running_mean:t option ->
-    running_var:t option ->
-    momentum:float ->
-    t * t
-
-  val bernoulli :
-    t ->
-    t
-
-  val bernoulli1 :
-    t ->
-    p:float ->
-    t
-
-  val bernoulli_ :
-    t ->
-    p:t ->
-    t
-
-  val bernoulli_1 :
-    t ->
-    p:float ->
-    t
-
-  val bernoulli_out :
-    out:t ->
-    t ->
-    t
-
-  val bilinear :
-    input1:t ->
-    input2:t ->
-    weight:t ->
-    bias:t option ->
-    t
-
-  val binary_cross_entropy :
-    t ->
-    target:t ->
-    weight:t option ->
-    reduction:Reduction.t ->
-    t
-
-  val binary_cross_entropy_backward :
-    grad_output:t ->
-    t ->
-    target:t ->
-    weight:t ->
-    reduction:Reduction.t ->
-    t
-
-  val binary_cross_entropy_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    target:t ->
-    weight:t ->
-    reduction:Reduction.t ->
-    t
-
-  val binary_cross_entropy_out :
-    out:t ->
-    t ->
-    target:t ->
-    weight:t option ->
-    reduction:Reduction.t ->
-    t
-
-  val binary_cross_entropy_with_logits :
-    t ->
-    target:t ->
-    weight:t option ->
-    pos_weight:t option ->
-    reduction:Reduction.t ->
-    t
-
-  val binary_cross_entropy_with_logits_backward :
-    grad_output:t ->
-    t ->
-    target:t ->
-    weight:t option ->
-    pos_weight:t option ->
-    reduction:Reduction.t ->
-    t
-
-  val bincount :
-    t ->
-    weights:t option ->
-    minlength:int ->
-    t
-
-  val blackman_window :
-    window_length:int ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val blackman_window1 :
-    window_length:int ->
-    periodic:bool ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val bmm :
-    t ->
-    mat2:t ->
-    t
-
-  val bmm_out :
-    out:t ->
-    t ->
-    mat2:t ->
-    t
-
-  val broadcast_tensors :
-    t list ->
-    t list
-
-  val cartesian_prod :
-    t list ->
-    t
-
-  val cat :
-    t list ->
-    dim:int ->
-    t
-
-  val cat_out :
-    out:t ->
-    t list ->
-    dim:int ->
-    t
-
-  val cauchy_ :
-    t ->
-    median:float ->
-    sigma:float ->
-    t
-
-  val cdist :
-    x1:t ->
-    x2:t ->
-    p:float ->
-    t
-
-  val ceil :
-    t ->
-    t
-
-  val ceil_ :
-    t ->
-    t
-
-  val ceil_out :
-    out:t ->
-    t ->
-    t
-
-  val celu :
-    t ->
-    t
-
-  val celu_ :
-    t ->
-    t
-
-  val chain_matmul :
-    matrices:t list ->
-    t
-
-  val cholesky :
-    t ->
-    upper:bool ->
-    t
-
-  val cholesky_inverse :
-    t ->
-    upper:bool ->
-    t
-
-  val cholesky_inverse_out :
-    out:t ->
-    t ->
-    upper:bool ->
-    t
-
-  val cholesky_out :
-    out:t ->
-    t ->
-    upper:bool ->
-    t
-
-  val cholesky_solve :
-    t ->
-    input2:t ->
-    upper:bool ->
-    t
-
-  val cholesky_solve_out :
-    out:t ->
-    t ->
-    input2:t ->
-    upper:bool ->
-    t
-
-  val chunk :
-    t ->
-    chunks:int ->
-    dim:int ->
-    t list
-
-  val clamp :
-    t ->
-    min:'a scalar ->
-    max:'a scalar ->
-    t
-
-  val clamp_ :
-    t ->
-    min:'a scalar ->
-    max:'a scalar ->
-    t
-
-  val clamp_max :
-    t ->
-    max:'a scalar ->
-    t
-
-  val clamp_max_ :
-    t ->
-    max:'a scalar ->
-    t
-
-  val clamp_max_out :
-    out:t ->
-    t ->
-    max:'a scalar ->
-    t
-
-  val clamp_min :
-    t ->
-    min:'a scalar ->
-    t
-
-  val clamp_min_ :
-    t ->
-    min:'a scalar ->
-    t
-
-  val clamp_min_out :
-    out:t ->
-    t ->
-    min:'a scalar ->
-    t
-
-  val clamp_out :
-    out:t ->
-    t ->
-    min:'a scalar ->
-    max:'a scalar ->
-    t
-
-  val clone :
-    t ->
-    t
-
-  val coalesce :
-    t ->
-    t
-
-  val combinations :
-    t ->
-    r:int ->
-    with_replacement:bool ->
-    t
-
-  val constant_pad_nd :
-    t ->
-    pad:int list ->
-    t
-
-  val contiguous :
-    t ->
-    t
-
-  val conv1d :
-    t ->
-    weight:t ->
-    bias:t option ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    groups:int ->
-    t
-
-  val conv2d :
-    t ->
-    weight:t ->
-    bias:t option ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    groups:int ->
-    t
-
-  val conv3d :
-    t ->
-    weight:t ->
-    bias:t option ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    groups:int ->
-    t
-
-  val conv_tbc :
-    t ->
-    weight:t ->
-    bias:t ->
-    pad:int ->
-    t
-
-  val conv_tbc_backward :
-    t ->
-    t ->
-    weight:t ->
-    bias:t ->
-    pad:int ->
-    t * t * t
-
-  val conv_transpose1d :
-    t ->
-    weight:t ->
-    bias:t option ->
-    stride:int list ->
-    padding:int list ->
-    output_padding:int list ->
-    groups:int ->
-    dilation:int list ->
-    t
-
-  val conv_transpose2d :
-    t ->
-    weight:t ->
-    bias:t option ->
-    stride:int list ->
-    padding:int list ->
-    output_padding:int list ->
-    groups:int ->
-    dilation:int list ->
-    t
-
-  val conv_transpose3d :
-    t ->
-    weight:t ->
-    bias:t option ->
-    stride:int list ->
-    padding:int list ->
-    output_padding:int list ->
-    groups:int ->
-    dilation:int list ->
-    t
-
-  val convolution :
-    t ->
-    weight:t ->
-    bias:t option ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    transposed:bool ->
-    output_padding:int list ->
-    groups:int ->
-    t
-
-  val copy_sparse_to_sparse_ :
-    t ->
-    src:t ->
-    non_blocking:bool ->
-    t
-
-  val cos :
-    t ->
-    t
-
-  val cos_ :
-    t ->
-    t
-
-  val cos_out :
-    out:t ->
-    t ->
-    t
-
-  val cosh :
-    t ->
-    t
-
-  val cosh_ :
-    t ->
-    t
-
-  val cosh_out :
-    out:t ->
-    t ->
-    t
-
-  val cosine_embedding_loss :
-    input1:t ->
-    input2:t ->
-    target:t ->
-    margin:float ->
-    reduction:Reduction.t ->
-    t
-
-  val cosine_similarity :
-    x1:t ->
-    x2:t ->
-    dim:int ->
-    eps:float ->
-    t
-
-  val cross :
-    t ->
-    t ->
-    dim:int ->
-    t
-
-  val cross_out :
-    out:t ->
-    t ->
-    t ->
-    dim:int ->
-    t
-
-  val ctc_loss :
-    log_probs:t ->
-    targets:t ->
-    input_lengths:int list ->
-    target_lengths:int list ->
-    blank:int ->
-    reduction:Reduction.t ->
-    zero_infinity:bool ->
-    t
-
-  val ctc_loss1 :
-    log_probs:t ->
-    targets:t ->
-    input_lengths:t ->
-    target_lengths:t ->
-    blank:int ->
-    reduction:Reduction.t ->
-    zero_infinity:bool ->
-    t
-
-  val cudnn_affine_grid_generator :
-    theta:t ->
-    n:int ->
-    c:int ->
-    h:int ->
-    w:int ->
-    t
-
-  val cudnn_affine_grid_generator_backward :
-    grad:t ->
-    n:int ->
-    c:int ->
-    h:int ->
-    w:int ->
-    t
-
-  val cudnn_batch_norm :
-    t ->
-    weight:t ->
-    bias:t option ->
-    running_mean:t option ->
-    running_var:t option ->
-    training:bool ->
-    exponential_average_factor:float ->
-    epsilon:float ->
-    t * t * t
-
-  val cudnn_batch_norm_backward :
-    t ->
-    grad_output:t ->
-    weight:t ->
-    running_mean:t option ->
-    running_var:t option ->
-    save_mean:t option ->
-    save_var:t option ->
-    epsilon:float ->
-    t * t * t
-
-  val cudnn_convolution :
-    t ->
-    weight:t ->
-    bias:t option ->
-    padding:int list ->
-    stride:int list ->
-    dilation:int list ->
-    groups:int ->
-    benchmark:bool ->
-    deterministic:bool ->
-    t
-
-  val cudnn_convolution_backward_bias :
-    grad_output:t ->
-    t
-
-  val cudnn_convolution_backward_input :
-    self_size:int list ->
-    grad_output:t ->
-    weight:t ->
-    padding:int list ->
-    stride:int list ->
-    dilation:int list ->
-    groups:int ->
-    benchmark:bool ->
-    deterministic:bool ->
-    t
-
-  val cudnn_convolution_backward_weight :
-    weight_size:int list ->
-    grad_output:t ->
-    t ->
-    padding:int list ->
-    stride:int list ->
-    dilation:int list ->
-    groups:int ->
-    benchmark:bool ->
-    deterministic:bool ->
-    t
-
-  val cudnn_convolution_transpose :
-    t ->
-    weight:t ->
-    bias:t option ->
-    padding:int list ->
-    output_padding:int list ->
-    stride:int list ->
-    dilation:int list ->
-    groups:int ->
-    benchmark:bool ->
-    deterministic:bool ->
-    t
-
-  val cudnn_convolution_transpose_backward_bias :
-    grad_output:t ->
-    t
-
-  val cudnn_convolution_transpose_backward_input :
-    grad_output:t ->
-    weight:t ->
-    padding:int list ->
-    stride:int list ->
-    dilation:int list ->
-    groups:int ->
-    benchmark:bool ->
-    deterministic:bool ->
-    t
-
-  val cudnn_convolution_transpose_backward_weight :
-    weight_size:int list ->
-    grad_output:t ->
-    t ->
-    padding:int list ->
-    stride:int list ->
-    dilation:int list ->
-    groups:int ->
-    benchmark:bool ->
-    deterministic:bool ->
-    t
-
-  val cudnn_grid_sampler :
-    t ->
-    grid:t ->
-    t
-
-  val cudnn_grid_sampler_backward :
-    t ->
-    grid:t ->
-    grad_output:t ->
-    t * t
-
-  val cumprod :
-    t ->
-    dim:int ->
-    t
-
-  val cumprod1 :
-    t ->
-    dim:int ->
-    dtype:Kind.packed ->
-    t
-
-  val cumprod_out :
-    out:t ->
-    t ->
-    dim:int ->
-    t
-
-  val cumprod_out1 :
-    out:t ->
-    t ->
-    dim:int ->
-    dtype:Kind.packed ->
-    t
-
-  val cumsum :
-    t ->
-    dim:int ->
-    t
-
-  val cumsum1 :
-    t ->
-    dim:int ->
-    dtype:Kind.packed ->
-    t
-
-  val cumsum_out :
-    out:t ->
-    t ->
-    dim:int ->
-    t
-
-  val cumsum_out1 :
-    out:t ->
-    t ->
-    dim:int ->
-    dtype:Kind.packed ->
-    t
-
-  val dequantize :
-    t ->
-    t
-
-  val det :
-    t ->
-    t
-
-  val detach :
-    t ->
-    t
-
-  val detach_ :
-    t ->
-    t
-
-  val diag :
-    t ->
-    diagonal:int ->
-    t
-
-  val diag_embed :
-    t ->
-    offset:int ->
-    dim1:int ->
-    dim2:int ->
-    t
-
-  val diag_out :
-    out:t ->
-    t ->
-    diagonal:int ->
-    t
-
-  val diagflat :
-    t ->
-    offset:int ->
-    t
-
-  val diagonal :
-    t ->
-    offset:int ->
-    dim1:int ->
-    dim2:int ->
-    t
-
-  val digamma :
-    t ->
-    t
-
-  val digamma_ :
-    t ->
-    t
-
-  val digamma_out :
-    out:t ->
-    t ->
-    t
-
-  val dist :
-    t ->
-    t ->
-    t
-
-  val div :
-    t ->
-    t ->
-    t
-
-  val div1 :
-    t ->
-    'a scalar ->
-    t
-
-  val div_ :
-    t ->
-    t ->
-    t
-
-  val div_1 :
-    t ->
-    'a scalar ->
-    t
-
-  val div_out :
-    out:t ->
-    t ->
-    t ->
-    t
-
-  val dot :
-    t ->
-    t ->
-    t
-
-  val dot_out :
-    out:t ->
-    t ->
-    t ->
-    t
-
-  val dropout :
-    t ->
-    p:float ->
-    train:bool ->
-    t
-
-  val dropout_ :
-    t ->
-    p:float ->
-    train:bool ->
-    t
-
-  val eig :
-    t ->
-    eigenvectors:bool ->
-    t * t
-
-  val eig_out :
-    e:t ->
-    v:t ->
-    t ->
-    eigenvectors:bool ->
-    t * t
-
-  val elu :
-    t ->
-    t
-
-  val elu_ :
-    t ->
-    t
-
-  val elu_backward :
-    grad_output:t ->
-    alpha:'a scalar ->
-    scale:'a scalar ->
-    input_scale:'a scalar ->
-    output:t ->
-    t
-
-  val elu_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    alpha:'a scalar ->
-    scale:'a scalar ->
-    input_scale:'a scalar ->
-    output:t ->
-    t
-
-  val elu_out :
-    out:t ->
-    t ->
-    t
-
-  val embedding :
-    weight:t ->
-    indices:t ->
-    padding_idx:int ->
-    scale_grad_by_freq:bool ->
-    sparse:bool ->
-    t
-
-  val embedding_backward :
-    grad:t ->
-    indices:t ->
-    num_weights:int ->
-    padding_idx:int ->
-    scale_grad_by_freq:bool ->
-    sparse:bool ->
-    t
-
-  val embedding_bag :
-    weight:t ->
-    indices:t ->
-    offsets:t ->
-    scale_grad_by_freq:bool ->
-    mode:int ->
-    sparse:bool ->
-    per_sample_weights:t option ->
-    t * t * t * t
-
-  val embedding_dense_backward :
-    grad_output:t ->
-    indices:t ->
-    num_weights:int ->
-    padding_idx:int ->
-    scale_grad_by_freq:bool ->
-    t
-
-  val embedding_renorm_ :
-    t ->
-    indices:t ->
-    max_norm:float ->
-    norm_type:float ->
-    t
-
-  val embedding_sparse_backward :
-    grad:t ->
-    indices:t ->
-    num_weights:int ->
-    padding_idx:int ->
-    scale_grad_by_freq:bool ->
-    t
-
-  val empty :
-    size:int list ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val empty_like :
-    t ->
-    t
-
-  val empty_like1 :
-    t ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val empty_out :
-    out:t ->
-    size:int list ->
-    t
-
-  val empty_strided :
-    size:int list ->
-    stride:int list ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val eq :
-    t ->
-    'a scalar ->
-    t
-
-  val eq1 :
-    t ->
-    t ->
-    t
-
-  val eq_ :
-    t ->
-    'a scalar ->
-    t
-
-  val eq_1 :
-    t ->
-    t ->
-    t
-
-  val eq_out :
-    out:t ->
-    t ->
-    'a scalar ->
-    t
-
-  val eq_out1 :
-    out:t ->
-    t ->
-    t ->
-    t
-
-  val erf :
-    t ->
-    t
-
-  val erf_ :
-    t ->
-    t
-
-  val erf_out :
-    out:t ->
-    t ->
-    t
-
-  val erfc :
-    t ->
-    t
-
-  val erfc_ :
-    t ->
-    t
-
-  val erfc_out :
-    out:t ->
-    t ->
-    t
-
-  val erfinv :
-    t ->
-    t
-
-  val erfinv_ :
-    t ->
-    t
-
-  val erfinv_out :
-    out:t ->
-    t ->
-    t
-
-  val exp :
-    t ->
-    t
-
-  val exp_ :
-    t ->
-    t
-
-  val exp_out :
-    out:t ->
-    t ->
-    t
-
-  val expand :
-    t ->
-    size:int list ->
-    implicit:bool ->
-    t
-
-  val expand_as :
-    t ->
-    t ->
-    t
-
-  val expm1 :
-    t ->
-    t
-
-  val expm1_ :
-    t ->
-    t
-
-  val expm1_out :
-    out:t ->
-    t ->
-    t
-
-  val exponential_ :
-    t ->
-    lambd:float ->
-    t
-
-  val eye :
-    n:int ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val eye1 :
-    n:int ->
-    m:int ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val eye_out :
-    out:t ->
-    n:int ->
-    t
-
-  val eye_out1 :
-    out:t ->
-    n:int ->
-    m:int ->
-    t
-
-  val fbgemm_linear_int8_weight :
-    t ->
-    weight:t ->
-    packed:t ->
-    col_offsets:t ->
-    weight_scale:'a scalar ->
-    weight_zero_point:'a scalar ->
-    bias:t ->
-    t
-
-  val fbgemm_pack_quantized_matrix :
-    t ->
-    k:int ->
-    n:int ->
-    t
-
-  val feature_alpha_dropout :
-    t ->
-    p:float ->
-    train:bool ->
-    t
-
-  val feature_alpha_dropout_ :
-    t ->
-    p:float ->
-    train:bool ->
-    t
-
-  val feature_dropout :
-    t ->
-    p:float ->
-    train:bool ->
-    t
-
-  val feature_dropout_ :
-    t ->
-    p:float ->
-    train:bool ->
-    t
-
-  val fft :
-    t ->
-    signal_ndim:int ->
-    normalized:bool ->
-    t
-
-  val fill_ :
-    t ->
-    value:'a scalar ->
-    t
-
-  val fill_1 :
-    t ->
-    value:t ->
-    t
-
-  val flatten :
-    t ->
-    start_dim:int ->
-    end_dim:int ->
-    t
-
-  val flip :
-    t ->
-    dims:int list ->
-    t
-
-  val floor :
-    t ->
-    t
-
-  val floor_ :
-    t ->
-    t
-
-  val floor_out :
-    out:t ->
-    t ->
-    t
-
-  val fmod :
-    t ->
-    'a scalar ->
-    t
-
-  val fmod1 :
-    t ->
-    t ->
-    t
-
-  val fmod_ :
-    t ->
-    'a scalar ->
-    t
-
-  val fmod_1 :
-    t ->
-    t ->
-    t
-
-  val fmod_out :
-    out:t ->
-    t ->
-    'a scalar ->
-    t
-
-  val fmod_out1 :
-    out:t ->
-    t ->
-    t ->
-    t
-
-  val frac :
-    t ->
-    t
-
-  val frac_ :
-    t ->
-    t
-
-  val frac_out :
-    out:t ->
-    t ->
-    t
-
-  val fractional_max_pool2d :
-    t ->
-    kernel_size:int list ->
-    output_size:int list ->
-    random_samples:t ->
-    t * t
-
-  val fractional_max_pool2d_backward :
-    grad_output:t ->
-    t ->
-    kernel_size:int list ->
-    output_size:int list ->
-    indices:t ->
-    t
-
-  val fractional_max_pool2d_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    kernel_size:int list ->
-    output_size:int list ->
-    indices:t ->
-    t
-
-  val fractional_max_pool2d_out :
-    output:t ->
-    indices:t ->
-    t ->
-    kernel_size:int list ->
-    output_size:int list ->
-    random_samples:t ->
-    t * t
-
-  val fractional_max_pool3d :
-    t ->
-    kernel_size:int list ->
-    output_size:int list ->
-    random_samples:t ->
-    t * t
-
-  val fractional_max_pool3d_backward :
-    grad_output:t ->
-    t ->
-    kernel_size:int list ->
-    output_size:int list ->
-    indices:t ->
-    t
-
-  val fractional_max_pool3d_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    kernel_size:int list ->
-    output_size:int list ->
-    indices:t ->
-    t
-
-  val fractional_max_pool3d_out :
-    output:t ->
-    indices:t ->
-    t ->
-    kernel_size:int list ->
-    output_size:int list ->
-    random_samples:t ->
-    t * t
-
-  val frobenius_norm :
-    t ->
-    t
-
-  val frobenius_norm1 :
-    t ->
-    dim:int list ->
-    keepdim:bool ->
-    t
-
-  val frobenius_norm_out :
-    out:t ->
-    t ->
-    dim:int list ->
-    keepdim:bool ->
-    t
-
-  val full :
-    size:int list ->
-    fill_value:'a scalar ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val full_like :
-    t ->
-    fill_value:'a scalar ->
-    t
-
-  val full_like1 :
-    t ->
-    fill_value:'a scalar ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val full_out :
-    out:t ->
-    size:int list ->
-    fill_value:'a scalar ->
-    t
-
-  val gather :
-    t ->
-    dim:int ->
-    index:t ->
-    sparse_grad:bool ->
-    t
-
-  val gather_out :
-    out:t ->
-    t ->
-    dim:int ->
-    index:t ->
-    sparse_grad:bool ->
-    t
-
-  val ge :
-    t ->
-    'a scalar ->
-    t
-
-  val ge1 :
-    t ->
-    t ->
-    t
-
-  val ge_ :
-    t ->
-    'a scalar ->
-    t
-
-  val ge_1 :
-    t ->
-    t ->
-    t
-
-  val ge_out :
-    out:t ->
-    t ->
-    'a scalar ->
-    t
-
-  val ge_out1 :
-    out:t ->
-    t ->
-    t ->
-    t
-
-  val gels :
-    t ->
-    a:t ->
-    t * t
-
-  val gels_out :
-    x:t ->
-    qr:t ->
-    t ->
-    a:t ->
-    t * t
-
-  val geometric_ :
-    t ->
-    p:float ->
-    t
-
-  val geqrf :
-    t ->
-    t * t
-
-  val geqrf_out :
-    a:t ->
-    tau:t ->
-    t ->
-    t * t
-
-  val ger :
-    t ->
-    vec2:t ->
-    t
-
-  val ger_out :
-    out:t ->
-    t ->
-    vec2:t ->
-    t
-
-  val glu :
-    t ->
-    dim:int ->
-    t
-
-  val glu_backward :
-    grad_output:t ->
-    t ->
-    dim:int ->
-    t
-
-  val glu_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    dim:int ->
-    t
-
-  val glu_out :
-    out:t ->
-    t ->
-    dim:int ->
-    t
-
-  val grad :
-    t ->
-    t
-
-  val grid_sampler :
-    t ->
-    grid:t ->
-    interpolation_mode:int ->
-    padding_mode:int ->
-    t
-
-  val grid_sampler_2d :
-    t ->
-    grid:t ->
-    interpolation_mode:int ->
-    padding_mode:int ->
-    t
-
-  val grid_sampler_2d_backward :
-    grad_output:t ->
-    t ->
-    grid:t ->
-    interpolation_mode:int ->
-    padding_mode:int ->
-    t * t
-
-  val grid_sampler_3d :
-    t ->
-    grid:t ->
-    interpolation_mode:int ->
-    padding_mode:int ->
-    t
-
-  val grid_sampler_3d_backward :
-    grad_output:t ->
-    t ->
-    grid:t ->
-    interpolation_mode:int ->
-    padding_mode:int ->
-    t * t
-
-  val group_norm :
-    t ->
-    num_groups:int ->
-    weight:t option ->
-    bias:t option ->
-    eps:float ->
-    cudnn_enabled:bool ->
-    t
-
-  val gru :
-    t ->
-    hx:t ->
-    params:t list ->
-    has_biases:bool ->
-    num_layers:int ->
-    dropout:float ->
-    train:bool ->
-    bidirectional:bool ->
-    batch_first:bool ->
-    t * t
-
-  val gru1 :
-    data:t ->
-    batch_sizes:t ->
-    hx:t ->
-    params:t list ->
-    has_biases:bool ->
-    num_layers:int ->
-    dropout:float ->
-    train:bool ->
-    bidirectional:bool ->
-    t * t
-
-  val gru_cell :
-    t ->
-    hx:t ->
-    w_ih:t ->
-    w_hh:t ->
-    b_ih:t option ->
-    b_hh:t option ->
-    t
-
-  val gt :
-    t ->
-    'a scalar ->
-    t
-
-  val gt1 :
-    t ->
-    t ->
-    t
-
-  val gt_ :
-    t ->
-    'a scalar ->
-    t
-
-  val gt_1 :
-    t ->
-    t ->
-    t
-
-  val gt_out :
-    out:t ->
-    t ->
-    'a scalar ->
-    t
-
-  val gt_out1 :
-    out:t ->
-    t ->
-    t ->
-    t
-
-  val hamming_window :
-    window_length:int ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val hamming_window1 :
-    window_length:int ->
-    periodic:bool ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val hamming_window2 :
-    window_length:int ->
-    periodic:bool ->
-    alpha:float ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val hamming_window3 :
-    window_length:int ->
-    periodic:bool ->
-    alpha:float ->
-    beta:float ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val hann_window :
-    window_length:int ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val hann_window1 :
-    window_length:int ->
-    periodic:bool ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val hardshrink :
-    t ->
-    t
-
-  val hardshrink_backward :
-    grad_out:t ->
-    t ->
-    lambd:'a scalar ->
-    t
-
-  val hardtanh :
-    t ->
-    t
-
-  val hardtanh_ :
-    t ->
-    t
-
-  val hardtanh_backward :
-    grad_output:t ->
-    t ->
-    min_val:'a scalar ->
-    max_val:'a scalar ->
-    t
-
-  val hardtanh_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    min_val:'a scalar ->
-    max_val:'a scalar ->
-    t
-
-  val hardtanh_out :
-    out:t ->
-    t ->
-    t
-
-  val hinge_embedding_loss :
-    t ->
-    target:t ->
-    margin:float ->
-    reduction:Reduction.t ->
-    t
-
-  val histc :
-    t ->
-    bins:int ->
-    t
-
-  val histc_out :
-    out:t ->
-    t ->
-    bins:int ->
-    t
-
-  val hspmm :
-    mat1:t ->
-    mat2:t ->
-    t
-
-  val hspmm_out :
-    out:t ->
-    mat1:t ->
-    mat2:t ->
-    t
-
-  val ifft :
-    t ->
-    signal_ndim:int ->
-    normalized:bool ->
-    t
-
-  val index :
-    t ->
-    indices:t list ->
-    t
-
-  val index_add :
-    t ->
-    dim:int ->
-    index:t ->
-    source:t ->
-    t
-
-  val index_add_ :
-    t ->
-    dim:int ->
-    index:t ->
-    source:t ->
-    t
-
-  val index_copy :
-    t ->
-    dim:int ->
-    index:t ->
-    source:t ->
-    t
-
-  val index_copy_ :
-    t ->
-    dim:int ->
-    index:t ->
-    source:t ->
-    t
-
-  val index_fill :
-    t ->
-    dim:int ->
-    index:t ->
-    value:'a scalar ->
-    t
-
-  val index_fill1 :
-    t ->
-    dim:int ->
-    index:t ->
-    value:t ->
-    t
-
-  val index_fill_ :
-    t ->
-    dim:int ->
-    index:t ->
-    value:'a scalar ->
-    t
-
-  val index_fill_1 :
-    t ->
-    dim:int ->
-    index:t ->
-    value:t ->
-    t
-
-  val index_put :
-    t ->
-    indices:t list ->
-    values:t ->
-    accumulate:bool ->
-    t
-
-  val index_put_ :
-    t ->
-    indices:t list ->
-    values:t ->
-    accumulate:bool ->
-    t
-
-  val index_select :
-    t ->
-    dim:int ->
-    index:t ->
-    t
-
-  val index_select_out :
-    out:t ->
-    t ->
-    dim:int ->
-    index:t ->
-    t
-
-  val indices :
-    t ->
-    t
-
-  val instance_norm :
-    t ->
-    weight:t option ->
-    bias:t option ->
-    running_mean:t option ->
-    running_var:t option ->
-    use_input_stats:bool ->
-    momentum:float ->
-    eps:float ->
-    cudnn_enabled:bool ->
-    t
-
-  val int_repr :
-    t ->
-    t
-
-  val inverse :
-    t ->
-    t
-
-  val inverse_out :
-    out:t ->
-    t ->
-    t
-
-  val irfft :
-    t ->
-    signal_ndim:int ->
-    normalized:bool ->
-    onesided:bool ->
-    signal_sizes:int list ->
-    t
-
-  val isclose :
-    t ->
-    t ->
-    rtol:float ->
-    atol:float ->
-    equal_nan:bool ->
-    t
-
-  val isnan :
-    t ->
-    t
-
-  val kl_div :
-    t ->
-    target:t ->
-    reduction:Reduction.t ->
-    t
-
-  val kl_div_backward :
-    grad_output:t ->
-    t ->
-    target:t ->
-    reduction:Reduction.t ->
-    t
-
-  val kthvalue :
-    t ->
-    k:int ->
-    dim:int ->
-    keepdim:bool ->
-    t * t
-
-  val kthvalue_out :
-    values:t ->
-    indices:t ->
-    t ->
-    k:int ->
-    dim:int ->
-    keepdim:bool ->
-    t * t
-
-  val l1_loss :
-    t ->
-    target:t ->
-    reduction:Reduction.t ->
-    t
-
-  val l1_loss_backward :
-    grad_output:t ->
-    t ->
-    target:t ->
-    reduction:Reduction.t ->
-    t
-
-  val l1_loss_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    target:t ->
-    reduction:Reduction.t ->
-    t
-
-  val l1_loss_out :
-    out:t ->
-    t ->
-    target:t ->
-    reduction:Reduction.t ->
-    t
-
-  val layer_norm :
-    t ->
-    normalized_shape:int list ->
-    weight:t option ->
-    bias:t option ->
-    eps:float ->
-    cudnn_enable:bool ->
-    t
-
-  val le :
-    t ->
-    'a scalar ->
-    t
-
-  val le1 :
-    t ->
-    t ->
-    t
-
-  val le_ :
-    t ->
-    'a scalar ->
-    t
-
-  val le_1 :
-    t ->
-    t ->
-    t
-
-  val le_out :
-    out:t ->
-    t ->
-    'a scalar ->
-    t
-
-  val le_out1 :
-    out:t ->
-    t ->
-    t ->
-    t
-
-  val leaky_relu :
-    t ->
-    t
-
-  val leaky_relu_ :
-    t ->
-    t
-
-  val leaky_relu_backward :
-    grad_output:t ->
-    t ->
-    negative_slope:'a scalar ->
-    t
-
-  val leaky_relu_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    negative_slope:'a scalar ->
-    t
-
-  val leaky_relu_out :
-    out:t ->
-    t ->
-    t
-
-  val lerp :
-    t ->
-    end_:t ->
-    weight:'a scalar ->
-    t
-
-  val lerp1 :
-    t ->
-    end_:t ->
-    weight:t ->
-    t
-
-  val lerp_ :
-    t ->
-    end_:t ->
-    weight:'a scalar ->
-    t
-
-  val lerp_1 :
-    t ->
-    end_:t ->
-    weight:t ->
-    t
-
-  val lerp_out :
-    out:t ->
-    t ->
-    end_:t ->
-    weight:'a scalar ->
-    t
-
-  val lerp_out1 :
-    out:t ->
-    t ->
-    end_:t ->
-    weight:t ->
-    t
-
-  val lgamma :
-    t ->
-    t
-
-  val lgamma_ :
-    t ->
-    t
-
-  val lgamma_out :
-    out:t ->
-    t ->
-    t
-
-  val linear :
-    t ->
-    weight:t ->
-    bias:t option ->
-    t
-
-  val linspace :
-    start:'a scalar ->
-    end_:'a scalar ->
-    steps:int ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val linspace_out :
-    out:t ->
-    start:'a scalar ->
-    end_:'a scalar ->
-    steps:int ->
-    t
-
-  val log :
-    t ->
-    t
-
-  val log10 :
-    t ->
-    t
-
-  val log10_ :
-    t ->
-    t
-
-  val log10_out :
-    out:t ->
-    t ->
-    t
-
-  val log1p :
-    t ->
-    t
-
-  val log1p_ :
-    t ->
-    t
-
-  val log1p_out :
-    out:t ->
-    t ->
-    t
-
-  val log2 :
-    t ->
-    t
-
-  val log2_ :
-    t ->
-    t
-
-  val log2_out :
-    out:t ->
-    t ->
-    t
-
-  val log_ :
-    t ->
-    t
-
-  val log_normal_ :
-    t ->
-    mean:float ->
-    std:float ->
-    t
-
-  val log_out :
-    out:t ->
-    t ->
-    t
-
-  val log_sigmoid :
-    t ->
-    t
-
-  val log_sigmoid_backward :
-    grad_output:t ->
-    t ->
-    buffer:t ->
-    t
-
-  val log_sigmoid_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    buffer:t ->
-    t
-
-  val log_sigmoid_out :
-    out:t ->
-    t ->
-    t
-
-  val log_softmax :
-    t ->
-    dim:int ->
-    t
-
-  val log_softmax1 :
-    t ->
-    dim:int ->
-    dtype:Kind.packed ->
-    t
-
-  val logdet :
-    t ->
-    t
-
-  val logspace :
-    start:'a scalar ->
-    end_:'a scalar ->
-    steps:int ->
-    base:float ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val logspace_out :
-    out:t ->
-    start:'a scalar ->
-    end_:'a scalar ->
-    steps:int ->
-    base:float ->
-    t
-
-  val logsumexp :
-    t ->
-    dim:int list ->
-    keepdim:bool ->
-    t
-
-  val logsumexp_out :
-    out:t ->
-    t ->
-    dim:int list ->
-    keepdim:bool ->
-    t
-
-  val lstm :
-    t ->
-    hx:t list ->
-    params:t list ->
-    has_biases:bool ->
-    num_layers:int ->
-    dropout:float ->
-    train:bool ->
-    bidirectional:bool ->
-    batch_first:bool ->
-    t * t * t
-
-  val lstm1 :
-    data:t ->
-    batch_sizes:t ->
-    hx:t list ->
-    params:t list ->
-    has_biases:bool ->
-    num_layers:int ->
-    dropout:float ->
-    train:bool ->
-    bidirectional:bool ->
-    t * t * t
-
-  val lstm_cell :
-    t ->
-    hx:t list ->
-    w_ih:t ->
-    w_hh:t ->
-    b_ih:t option ->
-    b_hh:t option ->
-    t * t
-
-  val lt :
-    t ->
-    'a scalar ->
-    t
-
-  val lt1 :
-    t ->
-    t ->
-    t
-
-  val lt_ :
-    t ->
-    'a scalar ->
-    t
-
-  val lt_1 :
-    t ->
-    t ->
-    t
-
-  val lt_out :
-    out:t ->
-    t ->
-    'a scalar ->
-    t
-
-  val lt_out1 :
-    out:t ->
-    t ->
-    t ->
-    t
-
-  val lu_solve :
-    t ->
-    lu_data:t ->
-    lu_pivots:t ->
-    t
-
-  val lu_solve_out :
-    out:t ->
-    t ->
-    lu_data:t ->
-    lu_pivots:t ->
-    t
-
-  val margin_ranking_loss :
-    input1:t ->
-    input2:t ->
-    target:t ->
-    margin:float ->
-    reduction:Reduction.t ->
-    t
-
-  val masked_fill :
-    t ->
-    mask:t ->
-    value:'a scalar ->
-    t
-
-  val masked_fill1 :
-    t ->
-    mask:t ->
-    value:t ->
-    t
-
-  val masked_fill_ :
-    t ->
-    mask:t ->
-    value:'a scalar ->
-    t
-
-  val masked_fill_1 :
-    t ->
-    mask:t ->
-    value:t ->
-    t
-
-  val masked_scatter :
-    t ->
-    mask:t ->
-    source:t ->
-    t
-
-  val masked_scatter_ :
-    t ->
-    mask:t ->
-    source:t ->
-    t
-
-  val masked_select :
-    t ->
-    mask:t ->
-    t
-
-  val masked_select_out :
-    out:t ->
-    t ->
-    mask:t ->
-    t
-
-  val matmul :
-    t ->
-    t ->
-    t
-
-  val matmul_out :
-    out:t ->
-    t ->
-    t ->
-    t
-
-  val matrix_power :
-    t ->
-    n:int ->
-    t
-
-  val matrix_rank :
-    t ->
-    symmetric:bool ->
-    t
-
-  val matrix_rank1 :
-    t ->
-    tol:float ->
-    symmetric:bool ->
-    t
-
-  val max :
-    t ->
-    t
-
-  val max1 :
-    t ->
-    t ->
-    t
-
-  val max2 :
-    t ->
-    dim:int ->
-    keepdim:bool ->
-    t * t
-
-  val max_out :
-    out:t ->
-    t ->
-    t ->
-    t
-
-  val max_out1 :
-    max:t ->
-    max_values:t ->
-    t ->
-    dim:int ->
-    keepdim:bool ->
-    t * t
-
-  val max_pool1d :
-    t ->
-    kernel_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    ceil_mode:bool ->
-    t
-
-  val max_pool1d_with_indices :
-    t ->
-    kernel_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    ceil_mode:bool ->
-    t * t
-
-  val max_pool2d :
-    t ->
-    kernel_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    ceil_mode:bool ->
-    t
-
-  val max_pool2d_with_indices :
-    t ->
-    kernel_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    ceil_mode:bool ->
-    t * t
-
-  val max_pool2d_with_indices_backward :
-    grad_output:t ->
-    t ->
-    kernel_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    ceil_mode:bool ->
-    indices:t ->
-    t
-
-  val max_pool2d_with_indices_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    kernel_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    ceil_mode:bool ->
-    indices:t ->
-    t
-
-  val max_pool2d_with_indices_out :
-    output:t ->
-    indices:t ->
-    t ->
-    kernel_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    ceil_mode:bool ->
-    t * t
-
-  val max_pool3d :
-    t ->
-    kernel_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    ceil_mode:bool ->
-    t
-
-  val max_pool3d_with_indices :
-    t ->
-    kernel_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    ceil_mode:bool ->
-    t * t
-
-  val max_pool3d_with_indices_backward :
-    grad_output:t ->
-    t ->
-    kernel_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    ceil_mode:bool ->
-    indices:t ->
-    t
-
-  val max_pool3d_with_indices_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    kernel_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    ceil_mode:bool ->
-    indices:t ->
-    t
-
-  val max_pool3d_with_indices_out :
-    output:t ->
-    indices:t ->
-    t ->
-    kernel_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    ceil_mode:bool ->
-    t * t
-
-  val max_unpool2d :
-    t ->
-    indices:t ->
-    output_size:int list ->
-    t
-
-  val max_unpool2d_backward :
-    grad_output:t ->
-    t ->
-    indices:t ->
-    output_size:int list ->
-    t
-
-  val max_unpool2d_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    indices:t ->
-    output_size:int list ->
-    t
-
-  val max_unpool2d_out :
-    out:t ->
-    t ->
-    indices:t ->
-    output_size:int list ->
-    t
-
-  val max_unpool3d :
-    t ->
-    indices:t ->
-    output_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    t
-
-  val max_unpool3d_backward :
-    grad_output:t ->
-    t ->
-    indices:t ->
-    output_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    t
-
-  val max_unpool3d_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    indices:t ->
-    output_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    t
-
-  val max_unpool3d_out :
-    out:t ->
-    t ->
-    indices:t ->
-    output_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    t
-
-  val max_values :
-    t ->
-    dim:int list ->
-    keepdim:bool ->
-    t
-
-  val mean :
-    t ->
-    t
-
-  val mean1 :
-    t ->
-    dtype:Kind.packed ->
-    t
-
-  val mean2 :
-    t ->
-    dim:int list ->
-    keepdim:bool ->
-    t
-
-  val mean3 :
-    t ->
-    dim:int list ->
-    dtype:Kind.packed ->
-    t
-
-  val mean4 :
-    t ->
-    dim:int list ->
-    keepdim:bool ->
-    dtype:Kind.packed ->
-    t
-
-  val mean_out :
-    out:t ->
-    t ->
-    dim:int list ->
-    keepdim:bool ->
-    t
-
-  val mean_out1 :
-    out:t ->
-    t ->
-    dim:int list ->
-    dtype:Kind.packed ->
-    t
-
-  val mean_out2 :
-    out:t ->
-    t ->
-    dim:int list ->
-    keepdim:bool ->
-    dtype:Kind.packed ->
-    t
-
-  val median :
-    t ->
-    t
-
-  val median1 :
-    t ->
-    dim:int ->
-    keepdim:bool ->
-    t * t
-
-  val median_out :
-    values:t ->
-    indices:t ->
-    t ->
-    dim:int ->
-    keepdim:bool ->
-    t * t
-
-  val meshgrid :
-    t list ->
-    t list
-
-  val min :
-    t ->
-    t
-
-  val min1 :
-    t ->
-    t ->
-    t
-
-  val min2 :
-    t ->
-    dim:int ->
-    keepdim:bool ->
-    t * t
-
-  val min_out :
-    out:t ->
-    t ->
-    t ->
-    t
-
-  val min_out1 :
-    min:t ->
-    min_indices:t ->
-    t ->
-    dim:int ->
-    keepdim:bool ->
-    t * t
-
-  val min_values :
-    t ->
-    dim:int list ->
-    keepdim:bool ->
-    t
-
-  val miopen_batch_norm :
-    t ->
-    weight:t ->
-    bias:t option ->
-    running_mean:t option ->
-    running_var:t option ->
-    training:bool ->
-    exponential_average_factor:float ->
-    epsilon:float ->
-    t * t * t
-
-  val miopen_batch_norm_backward :
-    t ->
-    grad_output:t ->
-    weight:t ->
-    running_mean:t option ->
-    running_var:t option ->
-    save_mean:t option ->
-    save_var:t option ->
-    epsilon:float ->
-    t * t * t
-
-  val miopen_convolution :
-    t ->
-    weight:t ->
-    bias:t option ->
-    padding:int list ->
-    stride:int list ->
-    dilation:int list ->
-    groups:int ->
-    benchmark:bool ->
-    deterministic:bool ->
-    t
-
-  val miopen_convolution_backward_bias :
-    grad_output:t ->
-    t
-
-  val miopen_convolution_backward_input :
-    self_size:int list ->
-    grad_output:t ->
-    weight:t ->
-    padding:int list ->
-    stride:int list ->
-    dilation:int list ->
-    groups:int ->
-    benchmark:bool ->
-    deterministic:bool ->
-    t
-
-  val miopen_convolution_backward_weight :
-    weight_size:int list ->
-    grad_output:t ->
-    t ->
-    padding:int list ->
-    stride:int list ->
-    dilation:int list ->
-    groups:int ->
-    benchmark:bool ->
-    deterministic:bool ->
-    t
-
-  val miopen_convolution_transpose :
-    t ->
-    weight:t ->
-    bias:t option ->
-    padding:int list ->
-    output_padding:int list ->
-    stride:int list ->
-    dilation:int list ->
-    groups:int ->
-    benchmark:bool ->
-    deterministic:bool ->
-    t
-
-  val miopen_convolution_transpose_backward_input :
-    grad_output:t ->
-    weight:t ->
-    padding:int list ->
-    stride:int list ->
-    dilation:int list ->
-    groups:int ->
-    benchmark:bool ->
-    deterministic:bool ->
-    t
-
-  val miopen_convolution_transpose_backward_weight :
-    weight_size:int list ->
-    grad_output:t ->
-    t ->
-    padding:int list ->
-    stride:int list ->
-    dilation:int list ->
-    groups:int ->
-    benchmark:bool ->
-    deterministic:bool ->
-    t
-
-  val miopen_depthwise_convolution :
-    t ->
-    weight:t ->
-    bias:t option ->
-    padding:int list ->
-    stride:int list ->
-    dilation:int list ->
-    groups:int ->
-    benchmark:bool ->
-    deterministic:bool ->
-    t
-
-  val miopen_depthwise_convolution_backward_input :
-    self_size:int list ->
-    grad_output:t ->
-    weight:t ->
-    padding:int list ->
-    stride:int list ->
-    dilation:int list ->
-    groups:int ->
-    benchmark:bool ->
-    deterministic:bool ->
-    t
-
-  val miopen_depthwise_convolution_backward_weight :
-    weight_size:int list ->
-    grad_output:t ->
-    t ->
-    padding:int list ->
-    stride:int list ->
-    dilation:int list ->
-    groups:int ->
-    benchmark:bool ->
-    deterministic:bool ->
-    t
-
-  val mkldnn_convolution :
-    t ->
-    weight:t ->
-    bias:t option ->
-    padding:int list ->
-    stride:int list ->
-    dilation:int list ->
-    groups:int ->
-    t
-
-  val mkldnn_convolution_backward_input :
-    self_size:int list ->
-    grad_output:t ->
-    weight:t ->
-    padding:int list ->
-    stride:int list ->
-    dilation:int list ->
-    groups:int ->
-    bias_defined:bool ->
-    t
-
-  val mkldnn_convolution_backward_weights :
-    weight_size:int list ->
-    grad_output:t ->
-    t ->
-    padding:int list ->
-    stride:int list ->
-    dilation:int list ->
-    groups:int ->
-    bias_defined:bool ->
-    t * t
-
-  val mkldnn_linear :
-    t ->
-    weight:t ->
-    bias:t option ->
-    t
-
-  val mkldnn_max_pool2d :
-    t ->
-    kernel_size:int list ->
-    stride:int list ->
-    padding:int list ->
-    dilation:int list ->
-    ceil_mode:bool ->
-    t
-
-  val mkldnn_reorder_conv2d_weight :
-    t ->
-    padding:int list ->
-    stride:int list ->
-    dilation:int list ->
-    groups:int ->
-    t
-
-  val mkldnn_reshape :
-    t ->
-    shape:int list ->
-    t
-
-  val mm :
-    t ->
-    mat2:t ->
-    t
-
-  val mm_out :
-    out:t ->
-    t ->
-    mat2:t ->
-    t
-
-  val mode :
-    t ->
-    dim:int ->
-    keepdim:bool ->
-    t * t
-
-  val mode_out :
-    values:t ->
-    indices:t ->
-    t ->
-    dim:int ->
-    keepdim:bool ->
-    t * t
-
-  val mse_loss :
-    t ->
-    target:t ->
-    reduction:Reduction.t ->
-    t
-
-  val mse_loss_backward :
-    grad_output:t ->
-    t ->
-    target:t ->
-    reduction:Reduction.t ->
-    t
-
-  val mse_loss_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    target:t ->
-    reduction:Reduction.t ->
-    t
-
-  val mse_loss_out :
-    out:t ->
-    t ->
-    target:t ->
-    reduction:Reduction.t ->
-    t
-
-  val mul :
-    t ->
-    t ->
-    t
-
-  val mul1 :
-    t ->
-    'a scalar ->
-    t
-
-  val mul_ :
-    t ->
-    t ->
-    t
-
-  val mul_1 :
-    t ->
-    'a scalar ->
-    t
-
-  val mul_out :
-    out:t ->
-    t ->
-    t ->
-    t
-
-  val multi_margin_loss_backward :
-    grad_output:t ->
-    t ->
-    target:t ->
-    p:'a scalar ->
-    margin:'a scalar ->
-    weight:t ->
-    reduction:Reduction.t ->
-    t
-
-  val multi_margin_loss_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    target:t ->
-    p:'a scalar ->
-    margin:'a scalar ->
-    weight:t ->
-    reduction:Reduction.t ->
-    t
-
-  val multilabel_margin_loss :
-    t ->
-    target:t ->
-    reduction:Reduction.t ->
-    t
-
-  val multilabel_margin_loss_backward :
-    grad_output:t ->
-    t ->
-    target:t ->
-    reduction:Reduction.t ->
-    is_target:t ->
-    t
-
-  val multilabel_margin_loss_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    target:t ->
-    reduction:Reduction.t ->
-    is_target:t ->
-    t
-
-  val multilabel_margin_loss_out :
-    out:t ->
-    t ->
-    target:t ->
-    reduction:Reduction.t ->
-    t
-
-  val multinomial :
-    t ->
-    num_samples:int ->
-    replacement:bool ->
-    t
-
-  val multinomial_out :
-    out:t ->
-    t ->
-    num_samples:int ->
-    replacement:bool ->
-    t
-
-  val mv :
-    t ->
-    vec:t ->
-    t
-
-  val mv_out :
-    out:t ->
-    t ->
-    vec:t ->
-    t
-
-  val mvlgamma :
-    t ->
-    p:int ->
-    t
-
-  val mvlgamma_ :
-    t ->
-    p:int ->
-    t
-
-  val narrow :
-    t ->
-    dim:int ->
-    start:int ->
-    length:int ->
-    t
-
-  val narrow_copy :
-    t ->
-    dim:int ->
-    start:int ->
-    length:int ->
-    t
-
-  val native_batch_norm :
-    t ->
-    weight:t option ->
-    bias:t option ->
-    running_mean:t option ->
-    running_var:t option ->
-    training:bool ->
-    momentum:float ->
-    eps:float ->
-    t * t * t
-
-  val native_norm :
-    t ->
-    t
-
-  val ne :
-    t ->
-    'a scalar ->
-    t
-
-  val ne1 :
-    t ->
-    t ->
-    t
-
-  val ne_ :
-    t ->
-    'a scalar ->
-    t
-
-  val ne_1 :
-    t ->
-    t ->
-    t
-
-  val ne_out :
-    out:t ->
-    t ->
-    'a scalar ->
-    t
-
-  val ne_out1 :
-    out:t ->
-    t ->
-    t ->
-    t
-
-  val neg :
-    t ->
-    t
-
-  val neg_ :
-    t ->
-    t
-
-  val neg_out :
-    out:t ->
-    t ->
-    t
-
-  val nll_loss :
-    t ->
-    target:t ->
-    weight:t option ->
-    reduction:Reduction.t ->
-    ignore_index:int ->
-    t
-
-  val nll_loss2d :
-    t ->
-    target:t ->
-    weight:t option ->
-    reduction:Reduction.t ->
-    ignore_index:int ->
-    t
-
-  val nll_loss2d_backward :
-    grad_output:t ->
-    t ->
-    target:t ->
-    weight:t option ->
-    reduction:Reduction.t ->
-    ignore_index:int ->
-    total_weight:t ->
-    t
-
-  val nll_loss2d_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    target:t ->
-    weight:t option ->
-    reduction:Reduction.t ->
-    ignore_index:int ->
-    total_weight:t ->
-    t
-
-  val nll_loss2d_out :
-    out:t ->
-    t ->
-    target:t ->
-    weight:t option ->
-    reduction:Reduction.t ->
-    ignore_index:int ->
-    t
-
-  val nll_loss_backward :
-    grad_output:t ->
-    t ->
-    target:t ->
-    weight:t option ->
-    reduction:Reduction.t ->
-    ignore_index:int ->
-    total_weight:t ->
-    t
-
-  val nll_loss_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    target:t ->
-    weight:t option ->
-    reduction:Reduction.t ->
-    ignore_index:int ->
-    total_weight:t ->
-    t
-
-  val nll_loss_out :
-    out:t ->
-    t ->
-    target:t ->
-    weight:t option ->
-    reduction:Reduction.t ->
-    ignore_index:int ->
-    t
-
-  val nonzero :
-    t ->
-    t
-
-  val nonzero_out :
-    out:t ->
-    t ->
-    t
-
-  val norm :
-    t ->
-    t
-
-  val norm1 :
-    t ->
-    p:'a scalar ->
-    dtype:Kind.packed ->
-    t
-
-  val norm2 :
-    t ->
-    p:'a scalar ->
-    dim:int list ->
-    keepdim:bool ->
-    t
-
-  val norm3 :
-    t ->
-    p:'a scalar ->
-    dim:int list ->
-    keepdim:bool ->
-    dtype:Kind.packed ->
-    t
-
-  val norm_except_dim :
-    v:t ->
-    pow:int ->
-    dim:int ->
-    t
-
-  val norm_out :
-    out:t ->
-    t ->
-    p:'a scalar ->
-    dim:int list ->
-    keepdim:bool ->
-    t
-
-  val norm_out1 :
-    out:t ->
-    t ->
-    p:'a scalar ->
-    dim:int list ->
-    keepdim:bool ->
-    dtype:Kind.packed ->
-    t
-
-  val normal :
-    mean:t ->
-    std:float ->
-    t
-
-  val normal1 :
-    mean:float ->
-    std:t ->
-    t
-
-  val normal2 :
-    mean:t ->
-    std:t ->
-    t
-
-  val normal_ :
-    t ->
-    mean:float ->
-    std:float ->
-    t
-
-  val normal_out :
-    out:t ->
-    mean:t ->
-    std:float ->
-    t
-
-  val normal_out1 :
-    out:t ->
-    mean:float ->
-    std:t ->
-    t
-
-  val normal_out2 :
-    out:t ->
-    mean:t ->
-    std:t ->
-    t
-
-  val nuclear_norm :
-    t ->
-    keepdim:bool ->
-    t
-
-  val nuclear_norm_out :
-    out:t ->
-    t ->
-    keepdim:bool ->
-    t
-
-  val one_hot :
-    t ->
-    num_classes:int ->
-    t
-
-  val ones :
-    size:int list ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val ones_like :
-    t ->
-    t
-
-  val ones_like1 :
-    t ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val ones_out :
-    out:t ->
-    size:int list ->
-    t
-
-  val orgqr :
-    t ->
-    input2:t ->
-    t
-
-  val orgqr_out :
-    out:t ->
-    t ->
-    input2:t ->
-    t
-
-  val ormqr :
-    t ->
-    input2:t ->
-    input3:t ->
-    left:bool ->
-    transpose:bool ->
-    t
-
-  val ormqr_out :
-    out:t ->
-    t ->
-    input2:t ->
-    input3:t ->
-    left:bool ->
-    transpose:bool ->
-    t
-
-  val pairwise_distance :
-    x1:t ->
-    x2:t ->
-    p:float ->
-    eps:float ->
-    keepdim:bool ->
-    t
-
-  val pdist :
-    t ->
-    p:float ->
-    t
-
-  val permute :
-    t ->
-    dims:int list ->
-    t
-
-  val pin_memory :
-    t ->
-    t
-
-  val pinverse :
-    t ->
-    rcond:float ->
-    t
-
-  val pixel_shuffle :
-    t ->
-    upscale_factor:int ->
-    t
-
-  val poisson :
-    t ->
-    t
-
-  val polygamma :
-    n:int ->
-    t ->
-    t
-
-  val polygamma_ :
-    t ->
-    n:int ->
-    t
-
-  val polygamma_out :
-    out:t ->
-    n:int ->
-    t ->
-    t
-
-  val pow :
-    t ->
-    exponent:'a scalar ->
-    t
-
-  val pow1 :
-    t ->
-    exponent:t ->
-    t
-
-  val pow2 :
-    'a scalar ->
-    exponent:t ->
-    t
-
-  val pow_ :
-    t ->
-    exponent:'a scalar ->
-    t
-
-  val pow_1 :
-    t ->
-    exponent:t ->
-    t
-
-  val pow_out :
-    out:t ->
-    t ->
-    exponent:'a scalar ->
-    t
-
-  val pow_out1 :
-    out:t ->
-    t ->
-    exponent:t ->
-    t
-
-  val pow_out2 :
-    out:t ->
-    'a scalar ->
-    exponent:t ->
-    t
-
-  val prelu :
-    t ->
-    weight:t ->
-    t
-
-  val prelu_backward :
-    grad_output:t ->
-    t ->
-    weight:t ->
-    t * t
-
-  val prod :
-    t ->
-    t
-
-  val prod1 :
-    t ->
-    dtype:Kind.packed ->
-    t
-
-  val prod2 :
-    t ->
-    dim:int ->
-    keepdim:bool ->
-    t
-
-  val prod3 :
-    t ->
-    dim:int ->
-    dtype:Kind.packed ->
-    t
-
-  val prod4 :
-    t ->
-    dim:int ->
-    keepdim:bool ->
-    dtype:Kind.packed ->
-    t
-
-  val prod_out :
-    out:t ->
-    t ->
-    dim:int ->
-    keepdim:bool ->
-    t
-
-  val prod_out1 :
-    out:t ->
-    t ->
-    dim:int ->
-    dtype:Kind.packed ->
-    t
-
-  val prod_out2 :
-    out:t ->
-    t ->
-    dim:int ->
-    keepdim:bool ->
-    dtype:Kind.packed ->
-    t
-
-  val pstrf :
-    t ->
-    upper:bool ->
-    t * t
-
-  val pstrf_out :
-    u:t ->
-    pivot:t ->
-    t ->
-    upper:bool ->
-    t * t
-
-  val put_ :
-    t ->
-    index:t ->
-    source:t ->
-    accumulate:bool ->
-    t
-
-  val qr :
-    t ->
-    t * t
-
-  val qr_out :
-    q:t ->
-    r:t ->
-    t ->
-    t * t
-
-  val quantize_linear :
-    t ->
-    scale:float ->
-    zero_point:int ->
-    t
-
-  val quantized_gru_cell :
-    t ->
-    hx:t ->
-    w_ih:t ->
-    w_hh:t ->
-    b_ih:t ->
-    b_hh:t ->
-    packed_ih:t ->
-    packed_hh:t ->
-    col_offsets_ih:t ->
-    col_offsets_hh:t ->
-    scale_ih:'a scalar ->
-    scale_hh:'a scalar ->
-    zero_point_ih:'a scalar ->
-    zero_point_hh:'a scalar ->
-    t
-
-  val quantized_lstm :
-    t ->
-    hx:t list ->
-    params:t list ->
-    has_biases:bool ->
-    num_layers:int ->
-    dropout:float ->
-    train:bool ->
-    bidirectional:bool ->
-    batch_first:bool ->
-    t * t * t
-
-  val quantized_lstm_cell :
-    t ->
-    hx:t list ->
-    w_ih:t ->
-    w_hh:t ->
-    b_ih:t ->
-    b_hh:t ->
-    packed_ih:t ->
-    packed_hh:t ->
-    col_offsets_ih:t ->
-    col_offsets_hh:t ->
-    scale_ih:'a scalar ->
-    scale_hh:'a scalar ->
-    zero_point_ih:'a scalar ->
-    zero_point_hh:'a scalar ->
-    t * t
-
-  val quantized_rnn_relu_cell :
-    t ->
-    hx:t ->
-    w_ih:t ->
-    w_hh:t ->
-    b_ih:t ->
-    b_hh:t ->
-    packed_ih:t ->
-    packed_hh:t ->
-    col_offsets_ih:t ->
-    col_offsets_hh:t ->
-    scale_ih:'a scalar ->
-    scale_hh:'a scalar ->
-    zero_point_ih:'a scalar ->
-    zero_point_hh:'a scalar ->
-    t
-
-  val quantized_rnn_tanh_cell :
-    t ->
-    hx:t ->
-    w_ih:t ->
-    w_hh:t ->
-    b_ih:t ->
-    b_hh:t ->
-    packed_ih:t ->
-    packed_hh:t ->
-    col_offsets_ih:t ->
-    col_offsets_hh:t ->
-    scale_ih:'a scalar ->
-    scale_hh:'a scalar ->
-    zero_point_ih:'a scalar ->
-    zero_point_hh:'a scalar ->
-    t
-
-  val rand :
-    size:int list ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val rand_like :
-    t ->
-    t
-
-  val rand_like1 :
-    t ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val rand_out :
-    out:t ->
-    size:int list ->
-    t
-
-  val randint :
-    high:int ->
-    size:int list ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val randint1 :
-    low:int ->
-    high:int ->
-    size:int list ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val randint_like :
-    t ->
-    high:int ->
-    t
-
-  val randint_like1 :
-    t ->
-    low:int ->
-    high:int ->
-    t
-
-  val randint_like2 :
-    t ->
-    high:int ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val randint_like3 :
-    t ->
-    low:int ->
-    high:int ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val randint_out :
-    out:t ->
-    high:int ->
-    size:int list ->
-    t
-
-  val randint_out1 :
-    out:t ->
-    low:int ->
-    high:int ->
-    size:int list ->
-    t
-
-  val randn :
-    size:int list ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val randn_like :
-    t ->
-    t
-
-  val randn_like1 :
-    t ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val randn_out :
-    out:t ->
-    size:int list ->
-    t
-
-  val random_ :
-    t ->
-    t
-
-  val random_1 :
-    t ->
-    to_:int ->
-    t
-
-  val random_2 :
-    t ->
-    from:int ->
-    to_:int ->
-    t
-
-  val randperm :
-    n:int ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val randperm_out :
-    out:t ->
-    n:int ->
-    t
-
-  val range :
-    start:'a scalar ->
-    end_:'a scalar ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val range1 :
-    start:'a scalar ->
-    end_:'a scalar ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val range_out :
-    out:t ->
-    start:'a scalar ->
-    end_:'a scalar ->
-    t
-
-  val reciprocal :
-    t ->
-    t
-
-  val reciprocal_ :
-    t ->
-    t
-
-  val reciprocal_out :
-    out:t ->
-    t ->
-    t
-
-  val reflection_pad1d :
-    t ->
-    padding:int list ->
-    t
-
-  val reflection_pad1d_backward :
-    grad_output:t ->
-    t ->
-    padding:int list ->
-    t
-
-  val reflection_pad1d_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    padding:int list ->
-    t
-
-  val reflection_pad1d_out :
-    out:t ->
-    t ->
-    padding:int list ->
-    t
-
-  val reflection_pad2d :
-    t ->
-    padding:int list ->
-    t
-
-  val reflection_pad2d_backward :
-    grad_output:t ->
-    t ->
-    padding:int list ->
-    t
-
-  val reflection_pad2d_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    padding:int list ->
-    t
-
-  val reflection_pad2d_out :
-    out:t ->
-    t ->
-    padding:int list ->
-    t
-
-  val relu :
-    t ->
-    t
-
-  val relu_ :
-    t ->
-    t
-
-  val remainder :
-    t ->
-    'a scalar ->
-    t
-
-  val remainder1 :
-    t ->
-    t ->
-    t
-
-  val remainder_ :
-    t ->
-    'a scalar ->
-    t
-
-  val remainder_1 :
-    t ->
-    t ->
-    t
-
-  val remainder_out :
-    out:t ->
-    t ->
-    'a scalar ->
-    t
-
-  val remainder_out1 :
-    out:t ->
-    t ->
-    t ->
-    t
-
-  val renorm :
-    t ->
-    p:'a scalar ->
-    dim:int ->
-    maxnorm:'a scalar ->
-    t
-
-  val renorm_ :
-    t ->
-    p:'a scalar ->
-    dim:int ->
-    maxnorm:'a scalar ->
-    t
-
-  val renorm_out :
-    out:t ->
-    t ->
-    p:'a scalar ->
-    dim:int ->
-    maxnorm:'a scalar ->
-    t
-
-  val repeat :
-    t ->
-    repeats:int list ->
-    t
-
-  val repeat_interleave :
-    repeats:t ->
-    t
-
-  val repeat_interleave1 :
-    t ->
-    repeats:t ->
-    dim:int ->
-    t
-
-  val repeat_interleave2 :
-    t ->
-    repeats:int ->
-    dim:int ->
-    t
-
-  val replication_pad1d :
-    t ->
-    padding:int list ->
-    t
-
-  val replication_pad1d_backward :
-    grad_output:t ->
-    t ->
-    padding:int list ->
-    t
-
-  val replication_pad1d_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    padding:int list ->
-    t
-
-  val replication_pad1d_out :
-    out:t ->
-    t ->
-    padding:int list ->
-    t
-
-  val replication_pad2d :
-    t ->
-    padding:int list ->
-    t
-
-  val replication_pad2d_backward :
-    grad_output:t ->
-    t ->
-    padding:int list ->
-    t
-
-  val replication_pad2d_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    padding:int list ->
-    t
-
-  val replication_pad2d_out :
-    out:t ->
-    t ->
-    padding:int list ->
-    t
-
-  val replication_pad3d :
-    t ->
-    padding:int list ->
-    t
-
-  val replication_pad3d_backward :
-    grad_output:t ->
-    t ->
-    padding:int list ->
-    t
-
-  val replication_pad3d_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    padding:int list ->
-    t
-
-  val replication_pad3d_out :
-    out:t ->
-    t ->
-    padding:int list ->
-    t
-
-  val reshape :
-    t ->
-    shape:int list ->
-    t
-
-  val reshape_as :
-    t ->
-    t ->
-    t
-
-  val resize_ :
-    t ->
-    size:int list ->
-    t
-
-  val resize_as_ :
-    t ->
-    the_template:t ->
-    t
-
-  val rfft :
-    t ->
-    signal_ndim:int ->
-    normalized:bool ->
-    onesided:bool ->
-    t
-
-  val rnn_relu :
-    t ->
-    hx:t ->
-    params:t list ->
-    has_biases:bool ->
-    num_layers:int ->
-    dropout:float ->
-    train:bool ->
-    bidirectional:bool ->
-    batch_first:bool ->
-    t * t
-
-  val rnn_relu1 :
-    data:t ->
-    batch_sizes:t ->
-    hx:t ->
-    params:t list ->
-    has_biases:bool ->
-    num_layers:int ->
-    dropout:float ->
-    train:bool ->
-    bidirectional:bool ->
-    t * t
-
-  val rnn_relu_cell :
-    t ->
-    hx:t ->
-    w_ih:t ->
-    w_hh:t ->
-    b_ih:t option ->
-    b_hh:t option ->
-    t
-
-  val rnn_tanh :
-    t ->
-    hx:t ->
-    params:t list ->
-    has_biases:bool ->
-    num_layers:int ->
-    dropout:float ->
-    train:bool ->
-    bidirectional:bool ->
-    batch_first:bool ->
-    t * t
-
-  val rnn_tanh1 :
-    data:t ->
-    batch_sizes:t ->
-    hx:t ->
-    params:t list ->
-    has_biases:bool ->
-    num_layers:int ->
-    dropout:float ->
-    train:bool ->
-    bidirectional:bool ->
-    t * t
-
-  val rnn_tanh_cell :
-    t ->
-    hx:t ->
-    w_ih:t ->
-    w_hh:t ->
-    b_ih:t option ->
-    b_hh:t option ->
-    t
-
-  val roll :
-    t ->
-    shifts:int list ->
-    dims:int list ->
-    t
-
-  val rot90 :
-    t ->
-    k:int ->
-    dims:int list ->
-    t
-
-  val round :
-    t ->
-    t
-
-  val round_ :
-    t ->
-    t
-
-  val round_out :
-    out:t ->
-    t ->
-    t
-
-  val rrelu :
-    t ->
-    training:bool ->
-    t
-
-  val rrelu_ :
-    t ->
-    training:bool ->
-    t
-
-  val rrelu_with_noise :
-    t ->
-    noise:t ->
-    training:bool ->
-    t
-
-  val rrelu_with_noise_ :
-    t ->
-    noise:t ->
-    training:bool ->
-    t
-
-  val rrelu_with_noise_backward :
-    grad_output:t ->
-    t ->
-    noise:t ->
-    lower:'a scalar ->
-    upper:'a scalar ->
-    training:bool ->
-    t
-
-  val rrelu_with_noise_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    noise:t ->
-    lower:'a scalar ->
-    upper:'a scalar ->
-    training:bool ->
-    t
-
-  val rrelu_with_noise_out :
-    out:t ->
-    t ->
-    noise:t ->
-    training:bool ->
-    t
-
-  val rsqrt :
-    t ->
-    t
-
-  val rsqrt_ :
-    t ->
-    t
-
-  val rsqrt_out :
-    out:t ->
-    t ->
-    t
-
-  val rsub :
-    t ->
-    t ->
-    t
-
-  val rsub1 :
-    t ->
-    'a scalar ->
-    t
-
-  val s_copy_ :
-    t ->
-    src:t ->
-    non_blocking:bool ->
-    t
-
-  val s_native_addmm :
-    t ->
-    mat1:t ->
-    mat2:t ->
-    t
-
-  val s_native_addmm_ :
-    t ->
-    mat1:t ->
-    mat2:t ->
-    t
-
-  val s_native_addmm_out :
-    out:t ->
-    t ->
-    mat1:t ->
-    mat2:t ->
-    t
-
-  val scalar_tensor :
-    s:'a scalar ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val scatter :
-    t ->
-    dim:int ->
-    index:t ->
-    src:t ->
-    t
-
-  val scatter1 :
-    t ->
-    dim:int ->
-    index:t ->
-    value:'a scalar ->
-    t
-
-  val scatter_ :
-    t ->
-    dim:int ->
-    index:t ->
-    src:t ->
-    t
-
-  val scatter_1 :
-    t ->
-    dim:int ->
-    index:t ->
-    value:'a scalar ->
-    t
-
-  val scatter_add :
-    t ->
-    dim:int ->
-    index:t ->
-    src:t ->
-    t
-
-  val scatter_add_ :
-    t ->
-    dim:int ->
-    index:t ->
-    src:t ->
-    t
-
-  val select :
-    t ->
-    dim:int ->
-    index:int ->
-    t
-
-  val selu :
-    t ->
-    t
-
-  val selu_ :
-    t ->
-    t
-
-  val set_ :
-    t ->
-    t
-
-  val set_1 :
-    t ->
-    source:t ->
-    t
-
-  val set_requires_grad :
-    t ->
-    r:bool ->
-    t
-
-  val sigmoid :
-    t ->
-    t
-
-  val sigmoid_ :
-    t ->
-    t
-
-  val sigmoid_backward :
-    grad_output:t ->
-    output:t ->
-    t
-
-  val sigmoid_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    output:t ->
-    t
-
-  val sigmoid_out :
-    out:t ->
-    t ->
-    t
-
-  val sign :
-    t ->
-    t
-
-  val sign_ :
-    t ->
-    t
-
-  val sign_out :
-    out:t ->
-    t ->
-    t
-
-  val sin :
-    t ->
-    t
-
-  val sin_ :
-    t ->
-    t
-
-  val sin_out :
-    out:t ->
-    t ->
-    t
-
-  val sinh :
-    t ->
-    t
-
-  val sinh_ :
-    t ->
-    t
-
-  val sinh_out :
-    out:t ->
-    t ->
-    t
-
-  val slice :
-    t ->
-    dim:int ->
-    start:int ->
-    end_:int ->
-    step:int ->
-    t
-
-  val slogdet :
-    t ->
-    t * t
-
-  val smm :
-    t ->
-    mat2:t ->
-    t
-
-  val smooth_l1_loss :
-    t ->
-    target:t ->
-    reduction:Reduction.t ->
-    t
-
-  val smooth_l1_loss_backward :
-    grad_output:t ->
-    t ->
-    target:t ->
-    reduction:Reduction.t ->
-    t
-
-  val smooth_l1_loss_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    target:t ->
-    reduction:Reduction.t ->
-    t
-
-  val smooth_l1_loss_out :
-    out:t ->
-    t ->
-    target:t ->
-    reduction:Reduction.t ->
-    t
-
-  val soft_margin_loss :
-    t ->
-    target:t ->
-    reduction:Reduction.t ->
-    t
-
-  val soft_margin_loss_backward :
-    grad_output:t ->
-    t ->
-    target:t ->
-    reduction:Reduction.t ->
-    t
-
-  val soft_margin_loss_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    target:t ->
-    reduction:Reduction.t ->
-    t
-
-  val soft_margin_loss_out :
-    out:t ->
-    t ->
-    target:t ->
-    reduction:Reduction.t ->
-    t
-
-  val softmax :
-    t ->
-    dim:int ->
-    t
-
-  val softmax1 :
-    t ->
-    dim:int ->
-    dtype:Kind.packed ->
-    t
-
-  val softplus :
-    t ->
-    t
-
-  val softplus_backward :
-    grad_output:t ->
-    t ->
-    beta:'a scalar ->
-    threshold:'a scalar ->
-    output:t ->
-    t
-
-  val softplus_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    beta:'a scalar ->
-    threshold:'a scalar ->
-    output:t ->
-    t
-
-  val softplus_out :
-    out:t ->
-    t ->
-    t
-
-  val softshrink :
-    t ->
-    t
-
-  val softshrink_backward :
-    grad_output:t ->
-    t ->
-    lambd:'a scalar ->
-    t
-
-  val softshrink_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    t ->
-    lambd:'a scalar ->
-    t
-
-  val softshrink_out :
-    out:t ->
-    t ->
-    t
-
-  val solve :
-    t ->
-    a:t ->
-    t * t
-
-  val solve_out :
-    solution:t ->
-    lu:t ->
-    t ->
-    a:t ->
-    t * t
-
-  val sort :
-    t ->
-    dim:int ->
-    descending:bool ->
-    t * t
-
-  val sort_out :
-    values:t ->
-    indices:t ->
-    t ->
-    dim:int ->
-    descending:bool ->
-    t * t
-
-  val sparse_coo_tensor :
-    size:int list ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val sparse_coo_tensor1 :
-    indices:t ->
-    values:t ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val sparse_coo_tensor2 :
-    indices:t ->
-    values:t ->
-    size:int list ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val sparse_resize_ :
-    t ->
-    size:int list ->
-    sparse_dim:int ->
-    dense_dim:int ->
-    t
-
-  val sparse_resize_and_clear_ :
-    t ->
-    size:int list ->
-    sparse_dim:int ->
-    dense_dim:int ->
-    t
-
-  val split :
-    t ->
-    split_size:int ->
-    dim:int ->
-    t list
-
-  val split_with_sizes :
-    t ->
-    split_sizes:int list ->
-    dim:int ->
-    t list
-
-  val sqrt :
-    t ->
-    t
-
-  val sqrt_ :
-    t ->
-    t
-
-  val sqrt_out :
-    out:t ->
-    t ->
-    t
-
-  val squeeze :
-    t ->
-    t
-
-  val squeeze1 :
-    t ->
-    dim:int ->
-    t
-
-  val squeeze_ :
-    t ->
-    t
-
-  val squeeze_1 :
-    t ->
-    dim:int ->
-    t
-
-  val sspaddmm :
-    t ->
-    mat1:t ->
-    mat2:t ->
-    t
-
-  val sspaddmm_out :
-    out:t ->
-    t ->
-    mat1:t ->
-    mat2:t ->
-    t
-
-  val stack :
-    t list ->
-    dim:int ->
-    t
-
-  val stack_out :
-    out:t ->
-    t list ->
-    dim:int ->
-    t
-
-  val std :
-    t ->
-    unbiased:bool ->
-    t
-
-  val std1 :
-    t ->
-    dim:int list ->
-    unbiased:bool ->
-    keepdim:bool ->
-    t
-
-  val std_out :
-    out:t ->
-    t ->
-    dim:int list ->
-    unbiased:bool ->
-    keepdim:bool ->
-    t
-
-  val stft :
-    t ->
-    n_fft:int ->
-    hop_length:int ->
-    win_length:int ->
-    window:t option ->
-    normalized:bool ->
-    onesided:bool ->
-    t
-
-  val sub :
-    t ->
-    t ->
-    t
-
-  val sub1 :
-    t ->
-    'a scalar ->
-    t
-
-  val sub_ :
-    t ->
-    t ->
-    t
-
-  val sub_1 :
-    t ->
-    'a scalar ->
-    t
-
-  val sub_out :
-    out:t ->
-    t ->
-    t ->
-    t
-
-  val sum :
-    t ->
-    t
-
-  val sum1 :
-    t ->
-    dtype:Kind.packed ->
-    t
-
-  val sum2 :
-    t ->
-    dim:int list ->
-    keepdim:bool ->
-    t
-
-  val sum3 :
-    t ->
-    dim:int list ->
-    dtype:Kind.packed ->
-    t
-
-  val sum4 :
-    t ->
-    dim:int list ->
-    keepdim:bool ->
-    dtype:Kind.packed ->
-    t
-
-  val sum_out :
-    out:t ->
-    t ->
-    dim:int list ->
-    keepdim:bool ->
-    t
-
-  val sum_out1 :
-    out:t ->
-    t ->
-    dim:int list ->
-    dtype:Kind.packed ->
-    t
-
-  val sum_out2 :
-    out:t ->
-    t ->
-    dim:int list ->
-    keepdim:bool ->
-    dtype:Kind.packed ->
-    t
-
-  val sum_to_size :
-    t ->
-    size:int list ->
-    t
-
-  val svd :
-    t ->
-    some:bool ->
-    compute_uv:bool ->
-    t * t * t
-
-  val svd_out :
-    u:t ->
-    s:t ->
-    v:t ->
-    t ->
-    some:bool ->
-    compute_uv:bool ->
-    t * t * t
-
-  val symeig :
-    t ->
-    eigenvectors:bool ->
-    upper:bool ->
-    t * t
-
-  val symeig_out :
-    e:t ->
-    v:t ->
-    t ->
-    eigenvectors:bool ->
-    upper:bool ->
-    t * t
-
-  val tr :
-    t ->
-    t
-
-  val t_ :
-    t ->
-    t
-
-  val take :
-    t ->
-    index:t ->
-    t
-
-  val take_out :
-    out:t ->
-    t ->
-    index:t ->
-    t
-
-  val tan :
-    t ->
-    t
-
-  val tan_ :
-    t ->
-    t
-
-  val tan_out :
-    out:t ->
-    t ->
-    t
-
-  val tanh :
-    t ->
-    t
-
-  val tanh_ :
-    t ->
-    t
-
-  val tanh_backward :
-    grad_output:t ->
-    output:t ->
-    t
-
-  val tanh_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    output:t ->
-    t
-
-  val tanh_out :
-    out:t ->
-    t ->
-    t
-
-  val tensordot :
-    t ->
-    t ->
-    dims_self:int list ->
-    dims_other:int list ->
-    t
-
-  val threshold :
-    t ->
-    threshold:'a scalar ->
-    value:'a scalar ->
-    t
-
-  val threshold_ :
-    t ->
-    threshold:'a scalar ->
-    value:'a scalar ->
-    t
-
-  val threshold_backward :
-    grad_output:t ->
-    t ->
-    threshold:'a scalar ->
-    t
-
-  val threshold_out :
-    out:t ->
-    t ->
-    threshold:'a scalar ->
-    value:'a scalar ->
-    t
-
-  val to_ :
-    t ->
-    device:Device.t ->
-    t
-
-  val to1 :
-    t ->
-    options:Kind.packed * Device.t ->
-    non_blocking:bool ->
-    copy:bool ->
-    t
-
-  val to2 :
-    t ->
-    dtype:Kind.packed ->
-    non_blocking:bool ->
-    copy:bool ->
-    t
-
-  val to3 :
-    t ->
-    t ->
-    non_blocking:bool ->
-    copy:bool ->
-    t
-
-  val to4 :
-    t ->
-    device:Device.t ->
-    dtype:Kind.packed ->
-    non_blocking:bool ->
-    copy:bool ->
-    t
-
-  val to_dense :
-    t ->
-    t
-
-  val to_dense_backward :
-    grad:t ->
-    t ->
-    t
-
-  val to_mkldnn :
-    t ->
-    t
-
-  val to_mkldnn_backward :
-    grad:t ->
-    t ->
-    t
-
-  val to_sparse :
-    t ->
-    t
-
-  val to_sparse1 :
-    t ->
-    sparse_dim:int ->
-    t
-
-  val topk :
-    t ->
-    k:int ->
-    dim:int ->
-    largest:bool ->
-    sorted:bool ->
-    t * t
-
-  val topk_out :
-    values:t ->
-    indices:t ->
-    t ->
-    k:int ->
-    dim:int ->
-    largest:bool ->
-    sorted:bool ->
-    t * t
-
-  val totype :
-    t ->
-    scalar_type:Kind.packed ->
-    t
-
-  val trace :
-    t ->
-    t
-
-  val transpose :
-    t ->
-    dim0:int ->
-    dim1:int ->
-    t
-
-  val transpose_ :
-    t ->
-    dim0:int ->
-    dim1:int ->
-    t
-
-  val triangular_solve :
-    t ->
-    a:t ->
-    upper:bool ->
-    transpose:bool ->
-    unitriangular:bool ->
-    t * t
-
-  val triangular_solve_out :
-    x:t ->
-    m:t ->
-    t ->
-    a:t ->
-    upper:bool ->
-    transpose:bool ->
-    unitriangular:bool ->
-    t * t
-
-  val tril :
-    t ->
-    diagonal:int ->
-    t
-
-  val tril_ :
-    t ->
-    diagonal:int ->
-    t
-
-  val tril_indices :
-    row:int ->
-    col:int ->
-    offset:int ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val tril_out :
-    out:t ->
-    t ->
-    diagonal:int ->
-    t
-
-  val triplet_margin_loss :
-    anchor:t ->
-    positive:t ->
-    negative:t ->
-    margin:float ->
-    p:float ->
-    eps:float ->
-    swap:bool ->
-    reduction:Reduction.t ->
-    t
-
-  val triu :
-    t ->
-    diagonal:int ->
-    t
-
-  val triu_ :
-    t ->
-    diagonal:int ->
-    t
-
-  val triu_indices :
-    row:int ->
-    col:int ->
-    offset:int ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val triu_out :
-    out:t ->
-    t ->
-    diagonal:int ->
-    t
-
-  val trunc :
-    t ->
-    t
-
-  val trunc_ :
-    t ->
-    t
-
-  val trunc_out :
-    out:t ->
-    t ->
-    t
-
-  val type_as :
-    t ->
-    t ->
-    t
-
-  val unbind :
-    t ->
-    dim:int ->
-    t list
-
-  val unfold :
-    t ->
-    dimension:int ->
-    size:int ->
-    step:int ->
-    t
-
-  val uniform_ :
-    t ->
-    from:float ->
-    to_:float ->
-    t
-
-  val unique_consecutive :
-    t ->
-    return_inverse:bool ->
-    return_counts:bool ->
-    dim:int ->
-    t * t * t
-
-  val unique_dim :
-    t ->
-    dim:int ->
-    sorted:bool ->
-    return_inverse:bool ->
-    return_counts:bool ->
-    t * t * t
-
-  val unique_dim_consecutive :
-    t ->
-    dim:int ->
-    return_inverse:bool ->
-    return_counts:bool ->
-    t * t * t
-
-  val unsqueeze :
-    t ->
-    dim:int ->
-    t
-
-  val unsqueeze_ :
-    t ->
-    dim:int ->
-    t
-
-  val upsample_bicubic2d :
-    t ->
-    output_size:int list ->
-    align_corners:bool ->
-    t
-
-  val upsample_bicubic2d_backward :
-    grad_output:t ->
-    output_size:int list ->
-    input_size:int list ->
-    align_corners:bool ->
-    t
-
-  val upsample_bicubic2d_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    output_size:int list ->
-    input_size:int list ->
-    align_corners:bool ->
-    t
-
-  val upsample_bicubic2d_out :
-    out:t ->
-    t ->
-    output_size:int list ->
-    align_corners:bool ->
-    t
-
-  val upsample_bilinear2d :
-    t ->
-    output_size:int list ->
-    align_corners:bool ->
-    t
-
-  val upsample_bilinear2d_backward :
-    grad_output:t ->
-    output_size:int list ->
-    input_size:int list ->
-    align_corners:bool ->
-    t
-
-  val upsample_bilinear2d_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    output_size:int list ->
-    input_size:int list ->
-    align_corners:bool ->
-    t
-
-  val upsample_bilinear2d_out :
-    out:t ->
-    t ->
-    output_size:int list ->
-    align_corners:bool ->
-    t
-
-  val upsample_linear1d :
-    t ->
-    output_size:int list ->
-    align_corners:bool ->
-    t
-
-  val upsample_linear1d_backward :
-    grad_output:t ->
-    output_size:int list ->
-    input_size:int list ->
-    align_corners:bool ->
-    t
-
-  val upsample_linear1d_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    output_size:int list ->
-    input_size:int list ->
-    align_corners:bool ->
-    t
-
-  val upsample_linear1d_out :
-    out:t ->
-    t ->
-    output_size:int list ->
-    align_corners:bool ->
-    t
-
-  val upsample_nearest1d :
-    t ->
-    output_size:int list ->
-    t
-
-  val upsample_nearest1d_backward :
-    grad_output:t ->
-    output_size:int list ->
-    input_size:int list ->
-    t
-
-  val upsample_nearest1d_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    output_size:int list ->
-    input_size:int list ->
-    t
-
-  val upsample_nearest1d_out :
-    out:t ->
-    t ->
-    output_size:int list ->
-    t
-
-  val upsample_nearest2d :
-    t ->
-    output_size:int list ->
-    t
-
-  val upsample_nearest2d_backward :
-    grad_output:t ->
-    output_size:int list ->
-    input_size:int list ->
-    t
-
-  val upsample_nearest2d_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    output_size:int list ->
-    input_size:int list ->
-    t
-
-  val upsample_nearest2d_out :
-    out:t ->
-    t ->
-    output_size:int list ->
-    t
-
-  val upsample_nearest3d :
-    t ->
-    output_size:int list ->
-    t
-
-  val upsample_nearest3d_backward :
-    grad_output:t ->
-    output_size:int list ->
-    input_size:int list ->
-    t
-
-  val upsample_nearest3d_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    output_size:int list ->
-    input_size:int list ->
-    t
-
-  val upsample_nearest3d_out :
-    out:t ->
-    t ->
-    output_size:int list ->
-    t
-
-  val upsample_trilinear3d :
-    t ->
-    output_size:int list ->
-    align_corners:bool ->
-    t
-
-  val upsample_trilinear3d_backward :
-    grad_output:t ->
-    output_size:int list ->
-    input_size:int list ->
-    align_corners:bool ->
-    t
-
-  val upsample_trilinear3d_backward_out :
-    grad_input:t ->
-    grad_output:t ->
-    output_size:int list ->
-    input_size:int list ->
-    align_corners:bool ->
-    t
-
-  val upsample_trilinear3d_out :
-    out:t ->
-    t ->
-    output_size:int list ->
-    align_corners:bool ->
-    t
-
-  val values :
-    t ->
-    t
-
-  val var :
-    t ->
-    unbiased:bool ->
-    t
-
-  val var1 :
-    t ->
-    dim:int list ->
-    unbiased:bool ->
-    keepdim:bool ->
-    t
-
-  val var_out :
-    out:t ->
-    t ->
-    dim:int list ->
-    unbiased:bool ->
-    keepdim:bool ->
-    t
-
-  val view :
-    t ->
-    size:int list ->
-    t
-
-  val view_as :
-    t ->
-    t ->
-    t
-
-  val where :
-    condition:t ->
-    t ->
-    t ->
-    t
-
-  val zero_ :
-    t ->
-    t
-
-  val zeros :
-    size:int list ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val zeros_like :
-    t ->
-    t
-
-  val zeros_like1 :
-    t ->
-    options:Kind.packed * Device.t ->
-    t
-
-  val zeros_out :
-    out:t ->
-    size:int list ->
-    t
-
+  val abs : t -> t
+  val abs_ : t -> t
+  val abs_out : out:t -> t -> t
+  val acos : t -> t
+  val acos_ : t -> t
+  val acos_out : out:t -> t -> t
+  val adaptive_avg_pool1d : t -> output_size:int list -> t
+  val adaptive_avg_pool2d : t -> output_size:int list -> t
+  val adaptive_avg_pool2d_out : out:t -> t -> output_size:int list -> t
+  val adaptive_avg_pool3d : t -> output_size:int list -> t
+  val adaptive_avg_pool3d_backward : grad_output:t -> t -> t
+  val adaptive_avg_pool3d_backward_out : grad_input:t -> grad_output:t -> t -> t
+  val adaptive_avg_pool3d_out : out:t -> t -> output_size:int list -> t
+  val adaptive_max_pool1d : t -> output_size:int list -> t * t
+  val adaptive_max_pool2d : t -> output_size:int list -> t * t
+  val adaptive_max_pool2d_backward : grad_output:t -> t -> indices:t -> t
+
+  val adaptive_max_pool2d_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> indices:t
+    -> t
+
+  val adaptive_max_pool2d_out : out:t -> indices:t -> t -> output_size:int list -> t * t
+  val adaptive_max_pool3d : t -> output_size:int list -> t * t
+  val adaptive_max_pool3d_backward : grad_output:t -> t -> indices:t -> t
+
+  val adaptive_max_pool3d_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> indices:t
+    -> t
+
+  val adaptive_max_pool3d_out : out:t -> indices:t -> t -> output_size:int list -> t * t
+  val add : t -> t -> t
+  val add1 : t -> 'a scalar -> t
+  val add_ : t -> t -> t
+  val add_1 : t -> 'a scalar -> t
+  val add_out : out:t -> t -> t -> t
+  val addbmm : t -> batch1:t -> batch2:t -> t
+  val addbmm_ : t -> batch1:t -> batch2:t -> t
+  val addbmm_out : out:t -> t -> batch1:t -> batch2:t -> t
+  val addcdiv : t -> tensor1:t -> tensor2:t -> t
+  val addcdiv_ : t -> tensor1:t -> tensor2:t -> t
+  val addcdiv_out : out:t -> t -> tensor1:t -> tensor2:t -> t
+  val addcmul : t -> tensor1:t -> tensor2:t -> t
+  val addcmul_ : t -> tensor1:t -> tensor2:t -> t
+  val addcmul_out : out:t -> t -> tensor1:t -> tensor2:t -> t
+  val addmm : t -> mat1:t -> mat2:t -> t
+  val addmm_ : t -> mat1:t -> mat2:t -> t
+  val addmm_out : out:t -> t -> mat1:t -> mat2:t -> t
+  val addmv : t -> mat:t -> vec:t -> t
+  val addmv_ : t -> mat:t -> vec:t -> t
+  val addmv_out : out:t -> t -> mat:t -> vec:t -> t
+  val addr : t -> vec1:t -> vec2:t -> t
+  val addr_ : t -> vec1:t -> vec2:t -> t
+  val addr_out : out:t -> t -> vec1:t -> vec2:t -> t
+  val affine_grid_generator : theta:t -> size:int list -> t
+  val affine_grid_generator_backward : grad:t -> size:int list -> t
+  val alias : t -> t
+  val all : t -> t
+  val all1 : t -> dim:int -> keepdim:bool -> t
+  val all_out : out:t -> t -> dim:int -> keepdim:bool -> t
+  val alpha_dropout : t -> p:float -> train:bool -> t
+  val alpha_dropout_ : t -> p:float -> train:bool -> t
+  val any : t -> t
+  val any1 : t -> dim:int -> keepdim:bool -> t
+  val any_out : out:t -> t -> dim:int -> keepdim:bool -> t
+  val arange : end_:'a scalar -> options:Kind.packed * Device.t -> t
+  val arange1 : start:'a scalar -> end_:'a scalar -> options:Kind.packed * Device.t -> t
+
+  val arange2
+    :  start:'a scalar
+    -> end_:'a scalar
+    -> step:'a scalar
+    -> options:Kind.packed * Device.t
+    -> t
+
+  val arange_out : out:t -> end_:'a scalar -> t
+  val arange_out1 : out:t -> start:'a scalar -> end_:'a scalar -> t
+  val argmax : t -> dim:int -> keepdim:bool -> t
+  val argmin : t -> dim:int -> keepdim:bool -> t
+  val argsort : t -> dim:int -> descending:bool -> t
+  val as_strided : t -> size:int list -> stride:int list -> storage_offset:int -> t
+  val as_strided_ : t -> size:int list -> stride:int list -> storage_offset:int -> t
+  val asin : t -> t
+  val asin_ : t -> t
+  val asin_out : out:t -> t -> t
+  val atan : t -> t
+  val atan2 : t -> t -> t
+  val atan2_ : t -> t -> t
+  val atan2_out : out:t -> t -> t -> t
+  val atan_ : t -> t
+  val atan_out : out:t -> t -> t
+
+  val avg_pool1d
+    :  t
+    -> kernel_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> ceil_mode:bool
+    -> count_include_pad:bool
+    -> t
+
+  val avg_pool2d
+    :  t
+    -> kernel_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> ceil_mode:bool
+    -> count_include_pad:bool
+    -> t
+
+  val avg_pool2d_backward
+    :  grad_output:t
+    -> t
+    -> kernel_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> ceil_mode:bool
+    -> count_include_pad:bool
+    -> t
+
+  val avg_pool2d_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> kernel_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> ceil_mode:bool
+    -> count_include_pad:bool
+    -> t
+
+  val avg_pool2d_out
+    :  out:t
+    -> t
+    -> kernel_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> ceil_mode:bool
+    -> count_include_pad:bool
+    -> t
+
+  val avg_pool3d
+    :  t
+    -> kernel_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> ceil_mode:bool
+    -> count_include_pad:bool
+    -> t
+
+  val avg_pool3d_backward
+    :  grad_output:t
+    -> t
+    -> kernel_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> ceil_mode:bool
+    -> count_include_pad:bool
+    -> t
+
+  val avg_pool3d_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> kernel_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> ceil_mode:bool
+    -> count_include_pad:bool
+    -> t
+
+  val avg_pool3d_out
+    :  out:t
+    -> t
+    -> kernel_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> ceil_mode:bool
+    -> count_include_pad:bool
+    -> t
+
+  val baddbmm : t -> batch1:t -> batch2:t -> t
+  val baddbmm_ : t -> batch1:t -> batch2:t -> t
+  val baddbmm_out : out:t -> t -> batch1:t -> batch2:t -> t
+  val bartlett_window : window_length:int -> options:Kind.packed * Device.t -> t
+
+  val bartlett_window1
+    :  window_length:int
+    -> periodic:bool
+    -> options:Kind.packed * Device.t
+    -> t
+
+  val batch_norm
+    :  t
+    -> weight:t option
+    -> bias:t option
+    -> running_mean:t option
+    -> running_var:t option
+    -> training:bool
+    -> momentum:float
+    -> eps:float
+    -> cudnn_enabled:bool
+    -> t
+
+  val batch_norm_backward_elemt
+    :  grad_out:t
+    -> t
+    -> mean:t
+    -> invstd:t
+    -> weight:t option
+    -> mean_dy:t
+    -> mean_dy_xmu:t
+    -> t
+
+  val batch_norm_backward_reduce
+    :  grad_out:t
+    -> t
+    -> mean:t
+    -> invstd:t
+    -> input_g:bool
+    -> weight_g:bool
+    -> bias_g:bool
+    -> t * t * t * t
+
+  val batch_norm_elemt
+    :  t
+    -> weight:t option
+    -> bias:t option
+    -> mean:t
+    -> invstd:t
+    -> eps:float
+    -> t
+
+  val batch_norm_gather_stats
+    :  t
+    -> mean:t
+    -> invstd:t
+    -> running_mean:t option
+    -> running_var:t option
+    -> momentum:float
+    -> eps:float
+    -> count:int
+    -> t * t
+
+  val batch_norm_stats : t -> eps:float -> t * t
+
+  val batch_norm_update_stats
+    :  t
+    -> running_mean:t option
+    -> running_var:t option
+    -> momentum:float
+    -> t * t
+
+  val bernoulli : t -> t
+  val bernoulli1 : t -> p:float -> t
+  val bernoulli_ : t -> p:t -> t
+  val bernoulli_1 : t -> p:float -> t
+  val bernoulli_out : out:t -> t -> t
+  val bilinear : input1:t -> input2:t -> weight:t -> bias:t option -> t
+
+  val binary_cross_entropy
+    :  t
+    -> target:t
+    -> weight:t option
+    -> reduction:Reduction.t
+    -> t
+
+  val binary_cross_entropy_backward
+    :  grad_output:t
+    -> t
+    -> target:t
+    -> weight:t
+    -> reduction:Reduction.t
+    -> t
+
+  val binary_cross_entropy_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> target:t
+    -> weight:t
+    -> reduction:Reduction.t
+    -> t
+
+  val binary_cross_entropy_out
+    :  out:t
+    -> t
+    -> target:t
+    -> weight:t option
+    -> reduction:Reduction.t
+    -> t
+
+  val binary_cross_entropy_with_logits
+    :  t
+    -> target:t
+    -> weight:t option
+    -> pos_weight:t option
+    -> reduction:Reduction.t
+    -> t
+
+  val binary_cross_entropy_with_logits_backward
+    :  grad_output:t
+    -> t
+    -> target:t
+    -> weight:t option
+    -> pos_weight:t option
+    -> reduction:Reduction.t
+    -> t
+
+  val bincount : t -> weights:t option -> minlength:int -> t
+  val blackman_window : window_length:int -> options:Kind.packed * Device.t -> t
+
+  val blackman_window1
+    :  window_length:int
+    -> periodic:bool
+    -> options:Kind.packed * Device.t
+    -> t
+
+  val bmm : t -> mat2:t -> t
+  val bmm_out : out:t -> t -> mat2:t -> t
+  val broadcast_tensors : t list -> t list
+  val cartesian_prod : t list -> t
+  val cat : t list -> dim:int -> t
+  val cat_out : out:t -> t list -> dim:int -> t
+  val cauchy_ : t -> median:float -> sigma:float -> t
+  val cdist : x1:t -> x2:t -> p:float -> t
+  val ceil : t -> t
+  val ceil_ : t -> t
+  val ceil_out : out:t -> t -> t
+  val celu : t -> t
+  val celu_ : t -> t
+  val chain_matmul : matrices:t list -> t
+  val cholesky : t -> upper:bool -> t
+  val cholesky_inverse : t -> upper:bool -> t
+  val cholesky_inverse_out : out:t -> t -> upper:bool -> t
+  val cholesky_out : out:t -> t -> upper:bool -> t
+  val cholesky_solve : t -> input2:t -> upper:bool -> t
+  val cholesky_solve_out : out:t -> t -> input2:t -> upper:bool -> t
+  val chunk : t -> chunks:int -> dim:int -> t list
+  val clamp : t -> min:'a scalar -> max:'a scalar -> t
+  val clamp_ : t -> min:'a scalar -> max:'a scalar -> t
+  val clamp_max : t -> max:'a scalar -> t
+  val clamp_max_ : t -> max:'a scalar -> t
+  val clamp_max_out : out:t -> t -> max:'a scalar -> t
+  val clamp_min : t -> min:'a scalar -> t
+  val clamp_min_ : t -> min:'a scalar -> t
+  val clamp_min_out : out:t -> t -> min:'a scalar -> t
+  val clamp_out : out:t -> t -> min:'a scalar -> max:'a scalar -> t
+  val clone : t -> t
+  val coalesce : t -> t
+  val combinations : t -> r:int -> with_replacement:bool -> t
+  val constant_pad_nd : t -> pad:int list -> t
+  val contiguous : t -> t
+
+  val conv1d
+    :  t
+    -> weight:t
+    -> bias:t option
+    -> stride:int list
+    -> padding:int list
+    -> dilation:int list
+    -> groups:int
+    -> t
+
+  val conv2d
+    :  t
+    -> weight:t
+    -> bias:t option
+    -> stride:int list
+    -> padding:int list
+    -> dilation:int list
+    -> groups:int
+    -> t
+
+  val conv3d
+    :  t
+    -> weight:t
+    -> bias:t option
+    -> stride:int list
+    -> padding:int list
+    -> dilation:int list
+    -> groups:int
+    -> t
+
+  val conv_tbc : t -> weight:t -> bias:t -> pad:int -> t
+  val conv_tbc_backward : t -> t -> weight:t -> bias:t -> pad:int -> t * t * t
+
+  val conv_transpose1d
+    :  t
+    -> weight:t
+    -> bias:t option
+    -> stride:int list
+    -> padding:int list
+    -> output_padding:int list
+    -> groups:int
+    -> dilation:int list
+    -> t
+
+  val conv_transpose2d
+    :  t
+    -> weight:t
+    -> bias:t option
+    -> stride:int list
+    -> padding:int list
+    -> output_padding:int list
+    -> groups:int
+    -> dilation:int list
+    -> t
+
+  val conv_transpose3d
+    :  t
+    -> weight:t
+    -> bias:t option
+    -> stride:int list
+    -> padding:int list
+    -> output_padding:int list
+    -> groups:int
+    -> dilation:int list
+    -> t
+
+  val convolution
+    :  t
+    -> weight:t
+    -> bias:t option
+    -> stride:int list
+    -> padding:int list
+    -> dilation:int list
+    -> transposed:bool
+    -> output_padding:int list
+    -> groups:int
+    -> t
+
+  val copy_sparse_to_sparse_ : t -> src:t -> non_blocking:bool -> t
+  val cos : t -> t
+  val cos_ : t -> t
+  val cos_out : out:t -> t -> t
+  val cosh : t -> t
+  val cosh_ : t -> t
+  val cosh_out : out:t -> t -> t
+
+  val cosine_embedding_loss
+    :  input1:t
+    -> input2:t
+    -> target:t
+    -> margin:float
+    -> reduction:Reduction.t
+    -> t
+
+  val cosine_similarity : x1:t -> x2:t -> dim:int -> eps:float -> t
+  val cross : t -> t -> dim:int -> t
+  val cross_out : out:t -> t -> t -> dim:int -> t
+
+  val ctc_loss
+    :  log_probs:t
+    -> targets:t
+    -> input_lengths:int list
+    -> target_lengths:int list
+    -> blank:int
+    -> reduction:Reduction.t
+    -> zero_infinity:bool
+    -> t
+
+  val ctc_loss1
+    :  log_probs:t
+    -> targets:t
+    -> input_lengths:t
+    -> target_lengths:t
+    -> blank:int
+    -> reduction:Reduction.t
+    -> zero_infinity:bool
+    -> t
+
+  val cudnn_affine_grid_generator : theta:t -> n:int -> c:int -> h:int -> w:int -> t
+
+  val cudnn_affine_grid_generator_backward
+    :  grad:t
+    -> n:int
+    -> c:int
+    -> h:int
+    -> w:int
+    -> t
+
+  val cudnn_batch_norm
+    :  t
+    -> weight:t
+    -> bias:t option
+    -> running_mean:t option
+    -> running_var:t option
+    -> training:bool
+    -> exponential_average_factor:float
+    -> epsilon:float
+    -> t * t * t
+
+  val cudnn_batch_norm_backward
+    :  t
+    -> grad_output:t
+    -> weight:t
+    -> running_mean:t option
+    -> running_var:t option
+    -> save_mean:t option
+    -> save_var:t option
+    -> epsilon:float
+    -> t * t * t
+
+  val cudnn_convolution
+    :  t
+    -> weight:t
+    -> bias:t option
+    -> padding:int list
+    -> stride:int list
+    -> dilation:int list
+    -> groups:int
+    -> benchmark:bool
+    -> deterministic:bool
+    -> t
+
+  val cudnn_convolution_backward_bias : grad_output:t -> t
+
+  val cudnn_convolution_backward_input
+    :  self_size:int list
+    -> grad_output:t
+    -> weight:t
+    -> padding:int list
+    -> stride:int list
+    -> dilation:int list
+    -> groups:int
+    -> benchmark:bool
+    -> deterministic:bool
+    -> t
+
+  val cudnn_convolution_backward_weight
+    :  weight_size:int list
+    -> grad_output:t
+    -> t
+    -> padding:int list
+    -> stride:int list
+    -> dilation:int list
+    -> groups:int
+    -> benchmark:bool
+    -> deterministic:bool
+    -> t
+
+  val cudnn_convolution_transpose
+    :  t
+    -> weight:t
+    -> bias:t option
+    -> padding:int list
+    -> output_padding:int list
+    -> stride:int list
+    -> dilation:int list
+    -> groups:int
+    -> benchmark:bool
+    -> deterministic:bool
+    -> t
+
+  val cudnn_convolution_transpose_backward_bias : grad_output:t -> t
+
+  val cudnn_convolution_transpose_backward_input
+    :  grad_output:t
+    -> weight:t
+    -> padding:int list
+    -> stride:int list
+    -> dilation:int list
+    -> groups:int
+    -> benchmark:bool
+    -> deterministic:bool
+    -> t
+
+  val cudnn_convolution_transpose_backward_weight
+    :  weight_size:int list
+    -> grad_output:t
+    -> t
+    -> padding:int list
+    -> stride:int list
+    -> dilation:int list
+    -> groups:int
+    -> benchmark:bool
+    -> deterministic:bool
+    -> t
+
+  val cudnn_grid_sampler : t -> grid:t -> t
+  val cudnn_grid_sampler_backward : t -> grid:t -> grad_output:t -> t * t
+  val cumprod : t -> dim:int -> t
+  val cumprod1 : t -> dim:int -> dtype:Kind.packed -> t
+  val cumprod_out : out:t -> t -> dim:int -> t
+  val cumprod_out1 : out:t -> t -> dim:int -> dtype:Kind.packed -> t
+  val cumsum : t -> dim:int -> t
+  val cumsum1 : t -> dim:int -> dtype:Kind.packed -> t
+  val cumsum_out : out:t -> t -> dim:int -> t
+  val cumsum_out1 : out:t -> t -> dim:int -> dtype:Kind.packed -> t
+  val dequantize : t -> t
+  val det : t -> t
+  val detach : t -> t
+  val detach_ : t -> t
+  val diag : t -> diagonal:int -> t
+  val diag_embed : t -> offset:int -> dim1:int -> dim2:int -> t
+  val diag_out : out:t -> t -> diagonal:int -> t
+  val diagflat : t -> offset:int -> t
+  val diagonal : t -> offset:int -> dim1:int -> dim2:int -> t
+  val digamma : t -> t
+  val digamma_ : t -> t
+  val digamma_out : out:t -> t -> t
+  val dist : t -> t -> t
+  val div : t -> t -> t
+  val div1 : t -> 'a scalar -> t
+  val div_ : t -> t -> t
+  val div_1 : t -> 'a scalar -> t
+  val div_out : out:t -> t -> t -> t
+  val dot : t -> t -> t
+  val dot_out : out:t -> t -> t -> t
+  val dropout : t -> p:float -> train:bool -> t
+  val dropout_ : t -> p:float -> train:bool -> t
+  val eig : t -> eigenvectors:bool -> t * t
+  val eig_out : e:t -> v:t -> t -> eigenvectors:bool -> t * t
+  val elu : t -> t
+  val elu_ : t -> t
+
+  val elu_backward
+    :  grad_output:t
+    -> alpha:'a scalar
+    -> scale:'a scalar
+    -> input_scale:'a scalar
+    -> output:t
+    -> t
+
+  val elu_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> alpha:'a scalar
+    -> scale:'a scalar
+    -> input_scale:'a scalar
+    -> output:t
+    -> t
+
+  val elu_out : out:t -> t -> t
+
+  val embedding
+    :  weight:t
+    -> indices:t
+    -> padding_idx:int
+    -> scale_grad_by_freq:bool
+    -> sparse:bool
+    -> t
+
+  val embedding_backward
+    :  grad:t
+    -> indices:t
+    -> num_weights:int
+    -> padding_idx:int
+    -> scale_grad_by_freq:bool
+    -> sparse:bool
+    -> t
+
+  val embedding_bag
+    :  weight:t
+    -> indices:t
+    -> offsets:t
+    -> scale_grad_by_freq:bool
+    -> mode:int
+    -> sparse:bool
+    -> per_sample_weights:t option
+    -> t * t * t * t
+
+  val embedding_dense_backward
+    :  grad_output:t
+    -> indices:t
+    -> num_weights:int
+    -> padding_idx:int
+    -> scale_grad_by_freq:bool
+    -> t
+
+  val embedding_renorm_ : t -> indices:t -> max_norm:float -> norm_type:float -> t
+
+  val embedding_sparse_backward
+    :  grad:t
+    -> indices:t
+    -> num_weights:int
+    -> padding_idx:int
+    -> scale_grad_by_freq:bool
+    -> t
+
+  val empty : size:int list -> options:Kind.packed * Device.t -> t
+  val empty_like : t -> t
+  val empty_like1 : t -> options:Kind.packed * Device.t -> t
+  val empty_out : out:t -> size:int list -> t
+
+  val empty_strided
+    :  size:int list
+    -> stride:int list
+    -> options:Kind.packed * Device.t
+    -> t
+
+  val eq : t -> 'a scalar -> t
+  val eq1 : t -> t -> t
+  val eq_ : t -> 'a scalar -> t
+  val eq_1 : t -> t -> t
+  val eq_out : out:t -> t -> 'a scalar -> t
+  val eq_out1 : out:t -> t -> t -> t
+  val erf : t -> t
+  val erf_ : t -> t
+  val erf_out : out:t -> t -> t
+  val erfc : t -> t
+  val erfc_ : t -> t
+  val erfc_out : out:t -> t -> t
+  val erfinv : t -> t
+  val erfinv_ : t -> t
+  val erfinv_out : out:t -> t -> t
+  val exp : t -> t
+  val exp_ : t -> t
+  val exp_out : out:t -> t -> t
+  val expand : t -> size:int list -> implicit:bool -> t
+  val expand_as : t -> t -> t
+  val expm1 : t -> t
+  val expm1_ : t -> t
+  val expm1_out : out:t -> t -> t
+  val exponential_ : t -> lambd:float -> t
+  val eye : n:int -> options:Kind.packed * Device.t -> t
+  val eye1 : n:int -> m:int -> options:Kind.packed * Device.t -> t
+  val eye_out : out:t -> n:int -> t
+  val eye_out1 : out:t -> n:int -> m:int -> t
+
+  val fbgemm_linear_int8_weight
+    :  t
+    -> weight:t
+    -> packed:t
+    -> col_offsets:t
+    -> weight_scale:'a scalar
+    -> weight_zero_point:'a scalar
+    -> bias:t
+    -> t
+
+  val fbgemm_pack_quantized_matrix : t -> k:int -> n:int -> t
+  val feature_alpha_dropout : t -> p:float -> train:bool -> t
+  val feature_alpha_dropout_ : t -> p:float -> train:bool -> t
+  val feature_dropout : t -> p:float -> train:bool -> t
+  val feature_dropout_ : t -> p:float -> train:bool -> t
+  val fft : t -> signal_ndim:int -> normalized:bool -> t
+  val fill_ : t -> value:'a scalar -> t
+  val fill_1 : t -> value:t -> t
+  val flatten : t -> start_dim:int -> end_dim:int -> t
+  val flip : t -> dims:int list -> t
+  val floor : t -> t
+  val floor_ : t -> t
+  val floor_out : out:t -> t -> t
+  val fmod : t -> 'a scalar -> t
+  val fmod1 : t -> t -> t
+  val fmod_ : t -> 'a scalar -> t
+  val fmod_1 : t -> t -> t
+  val fmod_out : out:t -> t -> 'a scalar -> t
+  val fmod_out1 : out:t -> t -> t -> t
+  val frac : t -> t
+  val frac_ : t -> t
+  val frac_out : out:t -> t -> t
+
+  val fractional_max_pool2d
+    :  t
+    -> kernel_size:int list
+    -> output_size:int list
+    -> random_samples:t
+    -> t * t
+
+  val fractional_max_pool2d_backward
+    :  grad_output:t
+    -> t
+    -> kernel_size:int list
+    -> output_size:int list
+    -> indices:t
+    -> t
+
+  val fractional_max_pool2d_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> kernel_size:int list
+    -> output_size:int list
+    -> indices:t
+    -> t
+
+  val fractional_max_pool2d_out
+    :  output:t
+    -> indices:t
+    -> t
+    -> kernel_size:int list
+    -> output_size:int list
+    -> random_samples:t
+    -> t * t
+
+  val fractional_max_pool3d
+    :  t
+    -> kernel_size:int list
+    -> output_size:int list
+    -> random_samples:t
+    -> t * t
+
+  val fractional_max_pool3d_backward
+    :  grad_output:t
+    -> t
+    -> kernel_size:int list
+    -> output_size:int list
+    -> indices:t
+    -> t
+
+  val fractional_max_pool3d_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> kernel_size:int list
+    -> output_size:int list
+    -> indices:t
+    -> t
+
+  val fractional_max_pool3d_out
+    :  output:t
+    -> indices:t
+    -> t
+    -> kernel_size:int list
+    -> output_size:int list
+    -> random_samples:t
+    -> t * t
+
+  val frobenius_norm : t -> t
+  val frobenius_norm1 : t -> dim:int list -> keepdim:bool -> t
+  val frobenius_norm_out : out:t -> t -> dim:int list -> keepdim:bool -> t
+  val full : size:int list -> fill_value:'a scalar -> options:Kind.packed * Device.t -> t
+  val full_like : t -> fill_value:'a scalar -> t
+  val full_like1 : t -> fill_value:'a scalar -> options:Kind.packed * Device.t -> t
+  val full_out : out:t -> size:int list -> fill_value:'a scalar -> t
+  val gather : t -> dim:int -> index:t -> sparse_grad:bool -> t
+  val gather_out : out:t -> t -> dim:int -> index:t -> sparse_grad:bool -> t
+  val ge : t -> 'a scalar -> t
+  val ge1 : t -> t -> t
+  val ge_ : t -> 'a scalar -> t
+  val ge_1 : t -> t -> t
+  val ge_out : out:t -> t -> 'a scalar -> t
+  val ge_out1 : out:t -> t -> t -> t
+  val gels : t -> a:t -> t * t
+  val gels_out : x:t -> qr:t -> t -> a:t -> t * t
+  val geometric_ : t -> p:float -> t
+  val geqrf : t -> t * t
+  val geqrf_out : a:t -> tau:t -> t -> t * t
+  val ger : t -> vec2:t -> t
+  val ger_out : out:t -> t -> vec2:t -> t
+  val glu : t -> dim:int -> t
+  val glu_backward : grad_output:t -> t -> dim:int -> t
+  val glu_backward_out : grad_input:t -> grad_output:t -> t -> dim:int -> t
+  val glu_out : out:t -> t -> dim:int -> t
+  val grad : t -> t
+  val grid_sampler : t -> grid:t -> interpolation_mode:int -> padding_mode:int -> t
+  val grid_sampler_2d : t -> grid:t -> interpolation_mode:int -> padding_mode:int -> t
+
+  val grid_sampler_2d_backward
+    :  grad_output:t
+    -> t
+    -> grid:t
+    -> interpolation_mode:int
+    -> padding_mode:int
+    -> t * t
+
+  val grid_sampler_3d : t -> grid:t -> interpolation_mode:int -> padding_mode:int -> t
+
+  val grid_sampler_3d_backward
+    :  grad_output:t
+    -> t
+    -> grid:t
+    -> interpolation_mode:int
+    -> padding_mode:int
+    -> t * t
+
+  val group_norm
+    :  t
+    -> num_groups:int
+    -> weight:t option
+    -> bias:t option
+    -> eps:float
+    -> cudnn_enabled:bool
+    -> t
+
+  val gru
+    :  t
+    -> hx:t
+    -> params:t list
+    -> has_biases:bool
+    -> num_layers:int
+    -> dropout:float
+    -> train:bool
+    -> bidirectional:bool
+    -> batch_first:bool
+    -> t * t
+
+  val gru1
+    :  data:t
+    -> batch_sizes:t
+    -> hx:t
+    -> params:t list
+    -> has_biases:bool
+    -> num_layers:int
+    -> dropout:float
+    -> train:bool
+    -> bidirectional:bool
+    -> t * t
+
+  val gru_cell : t -> hx:t -> w_ih:t -> w_hh:t -> b_ih:t option -> b_hh:t option -> t
+  val gt : t -> 'a scalar -> t
+  val gt1 : t -> t -> t
+  val gt_ : t -> 'a scalar -> t
+  val gt_1 : t -> t -> t
+  val gt_out : out:t -> t -> 'a scalar -> t
+  val gt_out1 : out:t -> t -> t -> t
+  val hamming_window : window_length:int -> options:Kind.packed * Device.t -> t
+
+  val hamming_window1
+    :  window_length:int
+    -> periodic:bool
+    -> options:Kind.packed * Device.t
+    -> t
+
+  val hamming_window2
+    :  window_length:int
+    -> periodic:bool
+    -> alpha:float
+    -> options:Kind.packed * Device.t
+    -> t
+
+  val hamming_window3
+    :  window_length:int
+    -> periodic:bool
+    -> alpha:float
+    -> beta:float
+    -> options:Kind.packed * Device.t
+    -> t
+
+  val hann_window : window_length:int -> options:Kind.packed * Device.t -> t
+
+  val hann_window1
+    :  window_length:int
+    -> periodic:bool
+    -> options:Kind.packed * Device.t
+    -> t
+
+  val hardshrink : t -> t
+  val hardshrink_backward : grad_out:t -> t -> lambd:'a scalar -> t
+  val hardtanh : t -> t
+  val hardtanh_ : t -> t
+
+  val hardtanh_backward
+    :  grad_output:t
+    -> t
+    -> min_val:'a scalar
+    -> max_val:'a scalar
+    -> t
+
+  val hardtanh_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> min_val:'a scalar
+    -> max_val:'a scalar
+    -> t
+
+  val hardtanh_out : out:t -> t -> t
+  val hinge_embedding_loss : t -> target:t -> margin:float -> reduction:Reduction.t -> t
+  val histc : t -> bins:int -> t
+  val histc_out : out:t -> t -> bins:int -> t
+  val hspmm : mat1:t -> mat2:t -> t
+  val hspmm_out : out:t -> mat1:t -> mat2:t -> t
+  val ifft : t -> signal_ndim:int -> normalized:bool -> t
+  val index : t -> indices:t list -> t
+  val index_add : t -> dim:int -> index:t -> source:t -> t
+  val index_add_ : t -> dim:int -> index:t -> source:t -> t
+  val index_copy : t -> dim:int -> index:t -> source:t -> t
+  val index_copy_ : t -> dim:int -> index:t -> source:t -> t
+  val index_fill : t -> dim:int -> index:t -> value:'a scalar -> t
+  val index_fill1 : t -> dim:int -> index:t -> value:t -> t
+  val index_fill_ : t -> dim:int -> index:t -> value:'a scalar -> t
+  val index_fill_1 : t -> dim:int -> index:t -> value:t -> t
+  val index_put : t -> indices:t list -> values:t -> accumulate:bool -> t
+  val index_put_ : t -> indices:t list -> values:t -> accumulate:bool -> t
+  val index_select : t -> dim:int -> index:t -> t
+  val index_select_out : out:t -> t -> dim:int -> index:t -> t
+  val indices : t -> t
+
+  val instance_norm
+    :  t
+    -> weight:t option
+    -> bias:t option
+    -> running_mean:t option
+    -> running_var:t option
+    -> use_input_stats:bool
+    -> momentum:float
+    -> eps:float
+    -> cudnn_enabled:bool
+    -> t
+
+  val int_repr : t -> t
+  val inverse : t -> t
+  val inverse_out : out:t -> t -> t
+
+  val irfft
+    :  t
+    -> signal_ndim:int
+    -> normalized:bool
+    -> onesided:bool
+    -> signal_sizes:int list
+    -> t
+
+  val isclose : t -> t -> rtol:float -> atol:float -> equal_nan:bool -> t
+  val isnan : t -> t
+  val kl_div : t -> target:t -> reduction:Reduction.t -> t
+  val kl_div_backward : grad_output:t -> t -> target:t -> reduction:Reduction.t -> t
+  val kthvalue : t -> k:int -> dim:int -> keepdim:bool -> t * t
+
+  val kthvalue_out
+    :  values:t
+    -> indices:t
+    -> t
+    -> k:int
+    -> dim:int
+    -> keepdim:bool
+    -> t * t
+
+  val l1_loss : t -> target:t -> reduction:Reduction.t -> t
+  val l1_loss_backward : grad_output:t -> t -> target:t -> reduction:Reduction.t -> t
+
+  val l1_loss_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> target:t
+    -> reduction:Reduction.t
+    -> t
+
+  val l1_loss_out : out:t -> t -> target:t -> reduction:Reduction.t -> t
+
+  val layer_norm
+    :  t
+    -> normalized_shape:int list
+    -> weight:t option
+    -> bias:t option
+    -> eps:float
+    -> cudnn_enable:bool
+    -> t
+
+  val le : t -> 'a scalar -> t
+  val le1 : t -> t -> t
+  val le_ : t -> 'a scalar -> t
+  val le_1 : t -> t -> t
+  val le_out : out:t -> t -> 'a scalar -> t
+  val le_out1 : out:t -> t -> t -> t
+  val leaky_relu : t -> t
+  val leaky_relu_ : t -> t
+  val leaky_relu_backward : grad_output:t -> t -> negative_slope:'a scalar -> t
+
+  val leaky_relu_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> negative_slope:'a scalar
+    -> t
+
+  val leaky_relu_out : out:t -> t -> t
+  val lerp : t -> end_:t -> weight:'a scalar -> t
+  val lerp1 : t -> end_:t -> weight:t -> t
+  val lerp_ : t -> end_:t -> weight:'a scalar -> t
+  val lerp_1 : t -> end_:t -> weight:t -> t
+  val lerp_out : out:t -> t -> end_:t -> weight:'a scalar -> t
+  val lerp_out1 : out:t -> t -> end_:t -> weight:t -> t
+  val lgamma : t -> t
+  val lgamma_ : t -> t
+  val lgamma_out : out:t -> t -> t
+  val linear : t -> weight:t -> bias:t option -> t
+
+  val linspace
+    :  start:'a scalar
+    -> end_:'a scalar
+    -> steps:int
+    -> options:Kind.packed * Device.t
+    -> t
+
+  val linspace_out : out:t -> start:'a scalar -> end_:'a scalar -> steps:int -> t
+  val log : t -> t
+  val log10 : t -> t
+  val log10_ : t -> t
+  val log10_out : out:t -> t -> t
+  val log1p : t -> t
+  val log1p_ : t -> t
+  val log1p_out : out:t -> t -> t
+  val log2 : t -> t
+  val log2_ : t -> t
+  val log2_out : out:t -> t -> t
+  val log_ : t -> t
+  val log_normal_ : t -> mean:float -> std:float -> t
+  val log_out : out:t -> t -> t
+  val log_sigmoid : t -> t
+  val log_sigmoid_backward : grad_output:t -> t -> buffer:t -> t
+  val log_sigmoid_backward_out : grad_input:t -> grad_output:t -> t -> buffer:t -> t
+  val log_sigmoid_out : out:t -> t -> t
+  val log_softmax : t -> dim:int -> t
+  val log_softmax1 : t -> dim:int -> dtype:Kind.packed -> t
+  val logdet : t -> t
+
+  val logspace
+    :  start:'a scalar
+    -> end_:'a scalar
+    -> steps:int
+    -> base:float
+    -> options:Kind.packed * Device.t
+    -> t
+
+  val logspace_out
+    :  out:t
+    -> start:'a scalar
+    -> end_:'a scalar
+    -> steps:int
+    -> base:float
+    -> t
+
+  val logsumexp : t -> dim:int list -> keepdim:bool -> t
+  val logsumexp_out : out:t -> t -> dim:int list -> keepdim:bool -> t
+
+  val lstm
+    :  t
+    -> hx:t list
+    -> params:t list
+    -> has_biases:bool
+    -> num_layers:int
+    -> dropout:float
+    -> train:bool
+    -> bidirectional:bool
+    -> batch_first:bool
+    -> t * t * t
+
+  val lstm1
+    :  data:t
+    -> batch_sizes:t
+    -> hx:t list
+    -> params:t list
+    -> has_biases:bool
+    -> num_layers:int
+    -> dropout:float
+    -> train:bool
+    -> bidirectional:bool
+    -> t * t * t
+
+  val lstm_cell
+    :  t
+    -> hx:t list
+    -> w_ih:t
+    -> w_hh:t
+    -> b_ih:t option
+    -> b_hh:t option
+    -> t * t
+
+  val lt : t -> 'a scalar -> t
+  val lt1 : t -> t -> t
+  val lt_ : t -> 'a scalar -> t
+  val lt_1 : t -> t -> t
+  val lt_out : out:t -> t -> 'a scalar -> t
+  val lt_out1 : out:t -> t -> t -> t
+  val lu_solve : t -> lu_data:t -> lu_pivots:t -> t
+  val lu_solve_out : out:t -> t -> lu_data:t -> lu_pivots:t -> t
+
+  val margin_ranking_loss
+    :  input1:t
+    -> input2:t
+    -> target:t
+    -> margin:float
+    -> reduction:Reduction.t
+    -> t
+
+  val masked_fill : t -> mask:t -> value:'a scalar -> t
+  val masked_fill1 : t -> mask:t -> value:t -> t
+  val masked_fill_ : t -> mask:t -> value:'a scalar -> t
+  val masked_fill_1 : t -> mask:t -> value:t -> t
+  val masked_scatter : t -> mask:t -> source:t -> t
+  val masked_scatter_ : t -> mask:t -> source:t -> t
+  val masked_select : t -> mask:t -> t
+  val masked_select_out : out:t -> t -> mask:t -> t
+  val matmul : t -> t -> t
+  val matmul_out : out:t -> t -> t -> t
+  val matrix_power : t -> n:int -> t
+  val matrix_rank : t -> symmetric:bool -> t
+  val matrix_rank1 : t -> tol:float -> symmetric:bool -> t
+  val max : t -> t
+  val max1 : t -> t -> t
+  val max2 : t -> dim:int -> keepdim:bool -> t * t
+  val max_out : out:t -> t -> t -> t
+  val max_out1 : max:t -> max_values:t -> t -> dim:int -> keepdim:bool -> t * t
+
+  val max_pool1d
+    :  t
+    -> kernel_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> dilation:int list
+    -> ceil_mode:bool
+    -> t
+
+  val max_pool1d_with_indices
+    :  t
+    -> kernel_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> dilation:int list
+    -> ceil_mode:bool
+    -> t * t
+
+  val max_pool2d
+    :  t
+    -> kernel_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> dilation:int list
+    -> ceil_mode:bool
+    -> t
+
+  val max_pool2d_with_indices
+    :  t
+    -> kernel_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> dilation:int list
+    -> ceil_mode:bool
+    -> t * t
+
+  val max_pool2d_with_indices_backward
+    :  grad_output:t
+    -> t
+    -> kernel_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> dilation:int list
+    -> ceil_mode:bool
+    -> indices:t
+    -> t
+
+  val max_pool2d_with_indices_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> kernel_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> dilation:int list
+    -> ceil_mode:bool
+    -> indices:t
+    -> t
+
+  val max_pool2d_with_indices_out
+    :  output:t
+    -> indices:t
+    -> t
+    -> kernel_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> dilation:int list
+    -> ceil_mode:bool
+    -> t * t
+
+  val max_pool3d
+    :  t
+    -> kernel_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> dilation:int list
+    -> ceil_mode:bool
+    -> t
+
+  val max_pool3d_with_indices
+    :  t
+    -> kernel_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> dilation:int list
+    -> ceil_mode:bool
+    -> t * t
+
+  val max_pool3d_with_indices_backward
+    :  grad_output:t
+    -> t
+    -> kernel_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> dilation:int list
+    -> ceil_mode:bool
+    -> indices:t
+    -> t
+
+  val max_pool3d_with_indices_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> kernel_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> dilation:int list
+    -> ceil_mode:bool
+    -> indices:t
+    -> t
+
+  val max_pool3d_with_indices_out
+    :  output:t
+    -> indices:t
+    -> t
+    -> kernel_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> dilation:int list
+    -> ceil_mode:bool
+    -> t * t
+
+  val max_unpool2d : t -> indices:t -> output_size:int list -> t
+
+  val max_unpool2d_backward
+    :  grad_output:t
+    -> t
+    -> indices:t
+    -> output_size:int list
+    -> t
+
+  val max_unpool2d_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> indices:t
+    -> output_size:int list
+    -> t
+
+  val max_unpool2d_out : out:t -> t -> indices:t -> output_size:int list -> t
+
+  val max_unpool3d
+    :  t
+    -> indices:t
+    -> output_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> t
+
+  val max_unpool3d_backward
+    :  grad_output:t
+    -> t
+    -> indices:t
+    -> output_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> t
+
+  val max_unpool3d_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> indices:t
+    -> output_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> t
+
+  val max_unpool3d_out
+    :  out:t
+    -> t
+    -> indices:t
+    -> output_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> t
+
+  val max_values : t -> dim:int list -> keepdim:bool -> t
+  val mean : t -> t
+  val mean1 : t -> dtype:Kind.packed -> t
+  val mean2 : t -> dim:int list -> keepdim:bool -> t
+  val mean3 : t -> dim:int list -> dtype:Kind.packed -> t
+  val mean4 : t -> dim:int list -> keepdim:bool -> dtype:Kind.packed -> t
+  val mean_out : out:t -> t -> dim:int list -> keepdim:bool -> t
+  val mean_out1 : out:t -> t -> dim:int list -> dtype:Kind.packed -> t
+  val mean_out2 : out:t -> t -> dim:int list -> keepdim:bool -> dtype:Kind.packed -> t
+  val median : t -> t
+  val median1 : t -> dim:int -> keepdim:bool -> t * t
+  val median_out : values:t -> indices:t -> t -> dim:int -> keepdim:bool -> t * t
+  val meshgrid : t list -> t list
+  val min : t -> t
+  val min1 : t -> t -> t
+  val min2 : t -> dim:int -> keepdim:bool -> t * t
+  val min_out : out:t -> t -> t -> t
+  val min_out1 : min:t -> min_indices:t -> t -> dim:int -> keepdim:bool -> t * t
+  val min_values : t -> dim:int list -> keepdim:bool -> t
+
+  val miopen_batch_norm
+    :  t
+    -> weight:t
+    -> bias:t option
+    -> running_mean:t option
+    -> running_var:t option
+    -> training:bool
+    -> exponential_average_factor:float
+    -> epsilon:float
+    -> t * t * t
+
+  val miopen_batch_norm_backward
+    :  t
+    -> grad_output:t
+    -> weight:t
+    -> running_mean:t option
+    -> running_var:t option
+    -> save_mean:t option
+    -> save_var:t option
+    -> epsilon:float
+    -> t * t * t
+
+  val miopen_convolution
+    :  t
+    -> weight:t
+    -> bias:t option
+    -> padding:int list
+    -> stride:int list
+    -> dilation:int list
+    -> groups:int
+    -> benchmark:bool
+    -> deterministic:bool
+    -> t
+
+  val miopen_convolution_backward_bias : grad_output:t -> t
+
+  val miopen_convolution_backward_input
+    :  self_size:int list
+    -> grad_output:t
+    -> weight:t
+    -> padding:int list
+    -> stride:int list
+    -> dilation:int list
+    -> groups:int
+    -> benchmark:bool
+    -> deterministic:bool
+    -> t
+
+  val miopen_convolution_backward_weight
+    :  weight_size:int list
+    -> grad_output:t
+    -> t
+    -> padding:int list
+    -> stride:int list
+    -> dilation:int list
+    -> groups:int
+    -> benchmark:bool
+    -> deterministic:bool
+    -> t
+
+  val miopen_convolution_transpose
+    :  t
+    -> weight:t
+    -> bias:t option
+    -> padding:int list
+    -> output_padding:int list
+    -> stride:int list
+    -> dilation:int list
+    -> groups:int
+    -> benchmark:bool
+    -> deterministic:bool
+    -> t
+
+  val miopen_convolution_transpose_backward_input
+    :  grad_output:t
+    -> weight:t
+    -> padding:int list
+    -> stride:int list
+    -> dilation:int list
+    -> groups:int
+    -> benchmark:bool
+    -> deterministic:bool
+    -> t
+
+  val miopen_convolution_transpose_backward_weight
+    :  weight_size:int list
+    -> grad_output:t
+    -> t
+    -> padding:int list
+    -> stride:int list
+    -> dilation:int list
+    -> groups:int
+    -> benchmark:bool
+    -> deterministic:bool
+    -> t
+
+  val miopen_depthwise_convolution
+    :  t
+    -> weight:t
+    -> bias:t option
+    -> padding:int list
+    -> stride:int list
+    -> dilation:int list
+    -> groups:int
+    -> benchmark:bool
+    -> deterministic:bool
+    -> t
+
+  val miopen_depthwise_convolution_backward_input
+    :  self_size:int list
+    -> grad_output:t
+    -> weight:t
+    -> padding:int list
+    -> stride:int list
+    -> dilation:int list
+    -> groups:int
+    -> benchmark:bool
+    -> deterministic:bool
+    -> t
+
+  val miopen_depthwise_convolution_backward_weight
+    :  weight_size:int list
+    -> grad_output:t
+    -> t
+    -> padding:int list
+    -> stride:int list
+    -> dilation:int list
+    -> groups:int
+    -> benchmark:bool
+    -> deterministic:bool
+    -> t
+
+  val mkldnn_convolution
+    :  t
+    -> weight:t
+    -> bias:t option
+    -> padding:int list
+    -> stride:int list
+    -> dilation:int list
+    -> groups:int
+    -> t
+
+  val mkldnn_convolution_backward_input
+    :  self_size:int list
+    -> grad_output:t
+    -> weight:t
+    -> padding:int list
+    -> stride:int list
+    -> dilation:int list
+    -> groups:int
+    -> bias_defined:bool
+    -> t
+
+  val mkldnn_convolution_backward_weights
+    :  weight_size:int list
+    -> grad_output:t
+    -> t
+    -> padding:int list
+    -> stride:int list
+    -> dilation:int list
+    -> groups:int
+    -> bias_defined:bool
+    -> t * t
+
+  val mkldnn_linear : t -> weight:t -> bias:t option -> t
+
+  val mkldnn_max_pool2d
+    :  t
+    -> kernel_size:int list
+    -> stride:int list
+    -> padding:int list
+    -> dilation:int list
+    -> ceil_mode:bool
+    -> t
+
+  val mkldnn_reorder_conv2d_weight
+    :  t
+    -> padding:int list
+    -> stride:int list
+    -> dilation:int list
+    -> groups:int
+    -> t
+
+  val mkldnn_reshape : t -> shape:int list -> t
+  val mm : t -> mat2:t -> t
+  val mm_out : out:t -> t -> mat2:t -> t
+  val mode : t -> dim:int -> keepdim:bool -> t * t
+  val mode_out : values:t -> indices:t -> t -> dim:int -> keepdim:bool -> t * t
+  val mse_loss : t -> target:t -> reduction:Reduction.t -> t
+  val mse_loss_backward : grad_output:t -> t -> target:t -> reduction:Reduction.t -> t
+
+  val mse_loss_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> target:t
+    -> reduction:Reduction.t
+    -> t
+
+  val mse_loss_out : out:t -> t -> target:t -> reduction:Reduction.t -> t
+  val mul : t -> t -> t
+  val mul1 : t -> 'a scalar -> t
+  val mul_ : t -> t -> t
+  val mul_1 : t -> 'a scalar -> t
+  val mul_out : out:t -> t -> t -> t
+
+  val multi_margin_loss_backward
+    :  grad_output:t
+    -> t
+    -> target:t
+    -> p:'a scalar
+    -> margin:'a scalar
+    -> weight:t
+    -> reduction:Reduction.t
+    -> t
+
+  val multi_margin_loss_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> target:t
+    -> p:'a scalar
+    -> margin:'a scalar
+    -> weight:t
+    -> reduction:Reduction.t
+    -> t
+
+  val multilabel_margin_loss : t -> target:t -> reduction:Reduction.t -> t
+
+  val multilabel_margin_loss_backward
+    :  grad_output:t
+    -> t
+    -> target:t
+    -> reduction:Reduction.t
+    -> is_target:t
+    -> t
+
+  val multilabel_margin_loss_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> target:t
+    -> reduction:Reduction.t
+    -> is_target:t
+    -> t
+
+  val multilabel_margin_loss_out : out:t -> t -> target:t -> reduction:Reduction.t -> t
+  val multinomial : t -> num_samples:int -> replacement:bool -> t
+  val multinomial_out : out:t -> t -> num_samples:int -> replacement:bool -> t
+  val mv : t -> vec:t -> t
+  val mv_out : out:t -> t -> vec:t -> t
+  val mvlgamma : t -> p:int -> t
+  val mvlgamma_ : t -> p:int -> t
+  val narrow : t -> dim:int -> start:int -> length:int -> t
+  val narrow_copy : t -> dim:int -> start:int -> length:int -> t
+
+  val native_batch_norm
+    :  t
+    -> weight:t option
+    -> bias:t option
+    -> running_mean:t option
+    -> running_var:t option
+    -> training:bool
+    -> momentum:float
+    -> eps:float
+    -> t * t * t
+
+  val native_norm : t -> t
+  val ne : t -> 'a scalar -> t
+  val ne1 : t -> t -> t
+  val ne_ : t -> 'a scalar -> t
+  val ne_1 : t -> t -> t
+  val ne_out : out:t -> t -> 'a scalar -> t
+  val ne_out1 : out:t -> t -> t -> t
+  val neg : t -> t
+  val neg_ : t -> t
+  val neg_out : out:t -> t -> t
+
+  val nll_loss
+    :  t
+    -> target:t
+    -> weight:t option
+    -> reduction:Reduction.t
+    -> ignore_index:int
+    -> t
+
+  val nll_loss2d
+    :  t
+    -> target:t
+    -> weight:t option
+    -> reduction:Reduction.t
+    -> ignore_index:int
+    -> t
+
+  val nll_loss2d_backward
+    :  grad_output:t
+    -> t
+    -> target:t
+    -> weight:t option
+    -> reduction:Reduction.t
+    -> ignore_index:int
+    -> total_weight:t
+    -> t
+
+  val nll_loss2d_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> target:t
+    -> weight:t option
+    -> reduction:Reduction.t
+    -> ignore_index:int
+    -> total_weight:t
+    -> t
+
+  val nll_loss2d_out
+    :  out:t
+    -> t
+    -> target:t
+    -> weight:t option
+    -> reduction:Reduction.t
+    -> ignore_index:int
+    -> t
+
+  val nll_loss_backward
+    :  grad_output:t
+    -> t
+    -> target:t
+    -> weight:t option
+    -> reduction:Reduction.t
+    -> ignore_index:int
+    -> total_weight:t
+    -> t
+
+  val nll_loss_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> target:t
+    -> weight:t option
+    -> reduction:Reduction.t
+    -> ignore_index:int
+    -> total_weight:t
+    -> t
+
+  val nll_loss_out
+    :  out:t
+    -> t
+    -> target:t
+    -> weight:t option
+    -> reduction:Reduction.t
+    -> ignore_index:int
+    -> t
+
+  val nonzero : t -> t
+  val nonzero_out : out:t -> t -> t
+  val norm : t -> t
+  val norm1 : t -> p:'a scalar -> dtype:Kind.packed -> t
+  val norm2 : t -> p:'a scalar -> dim:int list -> keepdim:bool -> t
+  val norm3 : t -> p:'a scalar -> dim:int list -> keepdim:bool -> dtype:Kind.packed -> t
+  val norm_except_dim : v:t -> pow:int -> dim:int -> t
+  val norm_out : out:t -> t -> p:'a scalar -> dim:int list -> keepdim:bool -> t
+
+  val norm_out1
+    :  out:t
+    -> t
+    -> p:'a scalar
+    -> dim:int list
+    -> keepdim:bool
+    -> dtype:Kind.packed
+    -> t
+
+  val normal : mean:t -> std:float -> t
+  val normal1 : mean:float -> std:t -> t
+  val normal2 : mean:t -> std:t -> t
+  val normal_ : t -> mean:float -> std:float -> t
+  val normal_out : out:t -> mean:t -> std:float -> t
+  val normal_out1 : out:t -> mean:float -> std:t -> t
+  val normal_out2 : out:t -> mean:t -> std:t -> t
+  val nuclear_norm : t -> keepdim:bool -> t
+  val nuclear_norm_out : out:t -> t -> keepdim:bool -> t
+  val one_hot : t -> num_classes:int -> t
+  val ones : size:int list -> options:Kind.packed * Device.t -> t
+  val ones_like : t -> t
+  val ones_like1 : t -> options:Kind.packed * Device.t -> t
+  val ones_out : out:t -> size:int list -> t
+  val orgqr : t -> input2:t -> t
+  val orgqr_out : out:t -> t -> input2:t -> t
+  val ormqr : t -> input2:t -> input3:t -> left:bool -> transpose:bool -> t
+  val ormqr_out : out:t -> t -> input2:t -> input3:t -> left:bool -> transpose:bool -> t
+  val pairwise_distance : x1:t -> x2:t -> p:float -> eps:float -> keepdim:bool -> t
+  val pdist : t -> p:float -> t
+  val permute : t -> dims:int list -> t
+  val pin_memory : t -> t
+  val pinverse : t -> rcond:float -> t
+  val pixel_shuffle : t -> upscale_factor:int -> t
+  val poisson : t -> t
+  val polygamma : n:int -> t -> t
+  val polygamma_ : t -> n:int -> t
+  val polygamma_out : out:t -> n:int -> t -> t
+  val pow : t -> exponent:'a scalar -> t
+  val pow1 : t -> exponent:t -> t
+  val pow2 : 'a scalar -> exponent:t -> t
+  val pow_ : t -> exponent:'a scalar -> t
+  val pow_1 : t -> exponent:t -> t
+  val pow_out : out:t -> t -> exponent:'a scalar -> t
+  val pow_out1 : out:t -> t -> exponent:t -> t
+  val pow_out2 : out:t -> 'a scalar -> exponent:t -> t
+  val prelu : t -> weight:t -> t
+  val prelu_backward : grad_output:t -> t -> weight:t -> t * t
+  val prod : t -> t
+  val prod1 : t -> dtype:Kind.packed -> t
+  val prod2 : t -> dim:int -> keepdim:bool -> t
+  val prod3 : t -> dim:int -> dtype:Kind.packed -> t
+  val prod4 : t -> dim:int -> keepdim:bool -> dtype:Kind.packed -> t
+  val prod_out : out:t -> t -> dim:int -> keepdim:bool -> t
+  val prod_out1 : out:t -> t -> dim:int -> dtype:Kind.packed -> t
+  val prod_out2 : out:t -> t -> dim:int -> keepdim:bool -> dtype:Kind.packed -> t
+  val pstrf : t -> upper:bool -> t * t
+  val pstrf_out : u:t -> pivot:t -> t -> upper:bool -> t * t
+  val put_ : t -> index:t -> source:t -> accumulate:bool -> t
+  val qr : t -> t * t
+  val qr_out : q:t -> r:t -> t -> t * t
+  val quantize_linear : t -> scale:float -> zero_point:int -> t
+
+  val quantized_gru_cell
+    :  t
+    -> hx:t
+    -> w_ih:t
+    -> w_hh:t
+    -> b_ih:t
+    -> b_hh:t
+    -> packed_ih:t
+    -> packed_hh:t
+    -> col_offsets_ih:t
+    -> col_offsets_hh:t
+    -> scale_ih:'a scalar
+    -> scale_hh:'a scalar
+    -> zero_point_ih:'a scalar
+    -> zero_point_hh:'a scalar
+    -> t
+
+  val quantized_lstm
+    :  t
+    -> hx:t list
+    -> params:t list
+    -> has_biases:bool
+    -> num_layers:int
+    -> dropout:float
+    -> train:bool
+    -> bidirectional:bool
+    -> batch_first:bool
+    -> t * t * t
+
+  val quantized_lstm_cell
+    :  t
+    -> hx:t list
+    -> w_ih:t
+    -> w_hh:t
+    -> b_ih:t
+    -> b_hh:t
+    -> packed_ih:t
+    -> packed_hh:t
+    -> col_offsets_ih:t
+    -> col_offsets_hh:t
+    -> scale_ih:'a scalar
+    -> scale_hh:'a scalar
+    -> zero_point_ih:'a scalar
+    -> zero_point_hh:'a scalar
+    -> t * t
+
+  val quantized_rnn_relu_cell
+    :  t
+    -> hx:t
+    -> w_ih:t
+    -> w_hh:t
+    -> b_ih:t
+    -> b_hh:t
+    -> packed_ih:t
+    -> packed_hh:t
+    -> col_offsets_ih:t
+    -> col_offsets_hh:t
+    -> scale_ih:'a scalar
+    -> scale_hh:'a scalar
+    -> zero_point_ih:'a scalar
+    -> zero_point_hh:'a scalar
+    -> t
+
+  val quantized_rnn_tanh_cell
+    :  t
+    -> hx:t
+    -> w_ih:t
+    -> w_hh:t
+    -> b_ih:t
+    -> b_hh:t
+    -> packed_ih:t
+    -> packed_hh:t
+    -> col_offsets_ih:t
+    -> col_offsets_hh:t
+    -> scale_ih:'a scalar
+    -> scale_hh:'a scalar
+    -> zero_point_ih:'a scalar
+    -> zero_point_hh:'a scalar
+    -> t
+
+  val rand : size:int list -> options:Kind.packed * Device.t -> t
+  val rand_like : t -> t
+  val rand_like1 : t -> options:Kind.packed * Device.t -> t
+  val rand_out : out:t -> size:int list -> t
+  val randint : high:int -> size:int list -> options:Kind.packed * Device.t -> t
+
+  val randint1
+    :  low:int
+    -> high:int
+    -> size:int list
+    -> options:Kind.packed * Device.t
+    -> t
+
+  val randint_like : t -> high:int -> t
+  val randint_like1 : t -> low:int -> high:int -> t
+  val randint_like2 : t -> high:int -> options:Kind.packed * Device.t -> t
+  val randint_like3 : t -> low:int -> high:int -> options:Kind.packed * Device.t -> t
+  val randint_out : out:t -> high:int -> size:int list -> t
+  val randint_out1 : out:t -> low:int -> high:int -> size:int list -> t
+  val randn : size:int list -> options:Kind.packed * Device.t -> t
+  val randn_like : t -> t
+  val randn_like1 : t -> options:Kind.packed * Device.t -> t
+  val randn_out : out:t -> size:int list -> t
+  val random_ : t -> t
+  val random_1 : t -> to_:int -> t
+  val random_2 : t -> from:int -> to_:int -> t
+  val randperm : n:int -> options:Kind.packed * Device.t -> t
+  val randperm_out : out:t -> n:int -> t
+  val range : start:'a scalar -> end_:'a scalar -> options:Kind.packed * Device.t -> t
+  val range1 : start:'a scalar -> end_:'a scalar -> options:Kind.packed * Device.t -> t
+  val range_out : out:t -> start:'a scalar -> end_:'a scalar -> t
+  val reciprocal : t -> t
+  val reciprocal_ : t -> t
+  val reciprocal_out : out:t -> t -> t
+  val reflection_pad1d : t -> padding:int list -> t
+  val reflection_pad1d_backward : grad_output:t -> t -> padding:int list -> t
+
+  val reflection_pad1d_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> padding:int list
+    -> t
+
+  val reflection_pad1d_out : out:t -> t -> padding:int list -> t
+  val reflection_pad2d : t -> padding:int list -> t
+  val reflection_pad2d_backward : grad_output:t -> t -> padding:int list -> t
+
+  val reflection_pad2d_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> padding:int list
+    -> t
+
+  val reflection_pad2d_out : out:t -> t -> padding:int list -> t
+  val relu : t -> t
+  val relu_ : t -> t
+  val remainder : t -> 'a scalar -> t
+  val remainder1 : t -> t -> t
+  val remainder_ : t -> 'a scalar -> t
+  val remainder_1 : t -> t -> t
+  val remainder_out : out:t -> t -> 'a scalar -> t
+  val remainder_out1 : out:t -> t -> t -> t
+  val renorm : t -> p:'a scalar -> dim:int -> maxnorm:'a scalar -> t
+  val renorm_ : t -> p:'a scalar -> dim:int -> maxnorm:'a scalar -> t
+  val renorm_out : out:t -> t -> p:'a scalar -> dim:int -> maxnorm:'a scalar -> t
+  val repeat : t -> repeats:int list -> t
+  val repeat_interleave : repeats:t -> t
+  val repeat_interleave1 : t -> repeats:t -> dim:int -> t
+  val repeat_interleave2 : t -> repeats:int -> dim:int -> t
+  val replication_pad1d : t -> padding:int list -> t
+  val replication_pad1d_backward : grad_output:t -> t -> padding:int list -> t
+
+  val replication_pad1d_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> padding:int list
+    -> t
+
+  val replication_pad1d_out : out:t -> t -> padding:int list -> t
+  val replication_pad2d : t -> padding:int list -> t
+  val replication_pad2d_backward : grad_output:t -> t -> padding:int list -> t
+
+  val replication_pad2d_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> padding:int list
+    -> t
+
+  val replication_pad2d_out : out:t -> t -> padding:int list -> t
+  val replication_pad3d : t -> padding:int list -> t
+  val replication_pad3d_backward : grad_output:t -> t -> padding:int list -> t
+
+  val replication_pad3d_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> padding:int list
+    -> t
+
+  val replication_pad3d_out : out:t -> t -> padding:int list -> t
+  val reshape : t -> shape:int list -> t
+  val reshape_as : t -> t -> t
+  val resize_ : t -> size:int list -> t
+  val resize_as_ : t -> the_template:t -> t
+  val rfft : t -> signal_ndim:int -> normalized:bool -> onesided:bool -> t
+
+  val rnn_relu
+    :  t
+    -> hx:t
+    -> params:t list
+    -> has_biases:bool
+    -> num_layers:int
+    -> dropout:float
+    -> train:bool
+    -> bidirectional:bool
+    -> batch_first:bool
+    -> t * t
+
+  val rnn_relu1
+    :  data:t
+    -> batch_sizes:t
+    -> hx:t
+    -> params:t list
+    -> has_biases:bool
+    -> num_layers:int
+    -> dropout:float
+    -> train:bool
+    -> bidirectional:bool
+    -> t * t
+
+  val rnn_relu_cell
+    :  t
+    -> hx:t
+    -> w_ih:t
+    -> w_hh:t
+    -> b_ih:t option
+    -> b_hh:t option
+    -> t
+
+  val rnn_tanh
+    :  t
+    -> hx:t
+    -> params:t list
+    -> has_biases:bool
+    -> num_layers:int
+    -> dropout:float
+    -> train:bool
+    -> bidirectional:bool
+    -> batch_first:bool
+    -> t * t
+
+  val rnn_tanh1
+    :  data:t
+    -> batch_sizes:t
+    -> hx:t
+    -> params:t list
+    -> has_biases:bool
+    -> num_layers:int
+    -> dropout:float
+    -> train:bool
+    -> bidirectional:bool
+    -> t * t
+
+  val rnn_tanh_cell
+    :  t
+    -> hx:t
+    -> w_ih:t
+    -> w_hh:t
+    -> b_ih:t option
+    -> b_hh:t option
+    -> t
+
+  val roll : t -> shifts:int list -> dims:int list -> t
+  val rot90 : t -> k:int -> dims:int list -> t
+  val round : t -> t
+  val round_ : t -> t
+  val round_out : out:t -> t -> t
+  val rrelu : t -> training:bool -> t
+  val rrelu_ : t -> training:bool -> t
+  val rrelu_with_noise : t -> noise:t -> training:bool -> t
+  val rrelu_with_noise_ : t -> noise:t -> training:bool -> t
+
+  val rrelu_with_noise_backward
+    :  grad_output:t
+    -> t
+    -> noise:t
+    -> lower:'a scalar
+    -> upper:'a scalar
+    -> training:bool
+    -> t
+
+  val rrelu_with_noise_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> noise:t
+    -> lower:'a scalar
+    -> upper:'a scalar
+    -> training:bool
+    -> t
+
+  val rrelu_with_noise_out : out:t -> t -> noise:t -> training:bool -> t
+  val rsqrt : t -> t
+  val rsqrt_ : t -> t
+  val rsqrt_out : out:t -> t -> t
+  val rsub : t -> t -> t
+  val rsub1 : t -> 'a scalar -> t
+  val s_copy_ : t -> src:t -> non_blocking:bool -> t
+  val s_native_addmm : t -> mat1:t -> mat2:t -> t
+  val s_native_addmm_ : t -> mat1:t -> mat2:t -> t
+  val s_native_addmm_out : out:t -> t -> mat1:t -> mat2:t -> t
+  val scalar_tensor : s:'a scalar -> options:Kind.packed * Device.t -> t
+  val scatter : t -> dim:int -> index:t -> src:t -> t
+  val scatter1 : t -> dim:int -> index:t -> value:'a scalar -> t
+  val scatter_ : t -> dim:int -> index:t -> src:t -> t
+  val scatter_1 : t -> dim:int -> index:t -> value:'a scalar -> t
+  val scatter_add : t -> dim:int -> index:t -> src:t -> t
+  val scatter_add_ : t -> dim:int -> index:t -> src:t -> t
+  val select : t -> dim:int -> index:int -> t
+  val selu : t -> t
+  val selu_ : t -> t
+  val set_ : t -> t
+  val set_1 : t -> source:t -> t
+  val set_requires_grad : t -> r:bool -> t
+  val sigmoid : t -> t
+  val sigmoid_ : t -> t
+  val sigmoid_backward : grad_output:t -> output:t -> t
+  val sigmoid_backward_out : grad_input:t -> grad_output:t -> output:t -> t
+  val sigmoid_out : out:t -> t -> t
+  val sign : t -> t
+  val sign_ : t -> t
+  val sign_out : out:t -> t -> t
+  val sin : t -> t
+  val sin_ : t -> t
+  val sin_out : out:t -> t -> t
+  val sinh : t -> t
+  val sinh_ : t -> t
+  val sinh_out : out:t -> t -> t
+  val slice : t -> dim:int -> start:int -> end_:int -> step:int -> t
+  val slogdet : t -> t * t
+  val smm : t -> mat2:t -> t
+  val smooth_l1_loss : t -> target:t -> reduction:Reduction.t -> t
+
+  val smooth_l1_loss_backward
+    :  grad_output:t
+    -> t
+    -> target:t
+    -> reduction:Reduction.t
+    -> t
+
+  val smooth_l1_loss_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> target:t
+    -> reduction:Reduction.t
+    -> t
+
+  val smooth_l1_loss_out : out:t -> t -> target:t -> reduction:Reduction.t -> t
+  val soft_margin_loss : t -> target:t -> reduction:Reduction.t -> t
+
+  val soft_margin_loss_backward
+    :  grad_output:t
+    -> t
+    -> target:t
+    -> reduction:Reduction.t
+    -> t
+
+  val soft_margin_loss_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> target:t
+    -> reduction:Reduction.t
+    -> t
+
+  val soft_margin_loss_out : out:t -> t -> target:t -> reduction:Reduction.t -> t
+  val softmax : t -> dim:int -> t
+  val softmax1 : t -> dim:int -> dtype:Kind.packed -> t
+  val softplus : t -> t
+
+  val softplus_backward
+    :  grad_output:t
+    -> t
+    -> beta:'a scalar
+    -> threshold:'a scalar
+    -> output:t
+    -> t
+
+  val softplus_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> beta:'a scalar
+    -> threshold:'a scalar
+    -> output:t
+    -> t
+
+  val softplus_out : out:t -> t -> t
+  val softshrink : t -> t
+  val softshrink_backward : grad_output:t -> t -> lambd:'a scalar -> t
+
+  val softshrink_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> t
+    -> lambd:'a scalar
+    -> t
+
+  val softshrink_out : out:t -> t -> t
+  val solve : t -> a:t -> t * t
+  val solve_out : solution:t -> lu:t -> t -> a:t -> t * t
+  val sort : t -> dim:int -> descending:bool -> t * t
+  val sort_out : values:t -> indices:t -> t -> dim:int -> descending:bool -> t * t
+  val sparse_coo_tensor : size:int list -> options:Kind.packed * Device.t -> t
+  val sparse_coo_tensor1 : indices:t -> values:t -> options:Kind.packed * Device.t -> t
+
+  val sparse_coo_tensor2
+    :  indices:t
+    -> values:t
+    -> size:int list
+    -> options:Kind.packed * Device.t
+    -> t
+
+  val sparse_resize_ : t -> size:int list -> sparse_dim:int -> dense_dim:int -> t
+
+  val sparse_resize_and_clear_
+    :  t
+    -> size:int list
+    -> sparse_dim:int
+    -> dense_dim:int
+    -> t
+
+  val split : t -> split_size:int -> dim:int -> t list
+  val split_with_sizes : t -> split_sizes:int list -> dim:int -> t list
+  val sqrt : t -> t
+  val sqrt_ : t -> t
+  val sqrt_out : out:t -> t -> t
+  val squeeze : t -> t
+  val squeeze1 : t -> dim:int -> t
+  val squeeze_ : t -> t
+  val squeeze_1 : t -> dim:int -> t
+  val sspaddmm : t -> mat1:t -> mat2:t -> t
+  val sspaddmm_out : out:t -> t -> mat1:t -> mat2:t -> t
+  val stack : t list -> dim:int -> t
+  val stack_out : out:t -> t list -> dim:int -> t
+  val std : t -> unbiased:bool -> t
+  val std1 : t -> dim:int list -> unbiased:bool -> keepdim:bool -> t
+  val std_out : out:t -> t -> dim:int list -> unbiased:bool -> keepdim:bool -> t
+
+  val stft
+    :  t
+    -> n_fft:int
+    -> hop_length:int
+    -> win_length:int
+    -> window:t option
+    -> normalized:bool
+    -> onesided:bool
+    -> t
+
+  val sub : t -> t -> t
+  val sub1 : t -> 'a scalar -> t
+  val sub_ : t -> t -> t
+  val sub_1 : t -> 'a scalar -> t
+  val sub_out : out:t -> t -> t -> t
+  val sum : t -> t
+  val sum1 : t -> dtype:Kind.packed -> t
+  val sum2 : t -> dim:int list -> keepdim:bool -> t
+  val sum3 : t -> dim:int list -> dtype:Kind.packed -> t
+  val sum4 : t -> dim:int list -> keepdim:bool -> dtype:Kind.packed -> t
+  val sum_out : out:t -> t -> dim:int list -> keepdim:bool -> t
+  val sum_out1 : out:t -> t -> dim:int list -> dtype:Kind.packed -> t
+  val sum_out2 : out:t -> t -> dim:int list -> keepdim:bool -> dtype:Kind.packed -> t
+  val sum_to_size : t -> size:int list -> t
+  val svd : t -> some:bool -> compute_uv:bool -> t * t * t
+  val svd_out : u:t -> s:t -> v:t -> t -> some:bool -> compute_uv:bool -> t * t * t
+  val symeig : t -> eigenvectors:bool -> upper:bool -> t * t
+  val symeig_out : e:t -> v:t -> t -> eigenvectors:bool -> upper:bool -> t * t
+  val tr : t -> t
+  val t_ : t -> t
+  val take : t -> index:t -> t
+  val take_out : out:t -> t -> index:t -> t
+  val tan : t -> t
+  val tan_ : t -> t
+  val tan_out : out:t -> t -> t
+  val tanh : t -> t
+  val tanh_ : t -> t
+  val tanh_backward : grad_output:t -> output:t -> t
+  val tanh_backward_out : grad_input:t -> grad_output:t -> output:t -> t
+  val tanh_out : out:t -> t -> t
+  val tensordot : t -> t -> dims_self:int list -> dims_other:int list -> t
+  val threshold : t -> threshold:'a scalar -> value:'a scalar -> t
+  val threshold_ : t -> threshold:'a scalar -> value:'a scalar -> t
+  val threshold_backward : grad_output:t -> t -> threshold:'a scalar -> t
+  val threshold_out : out:t -> t -> threshold:'a scalar -> value:'a scalar -> t
+  val to_ : t -> device:Device.t -> t
+  val to1 : t -> options:Kind.packed * Device.t -> non_blocking:bool -> copy:bool -> t
+  val to2 : t -> dtype:Kind.packed -> non_blocking:bool -> copy:bool -> t
+  val to3 : t -> t -> non_blocking:bool -> copy:bool -> t
+
+  val to4
+    :  t
+    -> device:Device.t
+    -> dtype:Kind.packed
+    -> non_blocking:bool
+    -> copy:bool
+    -> t
+
+  val to_dense : t -> t
+  val to_dense_backward : grad:t -> t -> t
+  val to_mkldnn : t -> t
+  val to_mkldnn_backward : grad:t -> t -> t
+  val to_sparse : t -> t
+  val to_sparse1 : t -> sparse_dim:int -> t
+  val topk : t -> k:int -> dim:int -> largest:bool -> sorted:bool -> t * t
+
+  val topk_out
+    :  values:t
+    -> indices:t
+    -> t
+    -> k:int
+    -> dim:int
+    -> largest:bool
+    -> sorted:bool
+    -> t * t
+
+  val totype : t -> scalar_type:Kind.packed -> t
+  val trace : t -> t
+  val transpose : t -> dim0:int -> dim1:int -> t
+  val transpose_ : t -> dim0:int -> dim1:int -> t
+
+  val triangular_solve
+    :  t
+    -> a:t
+    -> upper:bool
+    -> transpose:bool
+    -> unitriangular:bool
+    -> t * t
+
+  val triangular_solve_out
+    :  x:t
+    -> m:t
+    -> t
+    -> a:t
+    -> upper:bool
+    -> transpose:bool
+    -> unitriangular:bool
+    -> t * t
+
+  val tril : t -> diagonal:int -> t
+  val tril_ : t -> diagonal:int -> t
+
+  val tril_indices
+    :  row:int
+    -> col:int
+    -> offset:int
+    -> options:Kind.packed * Device.t
+    -> t
+
+  val tril_out : out:t -> t -> diagonal:int -> t
+
+  val triplet_margin_loss
+    :  anchor:t
+    -> positive:t
+    -> negative:t
+    -> margin:float
+    -> p:float
+    -> eps:float
+    -> swap:bool
+    -> reduction:Reduction.t
+    -> t
+
+  val triu : t -> diagonal:int -> t
+  val triu_ : t -> diagonal:int -> t
+
+  val triu_indices
+    :  row:int
+    -> col:int
+    -> offset:int
+    -> options:Kind.packed * Device.t
+    -> t
+
+  val triu_out : out:t -> t -> diagonal:int -> t
+  val trunc : t -> t
+  val trunc_ : t -> t
+  val trunc_out : out:t -> t -> t
+  val type_as : t -> t -> t
+  val unbind : t -> dim:int -> t list
+  val unfold : t -> dimension:int -> size:int -> step:int -> t
+  val uniform_ : t -> from:float -> to_:float -> t
+
+  val unique_consecutive
+    :  t
+    -> return_inverse:bool
+    -> return_counts:bool
+    -> dim:int
+    -> t * t * t
+
+  val unique_dim
+    :  t
+    -> dim:int
+    -> sorted:bool
+    -> return_inverse:bool
+    -> return_counts:bool
+    -> t * t * t
+
+  val unique_dim_consecutive
+    :  t
+    -> dim:int
+    -> return_inverse:bool
+    -> return_counts:bool
+    -> t * t * t
+
+  val unsqueeze : t -> dim:int -> t
+  val unsqueeze_ : t -> dim:int -> t
+  val upsample_bicubic2d : t -> output_size:int list -> align_corners:bool -> t
+
+  val upsample_bicubic2d_backward
+    :  grad_output:t
+    -> output_size:int list
+    -> input_size:int list
+    -> align_corners:bool
+    -> t
+
+  val upsample_bicubic2d_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> output_size:int list
+    -> input_size:int list
+    -> align_corners:bool
+    -> t
+
+  val upsample_bicubic2d_out
+    :  out:t
+    -> t
+    -> output_size:int list
+    -> align_corners:bool
+    -> t
+
+  val upsample_bilinear2d : t -> output_size:int list -> align_corners:bool -> t
+
+  val upsample_bilinear2d_backward
+    :  grad_output:t
+    -> output_size:int list
+    -> input_size:int list
+    -> align_corners:bool
+    -> t
+
+  val upsample_bilinear2d_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> output_size:int list
+    -> input_size:int list
+    -> align_corners:bool
+    -> t
+
+  val upsample_bilinear2d_out
+    :  out:t
+    -> t
+    -> output_size:int list
+    -> align_corners:bool
+    -> t
+
+  val upsample_linear1d : t -> output_size:int list -> align_corners:bool -> t
+
+  val upsample_linear1d_backward
+    :  grad_output:t
+    -> output_size:int list
+    -> input_size:int list
+    -> align_corners:bool
+    -> t
+
+  val upsample_linear1d_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> output_size:int list
+    -> input_size:int list
+    -> align_corners:bool
+    -> t
+
+  val upsample_linear1d_out
+    :  out:t
+    -> t
+    -> output_size:int list
+    -> align_corners:bool
+    -> t
+
+  val upsample_nearest1d : t -> output_size:int list -> t
+
+  val upsample_nearest1d_backward
+    :  grad_output:t
+    -> output_size:int list
+    -> input_size:int list
+    -> t
+
+  val upsample_nearest1d_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> output_size:int list
+    -> input_size:int list
+    -> t
+
+  val upsample_nearest1d_out : out:t -> t -> output_size:int list -> t
+  val upsample_nearest2d : t -> output_size:int list -> t
+
+  val upsample_nearest2d_backward
+    :  grad_output:t
+    -> output_size:int list
+    -> input_size:int list
+    -> t
+
+  val upsample_nearest2d_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> output_size:int list
+    -> input_size:int list
+    -> t
+
+  val upsample_nearest2d_out : out:t -> t -> output_size:int list -> t
+  val upsample_nearest3d : t -> output_size:int list -> t
+
+  val upsample_nearest3d_backward
+    :  grad_output:t
+    -> output_size:int list
+    -> input_size:int list
+    -> t
+
+  val upsample_nearest3d_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> output_size:int list
+    -> input_size:int list
+    -> t
+
+  val upsample_nearest3d_out : out:t -> t -> output_size:int list -> t
+  val upsample_trilinear3d : t -> output_size:int list -> align_corners:bool -> t
+
+  val upsample_trilinear3d_backward
+    :  grad_output:t
+    -> output_size:int list
+    -> input_size:int list
+    -> align_corners:bool
+    -> t
+
+  val upsample_trilinear3d_backward_out
+    :  grad_input:t
+    -> grad_output:t
+    -> output_size:int list
+    -> input_size:int list
+    -> align_corners:bool
+    -> t
+
+  val upsample_trilinear3d_out
+    :  out:t
+    -> t
+    -> output_size:int list
+    -> align_corners:bool
+    -> t
+
+  val values : t -> t
+  val var : t -> unbiased:bool -> t
+  val var1 : t -> dim:int list -> unbiased:bool -> keepdim:bool -> t
+  val var_out : out:t -> t -> dim:int list -> unbiased:bool -> keepdim:bool -> t
+  val view : t -> size:int list -> t
+  val view_as : t -> t -> t
+  val where : condition:t -> t -> t -> t
+  val zero_ : t -> t
+  val zeros : size:int list -> options:Kind.packed * Device.t -> t
+  val zeros_like : t -> t
+  val zeros_like1 : t -> options:Kind.packed * Device.t -> t
+  val zeros_out : out:t -> size:int list -> t
 end
