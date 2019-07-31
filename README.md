@@ -91,7 +91,7 @@ code](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/mnist/li
       |> fun sum -> sum /. test_samples
     in
     printf "%d %f %.2f%%\n%!" index (Tensor.float_value loss) (100. *. test_accuracy);
-  end
+  done
 
 ```
 
