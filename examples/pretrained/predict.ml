@@ -10,6 +10,10 @@
      https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/inception-v3.ot
      https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/mobilenet-v2.ot
      https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/efficientnet-b0.ot
+     https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/efficientnet-b1.ot
+     https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/efficientnet-b2.ot
+     https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/efficientnet-b3.ot
+     https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/efficientnet-b4.ot
 *)
 open Base
 open Torch
@@ -39,6 +43,13 @@ let () =
     | "alexnet.ot" -> Alexnet.alexnet vs ~num_classes:1000
     | "inception-v3.ot" -> Inception.v3 vs ~num_classes:1000
     | "efficientnet-b0.ot" -> Efficientnet.b0 vs ~num_classes:1000
+    | "efficientnet-b1.ot" -> Efficientnet.b1 vs ~num_classes:1000
+    | "efficientnet-b2.ot" -> Efficientnet.b2 vs ~num_classes:1000
+    | "efficientnet-b3.ot" -> Efficientnet.b3 vs ~num_classes:1000
+    | "efficientnet-b4.ot" -> Efficientnet.b4 vs ~num_classes:1000
+    | "efficientnet-b5.ot" -> Efficientnet.b5 vs ~num_classes:1000
+    | "efficientnet-b6.ot" -> Efficientnet.b6 vs ~num_classes:1000
+    | "efficientnet-b7.ot" -> Efficientnet.b7 vs ~num_classes:1000
     | otherwise ->
       Printf.failwithf "unsupported model %s, try with resnet18.ot" otherwise ()
   in

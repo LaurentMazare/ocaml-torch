@@ -161,7 +161,7 @@ let efficientnet ?(num_classes = 1000) vs params =
     List.rev !blocks |> Layer.sequential_
   in
   let out_c = round_filters params 1280 in
-  let input_dim = (List.last_exn args).output_filters in
+  let input_dim = (List.last_exn args).output_filters |> round_filters params in
   let conv_head = conv2d (vs "_conv_head") ~input_dim out_c in
   let bn1 = batch_norm2d (vs "_bn1") out_c in
   let fc = Layer.linear (vs "_fc") ~input_dim:out_c num_classes in
@@ -189,7 +189,7 @@ let b2 ?num_classes vs =
   efficientnet ?num_classes vs { width = 1.1; depth = 1.2; res = 260; dropout = 0.3 }
 
 let b3 ?num_classes vs =
-  efficientnet ?num_classes vs { width = 1.2; depth = 1.3; res = 300; dropout = 0.3 }
+  efficientnet ?num_classes vs { width = 1.2; depth = 1.4; res = 300; dropout = 0.3 }
 
 let b4 ?num_classes vs =
   efficientnet ?num_classes vs { width = 1.4; depth = 1.8; res = 380; dropout = 0.4 }
