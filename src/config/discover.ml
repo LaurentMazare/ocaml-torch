@@ -27,7 +27,6 @@ let torch_flags () =
       [ Printf.sprintf "-Wl,-rpath,%s" lib_dir
       ; Printf.sprintf "-L%s" lib_dir
       ; "-lc10"
-      ; "-lcaffe2"
       ; "-ltorch"
       ]
     in

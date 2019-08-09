@@ -277,6 +277,7 @@ val avg_pool2d
   -> ?count_include_pad:bool
   -> ?ceil_mode:bool
   -> ?stride:int * int
+  -> ?divisor_override:int
   -> t
   -> ksize:int * int
   -> t

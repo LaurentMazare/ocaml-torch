@@ -13,6 +13,9 @@ let excluded_functions =
     ; "log_softmax_backward_data"
     ; "softmax_backward_data"
     ; "copy_"
+    ; "conv_transpose2d_backward_out"
+    ; "conv_transpose3d_backward_out"
+    ; "normal"
     ]
 
 let excluded_prefixes = [ "_"; "thnn_"; "th_" ]

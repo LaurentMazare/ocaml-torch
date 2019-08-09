@@ -137,7 +137,7 @@ let grad2 d_out x_in =
   in
   Tensor.(grad_dout * grad_dout)
   |> Tensor.view ~size:[ batch_size; -1 ]
-  |> Tensor.sum2 ~dim:[ 1 ] ~keepdim:false
+  |> Tensor.sum1 ~dim:[ 1 ] ~keepdim:false ~dtype:(T Float)
 
 let () =
   let device = Device.cuda_if_available () in

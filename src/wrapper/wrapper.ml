@@ -189,6 +189,9 @@ module Tensor = struct
     let out_ = CArray.to_list out_ in
     List.iter (Gc.finalise free) out_;
     out_
+
+  let sum t = sum t ~dtype:(kind t)
+  let mean t = mean t ~dtype:(kind t)
 end
 
 module Scalar = struct

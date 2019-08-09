@@ -87,7 +87,8 @@ module Dec : Decoder = struct
         |> Tensor.relu
         |> Layer.Gru.step gru hidden
       in
-      hidden, Layer.forward linear hidden |> Tensor.log_softmax ~dim:(-1)
+      ( hidden
+      , Layer.forward linear hidden |> Tensor.log_softmax ~dim:(-1) ~dtype:(T Float) )
     in
     forward, Layer.Gru.zero_state gru ~batch_size:1
 
@@ -139,7 +140,8 @@ module Dec_attn : Decoder = struct
         |> Tensor.relu
       in
       let hidden = Layer.Gru.step gru hidden output in
-      hidden, Layer.forward linear hidden |> Tensor.log_softmax ~dim:(-1)
+      ( hidden
+      , Layer.forward linear hidden |> Tensor.log_softmax ~dim:(-1) ~dtype:(T Float) )
     in
     forward, Layer.Gru.zero_state gru ~batch_size:1
 

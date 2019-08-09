@@ -93,6 +93,6 @@ let v2 vs ~num_classes =
       |> Layer.forward_ layers ~is_training
       |> Layer.forward_ final_cbr ~is_training
       |> Tensor.dropout ~p:0.2 ~is_training
-      |> Tensor.mean2 ~dim:[ 2 ] ~keepdim:false
-      |> Tensor.mean2 ~dim:[ 2 ] ~keepdim:false
+      |> Tensor.mean1 ~dim:[ 2 ] ~keepdim:false ~dtype:(T Float)
+      |> Tensor.mean1 ~dim:[ 2 ] ~keepdim:false ~dtype:(T Float)
       |> Layer.forward final_linear)

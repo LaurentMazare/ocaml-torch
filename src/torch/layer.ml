@@ -30,8 +30,8 @@ let kaiming_uniform vs ~name ~shape ~a =
 let apply ?activation ys =
   match activation with
   | Some Relu -> Tensor.relu ys
-  | Some Softmax -> Tensor.softmax ys ~dim:(-1)
-  | Some Log_softmax -> Tensor.log_softmax ys ~dim:(-1)
+  | Some Softmax -> Tensor.softmax ys ~dim:(-1) ~dtype:(T Float)
+  | Some Log_softmax -> Tensor.log_softmax ys ~dim:(-1) ~dtype:(T Float)
   | Some Tanh -> Tensor.tanh ys
   | Some Sigmoid -> Tensor.sigmoid ys
   | Some Leaky_relu -> Tensor.leaky_relu ys

@@ -10,7 +10,7 @@ let layer_norm vs dim =
   let a = Var_store.new_var vs ~name:"a" ~shape:[ dim ] ~init:Ones in
   let b = Var_store.new_var vs ~name:"b" ~shape:[ dim ] ~init:Zeros in
   Layer.of_fn (fun xs ->
-      let mu = Tensor.mean2 xs ~dim:[ -1 ] ~keepdim:true in
+      let mu = Tensor.mean1 xs ~dim:[ -1 ] ~keepdim:true ~dtype:(T Float) in
       let sigma = Tensor.std1 xs ~dim:[ -1 ] ~unbiased:true ~keepdim:true in
       Tensor.((a * (xs - mu) / (sigma + f 1e-6)) + b))
 
@@ -30,7 +30,7 @@ let attention ~query ~key ~value ~mask ~dropout ~is_training =
     let mask = Tensor.eq_scalar mask (Scalar.int 0) in
     Tensor.(scores / f sqrt_d_k)
     |> Tensor.masked_fill ~mask ~value:(Scalar.float (-1e9))
-    |> Tensor.softmax ~dim:(-1)
+    |> Tensor.softmax ~dim:(-1) ~dtype:(T Float)
     |> Tensor.dropout ~p:dropout ~is_training
   in
   Tensor.matmul p_attn value

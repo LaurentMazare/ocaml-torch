@@ -10,7 +10,7 @@ let () =
   let model = Module.load model_filename in
   let image = Torch_vision.Imagenet.load_image image_filename in
   Module.forward model [ image ]
-  |> Tensor.softmax ~dim:(-1)
+  |> Tensor.softmax ~dim:(-1) ~dtype:(T Float)
   |> Torch_vision.Imagenet.Classes.top ~k:5
   |> List.iter ~f:(fun (class_name, p) ->
          Stdio.printf "%s: %.2f%%\n%!" class_name (100. *. p))

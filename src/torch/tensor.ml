@@ -143,6 +143,7 @@ let avg_pool2d
     ?(count_include_pad = false)
     ?(ceil_mode = false)
     ?stride
+    ?(divisor_override = 1)
     self
     ~ksize
   =
@@ -153,6 +154,7 @@ let avg_pool2d
     ~padding:(pair_to_list padding)
     ~ceil_mode
     ~count_include_pad
+    ~divisor_override
 
 let const_batch_norm ?(momentum = 0.1) ?(eps = 1e-5) input =
   batch_norm
@@ -175,7 +177,7 @@ let nll_loss ?(reduction = Torch_core.Reduction.Elementwise_mean) xs ~targets =
   nll_loss xs ~target:targets ~weight:None ~reduction ~ignore_index:(-100)
 
 let cross_entropy_for_logits ?reduction logits ~targets =
-  nll_loss ?reduction (log_softmax logits ~dim:(-1)) ~targets
+  nll_loss ?reduction (log_softmax logits ~dim:(-1) ~dtype:(T Float)) ~targets
 
 let dropout t ~p ~is_training = dropout t ~p ~train:is_training
 
@@ -188,7 +190,7 @@ let mse_loss ?(reduction = Torch_core.Reduction.Elementwise_mean) t1 t2 =
 let huber_loss ?(reduction = Torch_core.Reduction.Elementwise_mean) t1 t2 =
   let d = abs (t1 - t2) in
   let half = f 0.5 in
-  let err = where ~condition:(le d (Scalar.float 1.)) (half * d * d) (d - half) in
+  let err = where1 ~condition:(le d (Scalar.float 1.)) (half * d * d) (d - half) in
   match reduction with
   | None -> err
   | Elementwise_mean -> mean err
