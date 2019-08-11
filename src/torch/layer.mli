@@ -169,9 +169,9 @@ val batch_norm2d
 (** {3 Recurrent Neural Networks } *)
 
 (** A Long Short Term Memory (LSTM) recurrent neural network. *)
-module Lstm : Rnn_intf.S with type state = Tensor.t * Tensor.t
+module Lstm : Rnn_intf.S with type state = [ `h_c of Tensor.t * Tensor.t ]
 
-module Gru : Rnn_intf.S with type state = Tensor.t
+module Gru : Rnn_intf.S with type state = [ `state of Tensor.t ]
 
 (** {3 Embeddings } *)
 

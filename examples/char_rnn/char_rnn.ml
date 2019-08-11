@@ -26,8 +26,9 @@ let sample ~lstm ~linear ~dataset ~device =
            let prev_y = Tensor.zeros [ 1; labels ] ~device in
            Tensor.fill_float (Tensor.narrow prev_y ~dim:1 ~start:prev_label ~length:1) 1.;
            let state = Layer.Lstm.step lstm state prev_y in
+           let (`h_c (h, _)) = state in
            let sampled_y =
-             Layer.forward linear (fst state)
+             Layer.forward linear h
              |> Tensor.softmax ~dim:(-1) ~dtype:(T Float)
              |> Tensor.multinomial ~num_samples:1 ~replacement:false
            in

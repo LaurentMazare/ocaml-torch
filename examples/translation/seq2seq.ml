@@ -29,7 +29,7 @@ module Enc : sig
   val zero_state : t -> state
   val to_tensor : state -> Tensor.t
 end = struct
-  type state = Tensor.t
+  type state = Layer.Gru.state
   type t = (Tensor.t -> hidden:state -> state * Tensor.t) * state
 
   let create vs ~input_size ~hidden_size =
@@ -43,13 +43,14 @@ end = struct
         |> Tensor.view ~size:[ 1; -1 ]
         |> Layer.Gru.step gru hidden
       in
-      hidden, hidden
+      let (`state out) = hidden in
+      hidden, out
     in
     forward, Layer.Gru.zero_state gru ~batch_size:1
 
   let forward = fst
   let zero_state = snd
-  let to_tensor = Fn.id
+  let to_tensor (`state state) = state
 end
 
 type 'state decode_fn =
@@ -71,7 +72,7 @@ end
 
 (* Decoder module without the attention part. *)
 module Dec : Decoder = struct
-  type state = Tensor.t
+  type state = Layer.Gru.state
   type t = state decode_fn * state
 
   let create vs ~hidden_size ~output_size =
@@ -87,19 +88,19 @@ module Dec : Decoder = struct
         |> Tensor.relu
         |> Layer.Gru.step gru hidden
       in
-      ( hidden
-      , Layer.forward linear hidden |> Tensor.log_softmax ~dim:(-1) ~dtype:(T Float) )
+      let (`state out) = hidden in
+      hidden, Layer.forward linear out |> Tensor.log_softmax ~dim:(-1) ~dtype:(T Float)
     in
     forward, Layer.Gru.zero_state gru ~batch_size:1
 
   let forward = fst
   let zero_state = snd
-  let of_tensor = Fn.id
+  let of_tensor state = `state state
 end
 
 (* Decoder module with the attention part. *)
 module Dec_attn : Decoder = struct
-  type state = Tensor.t
+  type state = Layer.Gru.state
   type t = state decode_fn * state
 
   let create vs ~hidden_size ~output_size =
@@ -117,8 +118,9 @@ module Dec_attn : Decoder = struct
         |> Tensor.dropout ~p:0.1 ~is_training
         |> Tensor.view ~size:[ 1; -1 ]
       in
+      let (`state hidden_tensor) = hidden in
       let attn_weights =
-        Tensor.cat [ embedded; hidden ] ~dim:1
+        Tensor.cat [ embedded; hidden_tensor ] ~dim:1
         |> Layer.forward attn
         |> Tensor.unsqueeze ~dim:0
       in
@@ -140,14 +142,16 @@ module Dec_attn : Decoder = struct
         |> Tensor.relu
       in
       let hidden = Layer.Gru.step gru hidden output in
+      let (`state hidden_tensor) = hidden in
       ( hidden
-      , Layer.forward linear hidden |> Tensor.log_softmax ~dim:(-1) ~dtype:(T Float) )
+      , Layer.forward linear hidden_tensor
+        |> Tensor.log_softmax ~dim:(-1) ~dtype:(T Float) )
     in
     forward, Layer.Gru.zero_state gru ~batch_size:1
 
   let forward = fst
   let zero_state = snd
-  let of_tensor = Fn.id
+  let of_tensor tensor = `state tensor
 end
 
 module D = Dec_attn
