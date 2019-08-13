@@ -89,7 +89,7 @@ let run t ~model =
   let s_masks = Tensor.zeros [ t.num_steps; t.num_procs ] in
   for s = 0 to t.num_steps - 1 do
     let { actor; critic } = Tensor.no_grad (fun () -> model (Tensor.get t.s_states s)) in
-    let probs = Tensor.softmax actor ~dim:(-1) in
+    let probs = Tensor.softmax actor ~dim:(-1) ~dtype:(T Float) in
     let actions =
       Tensor.multinomial probs ~num_samples:1 ~replacement:true |> Tensor.squeeze_last
     in

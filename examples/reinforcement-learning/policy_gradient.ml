@@ -70,7 +70,7 @@ let () =
       let action =
         Tensor.no_grad (fun () ->
             model (Tensor.unsqueeze obs ~dim:0)
-            |> Tensor.softmax ~dim:1
+            |> Tensor.softmax ~dim:1 ~dtype:(T Float)
             |> Tensor.multinomial ~num_samples:1 ~replacement:true
             |> Tensor.view ~size:[ 1 ]
             |> Tensor.to_int0_exn)
@@ -96,7 +96,12 @@ let () =
     in
     let logits = model (Tensor.stack acc.acc_obs ~dim:0) in
     let log_probs =
-      Tensor.(sum2 (action_mask * log_softmax logits ~dim:1) ~dim:[ 1 ] ~keepdim:false)
+      Tensor.(
+        sum1
+          (action_mask * log_softmax logits ~dim:1 ~dtype:(T Float))
+          ~dim:[ 1 ]
+          ~keepdim:false
+          ~dtype:(T Float))
     in
     let loss = Tensor.(~-(mean (acc_weights * log_probs))) in
     Optimizer.backward_step optimizer ~loss;

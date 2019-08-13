@@ -84,15 +84,18 @@ let train ~device =
       let actions = Tensor.index_select actions ~dim:0 ~index in
       let returns = Tensor.index_select returns ~dim:0 ~index in
       let { Rollout.actor; critic } = model states in
-      let log_probs = Tensor.log_softmax actor ~dim:(-1) in
-      let probs = Tensor.softmax actor ~dim:(-1) in
+      let log_probs = Tensor.log_softmax actor ~dim:(-1) ~dtype:(T Float) in
+      let probs = Tensor.softmax actor ~dim:(-1) ~dtype:(T Float) in
       let action_log_probs =
         let index = Tensor.unsqueeze actions ~dim:(-1) |> Tensor.to_device ~device in
         Tensor.gather log_probs ~dim:(-1) ~index ~sparse_grad:false
         |> Tensor.squeeze_last
       in
       let dist_entropy =
-        Tensor.(~-(log_probs * probs) |> sum2 ~dim:[ -1 ] ~keepdim:false |> mean)
+        Tensor.(
+          ~-(log_probs * probs)
+          |> sum1 ~dim:[ -1 ] ~keepdim:false ~dtype:(T Float)
+          |> mean)
       in
       let advantages = Tensor.(to_device returns ~device - critic) in
       let value_loss = Tensor.(advantages * advantages) |> Tensor.mean in
