@@ -14,14 +14,14 @@ module type S = sig
   *)
   val step : t -> state -> Tensor.t -> state
 
-  (** [seq t inputs] applies multiple steps of the RNN starting
-      from a zero state. The hidden states and the final state are
-      returned.
+  (** [seq t inputs ~is_training] applies multiple steps of the RNN
+      starting from a zero state. The hidden states and the final state
+      are returned.
       [inputs] should have shape [batch_size * timesteps * input_dim],
       the returned output tensor then has shape
       [batch_size * timesteps * hidden_size].
   *)
-  val seq : t -> Tensor.t -> Tensor.t * state
+  val seq : t -> Tensor.t -> is_training:bool -> Tensor.t * state
 
   (** [zero_state t ~batch_size] returns an initial state to be used for
       a RNN.

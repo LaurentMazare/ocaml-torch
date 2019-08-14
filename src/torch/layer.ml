@@ -272,7 +272,7 @@ module Lstm = struct
     in
     `h_c (h, c)
 
-  let seq t input_ =
+  let seq t input_ ~is_training =
     let batch_size = Tensor.shape input_ |> List.hd_exn in
     let h = Tensor.zeros [ 1; batch_size; t.hidden_size ] ~device:t.device in
     let c = Tensor.zeros [ 1; batch_size; t.hidden_size ] ~device:t.device in
@@ -284,7 +284,7 @@ module Lstm = struct
         ~has_biases:true
         ~num_layers:1
         ~dropout:0.
-        ~train:false
+        ~train:is_training
         ~bidirectional:false
         ~batch_first:true
     in
@@ -329,7 +329,7 @@ module Gru = struct
     in
     `state out
 
-  let seq t input_ =
+  let seq t input_ ~is_training =
     let batch_size = Tensor.shape input_ |> List.hd_exn in
     let hx = Tensor.zeros [ 1; batch_size; t.hidden_size ] ~device:t.device in
     let out, state =
@@ -340,7 +340,7 @@ module Gru = struct
         ~has_biases:true
         ~num_layers:1
         ~dropout:0.
-        ~train:false
+        ~train:is_training
         ~bidirectional:false
         ~batch_first:true
     in

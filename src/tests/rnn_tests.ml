@@ -15,7 +15,7 @@ let%expect_test _ =
   Stdio.printf !"%{sexp:int list}\n" (Tensor.shape state);
   [%expect {| (5 4) |}];
   let input = Tensor.randn [ batch_size; seq_len; input_dim ] in
-  let out, _ = Layer.Gru.seq gru input in
+  let out, _ = Layer.Gru.seq gru input ~is_training:false in
   Stdio.printf !"%{sexp:int list}\n" (Tensor.shape out);
   [%expect {| (5 3 4) |}]
 
@@ -32,6 +32,6 @@ let%expect_test _ =
     (5 4)
     (5 4) |}];
   let input = Tensor.randn [ batch_size; seq_len; input_dim ] in
-  let out, _ = Layer.Lstm.seq lstm input in
+  let out, _ = Layer.Lstm.seq lstm input ~is_training:false in
   Stdio.printf !"%{sexp:int list}\n" (Tensor.shape out);
   [%expect {| (5 3 4) |}]

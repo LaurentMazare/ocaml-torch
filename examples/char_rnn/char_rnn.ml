@@ -73,7 +73,7 @@ let () =
             Tensor.zeros [ batch_size; seq_len; labels ] ~device
             |> Tensor.scatter_ ~dim:2 ~src:one ~index:xs
           in
-          let lstm_out, _ = Layer.Lstm.seq lstm onehot in
+          let lstm_out, _ = Layer.Lstm.seq lstm onehot ~is_training:true in
           let logits = Layer.forward linear lstm_out in
           (* Compute the cross-entropy loss. *)
           let loss =
