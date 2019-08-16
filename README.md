@@ -142,8 +142,8 @@ acceleration enabled.
 
 ### Option 1: Using PyTorch pre-built Binaries
 The libtorch library can be downloaded from the [PyTorch
-website](https://pytorch.org/resources) ([1.1.0 cpu
-version](https://download.pytorch.org/libtorch/cpu/libtorch-shared-with-deps-1.1.0.zip)).
+website](https://pytorch.org/resources) ([1.2.0 cpu
+version](https://download.pytorch.org/libtorch/cpu/libtorch-shared-with-deps-1.2.0.zip)).
 
 Download and extract the libtorch library then to build all the examples run:
 
@@ -159,9 +159,9 @@ Conda packages for PyTorch 1.1 can be used via the following command.
 ```bash
 conda create -n torch
 source activate torch
-conda install pytorch-cpu=1.1.0 -c pytorch
+conda install pytorch-cpu=1.2.0 -c pytorch
 # Or for the CUDA version
-# conda install pytorch=1.1.0 -c pytorch
+# conda install pytorch=1.2.0 -c pytorch
 
 git clone https://github.com/LaurentMazare/ocaml-torch.git
 cd ocaml-torch
