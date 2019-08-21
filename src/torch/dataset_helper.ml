@@ -160,7 +160,10 @@ let batch_accuracy ?device ?samples t train_or_test ~batch_size ~predict =
         |> Tensor.to_device ?device
       in
       let batch_accuracy =
-        Tensor.(sum (argmax predicted_labels = labels) |> float_value)
+        Tensor.(argmax predicted_labels = labels)
+        |> Tensor.to_kind ~kind:(T Float)
+        |> Tensor.sum
+        |> Tensor.float_value
       in
       loop (start_index + batch_size) (sum_accuracy +. batch_accuracy))
   in

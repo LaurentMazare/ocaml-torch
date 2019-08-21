@@ -35,7 +35,10 @@ let () =
     Tensor.zero_grad bs;
     (* Compute the validation error. *)
     let test_accuracy =
-      Tensor.(sum (argmax (model test_images) = test_labels) |> float_value)
+      Tensor.(argmax (model test_images) = test_labels)
+      |> Tensor.to_kind ~kind:(T Float)
+      |> Tensor.sum
+      |> Tensor.float_value
       |> fun sum -> sum /. Float.of_int (Tensor.shape test_images |> List.hd_exn)
     in
     Stdio.printf

@@ -87,7 +87,10 @@ code](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/mnist/li
 
     (* Compute the validation error. *)
     let test_accuracy =
-      Tensor.(sum (argmax (model test_images) = test_labels) |> float_value)
+      Tensor.(argmax (model test_images) = test_labels)
+      |> Tensor.to_kind ~kind:(T Float)
+      |> Tensor.sum
+      |> Tensor.float_value
       |> fun sum -> sum /. test_samples
     in
     printf "%d %f %.2f%%\n%!" index (Tensor.float_value loss) (100. *. test_accuracy);
