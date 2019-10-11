@@ -63,9 +63,11 @@ module type S = sig
   val addr : t -> vec1:t -> vec2:t -> t
   val addr_ : t -> vec1:t -> vec2:t -> t
   val addr_out : out:t -> t -> vec1:t -> vec2:t -> t
-  val affine_grid_generator : theta:t -> size:int list -> t
-  val affine_grid_generator_backward : grad:t -> size:int list -> t
+  val affine_grid_generator : theta:t -> size:int list -> align_corners:bool -> t
+  val affine_grid_generator_backward : grad:t -> size:int list -> align_corners:bool -> t
   val alias : t -> t
+  val align_as : t -> t -> t
+  val align_tensors : t list -> t list
   val all : t -> t
   val all1 : t -> dim:int -> keepdim:bool -> t
   val all_out : out:t -> t -> dim:int -> keepdim:bool -> t
@@ -236,6 +238,7 @@ module type S = sig
     -> t
     -> mean:t
     -> invstd:t
+    -> weight:t option
     -> input_g:bool
     -> weight_g:bool
     -> bias_g:bool
@@ -452,26 +455,6 @@ module type S = sig
     -> groups:int
     -> t
 
-  val conv_dilated2d
-    :  t
-    -> weight:t
-    -> kernel_size:int list
-    -> bias:t option
-    -> stride:int list
-    -> padding:int list
-    -> dilation:int list
-    -> t
-
-  val conv_dilated3d
-    :  t
-    -> weight:t
-    -> kernel_size:int list
-    -> bias:t option
-    -> stride:int list
-    -> padding:int list
-    -> dilation:int list
-    -> t
-
   val conv_tbc : t -> weight:t -> bias:t -> pad:int -> t
   val conv_tbc_backward : t -> t -> weight:t -> bias:t -> pad:int -> t * t * t
 
@@ -497,29 +480,6 @@ module type S = sig
     -> dilation:int list
     -> t
 
-  val conv_transpose2d1
-    :  t
-    -> weight:t
-    -> kernel_size:int list
-    -> bias:t option
-    -> stride:int list
-    -> padding:int list
-    -> output_padding:int list
-    -> dilation:int list
-    -> t
-
-  val conv_transpose2d_out
-    :  out:t
-    -> t
-    -> weight:t
-    -> kernel_size:int list
-    -> bias:t option
-    -> stride:int list
-    -> padding:int list
-    -> output_padding:int list
-    -> dilation:int list
-    -> t
-
   val conv_transpose3d
     :  t
     -> weight:t
@@ -531,30 +491,19 @@ module type S = sig
     -> dilation:int list
     -> t
 
-  val conv_transpose3d1
+  val convolution
     :  t
     -> weight:t
-    -> kernel_size:int list
     -> bias:t option
     -> stride:int list
     -> padding:int list
-    -> output_padding:int list
     -> dilation:int list
+    -> transposed:bool
+    -> output_padding:int list
+    -> groups:int
     -> t
 
-  val conv_transpose3d_out
-    :  out:t
-    -> t
-    -> weight:t
-    -> kernel_size:int list
-    -> bias:t option
-    -> stride:int list
-    -> padding:int list
-    -> output_padding:int list
-    -> dilation:int list
-    -> t
-
-  val convolution
+  val convolution_overrideable
     :  t
     -> weight:t
     -> bias:t option
@@ -720,6 +669,7 @@ module type S = sig
   val cumprod_out : out:t -> t -> dim:int -> dtype:Kind.packed -> t
   val cumsum : t -> dim:int -> dtype:Kind.packed -> t
   val cumsum_out : out:t -> t -> dim:int -> dtype:Kind.packed -> t
+  val data : t -> t
   val dequantize : t -> t
   val det : t -> t
   val detach : t -> t
@@ -851,6 +801,25 @@ module type S = sig
   val eye_out : out:t -> n:int -> t
   val eye_out1 : out:t -> n:int -> m:int -> t
 
+  val fake_quantize_per_channel_affine
+    :  t
+    -> scale:t
+    -> zero_point:t
+    -> axis:int
+    -> quant_min:int
+    -> quant_max:int
+    -> t
+
+  val fake_quantize_per_channel_affine_backward
+    :  grad:t
+    -> t
+    -> scale:t
+    -> zero_point:t
+    -> axis:int
+    -> quant_min:int
+    -> quant_max:int
+    -> t
+
   val fake_quantize_per_tensor_affine
     :  t
     -> scale:float
@@ -869,6 +838,7 @@ module type S = sig
     -> t
 
   val fbgemm_linear_fp16_weight : t -> packed_weight:t -> bias:t -> t
+  val fbgemm_linear_fp16_weight_fp32_activation : t -> packed_weight:t -> bias:t -> t
 
   val fbgemm_linear_int8_weight
     :  t
@@ -880,8 +850,19 @@ module type S = sig
     -> bias:t
     -> t
 
+  val fbgemm_linear_int8_weight_fp32_activation
+    :  t
+    -> weight:t
+    -> packed:t
+    -> col_offsets:t
+    -> weight_scale:'a scalar
+    -> weight_zero_point:'a scalar
+    -> bias:t
+    -> t
+
   val fbgemm_pack_gemm_matrix_fp16 : t -> t
-  val fbgemm_pack_quantized_matrix : t -> k:int -> n:int -> t
+  val fbgemm_pack_quantized_matrix : t -> t
+  val fbgemm_pack_quantized_matrix1 : t -> k:int -> n:int -> t
   val feature_alpha_dropout : t -> p:float -> train:bool -> t
   val feature_alpha_dropout_ : t -> p:float -> train:bool -> t
   val feature_dropout : t -> p:float -> train:bool -> t
@@ -998,8 +979,22 @@ module type S = sig
   val glu_backward_out : grad_input:t -> grad_output:t -> t -> dim:int -> t
   val glu_out : out:t -> t -> dim:int -> t
   val grad : t -> t
-  val grid_sampler : t -> grid:t -> interpolation_mode:int -> padding_mode:int -> t
-  val grid_sampler_2d : t -> grid:t -> interpolation_mode:int -> padding_mode:int -> t
+
+  val grid_sampler
+    :  t
+    -> grid:t
+    -> interpolation_mode:int
+    -> padding_mode:int
+    -> align_corners:bool
+    -> t
+
+  val grid_sampler_2d
+    :  t
+    -> grid:t
+    -> interpolation_mode:int
+    -> padding_mode:int
+    -> align_corners:bool
+    -> t
 
   val grid_sampler_2d_backward
     :  grad_output:t
@@ -1007,9 +1002,16 @@ module type S = sig
     -> grid:t
     -> interpolation_mode:int
     -> padding_mode:int
+    -> align_corners:bool
     -> t * t
 
-  val grid_sampler_3d : t -> grid:t -> interpolation_mode:int -> padding_mode:int -> t
+  val grid_sampler_3d
+    :  t
+    -> grid:t
+    -> interpolation_mode:int
+    -> padding_mode:int
+    -> align_corners:bool
+    -> t
 
   val grid_sampler_3d_backward
     :  grad_output:t
@@ -1017,6 +1019,7 @@ module type S = sig
     -> grid:t
     -> interpolation_mode:int
     -> padding_mode:int
+    -> align_corners:bool
     -> t * t
 
   val group_norm
@@ -1286,6 +1289,12 @@ module type S = sig
   val log_sigmoid_out : out:t -> t -> t
   val log_softmax : t -> dim:int -> dtype:Kind.packed -> t
   val logdet : t -> t
+  val logical_not : t -> t
+  val logical_not_ : t -> t
+  val logical_not_out : out:t -> t -> t
+  val logical_xor : t -> t -> t
+  val logical_xor_ : t -> t -> t
+  val logical_xor_out : out:t -> t -> t -> t
 
   val logspace
     :  start:'a scalar
@@ -1873,6 +1882,14 @@ module type S = sig
   val neg : t -> t
   val neg_ : t -> t
   val neg_out : out:t -> t -> t
+  val new_empty : t -> size:int list -> options:Kind.packed * Device.t -> t
+
+  val new_full
+    :  t
+    -> size:int list
+    -> fill_value:'a scalar
+    -> options:Kind.packed * Device.t
+    -> t
 
   val nll_loss
     :  t
@@ -2022,17 +2039,20 @@ module type S = sig
   val prod1 : t -> dim:int -> keepdim:bool -> dtype:Kind.packed -> t
   val prod_out : out:t -> t -> dim:int -> keepdim:bool -> dtype:Kind.packed -> t
   val put_ : t -> index:t -> source:t -> accumulate:bool -> t
+  val q_per_channel_scales : t -> t
+  val q_per_channel_zero_points : t -> t
   val qr : t -> some:bool -> t * t
   val qr_out : q:t -> r:t -> t -> some:bool -> t * t
-  val quantize_linear : t -> scale:float -> zero_point:int -> dtype:Kind.packed -> t
 
-  val quantize_linear_per_channel
+  val quantize_per_channel
     :  t
     -> scales:t
     -> zero_points:t
-    -> axis:int list
+    -> axis:int
     -> dtype:Kind.packed
     -> t
+
+  val quantize_per_tensor : t -> scale:float -> zero_point:int -> dtype:Kind.packed -> t
 
   val quantized_gru
     :  t
@@ -2086,6 +2106,7 @@ module type S = sig
     -> bidirectional:bool
     -> batch_first:bool
     -> dtype:Kind.packed
+    -> use_dynamic:bool
     -> t * t * t
 
   val quantized_lstm_cell
@@ -2111,6 +2132,7 @@ module type S = sig
     -> stride:int list
     -> padding:int list
     -> dilation:int list
+    -> ceil_mode:bool
     -> t
 
   val quantized_rnn_relu_cell
@@ -2358,9 +2380,6 @@ module type S = sig
   val rsqrt_out : out:t -> t -> t
   val rsub : t -> t -> t
   val rsub1 : t -> 'a scalar -> t
-  val s_native_addmm : t -> mat1:t -> mat2:t -> t
-  val s_native_addmm_ : t -> mat1:t -> mat2:t -> t
-  val s_native_addmm_out : out:t -> t -> mat1:t -> mat2:t -> t
   val scalar_tensor : s:'a scalar -> options:Kind.packed * Device.t -> t
   val scatter : t -> dim:int -> index:t -> src:t -> t
   val scatter1 : t -> dim:int -> index:t -> value:'a scalar -> t
@@ -2390,6 +2409,73 @@ module type S = sig
   val sinh_out : out:t -> t -> t
   val slice : t -> dim:int -> start:int -> end_:int -> step:int -> t
   val slogdet : t -> t * t
+
+  val slow_conv_dilated2d
+    :  t
+    -> weight:t
+    -> kernel_size:int list
+    -> bias:t option
+    -> stride:int list
+    -> padding:int list
+    -> dilation:int list
+    -> t
+
+  val slow_conv_dilated3d
+    :  t
+    -> weight:t
+    -> kernel_size:int list
+    -> bias:t option
+    -> stride:int list
+    -> padding:int list
+    -> dilation:int list
+    -> t
+
+  val slow_conv_transpose2d
+    :  t
+    -> weight:t
+    -> kernel_size:int list
+    -> bias:t option
+    -> stride:int list
+    -> padding:int list
+    -> output_padding:int list
+    -> dilation:int list
+    -> t
+
+  val slow_conv_transpose2d_out
+    :  out:t
+    -> t
+    -> weight:t
+    -> kernel_size:int list
+    -> bias:t option
+    -> stride:int list
+    -> padding:int list
+    -> output_padding:int list
+    -> dilation:int list
+    -> t
+
+  val slow_conv_transpose3d
+    :  t
+    -> weight:t
+    -> kernel_size:int list
+    -> bias:t option
+    -> stride:int list
+    -> padding:int list
+    -> output_padding:int list
+    -> dilation:int list
+    -> t
+
+  val slow_conv_transpose3d_out
+    :  out:t
+    -> t
+    -> weight:t
+    -> kernel_size:int list
+    -> bias:t option
+    -> stride:int list
+    -> padding:int list
+    -> output_padding:int list
+    -> dilation:int list
+    -> t
+
   val smm : t -> mat2:t -> t
   val smooth_l1_loss : t -> target:t -> reduction:Reduction.t -> t
 

@@ -107,7 +107,7 @@ let () =
         let cxx_abi =
           match Caml.Sys.getenv_opt "LIBTORCH_CXX11_ABI" with
           | Some v -> v
-          | None -> "0"
+          | None -> "1"
         in
         Printf.sprintf "-D_GLIBCXX_USE_CXX11_ABI=%s" cxx_abi
       in
