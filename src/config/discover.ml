@@ -40,7 +40,7 @@ let torch_flags () =
            if String.is_prefix filename ~prefix:"python"
            then (
              let libdir =
-               Printf.sprintf "%s/%s/site-packages/torch/lib" conda_prefix filename
+               Printf.sprintf "%s/%s/site-packages/torch" conda_prefix filename
              in
              if file_exists libdir && Caml.Sys.is_directory libdir
              then Some libdir
@@ -48,7 +48,7 @@ let torch_flags () =
            else None)
     |> function
     | [] -> None
-    | lib_dir :: _ -> Some (config ~include_dir:(lib_dir /^ "include") ~lib_dir)
+    | lib_dir :: _ -> Some (config ~include_dir:(lib_dir /^ "include") ~lib_dir:(lib_dir /^ "lib"))
   in
   match Caml.Sys.getenv_opt "LIBTORCH" with
   | Some l -> config ~include_dir:(l /^ "include") ~lib_dir:(l /^ "lib")
