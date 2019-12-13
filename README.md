@@ -6,7 +6,12 @@ differentiation.
 [![Build Status](https://travis-ci.org/LaurentMazare/ocaml-torch.svg?branch=master)](https://travis-ci.org/LaurentMazare/ocaml-torch)
 
 These bindings use the [PyTorch C++ API](https://pytorch.org/cppdocs/) and are
-mostly automatically generated. The current GitHub tip corresponds to PyTorch **v1.3.0**.
+mostly automatically generated. The current GitHub tip and the opam package v0.7
+corresponds to PyTorch **v1.3.1**.
+
+On Linux note that you will need the PyTorch version using the cxx11 abi
+[cpu version](https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-1.3.1%2Bcpu.zip),
+[cuda 10 version](https://download.pytorch.org/libtorch/cu101/libtorch-cxx11-abi-shared-with-deps-1.3.1.zip).
 
 ## Opam Installation
 
