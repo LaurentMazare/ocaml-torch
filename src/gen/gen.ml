@@ -17,7 +17,12 @@ let excluded_functions =
     ; "conv_transpose3d_backward_out"
     ; "slow_conv_transpose2d_backward_out"
     ; "slow_conv_transpose3d_backward_out"
+    ; "slow_conv3d_backward_out"
     ; "normal"
+    ; "_cufft_set_plan_cache_max_size"
+    ; "_cufft_clear_plan_cache"
+    ; "backward"
+    ; "set_data"
     ]
 
 let excluded_prefixes = [ "_"; "thnn_"; "th_" ]
@@ -286,9 +291,7 @@ let read_yaml filename =
                    List.filter_map arguments ~f:(fun arg ->
                        let arg = extract_map arg in
                        let arg_name = Map.find_exn arg "name" |> extract_string in
-                       let arg_type =
-                         Map.find_exn arg "dynamic_type" |> extract_string
-                       in
+                       let arg_type = Map.find_exn arg "dynamic_type" |> extract_string in
                        let is_nullable =
                          Map.find arg "is_nullable"
                          |> Option.value_map ~default:false ~f:extract_bool
@@ -429,8 +432,7 @@ let write_wrapper funcs filename =
                 done;
                 pm
                   "  %s"
-                  (List.init ntensors ~f:(Printf.sprintf "t%d")
-                  |> String.concat ~sep:", ")
+                  (List.init ntensors ~f:(Printf.sprintf "t%d") |> String.concat ~sep:", ")
               | `dynamic ->
                 pm
                   "  stubs_%s %s |> to_tensor_list"

@@ -480,6 +480,20 @@ let alpha_dropout_ self ~p ~train =
   Gc.finalise C.Tensor.free t0;
   t0
 
+let angle self =
+  let out__ = CArray.make t 1 in
+  stubs_angle (CArray.start out__) self;
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
+let angle_out ~out self =
+  let out__ = CArray.make t 1 in
+  stubs_angle_out (CArray.start out__) out self;
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
 let any self =
   let out__ = CArray.make t 1 in
   stubs_any (CArray.start out__) self;
@@ -572,11 +586,7 @@ let argmin self ~dim ~keepdim =
 
 let argsort self ~dim ~descending =
   let out__ = CArray.make t 1 in
-  stubs_argsort
-    (CArray.start out__)
-    self
-    (Int64.of_int dim)
-    (if descending then 1 else 0);
+  stubs_argsort (CArray.start out__) self (Int64.of_int dim) (if descending then 1 else 0);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
@@ -992,8 +1002,7 @@ let batch_norm
   Gc.finalise C.Tensor.free t0;
   t0
 
-let batch_norm_backward_elemt ~grad_out input ~mean ~invstd ~weight ~mean_dy ~mean_dy_xmu
-  =
+let batch_norm_backward_elemt ~grad_out input ~mean ~invstd ~weight ~mean_dy ~mean_dy_xmu =
   let out__ = CArray.make t 1 in
   stubs_batch_norm_backward_elemt
     (CArray.start out__)
@@ -1047,6 +1056,25 @@ let batch_norm_elemt input ~weight ~bias ~mean ~invstd ~eps =
   let out__ = CArray.make t 1 in
   stubs_batch_norm_elemt
     (CArray.start out__)
+    input
+    (match weight with
+    | Some v -> v
+    | None -> null)
+    (match bias with
+    | Some v -> v
+    | None -> null)
+    mean
+    invstd
+    eps;
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
+let batch_norm_elemt_out ~out input ~weight ~bias ~mean ~invstd ~eps =
+  let out__ = CArray.make t 1 in
+  stubs_batch_norm_elemt_out
+    (CArray.start out__)
+    out
     input
     (match weight with
     | Some v -> v
@@ -1343,6 +1371,48 @@ let bitwise_not_out ~out self =
   Gc.finalise C.Tensor.free t0;
   t0
 
+let bitwise_xor self other =
+  let out__ = CArray.make t 1 in
+  stubs_bitwise_xor (CArray.start out__) self other;
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
+let bitwise_xor1 self other =
+  let out__ = CArray.make t 1 in
+  stubs_bitwise_xor1 (CArray.start out__) self other;
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
+let bitwise_xor_ self other =
+  let out__ = CArray.make t 1 in
+  stubs_bitwise_xor_ (CArray.start out__) self other;
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
+let bitwise_xor_1 self other =
+  let out__ = CArray.make t 1 in
+  stubs_bitwise_xor_1 (CArray.start out__) self other;
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
+let bitwise_xor_out ~out self other =
+  let out__ = CArray.make t 1 in
+  stubs_bitwise_xor_out (CArray.start out__) out self other;
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
+let bitwise_xor_out1 ~out self other =
+  let out__ = CArray.make t 1 in
+  stubs_bitwise_xor_out1 (CArray.start out__) out self other;
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
 let blackman_window ~window_length ~options =
   let out__ = CArray.make t 1 in
   stubs_blackman_window
@@ -1381,9 +1451,7 @@ let bmm_out ~out self ~mat2 =
   t0
 
 let broadcast_tensors tensors =
-  stubs_broadcast_tensors
-    (CArray.of_list t tensors |> CArray.start)
-    (List.length tensors)
+  stubs_broadcast_tensors (CArray.of_list t tensors |> CArray.start) (List.length tensors)
   |> to_tensor_list
 
 let cartesian_prod tensors =
@@ -1426,9 +1494,9 @@ let cauchy_ self ~median ~sigma =
   Gc.finalise C.Tensor.free t0;
   t0
 
-let cdist ~x1 ~x2 ~p =
+let cdist ~x1 ~x2 ~p ~compute_mode =
   let out__ = CArray.make t 1 in
-  stubs_cdist (CArray.start out__) x1 x2 p;
+  stubs_cdist (CArray.start out__) x1 x2 p (Int64.of_int compute_mode);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
@@ -1681,6 +1749,20 @@ let combinations self ~r ~with_replacement =
     self
     (Int64.of_int r)
     (if with_replacement then 1 else 0);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
+let conj self =
+  let out__ = CArray.make t 1 in
+  stubs_conj (CArray.start out__) self;
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
+let conj_out ~out self =
+  let out__ = CArray.make t 1 in
+  stubs_conj_out (CArray.start out__) out self;
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
@@ -2111,7 +2193,7 @@ let cudnn_batch_norm
     ~exponential_average_factor
     ~epsilon
   =
-  let out__ = CArray.make t 3 in
+  let out__ = CArray.make t 4 in
   stubs_cudnn_batch_norm
     (CArray.start out__)
     input
@@ -2134,7 +2216,9 @@ let cudnn_batch_norm
   Gc.finalise C.Tensor.free t1;
   let t2 = CArray.get out__ 2 in
   Gc.finalise C.Tensor.free t2;
-  t0, t1, t2
+  let t3 = CArray.get out__ 3 in
+  Gc.finalise C.Tensor.free t3;
+  t0, t1, t2, t3
 
 let cudnn_batch_norm_backward
     input
@@ -2145,6 +2229,7 @@ let cudnn_batch_norm_backward
     ~save_mean
     ~save_var
     ~epsilon
+    ~reservespace
   =
   let out__ = CArray.make t 3 in
   stubs_cudnn_batch_norm_backward
@@ -2164,7 +2249,8 @@ let cudnn_batch_norm_backward
     (match save_var with
     | Some v -> v
     | None -> null)
-    epsilon;
+    epsilon
+    reservespace;
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   let t1 = CArray.get out__ 1 in
@@ -2751,12 +2837,7 @@ let embedding_renorm_ self ~indices ~max_norm ~norm_type =
   Gc.finalise C.Tensor.free t0;
   t0
 
-let embedding_sparse_backward
-    ~grad
-    ~indices
-    ~num_weights
-    ~padding_idx
-    ~scale_grad_by_freq
+let embedding_sparse_backward ~grad ~indices ~num_weights ~padding_idx ~scale_grad_by_freq
   =
   let out__ = CArray.make t 1 in
   stubs_embedding_sparse_backward
@@ -4235,6 +4316,20 @@ let im2col_out ~out self ~kernel_size ~dilation ~padding ~stride =
   Gc.finalise C.Tensor.free t0;
   t0
 
+let imag self =
+  let out__ = CArray.make t 1 in
+  stubs_imag (CArray.start out__) self;
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
+let imag_out ~out self =
+  let out__ = CArray.make t 1 in
+  stubs_imag_out (CArray.start out__) out self;
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
 let index self ~indices =
   let out__ = CArray.make t 1 in
   stubs_index
@@ -4422,6 +4517,13 @@ let irfft self ~signal_ndim ~normalized ~onesided ~signal_sizes =
 let isclose self other ~rtol ~atol ~equal_nan =
   let out__ = CArray.make t 1 in
   stubs_isclose (CArray.start out__) self other rtol atol (if equal_nan then 1 else 0);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
+let isfinite self =
+  let out__ = CArray.make t 1 in
+  stubs_isfinite (CArray.start out__) self;
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
@@ -6831,6 +6933,19 @@ let new_full self ~size ~fill_value ~options =
   Gc.finalise C.Tensor.free t0;
   t0
 
+let new_zeros self ~size ~options =
+  let out__ = CArray.make t 1 in
+  stubs_new_zeros
+    (CArray.start out__)
+    self
+    (List.map Int64.of_int size |> CArray.of_list int64_t |> CArray.start)
+    (List.length size)
+    (Kind.packed_to_int (fst options))
+    (Device.to_int (snd options));
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
 let nll_loss self ~target ~weight ~reduction ~ignore_index =
   let out__ = CArray.make t 1 in
   stubs_nll_loss
@@ -7656,6 +7771,43 @@ let quantized_lstm
   Gc.finalise C.Tensor.free t2;
   t0, t1, t2
 
+let quantized_lstm1
+    ~data
+    ~batch_sizes
+    ~hx
+    ~params
+    ~has_biases
+    ~num_layers
+    ~dropout
+    ~train
+    ~bidirectional
+    ~dtype
+    ~use_dynamic
+  =
+  let out__ = CArray.make t 3 in
+  stubs_quantized_lstm1
+    (CArray.start out__)
+    data
+    batch_sizes
+    (CArray.of_list t hx |> CArray.start)
+    (List.length hx)
+    (CArray.of_list t params |> CArray.start)
+    (List.length params)
+    (if has_biases then 1 else 0)
+    (Int64.of_int num_layers)
+    dropout
+    (if train then 1 else 0)
+    (if bidirectional then 1 else 0)
+    (Kind.packed_to_int dtype)
+    (if use_dynamic then 1 else 0);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  let t1 = CArray.get out__ 1 in
+  Gc.finalise C.Tensor.free t1;
+  let t2 = CArray.get out__ 2 in
+  Gc.finalise C.Tensor.free t2;
+  t0, t1, t2
+
 let quantized_lstm_cell
     input
     ~hx
@@ -8031,6 +8183,20 @@ let range_out ~out ~start ~end_ =
   Gc.finalise C.Tensor.free t0;
   t0
 
+let real self =
+  let out__ = CArray.make t 1 in
+  stubs_real (CArray.start out__) self;
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
+let real_out ~out self =
+  let out__ = CArray.make t 1 in
+  stubs_real_out (CArray.start out__) out self;
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
 let reciprocal self =
   let out__ = CArray.make t 1 in
   stubs_reciprocal (CArray.start out__) self;
@@ -8401,6 +8567,13 @@ let replication_pad3d_out ~out self ~padding =
     self
     (List.map Int64.of_int padding |> CArray.of_list int64_t |> CArray.start)
     (List.length padding);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
+let requires_grad_ self ~_requires_grad =
+  let out__ = CArray.make t 1 in
+  stubs_requires_grad_ (CArray.start out__) self (if _requires_grad then 1 else 0);
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0
@@ -8981,6 +9154,45 @@ let slogdet self =
   let t1 = CArray.get out__ 1 in
   Gc.finalise C.Tensor.free t1;
   t0, t1
+
+let slow_conv3d self ~weight ~kernel_size ~bias ~stride ~padding =
+  let out__ = CArray.make t 1 in
+  stubs_slow_conv3d
+    (CArray.start out__)
+    self
+    weight
+    (List.map Int64.of_int kernel_size |> CArray.of_list int64_t |> CArray.start)
+    (List.length kernel_size)
+    (match bias with
+    | Some v -> v
+    | None -> null)
+    (List.map Int64.of_int stride |> CArray.of_list int64_t |> CArray.start)
+    (List.length stride)
+    (List.map Int64.of_int padding |> CArray.of_list int64_t |> CArray.start)
+    (List.length padding);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
+let slow_conv3d_out ~out self ~weight ~kernel_size ~bias ~stride ~padding =
+  let out__ = CArray.make t 1 in
+  stubs_slow_conv3d_out
+    (CArray.start out__)
+    out
+    self
+    weight
+    (List.map Int64.of_int kernel_size |> CArray.of_list int64_t |> CArray.start)
+    (List.length kernel_size)
+    (match bias with
+    | Some v -> v
+    | None -> null)
+    (List.map Int64.of_int stride |> CArray.of_list int64_t |> CArray.start)
+    (List.length stride)
+    (List.map Int64.of_int padding |> CArray.of_list int64_t |> CArray.start)
+    (List.length padding);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
 
 let slow_conv_dilated2d self ~weight ~kernel_size ~bias ~stride ~padding ~dilation =
   let out__ = CArray.make t 1 in

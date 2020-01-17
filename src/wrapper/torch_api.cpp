@@ -217,10 +217,9 @@ void at_load_multi(tensor *tensors, char **tensor_names, int ntensors, char *fil
 void at_load_callback(char *filename, void (*f)(char *, tensor)) {
   PROTECT(
     auto module = torch::jit::load(filename);
-    for (const auto &p : module.get_parameters()) {
-      auto v = p.value();
-      if (v.isTensor())
-        f((char*)p.name().c_str(), new torch::Tensor(v.toTensor()));
+    for (const auto &p : module.named_parameters()) {
+      auto v = p.value;
+      f((char*)p.name.c_str(), new torch::Tensor(v));
     }
   )
 }
@@ -266,11 +265,11 @@ void at_run_backward(tensor *tensors,
     torch::autograd::Engine engine;
     vector<torch::autograd::Edge> roots;
     for (int i = 0; i < ntensors; ++i)
-      roots.push_back(torch::autograd::as_variable_ref(*tensors[i]).gradient_edge());
+      roots.push_back(torch::autograd::impl::gradient_edge(torch::autograd::as_variable_ref(*tensors[i])));
 
     vector<torch::autograd::Edge> inputs_;
     for (int i = 0; i < ninputs; ++i)
-      inputs_.push_back(torch::autograd::as_variable_ref(*inputs[i]).gradient_edge());
+      inputs_.push_back(torch::autograd::impl::gradient_edge(torch::autograd::as_variable_ref(*inputs[i])));
 
     vector<torch::autograd::Variable> grads;
     for (int i = 0; i < ntensors; ++i)
