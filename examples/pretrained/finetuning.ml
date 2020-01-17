@@ -37,6 +37,7 @@ let precompute_activations dataset ~model_path =
   dataset
 
 let () =
+  let module Sys = Caml.Sys in
   if Array.length Sys.argv <> 3
   then Printf.failwithf "usage: %s resnet18.ot dataset-path" Sys.argv.(0) ();
   let dataset = Imagenet.load_dataset ~dir:Sys.argv.(2) ~classes () in

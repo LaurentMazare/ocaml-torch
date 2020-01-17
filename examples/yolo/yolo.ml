@@ -125,6 +125,7 @@ let report predictions ~image ~width ~height =
   Image.write_image Tensor.(image * f 255.) ~filename:"output.jpg"
 
 let () =
+  let module Sys = Caml.Sys in
   if Array.length Sys.argv <> 3
   then Printf.failwithf "usage: %s yolo-v3.ot input.png" Sys.argv.(0) ();
   (* Build the model. *)

@@ -20,6 +20,7 @@ open Torch
 open Torch_vision
 
 let () =
+  let module Sys = Caml.Sys in
   if Array.length Sys.argv <> 3
   then Printf.failwithf "usage: %s resnet18.ot input.png" Sys.argv.(0) ();
   let image = Imagenet.load_image Sys.argv.(2) in

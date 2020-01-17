@@ -138,9 +138,9 @@ let write_samples samples ~filename =
   |> Torch_vision.Image.write_image ~filename
 
 let () =
+  let module Sys = Caml.Sys in
   let device = Device.cuda_if_available () in
-  if Array.length Sys.argv < 2
-  then Printf.failwithf "Usage: %s images.ot" Sys.argv.(0) ();
+  if Array.length Sys.argv < 2 then Printf.failwithf "Usage: %s images.ot" Sys.argv.(0) ();
   let images = Serialize.load ~filename:Sys.argv.(1) in
   let train_size = Tensor.shape images |> List.hd_exn in
   let generator_vs = Var_store.create ~name:"gen" ~device () in

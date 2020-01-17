@@ -140,9 +140,9 @@ let grad2 d_out x_in =
   |> Tensor.sum1 ~dim:[ 1 ] ~keepdim:false ~dtype:(T Float)
 
 let () =
+  let module Sys = Caml.Sys in
   let device = Device.cuda_if_available () in
-  if Array.length Sys.argv < 2
-  then Printf.failwithf "Usage: %s images.ot" Sys.argv.(0) ();
+  if Array.length Sys.argv < 2 then Printf.failwithf "Usage: %s images.ot" Sys.argv.(0) ();
   let bce_loss_with_logits ys ~target =
     Tensor.bce_loss (Tensor.sigmoid ys) ~targets:Tensor.(ones_like ys * f target)
   in

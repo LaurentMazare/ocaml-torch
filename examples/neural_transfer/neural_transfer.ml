@@ -29,6 +29,7 @@ let load_pretrained_vgg ~filename ~device =
   model
 
 let () =
+  let module Sys = Caml.Sys in
   let device = Device.cuda_if_available () in
   let style_img, content_img, filename =
     match Sys.argv with

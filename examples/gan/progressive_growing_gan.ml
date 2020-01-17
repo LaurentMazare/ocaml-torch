@@ -103,6 +103,7 @@ let create_generator vs =
       |> Layer.forward wscale)
 
 let () =
+  let module Sys = Caml.Sys in
   if Array.length Sys.argv <> 2
   then Printf.failwithf "usage: %s prog-gan.ot" Sys.argv.(0) ();
   Torch_core.Wrapper.manual_seed 42;

@@ -9,6 +9,7 @@ open Base
 open Torch
 
 let () =
+  let module Sys = Caml.Sys in
   let device = Device.cuda_if_available () in
   let cifar = Cifar_helper.read_files ~with_caching:true () in
   let vs = Var_store.create ~name:"vs" ~device () in
