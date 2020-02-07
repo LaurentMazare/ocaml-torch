@@ -43,12 +43,13 @@ void at_copy_data(tensor tensor, void *vs, int64_t numel, int elt_size_in_bytes)
     if (numel != tensor->numel())
       caml_failwith("incoherent number of elements");
     if (tensor->device().type() != at::kCPU) {
-      torch::Tensor tmp_tensor = tensor->to(at::kCPU);
-      void *tensor_data = tmp_tensor.contiguous().data_ptr();
+      torch::Tensor tmp_tensor = tensor->to(at::kCPU).contiguous();
+      void *tensor_data = tmp_tensor.data_ptr();
       memcpy(vs, tensor_data, numel * elt_size_in_bytes);
     }
     else {
-      void *tensor_data = tensor->contiguous().data_ptr();
+      torch::Tensor tmp_tensor = tensor->contiguous();
+      void *tensor_data = tmp_tensor.data_ptr();
       memcpy(vs, tensor_data, numel * elt_size_in_bytes);
     }
   )
