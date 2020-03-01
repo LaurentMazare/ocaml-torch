@@ -8,13 +8,13 @@ files](http://yann.lecun.com/exdb/mnist/) in `data/`.
 
 The code can be found in `linear.ml`.
 
-We first load the MNIST data. This is done using the the MNIST helper module,
+We first load the MNIST data. This is done using the MNIST helper module,
 labels are returned using one-hot encoding.  Train images and labels are used
 when training the model.  Test images and labels are used to estimate the
 validation error.
 
 ```ocaml
-  let { Mnist_helper.train_images; train_labels; test_images; test_labels } =
+  let { Dataset_helper.train_images; train_labels; test_images; test_labels } =
     Mnist_helper.read_files ~with_caching:true ()
   in
 ```
