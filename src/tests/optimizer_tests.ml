@@ -11,8 +11,8 @@ let%expect_test _ =
   let ys = Tensor.((xs * f 0.42) + f 1.337) in
   (* Build a linear model and fit it to the data. *)
   let vs = Var_store.create ~name:"vs" () in
-  let linear = Layer.linear vs ~input_dim:1 1 in
   let opt = Optimizer.sgd vs ~learning_rate:1e-3 in
+  let linear = Layer.linear vs ~input_dim:1 1 in
   for index = 1 to 100 do
     Optimizer.zero_grad opt;
     let ys_ = Layer.forward linear xs in

@@ -1,3 +1,9 @@
+open Base
+
+module Tensor_id : sig
+  include Hashable.Key
+end
+
 (** A VarStore is used to store all the variables used by a given model.
     The model creates variables by calling [Var_store.new_var] for which
     it has to provide a name.
@@ -25,8 +31,11 @@ val ( / ) : t -> string -> t
 (** Same as [subi]. *)
 val ( // ) : t -> int -> t
 
-(** [trainable_vars t] returns all the trainable variables stored in [t]. *)
-val trainable_vars : t -> Tensor.t list
+(** [num_trainable_vars t] returns the number trainable variables stored in [t]. *)
+val num_trainable_vars : t -> int
+
+(** [iter_trainable_vars t ~f] applies f to all trainable variables stored in [t]. *)
+val iter_trainable_vars : t -> f:(Tensor_id.t -> Tensor.t -> unit) -> unit
 
 (** [all_vars t] returns all the variables stored in [t]. *)
 val all_vars : t -> (string * Tensor.t) list

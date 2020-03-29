@@ -1,9 +1,23 @@
 open Base
 
+module Tensor_id : sig
+  include Hashable.Key
+
+  val create : unit -> t
+end = struct
+  include Int
+
+  let create =
+    let current = ref 0 in
+    fun () ->
+      Int.incr current;
+      !current
+end
+
 (* Maybe we should also store the full path in the var stores ? *)
 type t =
   { name : string
-  ; mutable trainable_tensors : Tensor.t list
+  ; trainable_tensors : (Tensor_id.t, Tensor.t) Hashtbl.t
   ; all_tensors_by_name : (string, Tensor.t) Hashtbl.t
   ; subs : (string, t) Hashtbl.t
   ; device : Device.t
@@ -12,7 +26,7 @@ type t =
 
 let create ?(frozen = false) ?(device = Device.Cpu) ~name () =
   { name
-  ; trainable_tensors = []
+  ; trainable_tensors = Hashtbl.create (module Tensor_id)
   ; subs = Hashtbl.create (module String)
   ; all_tensors_by_name = Hashtbl.create (module String)
   ; device
@@ -34,7 +48,7 @@ let sub t sub_name =
   then Printf.failwithf "sub names cannot contain ., %s" sub_name ();
   Hashtbl.find_or_add t.subs sub_name ~default:(fun () ->
       { name = t.name
-      ; trainable_tensors = []
+      ; trainable_tensors = Hashtbl.create (module Tensor_id)
       ; subs = Hashtbl.create (module String)
       ; all_tensors_by_name = Hashtbl.create (module String)
       ; device = t.device
@@ -47,19 +61,29 @@ let ( // ) = subi
 
 let rec freeze t =
   t.frozen <- true;
-  List.iter t.trainable_tensors ~f:(fun tensor ->
+  Hashtbl.iter t.trainable_tensors ~f:(fun tensor ->
       ignore (Tensor.set_requires_grad tensor ~r:false : Tensor.t));
   Hashtbl.iter t.subs ~f:freeze
 
 let rec unfreeze t =
   t.frozen <- false;
-  List.iter t.trainable_tensors ~f:(fun tensor ->
+  Hashtbl.iter t.trainable_tensors ~f:(fun tensor ->
       ignore (Tensor.set_requires_grad tensor ~r:true : Tensor.t));
   Hashtbl.iter t.subs ~f:unfreeze
 
-let rec trainable_vars t =
-  let sub_vars = Hashtbl.data t.subs |> List.concat_map ~f:trainable_vars in
-  t.trainable_tensors @ sub_vars
+let rec num_trainable_vars t =
+  let sub_vars =
+    Hashtbl.data t.subs |> List.fold ~init:0 ~f:(fun acc t -> acc + num_trainable_vars t)
+  in
+  sub_vars + Hashtbl.length t.trainable_tensors
+
+let iter_trainable_vars t ~f =
+  let f ~key ~data = f key data in
+  let rec loop t =
+    Hashtbl.iter t.subs ~f:loop;
+    Hashtbl.iteri t.trainable_tensors ~f
+  in
+  loop t
 
 let all_vars t =
   let rec walk t ~path =
@@ -145,7 +169,8 @@ let new_var ?(trainable = true) t ~shape ~init ~name =
   then Printf.failwithf "tensor names cannot contain ., %s" name ();
   let name = first_free_name name t.all_tensors_by_name in
   Hashtbl.add_exn t.all_tensors_by_name ~key:name ~data:tensor;
-  if trainable then t.trainable_tensors <- tensor :: t.trainable_tensors;
+  if trainable
+  then Hashtbl.add_exn t.trainable_tensors ~key:(Tensor_id.create ()) ~data:tensor;
   tensor
 
 let new_var_copy ?trainable t ~src ~name =
