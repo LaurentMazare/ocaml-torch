@@ -364,6 +364,11 @@ module Ivalue = struct
     Gc.finalise free t;
     t
 
+  let string s =
+    let t = string s in
+    Gc.finalise free t;
+    t
+
   let tag t : Tag.t =
     match tag t with
     | 0 -> None

@@ -127,12 +127,14 @@ module Ivalue : sig
   val int64 : Int64.t -> t
   val double : float -> t
   val tuple : t list -> t
+  val string : string -> t
   val tag : t -> Tag.t
   val to_bool : t -> bool
   val to_tensor : t -> Tensor.t
   val to_int64 : t -> Int64.t
   val to_double : t -> float
   val to_tuple : t -> t list
+  val to_string : t -> string
 end
 
 module Module : sig

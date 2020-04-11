@@ -117,9 +117,11 @@ ivalue ati_bool(int);
 ivalue ati_int(int64_t);
 ivalue ati_double(double);
 ivalue ati_tuple(ivalue *, int);
+ivalue ati_string(char *);
 
 tensor ati_to_tensor(ivalue);
 int ati_to_bool(ivalue);
+char *ati_to_string(ivalue);
 int64_t ati_to_int(ivalue);
 double ati_to_double(ivalue);
 int ati_tuple_length(ivalue);
