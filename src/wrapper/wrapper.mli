@@ -104,19 +104,31 @@ end
 module Ivalue : sig
   module Tag : sig
     type t =
+      | None
       | Tensor
-      | Int
       | Double
+      | Int
+      | Bool
       | Tuple
+      | IntList
+      | DoubleList
+      | BoolList
+      | String
+      | TensorList
+      | GenericList
+      | GenericDict
   end
 
   type t
 
+  val none : unit -> t
+  val bool : bool -> t
   val tensor : Tensor.t -> t
   val int64 : Int64.t -> t
   val double : float -> t
   val tuple : t list -> t
   val tag : t -> Tag.t
+  val to_bool : t -> bool
   val to_tensor : t -> Tensor.t
   val to_int64 : t -> Int64.t
   val to_double : t -> float

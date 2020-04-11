@@ -3,6 +3,8 @@ open Base
 type raw = Torch_core.Wrapper.Ivalue.t
 
 type t =
+  | None
+  | Bool of bool
   | Tensor of Tensor.t
   | Int of int
   | Double of float

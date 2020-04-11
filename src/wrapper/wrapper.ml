@@ -317,13 +317,32 @@ end
 module Ivalue = struct
   module Tag = struct
     type t =
+      | None
       | Tensor
-      | Int
       | Double
+      | Int
+      | Bool
       | Tuple
+      | IntList
+      | DoubleList
+      | BoolList
+      | String
+      | TensorList
+      | GenericList
+      | GenericDict
   end
 
   include Wrapper_generated.C.Ivalue
+
+  let none () =
+    let t = none () in
+    Gc.finalise free t;
+    t
+
+  let bool b =
+    let t = bool (if b then 1 else 0) in
+    Gc.finalise free t;
+    t
 
   let tensor tensor_ =
     let t = tensor tensor_ in
@@ -347,11 +366,22 @@ module Ivalue = struct
 
   let tag t : Tag.t =
     match tag t with
+    | 0 -> None
     | 1 -> Tensor
     | 2 -> Double
     | 3 -> Int
+    | 4 -> Bool
     | 5 -> Tuple
+    | 6 -> IntList
+    | 7 -> DoubleList
+    | 8 -> BoolList
+    | 9 -> String
+    | 10 -> TensorList
+    | 12 -> GenericList
+    | 13 -> GenericDict
     | otherwise -> Printf.sprintf "unexpected tag %d" otherwise |> failwith
+
+  let to_bool t = to_bool t <> 0
 
   let to_tensor t =
     let tensor = to_tensor t in

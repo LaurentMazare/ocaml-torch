@@ -111,12 +111,15 @@ ivalue atm_forward_(module,
                     int nivalues);
 void atm_free(module);
 
+ivalue ati_none();
 ivalue ati_tensor(tensor);
+ivalue ati_bool(int);
 ivalue ati_int(int64_t);
 ivalue ati_double(double);
 ivalue ati_tuple(ivalue *, int);
 
 tensor ati_to_tensor(ivalue);
+int ati_to_bool(ivalue);
 int64_t ati_to_int(ivalue);
 double ati_to_double(ivalue);
 int ati_tuple_length(ivalue);
