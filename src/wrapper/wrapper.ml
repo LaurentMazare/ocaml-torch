@@ -34,9 +34,7 @@ module Tensor = struct
 
   let int_vec ?(kind = `int) values =
     let values_len = List.length values in
-    let values =
-      List.map Int64.of_int values |> CArray.of_list int64_t |> CArray.start
-    in
+    let values = List.map Int64.of_int values |> CArray.of_list int64_t |> CArray.start in
     let kind =
       match kind with
       | `uint8 -> Kind.T Uint8
@@ -349,10 +347,10 @@ module Ivalue = struct
 
   let tag t : Tag.t =
     match tag t with
-    | 0 -> Tensor
-    | 1 -> Int
+    | 1 -> Tensor
     | 2 -> Double
-    | 3 -> Tuple
+    | 3 -> Int
+    | 5 -> Tuple
     | otherwise -> Printf.sprintf "unexpected tag %d" otherwise |> failwith
 
   let to_tensor t =
