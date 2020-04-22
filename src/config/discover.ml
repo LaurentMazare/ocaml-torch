@@ -27,6 +27,7 @@ let torch_flags () =
       [ Printf.sprintf "-Wl,-rpath,%s" lib_dir
       ; Printf.sprintf "-L%s" lib_dir
       ; "-lc10"
+      ; "-ltorch_cpu"
       ; "-ltorch"
       ]
     in
@@ -48,7 +49,8 @@ let torch_flags () =
            else None)
     |> function
     | [] -> None
-    | lib_dir :: _ -> Some (config ~include_dir:(lib_dir /^ "include") ~lib_dir:(lib_dir /^ "lib"))
+    | lib_dir :: _ ->
+      Some (config ~include_dir:(lib_dir /^ "include") ~lib_dir:(lib_dir /^ "lib"))
   in
   match Caml.Sys.getenv_opt "LIBTORCH" with
   | Some l -> config ~include_dir:(l /^ "include") ~lib_dir:(l /^ "lib")

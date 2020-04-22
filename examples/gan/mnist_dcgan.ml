@@ -81,8 +81,6 @@ let write_samples samples ~filename =
       done;
       Stdio.Out_channel.output_string channel "]\n")
 
-let square x = Tensor.(x * x)
-
 let () =
   let mnist = Mnist_helper.read_files () in
   let generator_vs = Var_store.create ~name:"gen" () in

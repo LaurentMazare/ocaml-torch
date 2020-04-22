@@ -7,11 +7,11 @@ differentiation.
 
 These bindings use the [PyTorch C++ API](https://pytorch.org/cppdocs/) and are
 mostly automatically generated. The current GitHub tip and the opam package v0.7
-corresponds to PyTorch **v1.4.0**.
+corresponds to PyTorch **v1.5.0**.
 
 On Linux note that you will need the PyTorch version using the cxx11 abi
-[cpu version](https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-1.4.0%2Bcpu.zip),
-[cuda 10 version](https://download.pytorch.org/libtorch/cu101/libtorch-cxx11-abi-shared-with-deps-1.4.0.zip).
+[cpu version](https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-1.5.0%2Bcpu.zip),
+[cuda 10.2 version](https://download.pytorch.org/libtorch/cu102/libtorch-cxx11-abi-shared-with-deps-1.5.0.zip).
 
 ## Opam Installation
 
@@ -150,8 +150,8 @@ acceleration enabled.
 
 ### Option 1: Using PyTorch pre-built Binaries
 The libtorch library can be downloaded from the [PyTorch
-website](https://pytorch.org/resources) ([1.4.0 cpu
-version](https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-1.4.0+cpu.zip)).
+website](https://pytorch.org/resources) ([1.5.0 cpu
+version](https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-1.5.0+cpu.zip)).
 
 Download and extract the libtorch library then to build all the examples run:
 
@@ -163,13 +163,13 @@ make all
 ```
 
 ### Option 2: Using PyTorch Conda package
-Conda packages for PyTorch 1.4 can be used via the following command.
+Conda packages for PyTorch 1.5 can be used via the following command.
 ```bash
 conda create -n torch
 source activate torch
-conda install pytorch-cpu=1.4.0 -c pytorch
+conda install pytorch-cpu=1.5.0 -c pytorch
 # Or for the CUDA version
-# conda install pytorch=1.4.0 -c pytorch
+# conda install pytorch=1.5.0 -c pytorch
 
 git clone https://github.com/LaurentMazare/ocaml-torch.git
 cd ocaml-torch

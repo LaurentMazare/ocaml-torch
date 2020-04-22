@@ -76,9 +76,7 @@ let () =
   let ls_cmd =
     let files = Arg.(value & (pos_all file) [] & info [] ~docv:"FILE") in
     let doc = "list tensors in Npz/PyTorch files" in
-    let man =
-      [ `S "DESCRIPTION"; `P "List all the tensors in Npz and PyTorch files." ]
-    in
+    let man = [ `S "DESCRIPTION"; `P "List all the tensors in Npz and PyTorch files." ] in
     Term.(const ls $ files), Term.info "ls" ~sdocs:"" ~doc ~man
   in
   let npz_to_pytorch_cmd =

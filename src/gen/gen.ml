@@ -23,6 +23,22 @@ let excluded_functions =
     ; "_cufft_clear_plan_cache"
     ; "backward"
     ; "set_data"
+    ; "_amp_non_finite_check_and_unscale_"
+    ; "_cummin_helper"
+    ; "_cummax_helper"
+    ; "retain_grad"
+    ]
+
+let no_tensor_options =
+  Set.of_list
+    (module String)
+    [ "zeros_like"
+    ; "empty_like"
+    ; "full_like"
+    ; "ones_like"
+    ; "rand_like"
+    ; "randint_like"
+    ; "randn_like"
     ]
 
 let excluded_prefixes = [ "_"; "thnn_"; "th_" ]
@@ -302,6 +318,9 @@ let read_yaml filename =
                        match Func.arg_type_of_string arg_type ~is_nullable with
                        | Some Scalar when Option.is_some default_value && not is_nullable
                          -> None
+                       | Some TensorOptions
+                         when Option.is_some default_value
+                              && Set.mem no_tensor_options name -> None
                        | Some arg_type -> Some { Func.arg_name; arg_type; default_value }
                        | None ->
                          if Option.is_some default_value

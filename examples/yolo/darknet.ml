@@ -104,7 +104,11 @@ let upsample ~index:_ ~prev_channels ~parameters:_ =
   let layer =
     Layer.of_fn (fun xs ->
         let _n, _c, h, w = Tensor.shape4_exn xs in
-        Tensor.upsample_nearest2d xs ~output_size:[ h * 2; w * 2 ])
+        Tensor.upsample_nearest2d
+          xs
+          ~output_size:[ h * 2; w * 2 ]
+          ~scales_h:2.
+          ~scales_w:2.)
     |> Layer.with_training
   in
   prev_channels, `layers [ layer ]
