@@ -258,10 +258,12 @@ tensor at_load(char *filename) {
 
 int at_get_num_interop_threads() {
   PROTECT(return at::get_num_interop_threads();)
+  return -1;
 }
 
 int at_get_num_threads() {
   PROTECT(return at::get_num_threads();)
+  return -1;
 }
 
 void at_set_num_interop_threads(int n_threads) {
