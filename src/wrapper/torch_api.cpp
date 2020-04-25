@@ -358,7 +358,8 @@ optimizer ato_sgd(double learning_rate,
 
 void ato_add_parameters(optimizer t, tensor *tensors, int ntensors) {
   PROTECT(
-    t->add_parameters(of_carray_tensor(tensors, ntensors));
+    for (int i = 0; i < ntensors; ++i)
+      t->param_groups()[0].params().push_back(*(tensors[i]));
   )
 }
 

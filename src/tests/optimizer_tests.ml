@@ -27,7 +27,6 @@ let%expect_test _ =
   Stdio.printf !"%{sexp:float}\n" (Tensor.to_float0_exn loss);
   [%expect
     {|
-        Warning: Optimizer::add_parameters() will be removed in PyTorch 1.6 (add_parameters at /home/laurent/github/pytorch-v1.5/torch/csrc/api/src/optim/optimizer.cpp:97)
         10 0.48697763681411743
         20 0.099454931914806366
         30 0.07820592075586319
