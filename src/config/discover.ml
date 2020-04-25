@@ -118,4 +118,4 @@ let () =
         (cxx_abi_flag :: (torch_flags.cflags @ cuda_flags.cflags));
       C.Flags.write_sexp
         "c_library_flags.sexp"
-        (torch_flags.libs @ conda_libs @ cuda_flags.libs))
+        (("-Wl,--no-as-needed" :: torch_flags.libs) @ conda_libs @ cuda_flags.libs))
