@@ -77,7 +77,7 @@ let libcuda_flags ~lcuda ~lnvrtc =
     let libs =
       [ Printf.sprintf "-Wl,-rpath,%s" cudadir; Printf.sprintf "-L%s" cudadir ]
     in
-    let libs = if lcuda then libs @ [ "-lcuda" ] else libs in
+    let libs = if lcuda then libs @ [ "-lcudart" ] else libs in
     let libs = if lnvrtc then libs @ [ "-lnvrtc" ] else libs in
     { C.Pkg_config.cflags = []; libs })
   else empty_flags

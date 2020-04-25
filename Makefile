@@ -1,4 +1,5 @@
-ALL = examples/char_rnn/char_rnn.exe \
+ALL = examples/basics/basics.exe \
+      examples/char_rnn/char_rnn.exe \
       examples/cifar/cifar_train.exe \
       examples/gan/began.exe \
       examples/gan/gan_stability.exe \

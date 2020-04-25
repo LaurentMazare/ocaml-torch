@@ -1,5 +1,6 @@
 module Checkpointing = Checkpointing
 module Cifar_helper = Cifar_helper
+module Cuda = Cuda
 module Dataset_helper = Dataset_helper
 module Device = Device
 module Ivalue = Ivalue

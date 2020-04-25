@@ -1,0 +1,3 @@
+(executables
+  (names basics)
+  (libraries base torch_core torch stdio))
