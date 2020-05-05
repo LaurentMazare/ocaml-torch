@@ -41,7 +41,7 @@ let no_tensor_options =
     ; "randn_like"
     ]
 
-let excluded_prefixes = [ "_"; "thnn_"; "th_" ]
+let excluded_prefixes = [ "thnn_"; "th_" ]
 let excluded_suffixes = [ "_forward"; "_forward_out" ]
 let yaml_error yaml ~msg = Printf.failwithf "%s, %s" msg (Yaml.to_string_exn yaml) ()
 

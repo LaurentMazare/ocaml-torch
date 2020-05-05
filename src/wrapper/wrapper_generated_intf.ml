@@ -4,6 +4,484 @@ module type S = sig
   type t
   type _ scalar
 
+  val __and__ : t -> 'a scalar -> t
+  val __and__1 : t -> t -> t
+  val __iand__ : t -> 'a scalar -> t
+  val __iand__1 : t -> t -> t
+  val __ilshift__ : t -> 'a scalar -> t
+  val __ilshift__1 : t -> t -> t
+  val __ior__ : t -> 'a scalar -> t
+  val __ior__1 : t -> t -> t
+  val __irshift__ : t -> 'a scalar -> t
+  val __irshift__1 : t -> t -> t
+  val __ixor__ : t -> 'a scalar -> t
+  val __ixor__1 : t -> t -> t
+  val __lshift__ : t -> 'a scalar -> t
+  val __lshift__1 : t -> t -> t
+  val __or__ : t -> 'a scalar -> t
+  val __or__1 : t -> t -> t
+  val __rshift__ : t -> 'a scalar -> t
+  val __rshift__1 : t -> t -> t
+  val __xor__ : t -> 'a scalar -> t
+  val __xor__1 : t -> t -> t
+  val _adaptive_avg_pool2d : t -> output_size:int list -> t
+  val _adaptive_avg_pool2d_backward : grad_output:t -> t -> t
+  val _addr : t -> vec1:t -> vec2:t -> t
+  val _addr_ : t -> vec1:t -> vec2:t -> t
+  val _addr_out : out:t -> t -> vec1:t -> vec2:t -> t
+
+  val _amp_update_scale
+    :  growth_tracker:t
+    -> current_scale:t
+    -> found_inf:t
+    -> scale_growth_factor:float
+    -> scale_backoff_factor:float
+    -> growth_interval:int
+    -> t
+
+  val _baddbmm_mkl_ : t -> batch1:t -> batch2:t -> t
+  val _cast_byte : t -> non_blocking:bool -> t
+  val _cast_char : t -> non_blocking:bool -> t
+  val _cast_double : t -> non_blocking:bool -> t
+  val _cast_float : t -> non_blocking:bool -> t
+  val _cast_half : t -> non_blocking:bool -> t
+  val _cast_int : t -> non_blocking:bool -> t
+  val _cast_long : t -> non_blocking:bool -> t
+  val _cast_short : t -> non_blocking:bool -> t
+  val _cat : t list -> dim:int -> t
+  val _cat_out : out:t -> t list -> dim:int -> t
+  val _cdist_backward : grad:t -> x1:t -> x2:t -> p:float -> cdist:t -> t
+  val _cholesky_helper : t -> upper:bool -> t
+  val _cholesky_solve_helper : t -> a:t -> upper:bool -> t
+  val _coalesced_ : t -> coalesced:bool -> t
+
+  val _convolution
+    :  t
+    -> weight:t
+    -> bias:t option
+    -> stride:int list
+    -> padding:int list
+    -> dilation:int list
+    -> transposed:bool
+    -> output_padding:int list
+    -> groups:int
+    -> benchmark:bool
+    -> deterministic:bool
+    -> cudnn_enabled:bool
+    -> t
+
+  val _convolution_nogroup
+    :  t
+    -> weight:t
+    -> bias:t option
+    -> stride:int list
+    -> padding:int list
+    -> dilation:int list
+    -> transposed:bool
+    -> output_padding:int list
+    -> t
+
+  val _copy_from : t -> dst:t -> non_blocking:bool -> t
+
+  val _ctc_loss
+    :  log_probs:t
+    -> targets:t
+    -> input_lengths:int list
+    -> target_lengths:int list
+    -> blank:int
+    -> zero_infinity:bool
+    -> t * t
+
+  val _ctc_loss_backward
+    :  grad:t
+    -> log_probs:t
+    -> targets:t
+    -> input_lengths:int list
+    -> target_lengths:int list
+    -> neg_log_likelihood:t
+    -> log_alpha:t
+    -> blank:int
+    -> zero_infinity:bool
+    -> t
+
+  val _cudnn_ctc_loss
+    :  log_probs:t
+    -> targets:t
+    -> input_lengths:int list
+    -> target_lengths:int list
+    -> blank:int
+    -> deterministic:bool
+    -> zero_infinity:bool
+    -> t * t
+
+  val _cudnn_init_dropout_state
+    :  dropout:float
+    -> train:bool
+    -> dropout_seed:int
+    -> options:Kind.packed * Device.t
+    -> t
+
+  val _cudnn_rnn
+    :  t
+    -> weight:t list
+    -> weight_stride0:int
+    -> weight_buf:t option
+    -> hx:t
+    -> cx:t option
+    -> mode:int
+    -> hidden_size:int
+    -> num_layers:int
+    -> batch_first:bool
+    -> dropout:float
+    -> train:bool
+    -> bidirectional:bool
+    -> batch_sizes:int list
+    -> dropout_state:t option
+    -> t * t * t * t * t
+
+  val _cudnn_rnn_flatten_weight
+    :  weight_arr:t list
+    -> weight_stride0:int
+    -> input_size:int
+    -> mode:int
+    -> hidden_size:int
+    -> num_layers:int
+    -> batch_first:bool
+    -> bidirectional:bool
+    -> t
+
+  val _cumprod : t -> dim:int -> t
+  val _cumprod_out : out:t -> t -> dim:int -> t
+  val _cumsum : t -> dim:int -> t
+  val _cumsum_out : out:t -> t -> dim:int -> t
+  val _dim_arange : like:t -> dim:int -> t
+  val _dirichlet_grad : x:t -> alpha:t -> total:t -> t
+
+  val _embedding_bag
+    :  weight:t
+    -> indices:t
+    -> offsets:t
+    -> scale_grad_by_freq:bool
+    -> mode:int
+    -> sparse:bool
+    -> per_sample_weights:t option
+    -> include_last_offset:bool
+    -> t * t * t * t
+
+  val _embedding_bag_backward
+    :  grad:t
+    -> indices:t
+    -> offsets:t
+    -> offset2bag:t
+    -> bag_size:t
+    -> maximum_indices:t
+    -> num_weights:int
+    -> scale_grad_by_freq:bool
+    -> mode:int
+    -> sparse:bool
+    -> per_sample_weights:t option
+    -> t
+
+  val _embedding_bag_dense_backward
+    :  grad:t
+    -> indices:t
+    -> offsets:t
+    -> offset2bag:t
+    -> bag_size:t
+    -> maximum_indices:t
+    -> num_weights:int
+    -> scale_grad_by_freq:bool
+    -> mode:int
+    -> per_sample_weights:t option
+    -> t
+
+  val _embedding_bag_per_sample_weights_backward
+    :  grad:t
+    -> weight:t
+    -> indices:t
+    -> offsets:t
+    -> offset2bag:t
+    -> mode:int
+    -> t
+
+  val _embedding_bag_sparse_backward
+    :  grad:t
+    -> indices:t
+    -> offsets:t
+    -> offset2bag:t
+    -> bag_size:t
+    -> num_weights:int
+    -> scale_grad_by_freq:bool
+    -> mode:int
+    -> per_sample_weights:t option
+    -> t
+
+  val _empty_affine_quantized
+    :  size:int list
+    -> options:Kind.packed * Device.t
+    -> scale:float
+    -> zero_point:int
+    -> t
+
+  val _empty_per_channel_affine_quantized
+    :  size:int list
+    -> scales:t
+    -> zero_points:t
+    -> axis:int
+    -> options:Kind.packed * Device.t
+    -> t
+
+  val _fft_with_size
+    :  t
+    -> signal_ndim:int
+    -> complex_input:bool
+    -> complex_output:bool
+    -> inverse:bool
+    -> checked_signal_sizes:int list
+    -> normalized:bool
+    -> onesided:bool
+    -> output_sizes:int list
+    -> t
+
+  val _fused_dropout : t -> p:float -> t * t
+  val _gather_sparse_backward : t -> dim:int -> index:t -> grad:t -> t
+  val _index_copy_ : t -> dim:int -> index:t -> source:t -> t
+
+  val _index_put_impl_
+    :  t
+    -> indices:t list
+    -> values:t
+    -> accumulate:bool
+    -> unsafe:bool
+    -> t
+
+  val _indices : t -> t
+  val _inverse_helper : t -> t
+  val _log_softmax : t -> dim:int -> half_to_float:bool -> t
+  val _log_softmax_backward_data : grad_output:t -> output:t -> dim:int -> t -> t
+  val _lu_solve_helper : t -> lu_data:t -> lu_pivots:t -> t
+  val _lu_with_info : t -> pivot:bool -> check_errors:bool -> t * t * t
+  val _make_per_channel_quantized_tensor : t -> scale:t -> zero_point:t -> axis:int -> t
+  val _make_per_tensor_quantized_tensor : t -> scale:float -> zero_point:int -> t
+  val _masked_scale : t -> mask:t -> scale:float -> t
+  val _max : t -> dim:int -> keepdim:bool -> t * t
+  val _max_out : max:t -> max_indices:t -> t -> dim:int -> keepdim:bool -> t * t
+  val _min : t -> dim:int -> keepdim:bool -> t * t
+  val _min_out : min:t -> min_indices:t -> t -> dim:int -> keepdim:bool -> t * t
+  val _mkldnn_reshape : t -> shape:int list -> t
+  val _mkldnn_transpose : t -> dim0:int -> dim1:int -> t
+  val _mkldnn_transpose_ : t -> dim0:int -> dim1:int -> t
+  val _mode : t -> dim:int -> keepdim:bool -> t * t
+  val _mode_out : values:t -> indices:t -> t -> dim:int -> keepdim:bool -> t * t
+  val _multinomial_alias_draw : j:t -> q:t -> num_samples:int -> t
+  val _multinomial_alias_setup : probs:t -> t * t
+
+  val _nnpack_spatial_convolution
+    :  t
+    -> weight:t
+    -> bias:t option
+    -> padding:int list
+    -> stride:int list
+    -> t
+
+  val _nnpack_spatial_convolution_backward_input
+    :  t
+    -> grad_output:t
+    -> weight:t
+    -> padding:int list
+    -> t
+
+  val _nnpack_spatial_convolution_backward_weight
+    :  t
+    -> weightsize:int list
+    -> grad_output:t
+    -> padding:int list
+    -> t
+
+  val _pack_padded_sequence : t -> lengths:t -> batch_first:bool -> t * t
+
+  val _pack_padded_sequence_backward
+    :  grad:t
+    -> input_size:int list
+    -> batch_sizes:t
+    -> batch_first:bool
+    -> t
+
+  val _pad_packed_sequence
+    :  data:t
+    -> batch_sizes:t
+    -> batch_first:bool
+    -> padding_value:'a scalar
+    -> total_length:int
+    -> t * t
+
+  val _pdist_backward : grad:t -> t -> p:float -> pdist:t -> t
+  val _qr_helper : t -> some:bool -> t * t
+  val _reshape_from_tensor : t -> shape:t -> t
+  val _s_where : condition:t -> t -> t -> t
+  val _sample_dirichlet : t -> t
+  val _shape_as_tensor : t -> t
+
+  val _sobol_engine_draw
+    :  quasi:t
+    -> n:int
+    -> sobolstate:t
+    -> dimension:int
+    -> num_generated:int
+    -> dtype:Kind.packed
+    -> t * t
+
+  val _sobol_engine_ff_
+    :  t
+    -> n:int
+    -> sobolstate:t
+    -> dimension:int
+    -> num_generated:int
+    -> t
+
+  val _sobol_engine_initialize_state_ : t -> dimension:int -> t
+  val _sobol_engine_scramble_ : t -> ltm:t -> dimension:int -> t
+  val _softmax : t -> dim:int -> half_to_float:bool -> t
+  val _softmax_backward_data : grad_output:t -> output:t -> dim:int -> t -> t
+  val _solve_helper : t -> a:t -> t * t
+  val _sparse_addmm : t -> sparse:t -> dense:t -> t
+
+  val _sparse_coo_tensor_unsafe
+    :  indices:t
+    -> values:t
+    -> size:int list
+    -> options:Kind.packed * Device.t
+    -> t
+
+  val _sparse_coo_tensor_with_dims
+    :  sparse_dim:int
+    -> dense_dim:int
+    -> size:int list
+    -> options:Kind.packed * Device.t
+    -> t
+
+  val _sparse_coo_tensor_with_dims_and_tensors
+    :  sparse_dim:int
+    -> dense_dim:int
+    -> size:int list
+    -> indices:t
+    -> values:t
+    -> options:Kind.packed * Device.t
+    -> t
+
+  val _sparse_mm : sparse:t -> dense:t -> t
+  val _sparse_sum : t -> t
+  val _sparse_sum1 : t -> dtype:Kind.packed -> t
+  val _sparse_sum2 : t -> dim:int list -> t
+  val _sparse_sum3 : t -> dim:int list -> dtype:Kind.packed -> t
+  val _sparse_sum_backward : grad:t -> t -> dim:int list -> t
+  val _standard_gamma : t -> t
+  val _standard_gamma_grad : t -> output:t -> t
+  val _std : t -> unbiased:bool -> t
+  val _svd_helper : t -> some:bool -> compute_uv:bool -> t * t * t
+  val _symeig_helper : t -> eigenvectors:bool -> upper:bool -> t * t
+
+  val _thnn_differentiable_gru_cell_backward
+    :  grad_hy:t
+    -> input_gates:t
+    -> hidden_gates:t
+    -> hx:t
+    -> input_bias:t option
+    -> hidden_bias:t option
+    -> t * t * t * t * t
+
+  val _thnn_differentiable_lstm_cell_backward
+    :  grad_hy:t option
+    -> grad_cy:t option
+    -> input_gates:t
+    -> hidden_gates:t
+    -> input_bias:t option
+    -> hidden_bias:t option
+    -> cx:t
+    -> cy:t
+    -> t * t * t * t * t
+
+  val _thnn_fused_gru_cell
+    :  input_gates:t
+    -> hidden_gates:t
+    -> hx:t
+    -> input_bias:t option
+    -> hidden_bias:t option
+    -> t * t
+
+  val _thnn_fused_gru_cell_backward
+    :  grad_hy:t
+    -> workspace:t
+    -> has_bias:bool
+    -> t * t * t * t * t
+
+  val _thnn_fused_lstm_cell
+    :  input_gates:t
+    -> hidden_gates:t
+    -> cx:t
+    -> input_bias:t option
+    -> hidden_bias:t option
+    -> t * t * t
+
+  val _thnn_fused_lstm_cell_backward
+    :  grad_hy:t option
+    -> grad_cy:t option
+    -> cx:t
+    -> cy:t
+    -> workspace:t
+    -> has_bias:bool
+    -> t * t * t * t * t
+
+  val _triangular_solve_helper
+    :  t
+    -> a:t
+    -> upper:bool
+    -> transpose:bool
+    -> unitriangular:bool
+    -> t * t
+
+  val _trilinear
+    :  i1:t
+    -> i2:t
+    -> i3:t
+    -> expand1:int list
+    -> expand2:int list
+    -> expand3:int list
+    -> sumdim:int list
+    -> unroll_dim:int
+    -> t
+
+  val _unique : t -> sorted:bool -> return_inverse:bool -> t * t
+
+  val _unique2
+    :  t
+    -> sorted:bool
+    -> return_inverse:bool
+    -> return_counts:bool
+    -> t * t * t
+
+  val _unsafe_view : t -> size:int list -> t
+  val _values : t -> t
+  val _var : t -> unbiased:bool -> t
+  val _weight_norm : v:t -> g:t -> dim:int -> t
+  val _weight_norm_cuda_interface : v:t -> g:t -> dim:int -> t * t
+
+  val _weight_norm_cuda_interface_backward
+    :  grad_w:t
+    -> saved_v:t
+    -> saved_g:t
+    -> saved_norms:t
+    -> dim:int
+    -> t * t
+
+  val _weight_norm_differentiable_backward
+    :  grad_w:t
+    -> saved_v:t
+    -> saved_g:t
+    -> saved_norms:t
+    -> dim:int
+    -> t * t
+
   val abs : t -> t
   val abs_ : t -> t
   val abs_out : out:t -> t -> t

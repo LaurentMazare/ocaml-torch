@@ -246,14 +246,23 @@ module Lstm = struct
       kaiming_uniform vs ~shape:[ gate_size; input_dim ] ~a:(Float.sqrt 5.) ~name:"w_ih"
     in
     let w_hh =
-      kaiming_uniform
-        vs
-        ~shape:[ gate_size; hidden_size ]
-        ~a:(Float.sqrt 5.)
-        ~name:"w_hh"
+      kaiming_uniform vs ~shape:[ gate_size; hidden_size ] ~a:(Float.sqrt 5.) ~name:"w_hh"
     in
     let b_ih = Var_store.new_var vs ~shape:[ gate_size ] ~init:Zeros ~name:"b_ih" in
     let b_hh = Var_store.new_var vs ~shape:[ gate_size ] ~init:Zeros ~name:"b_hh" in
+    if Device.is_cuda (Var_store.device vs) && Cuda.cudnn_is_available ()
+    then
+      Tensor.no_grad (fun () ->
+          Tensor._cudnn_rnn_flatten_weight
+            ~weight_arr:[ w_ih; w_hh; b_ih; b_hh ]
+            ~weight_stride0:4
+            ~input_size:input_dim
+            ~mode:2 (* 2 for LSTM, see rnn.cpp in pytorch *)
+            ~hidden_size
+            ~num_layers:1
+            ~batch_first:true
+            ~bidirectional:false
+          |> (ignore : Tensor.t -> unit));
     { w_ih; w_hh; b_ih; b_hh; hidden_size; device = Var_store.device vs }
 
   let zero_state t ~batch_size =
@@ -309,11 +318,7 @@ module Gru = struct
       kaiming_uniform vs ~shape:[ gate_size; input_dim ] ~a:(Float.sqrt 5.) ~name:"w_ih"
     in
     let w_hh =
-      kaiming_uniform
-        vs
-        ~shape:[ gate_size; hidden_size ]
-        ~a:(Float.sqrt 5.)
-        ~name:"w_hh"
+      kaiming_uniform vs ~shape:[ gate_size; hidden_size ] ~a:(Float.sqrt 5.) ~name:"w_hh"
     in
     let b_ih = Var_store.new_var vs ~shape:[ gate_size ] ~init:Zeros ~name:"b_ih" in
     let b_hh = Var_store.new_var vs ~shape:[ gate_size ] ~init:Zeros ~name:"b_hh" in

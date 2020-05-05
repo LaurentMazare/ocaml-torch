@@ -12,6 +12,685 @@ module C (F : Cstubs.FOREIGN) = struct
   type scalar = unit ptr
 
   let scalar : scalar typ = ptr void
+  let stubs___and__ = foreign "atg___and__" (ptr t @-> t @-> scalar @-> returning void)
+  let stubs___and__1 = foreign "atg___and__1" (ptr t @-> t @-> t @-> returning void)
+  let stubs___iand__ = foreign "atg___iand__" (ptr t @-> t @-> scalar @-> returning void)
+  let stubs___iand__1 = foreign "atg___iand__1" (ptr t @-> t @-> t @-> returning void)
+
+  let stubs___ilshift__ =
+    foreign "atg___ilshift__" (ptr t @-> t @-> scalar @-> returning void)
+
+  let stubs___ilshift__1 =
+    foreign "atg___ilshift__1" (ptr t @-> t @-> t @-> returning void)
+
+  let stubs___ior__ = foreign "atg___ior__" (ptr t @-> t @-> scalar @-> returning void)
+  let stubs___ior__1 = foreign "atg___ior__1" (ptr t @-> t @-> t @-> returning void)
+
+  let stubs___irshift__ =
+    foreign "atg___irshift__" (ptr t @-> t @-> scalar @-> returning void)
+
+  let stubs___irshift__1 =
+    foreign "atg___irshift__1" (ptr t @-> t @-> t @-> returning void)
+
+  let stubs___ixor__ = foreign "atg___ixor__" (ptr t @-> t @-> scalar @-> returning void)
+  let stubs___ixor__1 = foreign "atg___ixor__1" (ptr t @-> t @-> t @-> returning void)
+
+  let stubs___lshift__ =
+    foreign "atg___lshift__" (ptr t @-> t @-> scalar @-> returning void)
+
+  let stubs___lshift__1 = foreign "atg___lshift__1" (ptr t @-> t @-> t @-> returning void)
+  let stubs___or__ = foreign "atg___or__" (ptr t @-> t @-> scalar @-> returning void)
+  let stubs___or__1 = foreign "atg___or__1" (ptr t @-> t @-> t @-> returning void)
+
+  let stubs___rshift__ =
+    foreign "atg___rshift__" (ptr t @-> t @-> scalar @-> returning void)
+
+  let stubs___rshift__1 = foreign "atg___rshift__1" (ptr t @-> t @-> t @-> returning void)
+  let stubs___xor__ = foreign "atg___xor__" (ptr t @-> t @-> scalar @-> returning void)
+  let stubs___xor__1 = foreign "atg___xor__1" (ptr t @-> t @-> t @-> returning void)
+
+  let stubs__adaptive_avg_pool2d =
+    foreign
+      "atg__adaptive_avg_pool2d"
+      (ptr t @-> t @-> ptr int64_t @-> int @-> returning void)
+
+  let stubs__adaptive_avg_pool2d_backward =
+    foreign "atg__adaptive_avg_pool2d_backward" (ptr t @-> t @-> t @-> returning void)
+
+  let stubs__addr = foreign "atg__addr" (ptr t @-> t @-> t @-> t @-> returning void)
+  let stubs__addr_ = foreign "atg__addr_" (ptr t @-> t @-> t @-> t @-> returning void)
+
+  let stubs__addr_out =
+    foreign "atg__addr_out" (ptr t @-> t @-> t @-> t @-> t @-> returning void)
+
+  let stubs__amp_update_scale =
+    foreign
+      "atg__amp_update_scale"
+      (ptr t @-> t @-> t @-> t @-> double @-> double @-> int64_t @-> returning void)
+
+  let stubs__baddbmm_mkl_ =
+    foreign "atg__baddbmm_mkl_" (ptr t @-> t @-> t @-> t @-> returning void)
+
+  let stubs__cast_byte = foreign "atg__cast_byte" (ptr t @-> t @-> int @-> returning void)
+  let stubs__cast_char = foreign "atg__cast_char" (ptr t @-> t @-> int @-> returning void)
+
+  let stubs__cast_double =
+    foreign "atg__cast_double" (ptr t @-> t @-> int @-> returning void)
+
+  let stubs__cast_float =
+    foreign "atg__cast_float" (ptr t @-> t @-> int @-> returning void)
+
+  let stubs__cast_half = foreign "atg__cast_half" (ptr t @-> t @-> int @-> returning void)
+  let stubs__cast_int = foreign "atg__cast_int" (ptr t @-> t @-> int @-> returning void)
+  let stubs__cast_long = foreign "atg__cast_long" (ptr t @-> t @-> int @-> returning void)
+
+  let stubs__cast_short =
+    foreign "atg__cast_short" (ptr t @-> t @-> int @-> returning void)
+
+  let stubs__cat =
+    foreign "atg__cat" (ptr t @-> ptr t @-> int @-> int64_t @-> returning void)
+
+  let stubs__cat_out =
+    foreign "atg__cat_out" (ptr t @-> t @-> ptr t @-> int @-> int64_t @-> returning void)
+
+  let stubs__cdist_backward =
+    foreign
+      "atg__cdist_backward"
+      (ptr t @-> t @-> t @-> t @-> double @-> t @-> returning void)
+
+  let stubs__cholesky_helper =
+    foreign "atg__cholesky_helper" (ptr t @-> t @-> int @-> returning void)
+
+  let stubs__cholesky_solve_helper =
+    foreign "atg__cholesky_solve_helper" (ptr t @-> t @-> t @-> int @-> returning void)
+
+  let stubs__coalesced_ =
+    foreign "atg__coalesced_" (ptr t @-> t @-> int @-> returning void)
+
+  let stubs__convolution =
+    foreign
+      "atg__convolution"
+      (ptr t
+      @-> t
+      @-> t
+      @-> t
+      @-> ptr int64_t
+      @-> int
+      @-> ptr int64_t
+      @-> int
+      @-> ptr int64_t
+      @-> int
+      @-> int
+      @-> ptr int64_t
+      @-> int
+      @-> int64_t
+      @-> int
+      @-> int
+      @-> int
+      @-> returning void)
+
+  let stubs__convolution_nogroup =
+    foreign
+      "atg__convolution_nogroup"
+      (ptr t
+      @-> t
+      @-> t
+      @-> t
+      @-> ptr int64_t
+      @-> int
+      @-> ptr int64_t
+      @-> int
+      @-> ptr int64_t
+      @-> int
+      @-> int
+      @-> ptr int64_t
+      @-> int
+      @-> returning void)
+
+  let stubs__copy_from =
+    foreign "atg__copy_from" (ptr t @-> t @-> t @-> int @-> returning void)
+
+  let stubs__ctc_loss =
+    foreign
+      "atg__ctc_loss"
+      (ptr t
+      @-> t
+      @-> t
+      @-> ptr int64_t
+      @-> int
+      @-> ptr int64_t
+      @-> int
+      @-> int64_t
+      @-> int
+      @-> returning void)
+
+  let stubs__ctc_loss_backward =
+    foreign
+      "atg__ctc_loss_backward"
+      (ptr t
+      @-> t
+      @-> t
+      @-> t
+      @-> ptr int64_t
+      @-> int
+      @-> ptr int64_t
+      @-> int
+      @-> t
+      @-> t
+      @-> int64_t
+      @-> int
+      @-> returning void)
+
+  let stubs__cudnn_ctc_loss =
+    foreign
+      "atg__cudnn_ctc_loss"
+      (ptr t
+      @-> t
+      @-> t
+      @-> ptr int64_t
+      @-> int
+      @-> ptr int64_t
+      @-> int
+      @-> int64_t
+      @-> int
+      @-> int
+      @-> returning void)
+
+  let stubs__cudnn_init_dropout_state =
+    foreign
+      "atg__cudnn_init_dropout_state"
+      (ptr t @-> double @-> int @-> int64_t @-> int @-> int @-> returning void)
+
+  let stubs__cudnn_rnn =
+    foreign
+      "atg__cudnn_rnn"
+      (ptr t
+      @-> t
+      @-> ptr t
+      @-> int
+      @-> int64_t
+      @-> t
+      @-> t
+      @-> t
+      @-> int64_t
+      @-> int64_t
+      @-> int64_t
+      @-> int
+      @-> double
+      @-> int
+      @-> int
+      @-> ptr int64_t
+      @-> int
+      @-> t
+      @-> returning void)
+
+  let stubs__cudnn_rnn_flatten_weight =
+    foreign
+      "atg__cudnn_rnn_flatten_weight"
+      (ptr t
+      @-> ptr t
+      @-> int
+      @-> int64_t
+      @-> int64_t
+      @-> int64_t
+      @-> int64_t
+      @-> int64_t
+      @-> int
+      @-> int
+      @-> returning void)
+
+  let stubs__cumprod = foreign "atg__cumprod" (ptr t @-> t @-> int64_t @-> returning void)
+
+  let stubs__cumprod_out =
+    foreign "atg__cumprod_out" (ptr t @-> t @-> t @-> int64_t @-> returning void)
+
+  let stubs__cumsum = foreign "atg__cumsum" (ptr t @-> t @-> int64_t @-> returning void)
+
+  let stubs__cumsum_out =
+    foreign "atg__cumsum_out" (ptr t @-> t @-> t @-> int64_t @-> returning void)
+
+  let stubs__dim_arange =
+    foreign "atg__dim_arange" (ptr t @-> t @-> int64_t @-> returning void)
+
+  let stubs__dirichlet_grad =
+    foreign "atg__dirichlet_grad" (ptr t @-> t @-> t @-> t @-> returning void)
+
+  let stubs__embedding_bag =
+    foreign
+      "atg__embedding_bag"
+      (ptr t
+      @-> t
+      @-> t
+      @-> t
+      @-> int
+      @-> int64_t
+      @-> int
+      @-> t
+      @-> int
+      @-> returning void)
+
+  let stubs__embedding_bag_backward =
+    foreign
+      "atg__embedding_bag_backward"
+      (ptr t
+      @-> t
+      @-> t
+      @-> t
+      @-> t
+      @-> t
+      @-> t
+      @-> int64_t
+      @-> int
+      @-> int64_t
+      @-> int
+      @-> t
+      @-> returning void)
+
+  let stubs__embedding_bag_dense_backward =
+    foreign
+      "atg__embedding_bag_dense_backward"
+      (ptr t
+      @-> t
+      @-> t
+      @-> t
+      @-> t
+      @-> t
+      @-> t
+      @-> int64_t
+      @-> int
+      @-> int64_t
+      @-> t
+      @-> returning void)
+
+  let stubs__embedding_bag_per_sample_weights_backward =
+    foreign
+      "atg__embedding_bag_per_sample_weights_backward"
+      (ptr t @-> t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
+
+  let stubs__embedding_bag_sparse_backward =
+    foreign
+      "atg__embedding_bag_sparse_backward"
+      (ptr t
+      @-> t
+      @-> t
+      @-> t
+      @-> t
+      @-> t
+      @-> int64_t
+      @-> int
+      @-> int64_t
+      @-> t
+      @-> returning void)
+
+  let stubs__empty_affine_quantized =
+    foreign
+      "atg__empty_affine_quantized"
+      (ptr t
+      @-> ptr int64_t
+      @-> int
+      @-> int
+      @-> int
+      @-> double
+      @-> int64_t
+      @-> returning void)
+
+  let stubs__empty_per_channel_affine_quantized =
+    foreign
+      "atg__empty_per_channel_affine_quantized"
+      (ptr t
+      @-> ptr int64_t
+      @-> int
+      @-> t
+      @-> t
+      @-> int64_t
+      @-> int
+      @-> int
+      @-> returning void)
+
+  let stubs__fft_with_size =
+    foreign
+      "atg__fft_with_size"
+      (ptr t
+      @-> t
+      @-> int64_t
+      @-> int
+      @-> int
+      @-> int
+      @-> ptr int64_t
+      @-> int
+      @-> int
+      @-> int
+      @-> ptr int64_t
+      @-> int
+      @-> returning void)
+
+  let stubs__fused_dropout =
+    foreign "atg__fused_dropout" (ptr t @-> t @-> double @-> returning void)
+
+  let stubs__gather_sparse_backward =
+    foreign
+      "atg__gather_sparse_backward"
+      (ptr t @-> t @-> int64_t @-> t @-> t @-> returning void)
+
+  let stubs__index_copy_ =
+    foreign "atg__index_copy_" (ptr t @-> t @-> int64_t @-> t @-> t @-> returning void)
+
+  let stubs__index_put_impl_ =
+    foreign
+      "atg__index_put_impl_"
+      (ptr t @-> t @-> ptr t @-> int @-> t @-> int @-> int @-> returning void)
+
+  let stubs__indices = foreign "atg__indices" (ptr t @-> t @-> returning void)
+
+  let stubs__inverse_helper =
+    foreign "atg__inverse_helper" (ptr t @-> t @-> returning void)
+
+  let stubs__log_softmax =
+    foreign "atg__log_softmax" (ptr t @-> t @-> int64_t @-> int @-> returning void)
+
+  let stubs__log_softmax_backward_data =
+    foreign
+      "atg__log_softmax_backward_data"
+      (ptr t @-> t @-> t @-> int64_t @-> t @-> returning void)
+
+  let stubs__lu_solve_helper =
+    foreign "atg__lu_solve_helper" (ptr t @-> t @-> t @-> t @-> returning void)
+
+  let stubs__lu_with_info =
+    foreign "atg__lu_with_info" (ptr t @-> t @-> int @-> int @-> returning void)
+
+  let stubs__make_per_channel_quantized_tensor =
+    foreign
+      "atg__make_per_channel_quantized_tensor"
+      (ptr t @-> t @-> t @-> t @-> int64_t @-> returning void)
+
+  let stubs__make_per_tensor_quantized_tensor =
+    foreign
+      "atg__make_per_tensor_quantized_tensor"
+      (ptr t @-> t @-> double @-> int64_t @-> returning void)
+
+  let stubs__masked_scale =
+    foreign "atg__masked_scale" (ptr t @-> t @-> t @-> double @-> returning void)
+
+  let stubs__max = foreign "atg__max" (ptr t @-> t @-> int64_t @-> int @-> returning void)
+
+  let stubs__max_out =
+    foreign "atg__max_out" (ptr t @-> t @-> t @-> t @-> int64_t @-> int @-> returning void)
+
+  let stubs__min = foreign "atg__min" (ptr t @-> t @-> int64_t @-> int @-> returning void)
+
+  let stubs__min_out =
+    foreign "atg__min_out" (ptr t @-> t @-> t @-> t @-> int64_t @-> int @-> returning void)
+
+  let stubs__mkldnn_reshape =
+    foreign "atg__mkldnn_reshape" (ptr t @-> t @-> ptr int64_t @-> int @-> returning void)
+
+  let stubs__mkldnn_transpose =
+    foreign
+      "atg__mkldnn_transpose"
+      (ptr t @-> t @-> int64_t @-> int64_t @-> returning void)
+
+  let stubs__mkldnn_transpose_ =
+    foreign
+      "atg__mkldnn_transpose_"
+      (ptr t @-> t @-> int64_t @-> int64_t @-> returning void)
+
+  let stubs__mode =
+    foreign "atg__mode" (ptr t @-> t @-> int64_t @-> int @-> returning void)
+
+  let stubs__mode_out =
+    foreign
+      "atg__mode_out"
+      (ptr t @-> t @-> t @-> t @-> int64_t @-> int @-> returning void)
+
+  let stubs__multinomial_alias_draw =
+    foreign
+      "atg__multinomial_alias_draw"
+      (ptr t @-> t @-> t @-> int64_t @-> returning void)
+
+  let stubs__multinomial_alias_setup =
+    foreign "atg__multinomial_alias_setup" (ptr t @-> t @-> returning void)
+
+  let stubs__nnpack_spatial_convolution =
+    foreign
+      "atg__nnpack_spatial_convolution"
+      (ptr t
+      @-> t
+      @-> t
+      @-> t
+      @-> ptr int64_t
+      @-> int
+      @-> ptr int64_t
+      @-> int
+      @-> returning void)
+
+  let stubs__nnpack_spatial_convolution_backward_input =
+    foreign
+      "atg__nnpack_spatial_convolution_backward_input"
+      (ptr t @-> t @-> t @-> t @-> ptr int64_t @-> int @-> returning void)
+
+  let stubs__nnpack_spatial_convolution_backward_weight =
+    foreign
+      "atg__nnpack_spatial_convolution_backward_weight"
+      (ptr t
+      @-> t
+      @-> ptr int64_t
+      @-> int
+      @-> t
+      @-> ptr int64_t
+      @-> int
+      @-> returning void)
+
+  let stubs__pack_padded_sequence =
+    foreign "atg__pack_padded_sequence" (ptr t @-> t @-> t @-> int @-> returning void)
+
+  let stubs__pack_padded_sequence_backward =
+    foreign
+      "atg__pack_padded_sequence_backward"
+      (ptr t @-> t @-> ptr int64_t @-> int @-> t @-> int @-> returning void)
+
+  let stubs__pad_packed_sequence =
+    foreign
+      "atg__pad_packed_sequence"
+      (ptr t @-> t @-> t @-> int @-> scalar @-> int64_t @-> returning void)
+
+  let stubs__pdist_backward =
+    foreign "atg__pdist_backward" (ptr t @-> t @-> t @-> double @-> t @-> returning void)
+
+  let stubs__qr_helper = foreign "atg__qr_helper" (ptr t @-> t @-> int @-> returning void)
+
+  let stubs__reshape_from_tensor =
+    foreign "atg__reshape_from_tensor" (ptr t @-> t @-> t @-> returning void)
+
+  let stubs__s_where = foreign "atg__s_where" (ptr t @-> t @-> t @-> t @-> returning void)
+
+  let stubs__sample_dirichlet =
+    foreign "atg__sample_dirichlet" (ptr t @-> t @-> returning void)
+
+  let stubs__shape_as_tensor =
+    foreign "atg__shape_as_tensor" (ptr t @-> t @-> returning void)
+
+  let stubs__sobol_engine_draw =
+    foreign
+      "atg__sobol_engine_draw"
+      (ptr t @-> t @-> int64_t @-> t @-> int64_t @-> int64_t @-> int @-> returning void)
+
+  let stubs__sobol_engine_ff_ =
+    foreign
+      "atg__sobol_engine_ff_"
+      (ptr t @-> t @-> int64_t @-> t @-> int64_t @-> int64_t @-> returning void)
+
+  let stubs__sobol_engine_initialize_state_ =
+    foreign
+      "atg__sobol_engine_initialize_state_"
+      (ptr t @-> t @-> int64_t @-> returning void)
+
+  let stubs__sobol_engine_scramble_ =
+    foreign
+      "atg__sobol_engine_scramble_"
+      (ptr t @-> t @-> t @-> int64_t @-> returning void)
+
+  let stubs__softmax =
+    foreign "atg__softmax" (ptr t @-> t @-> int64_t @-> int @-> returning void)
+
+  let stubs__softmax_backward_data =
+    foreign
+      "atg__softmax_backward_data"
+      (ptr t @-> t @-> t @-> int64_t @-> t @-> returning void)
+
+  let stubs__solve_helper =
+    foreign "atg__solve_helper" (ptr t @-> t @-> t @-> returning void)
+
+  let stubs__sparse_addmm =
+    foreign "atg__sparse_addmm" (ptr t @-> t @-> t @-> t @-> returning void)
+
+  let stubs__sparse_coo_tensor_unsafe =
+    foreign
+      "atg__sparse_coo_tensor_unsafe"
+      (ptr t @-> t @-> t @-> ptr int64_t @-> int @-> int @-> int @-> returning void)
+
+  let stubs__sparse_coo_tensor_with_dims =
+    foreign
+      "atg__sparse_coo_tensor_with_dims"
+      (ptr t
+      @-> int64_t
+      @-> int64_t
+      @-> ptr int64_t
+      @-> int
+      @-> int
+      @-> int
+      @-> returning void)
+
+  let stubs__sparse_coo_tensor_with_dims_and_tensors =
+    foreign
+      "atg__sparse_coo_tensor_with_dims_and_tensors"
+      (ptr t
+      @-> int64_t
+      @-> int64_t
+      @-> ptr int64_t
+      @-> int
+      @-> t
+      @-> t
+      @-> int
+      @-> int
+      @-> returning void)
+
+  let stubs__sparse_mm = foreign "atg__sparse_mm" (ptr t @-> t @-> t @-> returning void)
+  let stubs__sparse_sum = foreign "atg__sparse_sum" (ptr t @-> t @-> returning void)
+
+  let stubs__sparse_sum1 =
+    foreign "atg__sparse_sum1" (ptr t @-> t @-> int @-> returning void)
+
+  let stubs__sparse_sum2 =
+    foreign "atg__sparse_sum2" (ptr t @-> t @-> ptr int64_t @-> int @-> returning void)
+
+  let stubs__sparse_sum3 =
+    foreign
+      "atg__sparse_sum3"
+      (ptr t @-> t @-> ptr int64_t @-> int @-> int @-> returning void)
+
+  let stubs__sparse_sum_backward =
+    foreign
+      "atg__sparse_sum_backward"
+      (ptr t @-> t @-> t @-> ptr int64_t @-> int @-> returning void)
+
+  let stubs__standard_gamma =
+    foreign "atg__standard_gamma" (ptr t @-> t @-> returning void)
+
+  let stubs__standard_gamma_grad =
+    foreign "atg__standard_gamma_grad" (ptr t @-> t @-> t @-> returning void)
+
+  let stubs__std = foreign "atg__std" (ptr t @-> t @-> int @-> returning void)
+
+  let stubs__svd_helper =
+    foreign "atg__svd_helper" (ptr t @-> t @-> int @-> int @-> returning void)
+
+  let stubs__symeig_helper =
+    foreign "atg__symeig_helper" (ptr t @-> t @-> int @-> int @-> returning void)
+
+  let stubs__thnn_differentiable_gru_cell_backward =
+    foreign
+      "atg__thnn_differentiable_gru_cell_backward"
+      (ptr t @-> t @-> t @-> t @-> t @-> t @-> t @-> returning void)
+
+  let stubs__thnn_differentiable_lstm_cell_backward =
+    foreign
+      "atg__thnn_differentiable_lstm_cell_backward"
+      (ptr t @-> t @-> t @-> t @-> t @-> t @-> t @-> t @-> t @-> returning void)
+
+  let stubs__thnn_fused_gru_cell =
+    foreign
+      "atg__thnn_fused_gru_cell"
+      (ptr t @-> t @-> t @-> t @-> t @-> t @-> returning void)
+
+  let stubs__thnn_fused_gru_cell_backward =
+    foreign
+      "atg__thnn_fused_gru_cell_backward"
+      (ptr t @-> t @-> t @-> int @-> returning void)
+
+  let stubs__thnn_fused_lstm_cell =
+    foreign
+      "atg__thnn_fused_lstm_cell"
+      (ptr t @-> t @-> t @-> t @-> t @-> t @-> returning void)
+
+  let stubs__thnn_fused_lstm_cell_backward =
+    foreign
+      "atg__thnn_fused_lstm_cell_backward"
+      (ptr t @-> t @-> t @-> t @-> t @-> t @-> int @-> returning void)
+
+  let stubs__triangular_solve_helper =
+    foreign
+      "atg__triangular_solve_helper"
+      (ptr t @-> t @-> t @-> int @-> int @-> int @-> returning void)
+
+  let stubs__trilinear =
+    foreign
+      "atg__trilinear"
+      (ptr t
+      @-> t
+      @-> t
+      @-> t
+      @-> ptr int64_t
+      @-> int
+      @-> ptr int64_t
+      @-> int
+      @-> ptr int64_t
+      @-> int
+      @-> ptr int64_t
+      @-> int
+      @-> int64_t
+      @-> returning void)
+
+  let stubs__unique =
+    foreign "atg__unique" (ptr t @-> t @-> int @-> int @-> returning void)
+
+  let stubs__unique2 =
+    foreign "atg__unique2" (ptr t @-> t @-> int @-> int @-> int @-> returning void)
+
+  let stubs__unsafe_view =
+    foreign "atg__unsafe_view" (ptr t @-> t @-> ptr int64_t @-> int @-> returning void)
+
+  let stubs__values = foreign "atg__values" (ptr t @-> t @-> returning void)
+  let stubs__var = foreign "atg__var" (ptr t @-> t @-> int @-> returning void)
+
+  let stubs__weight_norm =
+    foreign "atg__weight_norm" (ptr t @-> t @-> t @-> int64_t @-> returning void)
+
+  let stubs__weight_norm_cuda_interface =
+    foreign
+      "atg__weight_norm_cuda_interface"
+      (ptr t @-> t @-> t @-> int64_t @-> returning void)
+
+  let stubs__weight_norm_cuda_interface_backward =
+    foreign
+      "atg__weight_norm_cuda_interface_backward"
+      (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
+
+  let stubs__weight_norm_differentiable_backward =
+    foreign
+      "atg__weight_norm_differentiable_backward"
+      (ptr t @-> t @-> t @-> t @-> t @-> int64_t @-> returning void)
+
   let stubs_abs = foreign "atg_abs" (ptr t @-> t @-> returning void)
   let stubs_abs_ = foreign "atg_abs_" (ptr t @-> t @-> returning void)
   let stubs_abs_out = foreign "atg_abs_out" (ptr t @-> t @-> t @-> returning void)
