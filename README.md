@@ -143,12 +143,11 @@ Running the pre-trained models on some sample images can the easily be done via 
 dune exec examples/pretrained/predict.exe path/to/resnet18.ot tiger.jpg
 ```
 
-## Alternative Installation Options
+## Alternative Installation Option
 
-These alternative ways to install __ocaml-torch__ could be useful to run with GPU
+This alternative way to install __ocaml-torch__ could be useful to run with GPU
 acceleration enabled.
 
-### Option 1: Using PyTorch pre-built Binaries
 The libtorch library can be downloaded from the [PyTorch
 website](https://pytorch.org/resources) ([1.5.0 cpu
 version](https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-1.5.0+cpu.zip)).
@@ -157,20 +156,6 @@ Download and extract the libtorch library then to build all the examples run:
 
 ```bash
 export LIBTORCH=/path/to/libtorch
-git clone https://github.com/LaurentMazare/ocaml-torch.git
-cd ocaml-torch
-make all
-```
-
-### Option 2: Using PyTorch Conda package
-Conda packages for PyTorch 1.5 can be used via the following command.
-```bash
-conda create -n torch
-source activate torch
-conda install pytorch-cpu=1.5.0 -c pytorch
-# Or for the CUDA version
-# conda install pytorch=1.5.0 -c pytorch
-
 git clone https://github.com/LaurentMazare/ocaml-torch.git
 cd ocaml-torch
 make all
