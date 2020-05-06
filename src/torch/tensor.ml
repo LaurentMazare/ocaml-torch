@@ -143,10 +143,12 @@ let avg_pool2d
     ?(count_include_pad = false)
     ?(ceil_mode = false)
     ?stride
-    ?(divisor_override = 1)
+    ?divisor_override
     self
     ~ksize
   =
+  let k1, k2 = ksize in
+  let divisor_override = Option.value divisor_override ~default:Int.(k1 * k2) in
   avg_pool2d
     self
     ~kernel_size:(pair_to_list ksize)
