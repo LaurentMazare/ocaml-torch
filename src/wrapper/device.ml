@@ -8,3 +8,5 @@ let to_int = function
   | Cuda i ->
     if i < 0 then Printf.sprintf "negative index for cuda device" |> failwith;
     i
+
+let of_int i = if i < 0 then Cpu else Cuda i

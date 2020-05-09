@@ -163,6 +163,7 @@ module Tensor = struct
   let min = min1
   let copy_ t ~src = copy_ t src
   let defined = defined
+  let device t = device t |> Device.of_int
 
   let new_tensor () =
     let t = new_tensor () in

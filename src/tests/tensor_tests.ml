@@ -24,7 +24,7 @@ let%expect_test _ =
   t.%.{[ 1; 1 ]} <- 42.0;
   t.%.{[ 3; 0 ]} <- 1.337;
   for i = 0 to 3 do
-    Stdio.printf "%f %f\n" (t.%.{[ i; 0 ]}) (t.%.{[ i; 1 ]})
+    Stdio.printf "%f %f\n" t.%.{[ i; 0 ]} t.%.{[ i; 1 ]}
   done;
   [%expect
     {|
@@ -144,4 +144,5 @@ let%expect_test _ =
   |> List.iter ~f:(fun t -> Tensor.to_int1_exn t |> Stdio.printf !"%{sexp:int array}\n");
   [%expect {|
     (3 1 4)
-    (1 5 9) |}]
+    (1 5 9) |}];
+  assert (Tensor.device t = Cpu)

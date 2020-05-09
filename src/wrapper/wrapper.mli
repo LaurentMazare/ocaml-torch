@@ -51,6 +51,7 @@ module Tensor : sig
   val mean : t -> t
   val argmax : ?dim:int -> ?keepdim:bool -> t -> t
   val defined : t -> bool
+  val device : t -> Device.t
   val copy_ : t -> src:t -> unit
   val max : t -> t -> t
   val min : t -> t -> t

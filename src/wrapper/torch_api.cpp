@@ -22,6 +22,14 @@ at::Device device_of_int(int d) {
     return at::Device(at::kCUDA, /*index=*/d);
 }
 
+int at_device(tensor tensor) {
+  PROTECT (
+    auto device = tensor->device();
+    if (device.is_cpu()) return -1;
+    return device.index();
+  )
+}
+
 tensor at_new_tensor() {
   PROTECT(
     return new torch::Tensor();
