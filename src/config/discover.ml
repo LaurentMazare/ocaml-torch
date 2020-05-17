@@ -117,9 +117,9 @@ let () =
         "cxx_flags.sexp"
         (cxx_abi_flag :: (torch_flags.cflags @ cuda_flags.cflags));
       let torch_flags_lib =
-        match C.ocaml_config_var c "system" with
-        | Some "macosx" -> torch_flags.libs
-        | _ -> "-Wl,--no-as-needed" :: torch_flags.libs
+        if Caml.( = ) cuda_flags empty_flags
+        then torch_flags.libs
+        else "-Wl,--no-as-needed" :: torch_flags.libs
       in
       C.Flags.write_sexp
         "c_library_flags.sexp"
