@@ -116,6 +116,11 @@ let () =
       C.Flags.write_sexp
         "cxx_flags.sexp"
         (cxx_abi_flag :: (torch_flags.cflags @ cuda_flags.cflags));
+      let torch_flags_lib =
+        match C.ocaml_config_var c "system" with
+        | Some "macosx" -> torch_flags.libs
+        | _ -> "-Wl,--no-as-needed" :: torch_flags.libs
+      in
       C.Flags.write_sexp
         "c_library_flags.sexp"
-        (("-Wl,--no-as-needed" :: torch_flags.libs) @ conda_libs @ cuda_flags.libs))
+        (torch_flags_lib @ conda_libs @ cuda_flags.libs))
