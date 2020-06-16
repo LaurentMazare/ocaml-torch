@@ -3,7 +3,9 @@
      https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/resnet18.ot
      https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/resnet34.ot
      https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/densenet121.ot
+     https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/vgg13.ot
      https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/vgg16.ot
+     https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/vgg19.ot
      https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/squeezenet1_0.ot
      https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/squeezenet1_1.ot
      https://github.com/LaurentMazare/ocaml-torch/releases/download/v0.1-unstable/alexnet.ot
@@ -30,6 +32,7 @@ let () =
     | "vgg11.ot" -> Vgg.vgg11 vs ~num_classes:1000
     | "vgg13.ot" -> Vgg.vgg13 vs ~num_classes:1000
     | "vgg16.ot" -> Vgg.vgg16 vs ~num_classes:1000
+    | "vgg19.ot" -> Vgg.vgg19 vs ~num_classes:1000
     | "squeezenet1_0.ot" -> Squeezenet.squeezenet1_0 vs ~num_classes:1000
     | "squeezenet1_1.ot" -> Squeezenet.squeezenet1_1 vs ~num_classes:1000
     | "densenet121.ot" -> Densenet.densenet121 vs ~num_classes:1000
