@@ -151,7 +151,7 @@ val conv_transpose2d_
   -> int
   -> t
 
-(** {3 Batch Normalization } *)
+(** {3 Normalization } *)
 
 (** [batch_norm2d vs dim] creates a batch norm 2D layer. This layer
     applies Batch Normalization over a 4D input
@@ -165,6 +165,8 @@ val batch_norm2d
   -> ?momentum:float
   -> int
   -> t_with_training
+
+val layer_norm : Var_store.t -> ?cudnn_enable:bool -> ?eps:float -> int -> t
 
 (** {3 Recurrent Neural Networks } *)
 

@@ -208,6 +208,20 @@ let batch_norm2d
   in
   { apply_with_training }
 
+let layer_norm vs ?(cudnn_enable = true) ?(eps = 1e-5) dim =
+  let weight = Var_store.new_var vs ~name:"weight" ~shape:[ dim ] ~init:Ones in
+  let bias = Var_store.new_var vs ~name:"bias" ~shape:[ dim ] ~init:Zeros in
+  let apply xs =
+    Tensor.layer_norm
+      xs
+      ~normalized_shape:[ dim ]
+      ~weight:(Some weight)
+      ~bias:(Some bias)
+      ~eps
+      ~cudnn_enable
+  in
+  { apply }
+
 let forward t xs = t.apply xs
 
 let forward_ t_with_training xs ~is_training =
@@ -364,7 +378,7 @@ let embeddings
       vs
       ~shape:[ num_embeddings; embedding_dim ]
       ~init:(Normal { mean = 0.; stdev = 1. })
-      ~name:"embeddings"
+      ~name:"weight"
   in
   let apply indices =
     Tensor.embedding ~weight ~indices ~padding_idx:(-1) ~sparse ~scale_grad_by_freq
