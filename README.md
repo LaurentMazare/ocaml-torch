@@ -143,6 +143,9 @@ Running the pre-trained models on some sample images can the easily be done via 
 dune exec examples/pretrained/predict.exe path/to/resnet18.ot tiger.jpg
 ```
 
+Natural Language Processing models based on BERT can be found in the
+[ocaml-torch repo](https://github.com/LaurentMazare/ocaml-bert).
+
 ## Alternative Installation Option
 
 This alternative way to install __ocaml-torch__ could be useful to run with GPU

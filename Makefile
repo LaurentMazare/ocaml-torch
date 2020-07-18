@@ -18,7 +18,6 @@ ALL = examples/basics/basics.exe \
       examples/yolo/yolo.exe \
       examples/vae/vae.exe \
       examples/translation/seq2seq.exe \
-      examples/transformer/transformer.exe \
       bin/tensor_tools.exe
 
 RL = examples/reinforcement-learning/dqn.exe \
