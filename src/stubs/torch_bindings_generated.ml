@@ -1862,6 +1862,9 @@ module C (F : Cstubs.FOREIGN) = struct
   let stubs_eig_out =
     foreign "atg_eig_out" (ptr t @-> t @-> t @-> t @-> int @-> returning void)
 
+  let stubs_einsum =
+    foreign "atg_einsum" (ptr t @-> string @-> ptr t @-> int @-> returning void)
+
   let stubs_elu = foreign "atg_elu" (ptr t @-> t @-> returning void)
   let stubs_elu_ = foreign "atg_elu_" (ptr t @-> t @-> returning void)
 
@@ -2211,6 +2214,11 @@ module C (F : Cstubs.FOREIGN) = struct
     foreign
       "atg_frobenius_norm_out"
       (ptr t @-> t @-> t @-> ptr int64_t @-> int @-> int @-> returning void)
+
+  let stubs_from_file =
+    foreign
+      "atg_from_file"
+      (ptr t @-> string @-> int @-> int64_t @-> int @-> int @-> returning void)
 
   let stubs_full =
     foreign

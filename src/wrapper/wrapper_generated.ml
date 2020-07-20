@@ -4583,6 +4583,17 @@ let eig_out ~e ~v self ~eigenvectors =
   Gc.finalise C.Tensor.free t1;
   t0, t1
 
+let einsum ~equation tensors =
+  let out__ = CArray.make t 1 in
+  stubs_einsum
+    (CArray.start out__)
+    equation
+    (CArray.of_list t tensors |> CArray.start)
+    (List.length tensors);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
 let elu self =
   let out__ = CArray.make t 1 in
   stubs_elu (CArray.start out__) self;
@@ -5529,6 +5540,19 @@ let frobenius_norm_out ~out self ~dim ~keepdim =
     (List.map Int64.of_int dim |> CArray.of_list int64_t |> CArray.start)
     (List.length dim)
     (if keepdim then 1 else 0);
+  let t0 = CArray.get out__ 0 in
+  Gc.finalise C.Tensor.free t0;
+  t0
+
+let from_file ~filename ~shared ~size ~options =
+  let out__ = CArray.make t 1 in
+  stubs_from_file
+    (CArray.start out__)
+    filename
+    (if shared then 1 else 0)
+    (Int64.of_int size)
+    (Kind.packed_to_int (fst options))
+    (Device.to_int (snd options));
   let t0 = CArray.get out__ 0 in
   Gc.finalise C.Tensor.free t0;
   t0

@@ -79,6 +79,7 @@ module Func = struct
     | Scalar
     | ScalarType
     | Device
+    | String
 
   type arg =
     { arg_name : string
@@ -99,6 +100,7 @@ module Func = struct
     | Scalar -> "'a scalar"
     | ScalarType -> "Kind.packed"
     | Device -> "Device.t"
+    | String -> "string"
 
   let named_arg arg =
     match arg.arg_name with
@@ -126,6 +128,7 @@ module Func = struct
     | "device" -> Some Device
     | "scalar" -> Some Scalar
     | "scalartype" -> Some ScalarType
+    | "std::string" -> Some String
     | _ -> None
 
   let c_typed_args_list t =
@@ -145,6 +148,7 @@ module Func = struct
             | ScalarType -> "int"
             | Device -> "int"
             | Scalar -> "scalar"
+            | String -> "char *"
             | IntList | TensorList | TensorOptions -> assert false
           in
           Printf.sprintf "%s %s" simple_type_cstring arg_name)
@@ -158,6 +162,7 @@ module Func = struct
         | Bool -> "(bool)" ^ arg_name
         | IntList ->
           Printf.sprintf "torch::IntArrayRef(%s_data, %s_len)" arg_name arg_name
+        | String -> Printf.sprintf "std::string(%s)" arg_name
         | TensorList ->
           Printf.sprintf "of_carray_tensor(%s_data, %s_len)" arg_name arg_name
         | TensorOptions ->
@@ -194,6 +199,7 @@ module Func = struct
           | Device -> [ "int" ]
           | IntList -> [ "ptr int64_t"; "int" ]
           | TensorList -> [ "ptr t"; "int" ]
+          | String -> [ "string" ]
           | Scalar -> [ "scalar" ])
       |> String.concat ~sep:" @-> "
     in

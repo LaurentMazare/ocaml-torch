@@ -1228,6 +1228,7 @@ module type S = sig
   val dropout_ : t -> p:float -> train:bool -> t
   val eig : t -> eigenvectors:bool -> t * t
   val eig_out : e:t -> v:t -> t -> eigenvectors:bool -> t * t
+  val einsum : equation:string -> t list -> t
   val elu : t -> t
   val elu_ : t -> t
 
@@ -1494,6 +1495,14 @@ module type S = sig
   val frobenius_norm : t -> t
   val frobenius_norm1 : t -> dim:int list -> keepdim:bool -> t
   val frobenius_norm_out : out:t -> t -> dim:int list -> keepdim:bool -> t
+
+  val from_file
+    :  filename:string
+    -> shared:bool
+    -> size:int
+    -> options:Kind.packed * Device.t
+    -> t
+
   val full : size:int list -> fill_value:'a scalar -> options:Kind.packed * Device.t -> t
   val full_like : t -> fill_value:'a scalar -> t
   val full_out : out:t -> size:int list -> fill_value:'a scalar -> t
