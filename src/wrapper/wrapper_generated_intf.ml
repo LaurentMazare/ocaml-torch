@@ -26,6 +26,7 @@ module type S = sig
   val __xor__1 : t -> t -> t
   val _adaptive_avg_pool2d : t -> output_size:int list -> t
   val _adaptive_avg_pool2d_backward : grad_output:t -> t -> t
+  val _addmv_impl_ : t -> self2:t -> mat:t -> vec:t -> t
   val _addr : t -> vec1:t -> vec2:t -> t
   val _addr_ : t -> vec1:t -> vec2:t -> t
   val _addr_out : out:t -> t -> vec1:t -> vec2:t -> t
@@ -40,6 +41,8 @@ module type S = sig
     -> t
 
   val _baddbmm_mkl_ : t -> batch1:t -> batch2:t -> t
+  val _bmm : t -> mat2:t -> deterministic:bool -> t
+  val _bmm_out : out:t -> t -> mat2:t -> deterministic:bool -> t
   val _cast_byte : t -> non_blocking:bool -> t
   val _cast_char : t -> non_blocking:bool -> t
   val _cast_double : t -> non_blocking:bool -> t
@@ -231,6 +234,8 @@ module type S = sig
     -> options:Kind.packed * Device.t
     -> t
 
+  val _euclidean_dist : x1:t -> x2:t -> t
+
   val _fft_with_size
     :  t
     -> signal_ndim:int
@@ -259,15 +264,13 @@ module type S = sig
   val _inverse_helper : t -> t
   val _log_softmax : t -> dim:int -> half_to_float:bool -> t
   val _log_softmax_backward_data : grad_output:t -> output:t -> dim:int -> t -> t
+  val _logcumsumexp : t -> dim:int -> t
+  val _logcumsumexp_out : out:t -> t -> dim:int -> t
   val _lu_solve_helper : t -> lu_data:t -> lu_pivots:t -> t
   val _lu_with_info : t -> pivot:bool -> check_errors:bool -> t * t * t
   val _make_per_channel_quantized_tensor : t -> scale:t -> zero_point:t -> axis:int -> t
   val _make_per_tensor_quantized_tensor : t -> scale:float -> zero_point:int -> t
   val _masked_scale : t -> mask:t -> scale:float -> t
-  val _max : t -> dim:int -> keepdim:bool -> t * t
-  val _max_out : max:t -> max_indices:t -> t -> dim:int -> keepdim:bool -> t * t
-  val _min : t -> dim:int -> keepdim:bool -> t * t
-  val _min_out : min:t -> min_indices:t -> t -> dim:int -> keepdim:bool -> t * t
   val _mkldnn_reshape : t -> shape:int list -> t
   val _mkldnn_transpose : t -> dim0:int -> dim1:int -> t
   val _mkldnn_transpose_ : t -> dim0:int -> dim1:int -> t
@@ -369,7 +372,13 @@ module type S = sig
     -> options:Kind.packed * Device.t
     -> t
 
+  val _sparse_log_softmax : t -> dim:int -> dtype:Kind.packed -> t
+  val _sparse_log_softmax1 : t -> dim:int -> half_to_float:bool -> t
+  val _sparse_log_softmax_backward_data : grad_output:t -> output:t -> dim:int -> t -> t
   val _sparse_mm : sparse:t -> dense:t -> t
+  val _sparse_softmax : t -> dim:int -> dtype:Kind.packed -> t
+  val _sparse_softmax1 : t -> dim:int -> half_to_float:bool -> t
+  val _sparse_softmax_backward_data : grad_output:t -> output:t -> dim:int -> t -> t
   val _sparse_sum : t -> t
   val _sparse_sum1 : t -> dtype:Kind.packed -> t
   val _sparse_sum2 : t -> dim:int list -> t
@@ -377,9 +386,9 @@ module type S = sig
   val _sparse_sum_backward : grad:t -> t -> dim:int list -> t
   val _standard_gamma : t -> t
   val _standard_gamma_grad : t -> output:t -> t
-  val _std : t -> unbiased:bool -> t
   val _svd_helper : t -> some:bool -> compute_uv:bool -> t * t * t
   val _symeig_helper : t -> eigenvectors:bool -> upper:bool -> t * t
+  val _test_serialization_subcmul : t -> t -> t
 
   val _thnn_differentiable_gru_cell_backward
     :  grad_hy:t
@@ -462,7 +471,6 @@ module type S = sig
 
   val _unsafe_view : t -> size:int list -> t
   val _values : t -> t
-  val _var : t -> unbiased:bool -> t
   val _weight_norm : v:t -> g:t -> dim:int -> t
   val _weight_norm_cuda_interface : v:t -> g:t -> dim:int -> t * t
 
@@ -485,9 +493,15 @@ module type S = sig
   val abs : t -> t
   val abs_ : t -> t
   val abs_out : out:t -> t -> t
+  val absolute : t -> t
+  val absolute_ : t -> t
+  val absolute_out : out:t -> t -> t
   val acos : t -> t
   val acos_ : t -> t
   val acos_out : out:t -> t -> t
+  val acosh : t -> t
+  val acosh_ : t -> t
+  val acosh_out : out:t -> t -> t
   val adaptive_avg_pool1d : t -> output_size:int list -> t
   val adaptive_avg_pool2d : t -> output_size:int list -> t
   val adaptive_avg_pool2d_out : out:t -> t -> output_size:int list -> t
@@ -576,12 +590,18 @@ module type S = sig
   val asin : t -> t
   val asin_ : t -> t
   val asin_out : out:t -> t -> t
+  val asinh : t -> t
+  val asinh_ : t -> t
+  val asinh_out : out:t -> t -> t
   val atan : t -> t
   val atan2 : t -> t -> t
   val atan2_ : t -> t -> t
   val atan2_out : out:t -> t -> t -> t
   val atan_ : t -> t
   val atan_out : out:t -> t -> t
+  val atanh : t -> t
+  val atanh_ : t -> t
+  val atanh_out : out:t -> t -> t
 
   val avg_pool1d
     :  t
@@ -762,7 +782,7 @@ module type S = sig
     -> running_var:t option
     -> momentum:float
     -> eps:float
-    -> counts:int list
+    -> counts:t
     -> t * t
 
   val batch_norm_stats : t -> eps:float -> t * t
@@ -831,6 +851,7 @@ module type S = sig
     -> t
 
   val bincount : t -> weights:t option -> minlength:int -> t
+  val binomial : count:t -> prob:t -> t
   val bitwise_and : t -> 'a scalar -> t
   val bitwise_and1 : t -> t -> t
   val bitwise_and_ : t -> 'a scalar -> t
@@ -860,9 +881,13 @@ module type S = sig
     -> options:Kind.packed * Device.t
     -> t
 
+  val block_diag : t list -> t
   val bmm : t -> mat2:t -> t
   val bmm_out : out:t -> t -> mat2:t -> t
   val broadcast_tensors : t list -> t list
+  val bucketize : t -> boundaries:t -> out_int32:bool -> right:bool -> t
+  val bucketize1 : 'a scalar -> boundaries:t -> out_int32:bool -> right:bool -> t
+  val bucketize_out : out:t -> t -> boundaries:t -> out_int32:bool -> right:bool -> t
   val cartesian_prod : t list -> t
   val cat : t list -> dim:int -> t
   val cat_out : out:t -> t list -> dim:int -> t
@@ -874,6 +899,7 @@ module type S = sig
   val celu : t -> t
   val celu_ : t -> t
   val chain_matmul : matrices:t list -> t
+  val channel_shuffle : t -> groups:int -> t
   val cholesky : t -> upper:bool -> t
   val cholesky_inverse : t -> upper:bool -> t
   val cholesky_inverse_out : out:t -> t -> upper:bool -> t
@@ -1204,7 +1230,11 @@ module type S = sig
   val cumsum : t -> dim:int -> dtype:Kind.packed -> t
   val cumsum_out : out:t -> t -> dim:int -> dtype:Kind.packed -> t
   val data : t -> t
+  val deg2rad : t -> t
+  val deg2rad_ : t -> t
+  val deg2rad_out : out:t -> t -> t
   val dequantize : t -> t
+  val dequantize1 : t list -> t list
   val det : t -> t
   val detach : t -> t
   val detach_ : t -> t
@@ -1299,7 +1329,9 @@ module type S = sig
 
   val empty : size:int list -> options:Kind.packed * Device.t -> t
   val empty_like : t -> t
+  val empty_meta : size:int list -> options:Kind.packed * Device.t -> t
   val empty_out : out:t -> size:int list -> t
+  val empty_quantized : size:int list -> qtensor:t -> t
 
   val empty_strided
     :  size:int list
@@ -1408,6 +1440,8 @@ module type S = sig
   val fill_diagonal_ : t -> fill_value:'a scalar -> wrap:bool -> t
   val flatten : t -> start_dim:int -> end_dim:int -> t
   val flip : t -> dims:int list -> t
+  val fliplr : t -> t
+  val flipud : t -> t
   val floor : t -> t
   val floor_ : t -> t
   val floor_divide : t -> t -> t
@@ -1646,6 +1680,10 @@ module type S = sig
   val hardsigmoid_ : t -> t
   val hardsigmoid_backward : grad_output:t -> t -> t
   val hardsigmoid_out : out:t -> t -> t
+  val hardswish : t -> t
+  val hardswish_ : t -> t
+  val hardswish_backward : grad_output:t -> t -> t
+  val hardswish_out : out:t -> t -> t
   val hardtanh : t -> t
   val hardtanh_ : t -> t
 
@@ -1752,8 +1790,29 @@ module type S = sig
   val isfinite : t -> t
   val isinf : t -> t
   val isnan : t -> t
-  val kl_div : t -> target:t -> reduction:Reduction.t -> t
-  val kl_div_backward : grad_output:t -> t -> target:t -> reduction:Reduction.t -> t
+
+  val istft
+    :  t
+    -> n_fft:int
+    -> hop_length:int
+    -> win_length:int
+    -> window:t option
+    -> center:bool
+    -> normalized:bool
+    -> onesided:bool
+    -> length:int
+    -> t
+
+  val kl_div : t -> target:t -> reduction:Reduction.t -> log_target:bool -> t
+
+  val kl_div_backward
+    :  grad_output:t
+    -> t
+    -> target:t
+    -> reduction:Reduction.t
+    -> log_target:bool
+    -> t
+
   val kthvalue : t -> k:int -> dim:int -> keepdim:bool -> t * t
 
   val kthvalue_out
@@ -1841,6 +1900,12 @@ module type S = sig
   val log_sigmoid_backward_out : grad_input:t -> grad_output:t -> t -> buffer:t -> t
   val log_sigmoid_out : out:t -> t -> t
   val log_softmax : t -> dim:int -> dtype:Kind.packed -> t
+  val logaddexp : t -> t -> t
+  val logaddexp2 : t -> t -> t
+  val logaddexp2_out : out:t -> t -> t -> t
+  val logaddexp_out : out:t -> t -> t -> t
+  val logcumsumexp : t -> dim:int -> t
+  val logcumsumexp_out : out:t -> t -> dim:int -> t
   val logdet : t -> t
   val logical_and : t -> t -> t
   val logical_and_ : t -> t -> t
@@ -2431,6 +2496,17 @@ module type S = sig
     -> eps:float
     -> t * t * t
 
+  val native_group_norm
+    :  t
+    -> weight:t option
+    -> bias:t option
+    -> n:int
+    -> c:int
+    -> hxw:int
+    -> group:int
+    -> eps:float
+    -> t * t * t
+
   val native_layer_norm
     :  t
     -> weight:t option
@@ -2623,6 +2699,13 @@ module type S = sig
 
   val quantize_per_tensor : t -> scale:float -> zero_point:int -> dtype:Kind.packed -> t
 
+  val quantize_per_tensor1
+    :  t list
+    -> scales:t
+    -> zero_points:t
+    -> dtype:Kind.packed
+    -> t list
+
   val quantized_batch_norm
     :  t
     -> weight:t option
@@ -2633,30 +2716,6 @@ module type S = sig
     -> output_scale:float
     -> output_zero_point:int
     -> t
-
-  val quantized_gru
-    :  t
-    -> hx:t
-    -> params:t list
-    -> has_biases:bool
-    -> num_layers:int
-    -> dropout:float
-    -> train:bool
-    -> bidirectional:bool
-    -> batch_first:bool
-    -> t * t
-
-  val quantized_gru1
-    :  data:t
-    -> batch_sizes:t
-    -> hx:t
-    -> params:t list
-    -> has_biases:bool
-    -> num_layers:int
-    -> dropout:float
-    -> train:bool
-    -> bidirectional:bool
-    -> t * t
 
   val quantized_gru_cell
     :  t
@@ -2674,34 +2733,6 @@ module type S = sig
     -> zero_point_ih:'a scalar
     -> zero_point_hh:'a scalar
     -> t
-
-  val quantized_lstm
-    :  t
-    -> hx:t list
-    -> params:t list
-    -> has_biases:bool
-    -> num_layers:int
-    -> dropout:float
-    -> train:bool
-    -> bidirectional:bool
-    -> batch_first:bool
-    -> dtype:Kind.packed
-    -> use_dynamic:bool
-    -> t * t * t
-
-  val quantized_lstm1
-    :  data:t
-    -> batch_sizes:t
-    -> hx:t list
-    -> params:t list
-    -> has_biases:bool
-    -> num_layers:int
-    -> dropout:float
-    -> train:bool
-    -> bidirectional:bool
-    -> dtype:Kind.packed
-    -> use_dynamic:bool
-    -> t * t * t
 
   val quantized_lstm_cell
     :  t
@@ -2763,6 +2794,9 @@ module type S = sig
     -> zero_point_hh:'a scalar
     -> t
 
+  val rad2deg : t -> t
+  val rad2deg_ : t -> t
+  val rad2deg_out : out:t -> t -> t
   val rand : size:int list -> options:Kind.packed * Device.t -> t
   val rand_like : t -> t
   val rand_out : out:t -> size:int list -> t
@@ -2864,7 +2898,7 @@ module type S = sig
     -> t
 
   val replication_pad3d_out : out:t -> t -> padding:int list -> t
-  val requires_grad_ : t -> _requires_grad:bool -> t
+  val requires_grad_ : t -> requires_grad:bool -> t
   val reshape : t -> shape:int list -> t
   val reshape_as : t -> t -> t
   val resize_ : t -> size:int list -> t
@@ -2955,6 +2989,17 @@ module type S = sig
   val scatter_1 : t -> dim:int -> index:t -> value:'a scalar -> t
   val scatter_add : t -> dim:int -> index:t -> src:t -> t
   val scatter_add_ : t -> dim:int -> index:t -> src:t -> t
+  val searchsorted : sorted_sequence:t -> t -> out_int32:bool -> right:bool -> t
+  val searchsorted1 : sorted_sequence:t -> 'a scalar -> out_int32:bool -> right:bool -> t
+
+  val searchsorted_out
+    :  out:t
+    -> sorted_sequence:t
+    -> t
+    -> out_int32:bool
+    -> right:bool
+    -> t
+
   val select : t -> dim:int -> index:int -> t
   val selu : t -> t
   val selu_ : t -> t
@@ -3311,6 +3356,15 @@ module type S = sig
   val type_as : t -> t -> t
   val unbind : t -> dim:int -> t list
   val unfold : t -> dimension:int -> size:int -> step:int -> t
+
+  val unfold_backward
+    :  grad_in:t
+    -> input_sizes:int list
+    -> dim:int
+    -> size:int
+    -> step:int
+    -> t
+
   val uniform_ : t -> from:float -> to_:float -> t
 
   val unique_consecutive
@@ -3570,6 +3624,7 @@ module type S = sig
     -> t
 
   val values : t -> t
+  val vander : x:t -> n:int -> increasing:bool -> t
   val var : t -> unbiased:bool -> t
   val var1 : t -> dim:int list -> unbiased:bool -> keepdim:bool -> t
   val var_mean : t -> unbiased:bool -> t * t
@@ -3577,6 +3632,8 @@ module type S = sig
   val var_out : out:t -> t -> dim:int list -> unbiased:bool -> keepdim:bool -> t
   val view : t -> size:int list -> t
   val view_as : t -> t -> t
+  val view_as_complex : t -> t
+  val view_as_real : t -> t
   val where : condition:t -> t list
   val where1 : condition:t -> t -> t -> t
   val zero_ : t -> t
