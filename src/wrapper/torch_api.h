@@ -56,6 +56,9 @@ char *at_to_string(tensor, int line_size);
 void at_save(tensor, char *filename);
 tensor at_load(char *filename);
 
+int at_get_num_threads();
+void at_set_num_threads(int n_threads);
+
 void at_save_multi(tensor *tensors, char **tensor_names, int ntensors, char *filename);
 /* [at_load_multi] takes as input an array of nullptr for [tensors]. */
 void at_load_multi(tensor *tensors, char **tensor_names, int ntensors, char *filename);
