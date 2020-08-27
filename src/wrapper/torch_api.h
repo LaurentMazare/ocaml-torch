@@ -30,11 +30,19 @@ void at_copy_data(tensor tensor, void *vs, int64_t numel, int element_size_in_by
 tensor at_float_vec(double *values, int value_len, int type);
 tensor at_int_vec(int64_t *values, int value_len, int type);
 
-int at_device(tensor);
 int at_defined(tensor);
+int at_is_sparse(tensor);
+int at_device(tensor);
 int at_dim(tensor);
 void at_shape(tensor, int *);
+void at_stride(tensor, int *);
 int at_scalar_type(tensor);
+
+void at_autocast_clear_cache();
+int at_autocast_decrement_nesting();
+int at_autocast_increment_nesting();
+int at_autocast_is_enabled();
+int at_autocast_set_enabled(int b);
 
 void at_backward(tensor, int, int);
 int at_requires_grad(tensor);

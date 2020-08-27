@@ -1,5 +1,6 @@
 #include<torch/csrc/autograd/engine.h>
 #include<torch/torch.h>
+#include<ATen/autocast_mode.h>
 #include<torch/script.h>
 #include<vector>
 #include<caml/fail.h>
@@ -20,14 +21,6 @@ vector<torch::Tensor> of_carray_tensor(torch::Tensor **vs, int len) {
 at::Device device_of_int(int d) {
     if (d < 0) return at::Device(at::kCPU);
     return at::Device(at::kCUDA, /*index=*/d);
-}
-
-int at_device(tensor tensor) {
-  PROTECT (
-    auto device = tensor->device();
-    if (device.is_cpu()) return -1;
-    return device.index();
-  )
 }
 
 tensor at_new_tensor() {
@@ -91,6 +84,11 @@ int at_defined(tensor t) {
   return -1;
 }
 
+int at_is_sparse(tensor t) {
+  PROTECT(return t->is_sparse();)
+  return -1;
+}
+
 int at_dim(tensor t) {
   PROTECT(return t->dim();)
   return -1;
@@ -103,9 +101,58 @@ void at_shape(tensor t, int *dims) {
   )
 }
 
+void at_stride(tensor t, int64_t *dims) {
+  PROTECT(
+    int i = 0;
+    for (int64_t dim: t->strides()) dims[i++] = dim;
+  )
+}
+
 int at_scalar_type(tensor t) {
   PROTECT(
     return static_cast<int>(t->scalar_type());
+  )
+}
+
+void at_autocast_clear_cache() {
+  at::autocast::clear_cache();
+}
+
+int at_autocast_decrement_nesting() {
+  PROTECT(
+    return at::autocast::decrement_nesting();
+  )
+  return -1;
+}
+
+int at_autocast_increment_nesting() {
+  PROTECT(
+    return at::autocast::increment_nesting();
+  )
+  return -1;
+}
+
+int at_autocast_is_enabled() {
+  PROTECT(
+    return at::autocast::is_enabled();
+  )
+  return -1;
+}
+
+int at_autocast_set_enabled(int b) {
+  PROTECT(
+    bool is_enabled = at::autocast::is_enabled();
+    at::autocast::set_enabled(b);
+    return is_enabled;
+  )
+  return -1;
+}
+
+int at_device(tensor tensor) {
+  PROTECT (
+    auto device = tensor->device();
+    if (device.is_cpu()) return -1;
+    return device.index();
   )
 }
 
