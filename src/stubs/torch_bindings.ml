@@ -5,6 +5,8 @@ module C (F : Cstubs.FOREIGN) = struct
 
   let manual_seed = foreign "at_manual_seed" (int64_t @-> returning void)
   let free = foreign "free" (ptr void @-> returning void)
+  let get_num_threads = foreign "at_get_num_threads" (void @-> returning int)
+  let set_num_threads = foreign "at_set_num_threads" (int @-> returning void)
 
   module Tensor = struct
     type t = unit ptr

@@ -8,5 +8,11 @@ let to_int = function
   | Cuda i ->
     if i < 0 then Printf.sprintf "negative index for cuda device" |> failwith;
     i
+;;
 
 let of_int i = if i < 0 then Cpu else Cuda i
+
+module C = Torch_bindings.C (Torch_generated)
+
+let get_num_threads = C.get_num_threads
+let set_num_threads = C.set_num_threads
