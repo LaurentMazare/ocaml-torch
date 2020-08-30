@@ -69,7 +69,7 @@ let () =
           Optimizer.zero_grad adam;
           let onehot =
             let xs = Tensor.view xs ~size:[ batch_size; seq_len; 1 ] in
-            let one = Tensor.ones [] in
+            let one = Tensor.ones (Tensor.size xs) ~device in
             Tensor.zeros [ batch_size; seq_len; labels ] ~device
             |> Tensor.scatter_ ~dim:2 ~src:one ~index:xs
           in
