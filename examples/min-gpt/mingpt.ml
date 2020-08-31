@@ -11,6 +11,7 @@ let batch_size = 64
 let seq_len = 128
 let epochs = 100
 let sampling_length = 2048
+let temperature = 1.0
 
 type config =
   { vocab_size : int
@@ -117,6 +118,7 @@ let sample cfg ~gpt ~dataset ~device =
          let logits =
            Layer.forward_ gpt input ~is_training:false |> Tensor.select ~dim:1 ~index:(-1)
          in
+         let logits = Tensor.(logits / f temperature) in
          let sampled_y =
            Tensor.softmax logits ~dim:(-1) ~dtype:(T Float)
            |> Tensor.multinomial ~num_samples:1 ~replacement:true
