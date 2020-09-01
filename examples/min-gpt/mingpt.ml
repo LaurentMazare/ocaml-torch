@@ -134,27 +134,9 @@ let sample cfg ~gpt ~dataset ~device =
   |> snd
   |> String.of_char_list
 
-let () =
-  let device = Device.cuda_if_available () in
-  let dataset = Text_helper.create ~filename:"data/input.txt" in
-  let vs = Var_store.create ~name:"min-gpt" ~device () in
+let train vs ~cfg ~gpt ~dataset =
+  let device = Var_store.device vs in
   let labels = Text_helper.labels dataset in
-  Stdio.printf
-    "Dataset loaded, length: %d, labels: %d.\n%!"
-    (Text_helper.total_length dataset)
-    labels;
-  let cfg =
-    { vocab_size = labels
-    ; n_embd = 512
-    ; n_head = 8
-    ; n_layer = 8
-    ; block_size = seq_len
-    ; attn_pdrop = 0.1
-    ; resid_pdrop = 0.1
-    ; embd_pdrop = 0.1
-    }
-  in
-  let gpt = gpt vs cfg in
   let adam = Optimizer.adam vs ~learning_rate in
   let batches_per_epoch = (Text_helper.total_length dataset - seq_len) / batch_size in
   Checkpointing.loop
@@ -189,3 +171,32 @@ let () =
         epoch_idx
         (Unix.gettimeofday () -. start_time)
         (!sum_loss /. Float.of_int batches_per_epoch))
+
+let () =
+  let device = Device.cuda_if_available () in
+  let dataset = Text_helper.create ~filename:"data/input.txt" in
+  let vs = Var_store.create ~name:"min-gpt" ~device () in
+  let labels = Text_helper.labels dataset in
+  Stdio.printf
+    "Dataset loaded, length: %d, labels: %d.\n%!"
+    (Text_helper.total_length dataset)
+    labels;
+  let cfg =
+    { vocab_size = labels
+    ; n_embd = 512
+    ; n_head = 8
+    ; n_layer = 8
+    ; block_size = seq_len
+    ; attn_pdrop = 0.1
+    ; resid_pdrop = 0.1
+    ; embd_pdrop = 0.1
+    }
+  in
+  let gpt = gpt vs cfg in
+  match Caml.Sys.argv with
+  | [| _bin |] | [| _bin; "train" |] -> train vs ~gpt ~cfg ~dataset
+  | [| _bin; "sample"; filename |] ->
+    let named_tensors = Var_store.all_vars vs in
+    Serialize.load_multi_ ~named_tensors ~filename;
+    sample cfg ~gpt ~dataset ~device |> Stdio.print_endline
+  | _ -> failwith "usage: mingpt (train|sample weight.ot)"
