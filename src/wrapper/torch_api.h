@@ -130,14 +130,29 @@ ivalue ati_int(int64_t);
 ivalue ati_double(double);
 ivalue ati_tuple(ivalue *, int);
 ivalue ati_string(char *);
+ivalue ati_tuple(ivalue *, int);
+ivalue ati_generic_list(ivalue *, int);
+ivalue ati_generic_dict(ivalue *, int);
+ivalue ati_int_list(int64_t *, int);
+ivalue ati_double_list(double *, int);
+ivalue ati_bool_list(char *, int);
+ivalue ati_string_list(char **, int);
+ivalue ati_tensor_list(tensor *, int);
 
 tensor ati_to_tensor(ivalue);
-int ati_to_bool(ivalue);
-char *ati_to_string(ivalue);
 int64_t ati_to_int(ivalue);
 double ati_to_double(ivalue);
+char *ati_to_string(ivalue);
+int ati_to_bool(ivalue);
+int ati_length(ivalue);
 int ati_tuple_length(ivalue);
 void ati_to_tuple(ivalue, ivalue *, int);
+void ati_to_generic_list(ivalue, ivalue *, int);
+void ati_to_generic_dict(ivalue, ivalue *, int);
+void ati_to_int_list(ivalue, int64_t *, int);
+void ati_to_double_list(ivalue, double *, int);
+void ati_to_bool_list(ivalue, char *, int);
+void ati_to_tensor_list(ivalue, tensor *, int);
 
 int ati_tag(ivalue);
 
