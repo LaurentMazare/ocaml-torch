@@ -358,6 +358,8 @@ let of_int3 ?device f =
   |> Bigarray.genarray_of_array3
   |> of_bigarray ?device
 
+let min_values = amin
+let max_values = amax
 let minimum t = reshape t ~shape:[ -1 ] |> min_values ~dim:[ 0 ] ~keepdim:false
 let maximum t = reshape t ~shape:[ -1 ] |> max_values ~dim:[ 0 ] ~keepdim:false
 

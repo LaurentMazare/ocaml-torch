@@ -27,6 +27,8 @@ let excluded_functions =
     ; "_cummin_helper"
     ; "_cummax_helper"
     ; "retain_grad"
+    ; "_validate_sparse_coo_tensor_args"
+    ; "count_nonzero"
     ]
 
 let no_tensor_options =
@@ -41,7 +43,7 @@ let no_tensor_options =
     ; "randn_like"
     ]
 
-let excluded_prefixes = [ "thnn_"; "th_" ]
+let excluded_prefixes = [ "thnn_"; "th_"; "_foreach" ]
 let excluded_suffixes = [ "_forward"; "_forward_out" ]
 let yaml_error yaml ~msg = Printf.failwithf "%s, %s" msg (Yaml.to_string_exn yaml) ()
 

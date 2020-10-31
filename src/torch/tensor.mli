@@ -287,10 +287,7 @@ val const_batch_norm : ?momentum:float -> ?eps:float -> t -> t
 (** [of_bigarray ba] returns a tensor which shape and kind are based on
     [ba] and holding the same data.
 *)
-val of_bigarray
-  :  ?device:Device.t
-  -> ('a, 'b, Bigarray.c_layout) Bigarray.Genarray.t
-  -> t
+val of_bigarray : ?device:Device.t -> ('a, 'b, Bigarray.c_layout) Bigarray.Genarray.t -> t
 
 (** [copy_to_bigarray t ba] copies the data from [t] to [ba]. The dimensions of
     [ba] and its kind of element must match the dimension and kind of [t].
@@ -379,3 +376,6 @@ val scale : t -> float -> t
 (** [to_list t] returns the list of tensors extracted from the first dimension.
     This is the inverse of [cat ~dim:0]. *)
 val to_list : t -> t list
+
+val min_values : t -> dim:int list -> keepdim:bool -> t
+val max_values : t -> dim:int list -> keepdim:bool -> t
