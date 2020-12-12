@@ -398,17 +398,22 @@ let write_stubs funcs filename =
       p "";
       p "open Ctypes";
       p "";
+      let funcs = Map.to_alist funcs |> List.chunks_of ~length:100 in
+      List.iteri funcs ~f:(fun idx funcs ->
+          p "module C%d(F: Cstubs.FOREIGN) = struct" idx;
+          p "  open F";
+          p "  type t = unit ptr";
+          p "  let t : t typ = ptr void";
+          p "  type scalar = unit ptr";
+          p "  let scalar : scalar typ = ptr void";
+          List.iter funcs ~f:(fun (exported_name, func) ->
+              p "  let stubs_%s =" (Func.caml_name exported_name);
+              p "    foreign \"atg_%s\"" exported_name;
+              p "    (%s)" (Func.stubs_signature func);
+              p "");
+          p "end");
       p "module C(F: Cstubs.FOREIGN) = struct";
-      p "  open F";
-      p "  type t = unit ptr";
-      p "  let t : t typ = ptr void";
-      p "  type scalar = unit ptr";
-      p "  let scalar : scalar typ = ptr void";
-      Map.iteri funcs ~f:(fun ~key:exported_name ~data:func ->
-          p "  let stubs_%s =" (Func.caml_name exported_name);
-          p "    foreign \"atg_%s\"" exported_name;
-          p "    (%s)" (Func.stubs_signature func);
-          p "");
+      List.iteri funcs ~f:(fun idx _funcs -> p "  include C%d(F)" idx);
       p "end")
 
 let write_wrapper funcs filename =
