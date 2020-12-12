@@ -1,4 +1,6 @@
 val manual_seed : int -> unit
+val set_num_threads : int -> unit
+val get_num_threads : unit -> int
 
 module Scalar : sig
   type _ t

@@ -6,5 +6,3 @@ type t =
 
 val to_int : t -> int
 val of_int : int -> t
-val get_num_threads : unit -> int
-val set_num_threads : int -> unit

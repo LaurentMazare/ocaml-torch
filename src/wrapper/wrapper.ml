@@ -433,3 +433,5 @@ module Module = struct
 end
 
 let manual_seed seed = Wrapper_generated.C.manual_seed (Int64.of_int seed)
+let set_num_threads = Wrapper_generated.C.set_num_threads
+let get_num_threads = Wrapper_generated.C.get_num_threads
