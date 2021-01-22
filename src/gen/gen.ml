@@ -45,7 +45,7 @@ let no_tensor_options =
 
 let excluded_prefixes = [ "thnn_"; "th_"; "_foreach" ]
 let excluded_suffixes = [ "_forward"; "_forward_out" ]
-let yaml_error yaml ~msg = Printf.failwithf "%s, %s" msg (Yaml.to_string_exn yaml) ()
+let yaml_error yaml ~msg = failwith [%string "%{msg}, %{Yaml.to_string_exn yaml}"]
 
 let extract_bool = function
   | `Bool b -> b
@@ -136,9 +136,9 @@ module Func = struct
   let c_typed_args_list t =
     List.map t.args ~f:(fun { arg_name; arg_type; _ } ->
         match arg_type with
-        | IntList -> Printf.sprintf "int64_t *%s_data, int %s_len" arg_name arg_name
-        | TensorList -> Printf.sprintf "tensor *%s_data, int %s_len" arg_name arg_name
-        | TensorOptions -> Printf.sprintf "int %s_kind, int %s_device" arg_name arg_name
+        | IntList -> [%string "int64_t *%{arg_name}_data, int %{arg_name}_len"]
+        | TensorList -> [%string "tensor *%{arg_name}_data, int %{arg_name}_len"]
+        | TensorOptions -> [%string "int %{arg_name}_kind, int %{arg_name}_device"]
         | otherwise ->
           let simple_type_cstring =
             match otherwise with
@@ -160,32 +160,27 @@ module Func = struct
     List.map args ~f:(fun { arg_name; arg_type; _ } ->
         match arg_type with
         | Scalar | Tensor -> "*" ^ arg_name
-        | TensorOption -> Printf.sprintf "(%s ? *%s : torch::Tensor())" arg_name arg_name
+        | TensorOption -> [%string "(%{arg_name} ? *%{arg_name} : torch::Tensor())"]
         | Bool -> "(bool)" ^ arg_name
-        | IntList ->
-          Printf.sprintf "torch::IntArrayRef(%s_data, %s_len)" arg_name arg_name
-        | String -> Printf.sprintf "std::string(%s)" arg_name
-        | TensorList ->
-          Printf.sprintf "of_carray_tensor(%s_data, %s_len)" arg_name arg_name
+        | IntList -> [%string "torch::IntArrayRef(%{arg_name}_data, %{arg_name}_len)"]
+        | String -> [%string "std::string(%{arg_name})"]
+        | TensorList -> [%string "of_carray_tensor(%{arg_name}_data, %{arg_name}_len)"]
         | TensorOptions ->
-          Printf.sprintf
-            "at::device(device_of_int(%s_device)).dtype(at::ScalarType(%s_kind))"
-            arg_name
-            arg_name
-        | ScalarType -> Printf.sprintf "torch::ScalarType(%s)" arg_name
-        | Device -> Printf.sprintf "device_of_int(%s)" arg_name
+          [%string
+            "at::device(device_of_int(%{arg_name}_device)).dtype(at::ScalarType(%{arg_name}_kind))"]
+        | ScalarType -> [%string "torch::ScalarType(%{arg_name})"]
+        | Device -> [%string "device_of_int(%{arg_name})"]
         | _ -> arg_name)
     |> String.concat ~sep:", "
 
   let c_call t =
     match t.kind with
-    | `function_ -> Printf.sprintf "torch::%s(%s)" t.name (c_args_list t.args)
+    | `function_ -> [%string "torch::%{t.name}(%{c_args_list t.args})"]
     | `method_ ->
       (match t.args with
-      | head :: tail ->
-        Printf.sprintf "%s->%s(%s)" head.arg_name t.name (c_args_list tail)
+      | head :: tail -> [%string "%{head.arg_name}->%{t.name}(%{c_args_list tail})"]
       | [] ->
-        Printf.failwithf "Method calls should have at least one argument %s" t.name ())
+        failwith [%string "Method calls should have at least one argument %{t.name}"])
 
   let stubs_signature t =
     let args =
@@ -206,8 +201,8 @@ module Func = struct
       |> String.concat ~sep:" @-> "
     in
     match t.returns with
-    | `fixed _ -> Printf.sprintf "ptr t @-> %s @-> returning void" args
-    | `dynamic -> Printf.sprintf "%s @-> returning (ptr t)" args
+    | `fixed _ -> [%string "ptr t @-> %{args} @-> returning void"]
+    | `dynamic -> [%string "%{args} @-> returning (ptr t)"]
 
   let replace_map =
     Map.of_alist_exn (module String) [ "end", "end_"; "to", "to_"; "t", "tr" ]
@@ -225,30 +220,20 @@ module Func = struct
         let name = caml_name arg.arg_name in
         match arg.arg_type with
         | IntList ->
-          Printf.sprintf
-            "(List.map Int64.of_int %s |> CArray.of_list int64_t |> CArray.start) \
-             (List.length %s)"
-            name
-            name
+          [%string
+            {|(List.map Int64.of_int %{name} |> CArray.of_list int64_t |> CArray.start) (List.length %{name})|}]
         | TensorList ->
-          Printf.sprintf
-            "(CArray.of_list t %s |> CArray.start) (List.length %s)"
-            name
-            name
-        | Bool -> Printf.sprintf "(if %s then 1 else 0)" name
-        | ScalarType -> Printf.sprintf "(Kind.packed_to_int %s)" name
+          [%string "(CArray.of_list t %{name} |> CArray.start) (List.length %{name})"]
+        | Bool -> [%string "(if %{name} then 1 else 0)"]
+        | ScalarType -> [%string "(Kind.packed_to_int %{name})"]
         | TensorOptions ->
-          Printf.sprintf
-            "(Kind.packed_to_int (fst %s)) (Device.to_int (snd %s))"
-            name
-            name
-        | Device -> Printf.sprintf "(Device.to_int %s)" name
+          [%string "(Kind.packed_to_int (fst %{name})) (Device.to_int (snd %{name}))"]
+        | Device -> [%string "(Device.to_int %{name})"]
         | Int64 ->
           if String.( = ) name "reduction"
           then "(Reduction.to_int reduction |> Int64.of_int)"
-          else Printf.sprintf "(Int64.of_int %s)" name
-        | TensorOption ->
-          Printf.sprintf "(match %s with | Some v -> v | None -> null)" name
+          else [%string "(Int64.of_int %{name})"]
+        | TensorOption -> [%string "(match %{name} with | Some v -> v | None -> null)"]
         | _ -> name)
     |> String.concat ~sep:" "
 end
