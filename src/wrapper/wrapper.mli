@@ -62,7 +62,7 @@ end
 module Optimizer : sig
   type t
 
-  val adam : learning_rate:float -> beta1:float -> beta2:float -> weight_decay:float -> t
+  val adam : learning_rate:float -> beta1:float -> beta2:float -> weight_decay:float -> eps:float -> t
 
   val rmsprop
     :  learning_rate:float

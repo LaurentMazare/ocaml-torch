@@ -10,6 +10,7 @@ val adam
   :  ?beta1:float
   -> ?beta2:float
   -> ?weight_decay:float
+  -> ?eps:float
   -> Var_store.t
   -> learning_rate:float
   -> t

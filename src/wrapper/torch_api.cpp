@@ -366,12 +366,14 @@ void at_run_backward(tensor *tensors,
 optimizer ato_adam(double learning_rate,
                    double beta1,
                    double beta2,
-                   double weight_decay) {
+                   double weight_decay,
+                   double eps) {
   PROTECT(
     auto options =
       torch::optim::AdamOptions(learning_rate)
         .betas(std::tuple<double, double>(beta1, beta2))
-        .weight_decay(weight_decay);
+        .weight_decay(weight_decay)
+        .eps(eps);
     return new torch::optim::Adam(vector<torch::Tensor>(), options);
   )
   return nullptr;
