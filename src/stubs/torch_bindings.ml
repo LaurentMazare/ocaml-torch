@@ -142,7 +142,7 @@ module C (F : Cstubs.FOREIGN) = struct
     type t = unit ptr
 
     let t : t typ = ptr void
-    let adam = foreign "ato_adam" (float @-> float @-> float @-> float @-> returning t)
+    let adam = foreign "ato_adam" (float @-> float @-> float @-> float @-> float @-> returning t)
 
     let rmsprop =
       foreign
