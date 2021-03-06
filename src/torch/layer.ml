@@ -276,6 +276,7 @@ module Lstm = struct
             ~num_layers:1
             ~batch_first:true
             ~bidirectional:false
+            ~proj_size:0
           |> (ignore : Tensor.t -> unit));
     { w_ih; w_hh; b_ih; b_hh; hidden_size; device = Var_store.device vs }
 

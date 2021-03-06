@@ -22,6 +22,7 @@ let excluded_functions =
     ; "_cufft_set_plan_cache_max_size"
     ; "_cufft_clear_plan_cache"
     ; "backward"
+    ; "_backward"
     ; "set_data"
     ; "_amp_non_finite_check_and_unscale_"
     ; "_cummin_helper"
@@ -43,7 +44,7 @@ let no_tensor_options =
     ; "randn_like"
     ]
 
-let excluded_prefixes = [ "thnn_"; "th_"; "_foreach" ]
+let excluded_prefixes = [ "thnn_"; "th_"; "_foreach"; "_amp_foreach" ]
 let excluded_suffixes = [ "_forward"; "_forward_out" ]
 let yaml_error yaml ~msg = failwith [%string "%{msg}, %{Yaml.to_string_exn yaml}"]
 
@@ -76,6 +77,7 @@ module Func = struct
     | Tensor
     | TensorOption
     | IntList
+    | TensorOptList
     | TensorList
     | TensorOptions
     | Scalar
@@ -98,6 +100,7 @@ module Func = struct
     | TensorOption -> "t option"
     | IntList -> "int list"
     | TensorList -> "t list"
+    | TensorOptList -> "t option list"
     | TensorOptions -> "Kind.packed * Device.t"
     | Scalar -> "'a scalar"
     | ScalarType -> "Kind.packed"
@@ -126,6 +129,7 @@ module Func = struct
       Some (if is_nullable then TensorOption else Tensor)
     | "tensoroptions" -> Some TensorOptions
     | "intarrayref" | "intlist" -> Some IntList
+    | "const c10::list<c10::optional<tensor>> &" -> Some TensorOptList
     | "tensorlist" -> Some TensorList
     | "device" -> Some Device
     | "scalar" -> Some Scalar
@@ -137,7 +141,8 @@ module Func = struct
     List.map t.args ~f:(fun { arg_name; arg_type; _ } ->
         match arg_type with
         | IntList -> [%string "int64_t *%{arg_name}_data, int %{arg_name}_len"]
-        | TensorList -> [%string "tensor *%{arg_name}_data, int %{arg_name}_len"]
+        | TensorOptList | TensorList ->
+          [%string "tensor *%{arg_name}_data, int %{arg_name}_len"]
         | TensorOptions -> [%string "int %{arg_name}_kind, int %{arg_name}_device"]
         | otherwise ->
           let simple_type_cstring =
@@ -151,7 +156,7 @@ module Func = struct
             | Device -> "int"
             | Scalar -> "scalar"
             | String -> "char *"
-            | IntList | TensorList | TensorOptions -> assert false
+            | IntList | TensorOptList | TensorList | TensorOptions -> assert false
           in
           Printf.sprintf "%s %s" simple_type_cstring arg_name)
     |> String.concat ~sep:", "
@@ -165,6 +170,8 @@ module Func = struct
         | IntList -> [%string "torch::IntArrayRef(%{arg_name}_data, %{arg_name}_len)"]
         | String -> [%string "std::string(%{arg_name})"]
         | TensorList -> [%string "of_carray_tensor(%{arg_name}_data, %{arg_name}_len)"]
+        | TensorOptList ->
+          Printf.sprintf "of_carray_tensor_opt(%s_data, %s_len)" arg_name arg_name
         | TensorOptions ->
           [%string
             "at::device(device_of_int(%{arg_name}_device)).dtype(at::ScalarType(%{arg_name}_kind))"]
@@ -195,7 +202,7 @@ module Func = struct
           | ScalarType -> [ "int" ]
           | Device -> [ "int" ]
           | IntList -> [ "ptr int64_t"; "int" ]
-          | TensorList -> [ "ptr t"; "int" ]
+          | TensorOptList | TensorList -> [ "ptr t"; "int" ]
           | String -> [ "string" ]
           | Scalar -> [ "scalar" ])
       |> String.concat ~sep:" @-> "
@@ -224,6 +231,10 @@ module Func = struct
             {|(List.map Int64.of_int %{name} |> CArray.of_list int64_t |> CArray.start) (List.length %{name})|}]
         | TensorList ->
           [%string "(CArray.of_list t %{name} |> CArray.start) (List.length %{name})"]
+        | TensorOptList ->
+          [%string
+            "(List.map (function Some x -> x | None -> null) %{name} |> CArray.of_list t \
+             |> CArray.start) (List.length %{name})"]
         | Bool -> [%string "(if %{name} then 1 else 0)"]
         | ScalarType -> [%string "(Kind.packed_to_int %{name})"]
         | TensorOptions ->
@@ -274,7 +285,12 @@ let read_yaml filename =
             let return_type =
               Map.find_exn (extract_map returns) "dynamic_type" |> extract_string
             in
-            if String.( = ) return_type "TensorList" then Some `dynamic else None
+            if String.( = ) return_type "TensorList"
+               || String.( = )
+                    return_type
+                    "dynamic_type: const c10::List<c10::optional<Tensor>> &"
+            then Some `dynamic
+            else None
           | [] | _ :: _ :: _ -> None)
       in
       let kind =

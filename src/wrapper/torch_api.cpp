@@ -18,6 +18,14 @@ vector<torch::Tensor> of_carray_tensor(torch::Tensor **vs, int len) {
   return result;
 }
 
+c10::List<c10::optional<torch::Tensor>> of_carray_tensor_opt(torch::Tensor **vs, int len) {
+  vector<c10::optional<torch::Tensor>> result;
+  for (int i = 0; i < len; ++i) {
+    result.push_back(vs[i] != nullptr ? c10::optional<torch::Tensor>(*(vs[i])) : c10::nullopt);
+  }
+  return c10::List<c10::optional<torch::Tensor>>(result);
+}
+
 at::Device device_of_int(int d) {
     if (d < 0) return at::Device(at::kCPU);
     return at::Device(at::kCUDA, /*index=*/d);
@@ -356,7 +364,7 @@ void at_run_backward(tensor *tensors,
     for (int i = 0; i < ntensors; ++i)
       grads.push_back(torch::ones_like(*tensors[i]));
 
-    auto vl = torch::autograd::Engine::get_default_engine().execute(roots, grads, keep_graph, create_graph, inputs_);
+    auto vl = torch::autograd::Engine::get_default_engine().execute(roots, grads, keep_graph, create_graph, false, inputs_);
     for (int i = 0; i < ninputs; ++i) {
       outputs[i] = static_cast<tensor>(new torch::autograd::Variable(vl[i]));
     }
