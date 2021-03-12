@@ -51,12 +51,10 @@ let step t ~action =
 
 let actions t =
   Py.Object.call_function_obj_args
-    Pyops.((t.env.@$("unwrapped")).@$("get_action_meanings"))
+    Pyops.(t.env.@$("unwrapped").@$("get_action_meanings"))
     [||]
   |> Py.Sequence.to_list_map Py.String.to_string
 
 let lives t =
-  Py.Object.call_function_obj_args
-    Pyops.(((t.env.@$("unwrapped")).@$("ale")).@$("lives"))
-    [||]
+  Py.Object.call_function_obj_args Pyops.(t.env.@$("unwrapped").@$("ale").@$("lives")) [||]
   |> Py.Int.to_int

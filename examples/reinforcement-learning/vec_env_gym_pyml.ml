@@ -46,7 +46,5 @@ let step t ~actions =
   { obs = to_tensor t obs; reward = to_tensor t reward; is_done = to_tensor t is_done }
 
 let action_space t =
-  let action_space =
-    Option.value_exn (Py.Object.get_attr_string t.envs "action_space")
-  in
+  let action_space = Option.value_exn (Py.Object.get_attr_string t.envs "action_space") in
   Option.value_exn (Py.Object.get_attr_string action_space "n") |> Py.Int.to_int

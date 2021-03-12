@@ -7,7 +7,7 @@ let image_dim = image_w * image_h
 let label_count = 10
 
 let int32_be tensor ~offset =
-  let get i = Tensor.(tensor.%[(Int.( + ) offset i)]) in
+  let get i = Tensor.(tensor.%[Int.( + ) offset i]) in
   get 3 + (256 * (get 2 + (256 * (get 1 + (256 * get 0)))))
 
 let read_images filename =
@@ -29,8 +29,7 @@ let read_labels filename =
   if magic_number <> 2049
   then Printf.failwithf "Incorrect magic number in %s: %d" filename magic_number ();
   let samples = int32_be content ~offset:4 in
-  Tensor.narrow content ~dim:0 ~start:8 ~length:samples
-  |> Tensor.to_type ~type_:(T Int64)
+  Tensor.narrow content ~dim:0 ~start:8 ~length:samples |> Tensor.to_type ~type_:(T Int64)
 
 let read_files ?(prefix = "data") () =
   let filename = Caml.Filename.concat prefix in

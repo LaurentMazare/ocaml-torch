@@ -119,17 +119,14 @@ let write_image tensor ~filename =
     match Tensor.shape tensor with
     | [ 1; channels; b; c ] when channels = 1 || channels = 3 ->
       Tensor.reshape tensor ~shape:[ channels; b; c ], b, c, channels, true
-    | [ channels; b; c ] when channels = 1 || channels = 3 ->
-      tensor, b, c, channels, true
+    | [ channels; b; c ] when channels = 1 || channels = 3 -> tensor, b, c, channels, true
     | [ b; c; channels ] when channels = 1 || channels = 3 ->
       tensor, b, c, channels, false
     | _ -> Printf.failwithf "unexpected shape %s" (Tensor.shape_str tensor) ()
   in
   let bigarray =
     let tensor =
-      if chw
-      then Tensor.permute tensor ~dims:[ 1; 2; 0 ] |> Tensor.contiguous
-      else tensor
+      if chw then Tensor.permute tensor ~dims:[ 1; 2; 0 ] |> Tensor.contiguous else tensor
     in
     Tensor.view tensor ~size:[ channels * height * width ]
     |> Tensor.to_type ~type_:(T Uint8)
@@ -184,8 +181,7 @@ module Loader = struct
       let batch =
         List.init batch_size ~f:(fun i ->
             let dir, file = t.dir_and_filenames.(t.current_index + i) in
-            load_image ?resize:t.resize (Caml.Filename.concat dir file)
-            |> Or_error.ok_exn)
+            load_image ?resize:t.resize (Caml.Filename.concat dir file) |> Or_error.ok_exn)
         |> Tensor.cat ~dim:0
       in
       t.current_index <- t.current_index + batch_size;
@@ -212,18 +208,9 @@ let resize tensor ~height ~width =
         |> Tensor.to_bigarray ~kind:Int8_unsigned
         |> Bigarray.array1_of_genarray
       in
-      let out_data =
-        Bigarray.Array1.create Int8_unsigned C_layout (width * height * c)
-      in
+      let out_data = Bigarray.Array1.create Int8_unsigned C_layout (width * height * c) in
       let status =
-        resize_
-          ~in_data
-          ~in_w:w
-          ~in_h:h
-          ~out_data
-          ~out_w:width
-          ~out_h:height
-          ~nchannels:c
+        resize_ ~in_data ~in_w:w ~in_h:h ~out_data ~out_w:width ~out_h:height ~nchannels:c
       in
       if status = 0 then failwith "error when resizing image";
       tensor_of_data ~data:out_data ~width ~height

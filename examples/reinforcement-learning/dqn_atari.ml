@@ -24,9 +24,7 @@ module Transition = struct
     }
 
   let batch_states ts = List.map ts ~f:(fun t -> t.state) |> Tensor.stack ~dim:0
-
-  let batch_next_states ts =
-    List.map ts ~f:(fun t -> t.next_state) |> Tensor.stack ~dim:0
+  let batch_next_states ts = List.map ts ~f:(fun t -> t.next_state) |> Tensor.stack ~dim:0
 
   let batch_rewards ts =
     List.map ts ~f:(fun t -> t.reward) |> Array.of_list |> Tensor.of_float1
@@ -245,8 +243,7 @@ module E = struct
     let actions = Env_gym_pyml.actions env in
     Stdio.printf "actions: %s\n%!" (String.concat ~sep:"," actions);
     let fire_action =
-      List.find_mapi actions ~f:(fun i ->
-        function
+      List.find_mapi actions ~f:(fun i -> function
         | "FIRE" -> Some i
         | _ -> None)
     in

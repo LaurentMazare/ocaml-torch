@@ -111,9 +111,7 @@ let run t ~model =
   done;
   let s_returns =
     let r = Tensor.zeros [ t.num_steps + 1; t.num_procs ] in
-    let critic =
-      Tensor.no_grad (fun () -> (model (Tensor.get t.s_states (-1))).critic)
-    in
+    let critic = Tensor.no_grad (fun () -> (model (Tensor.get t.s_states (-1))).critic) in
     set r (-1) (Tensor.view critic ~size:[ t.num_procs ]);
     for s = t.num_steps - 1 downto 0 do
       set r s Tensor.((get r Int.(s + 1) * f 0.99 * get s_masks s) + get s_rewards s)

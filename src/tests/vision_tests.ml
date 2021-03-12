@@ -8,8 +8,8 @@ let%expect_test _ =
   let filename = Caml.Filename.temp_file "torchtest" ".png" in
   for i = 0 to height - 1 do
     for j = 0 to width - 1 do
-      Tensor.(image_tensor.%.{[ 0; i; j ]} <- (Float.of_int i /. Float.of_int height));
-      Tensor.(image_tensor.%.{[ 1; i; j ]} <- (Float.of_int j /. Float.of_int width))
+      Tensor.(image_tensor.%.{[ 0; i; j ]} <- Float.of_int i /. Float.of_int height);
+      Tensor.(image_tensor.%.{[ 1; i; j ]} <- Float.of_int j /. Float.of_int width)
     done
   done;
   let image_tensor = Tensor.(image_tensor * f 255.) in

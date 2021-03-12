@@ -41,10 +41,6 @@ let () =
       |> Tensor.float_value
       |> fun sum -> sum /. Float.of_int (Tensor.shape test_images |> List.hd_exn)
     in
-    Stdio.printf
-      "%d %f %.2f%%\n%!"
-      index
-      (Tensor.float_value loss)
-      (100. *. test_accuracy);
+    Stdio.printf "%d %f %.2f%%\n%!" index (Tensor.float_value loss) (100. *. test_accuracy);
     Caml.Gc.full_major ()
   done

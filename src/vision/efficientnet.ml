@@ -56,8 +56,7 @@ let round_filters params filters =
   else new_filters
 
 (* Conv2D with same padding *)
-let conv2d vs ?(use_bias = false) ?(ksize = 1) ?(stride = 1) ?(groups = 1) ~input_dim dim
-  =
+let conv2d vs ?(use_bias = false) ?(ksize = 1) ?(stride = 1) ?(groups = 1) ~input_dim dim =
   let conv2d = Layer.conv2d_ vs ~ksize ~stride ~groups ~use_bias ~input_dim dim in
   Layer.of_fn_ (fun xs ~is_training:_ ->
       let _, _, ih, iw = Tensor.shape4_exn xs in

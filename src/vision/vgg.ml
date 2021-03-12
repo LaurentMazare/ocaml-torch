@@ -70,13 +70,7 @@ let make_layers vs cfg ~batch_norm ~in_place_relu =
           , [ Layer.of_fn (Tensor.max_pool2d ~ksize:(2, 2)) |> Layer.with_training ] )
         | C output_dim ->
           let conv2d =
-            Layer.conv2d_
-              (sub_vs idx)
-              ~ksize:3
-              ~stride:1
-              ~padding:1
-              ~input_dim
-              output_dim
+            Layer.conv2d_ (sub_vs idx) ~ksize:3 ~stride:1 ~padding:1 ~input_dim output_dim
             |> Layer.with_training
           in
           if batch_norm

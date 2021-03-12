@@ -175,8 +175,7 @@ let predict ~input_ ~enc ~dec ~dec_start ~dec_eos ~device =
     then List.rev prevs
     else loop ~state ~prevs:(output :: prevs) ~max_length:(max_length - 1)
   in
-  loop ~state:dec_state ~prevs:[ dec_start ] ~max_length
-  |> List.map ~f:Tensor.to_int0_exn
+  loop ~state:dec_state ~prevs:[ dec_start ] ~max_length |> List.map ~f:Tensor.to_int0_exn
 
 (* Compute the training loss on a pair of texts. *)
 let train_loss ~input_ ~target ~enc ~dec ~dec_start ~dec_eos ~device =

@@ -21,11 +21,7 @@ let create_generator vs =
 
 let create_discriminator vs =
   let linear1 =
-    Layer.linear
-      vs
-      discriminator_hidden_nodes
-      ~activation:Leaky_relu
-      ~input_dim:image_dim
+    Layer.linear vs discriminator_hidden_nodes ~activation:Leaky_relu ~input_dim:image_dim
   in
   let linear2 =
     Layer.linear vs 1 ~activation:Sigmoid ~input_dim:discriminator_hidden_nodes
