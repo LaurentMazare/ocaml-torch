@@ -96,7 +96,7 @@ let train ~device =
           |> sum1 ~dim:[ -1 ] ~keepdim:false ~dtype:(T Float)
           |> mean)
       in
-      let advantages = Tensor.(to_device returns ~device - critic) in
+      let advantages = Tensor.( - ) (Tensor.to_device returns ~device) critic in
       let value_loss = Tensor.(advantages * advantages) |> Tensor.mean in
       let action_loss = Tensor.(~-(detach advantages * action_log_probs) |> mean) in
       let loss = Tensor.(scale value_loss 0.5 + action_loss - scale dist_entropy 0.01) in

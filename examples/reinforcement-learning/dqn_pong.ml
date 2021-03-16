@@ -180,14 +180,14 @@ let preprocess () =
     diff
 
 let maybe_load_weights agent =
-  match Sys.argv with
+  match Caml.Sys.argv with
   | [| _ |] -> ()
   | [| _; filename |] ->
     Serialize.load_multi_
       ~named_tensors:(DqnAgent.var_store agent |> Var_store.all_vars)
       ~filename;
     DqnAgent.update_target_model agent
-  | _ -> Printf.failwithf "usage: %s [weights]" Sys.argv.(0) ()
+  | _ -> Printf.failwithf "usage: %s [weights]" Caml.Sys.argv.(0) ()
 
 let () =
   let module E = Env_gym_pyml in
