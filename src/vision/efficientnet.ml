@@ -173,8 +173,8 @@ let efficientnet ?(num_classes = 1000) vs params =
       |> Layer.forward_ bn1 ~is_training
       |> swish
       |> Tensor.adaptive_avg_pool2d ~output_size:[ 1; 1 ]
-      |> Tensor.squeeze_1 ~dim:(-1)
-      |> Tensor.squeeze_1 ~dim:(-1)
+      |> Tensor.squeeze_dim ~dim:(-1)
+      |> Tensor.squeeze_dim ~dim:(-1)
       |> Tensor.dropout ~p:0.2 ~is_training
       |> Layer.forward fc)
 

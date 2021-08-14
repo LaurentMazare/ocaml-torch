@@ -159,8 +159,8 @@ module Tensor = struct
   let print = print
   let to_string t ~line_size = to_string t line_size
   let argmax ?(dim = -1) ?(keepdim = false) t = argmax t ~dim ~keepdim
-  let max = max1
-  let min = min1
+  let max = maximum
+  let min = minimum
   let copy_ t ~src = copy_ t src
   let defined = defined
   let device t = device t |> Device.of_int
