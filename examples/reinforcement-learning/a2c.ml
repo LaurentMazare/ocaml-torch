@@ -63,7 +63,9 @@ let train ~device =
     in
     let dist_entropy =
       Tensor.(
-        ~-(log_probs * probs) |> sum1 ~dim:[ -1 ] ~keepdim:false ~dtype:(T Float) |> mean)
+        ~-(log_probs * probs)
+        |> sum_dim_intlist ~dim:[ -1 ] ~keepdim:false ~dtype:(T Float)
+        |> mean)
     in
     let advantages =
       let returns =

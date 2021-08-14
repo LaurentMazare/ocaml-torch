@@ -104,7 +104,7 @@ let run t ~model =
     Tensor.(t.sum_rewards *= masks);
     let obs = Frame_stack.update t.frame_stack obs ~masks in
     set s_actions s actions;
-    set s_values s (critic |> Tensor.squeeze1 ~dim:(-1));
+    set s_values s (critic |> Tensor.squeeze_dim ~dim:(-1));
     set t.s_states (s + 1) obs;
     set s_rewards s reward;
     set s_masks s masks
