@@ -30,6 +30,10 @@ let excluded_functions =
     ; "retain_grad"
     ; "_validate_sparse_coo_tensor_args"
     ; "count_nonzero"
+    ; "_assert_async"
+    ; "gradient"
+    ; "linalg_vector_norm"
+    ; "linalg_vector_norm_out"
     ]
 
 let no_tensor_options =
@@ -44,7 +48,7 @@ let no_tensor_options =
     ; "randn_like"
     ]
 
-let excluded_prefixes = [ "thnn_"; "th_"; "_foreach"; "_amp_foreach" ]
+let excluded_prefixes = [ "thnn_"; "th_"; "_foreach"; "_amp_foreach"; "linalg_norm" ]
 let excluded_suffixes = [ "_forward"; "_forward_out" ]
 let yaml_error yaml ~msg = failwith [%string "%{msg}, %{Yaml.to_string_exn yaml}"]
 
@@ -125,15 +129,14 @@ module Func = struct
     | "bool" -> Some Bool
     | "int64_t" -> Some Int64
     | "double" -> Some Double
-    | "booltensor" | "indextensor" | "tensor" ->
-      Some (if is_nullable then TensorOption else Tensor)
-    | "tensoroptions" -> Some TensorOptions
-    | "intarrayref" | "intlist" -> Some IntList
-    | "const c10::list<c10::optional<tensor>> &" -> Some TensorOptList
-    | "tensorlist" -> Some TensorList
-    | "device" -> Some Device
-    | "scalar" -> Some Scalar
-    | "scalartype" -> Some ScalarType
+    | "at::tensor" -> Some (if is_nullable then TensorOption else Tensor)
+    | "at::tensoroptions" -> Some TensorOptions
+    | "at::intarrayref" | "intlist" -> Some IntList
+    | "const c10::list<c10::optional<at::tensor>> &" -> Some TensorOptList
+    | "at::tensorlist" -> Some TensorList
+    | "at::device" -> Some Device
+    | "at::scalar" | "const scalar &" -> Some Scalar
+    | "at::scalartype" -> Some ScalarType
     | "std::string" -> Some String
     | _ -> None
 
@@ -272,9 +275,7 @@ let read_yaml filename =
         let is_tensor returns =
           let returns = extract_map returns in
           let return_type = Map.find_exn returns "dynamic_type" |> extract_string in
-          String.( = ) return_type "Tensor"
-          || String.( = ) return_type "BoolTensor"
-          || String.( = ) return_type "IndexTensor"
+          String.( = ) return_type "at::Tensor"
         in
         let returns = Map.find_exn map "returns" |> extract_list in
         if List.for_all returns ~f:is_tensor
@@ -285,7 +286,7 @@ let read_yaml filename =
             let return_type =
               Map.find_exn (extract_map returns) "dynamic_type" |> extract_string
             in
-            if String.( = ) return_type "TensorList"
+            if String.( = ) return_type "at::TensorList"
                || String.( = )
                     return_type
                     "dynamic_type: const c10::List<c10::optional<Tensor>> &"
