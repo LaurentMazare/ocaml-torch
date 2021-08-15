@@ -97,7 +97,7 @@ let () =
     let logits = model (Tensor.stack acc.acc_obs ~dim:0) in
     let log_probs =
       Tensor.(
-        sum1
+        sum_dim_intlist
           (action_mask * log_softmax logits ~dim:1 ~dtype:(T Float))
           ~dim:[ 1 ]
           ~keepdim:false

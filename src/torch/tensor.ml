@@ -89,7 +89,7 @@ let ( -= ) t other = ignore (sub_ t other : t)
 let ( += ) t other = ignore (add_ t other : t)
 let ( /= ) t other = ignore (div_ t other : t)
 let ( *= ) t other = ignore (mul_ t other : t)
-let ( = ) = eq1
+let ( = ) = eq_tensor
 let pair_to_list (p1, p2) = [ p1; p2 ]
 
 let conv2d ?(padding = 0, 0) ?(dilation = 1, 1) ?(groups = 1) input weight bias ~stride =
@@ -192,7 +192,7 @@ let mse_loss ?(reduction = Torch_core.Reduction.Elementwise_mean) t1 t2 =
 let huber_loss ?(reduction = Torch_core.Reduction.Elementwise_mean) t1 t2 =
   let d = abs (t1 - t2) in
   let half = f 0.5 in
-  let err = where1 ~condition:(le d (Scalar.float 1.)) (half * d * d) (d - half) in
+  let err = where_self ~condition:(le d (Scalar.float 1.)) (half * d * d) (d - half) in
   match reduction with
   | None -> err
   | Elementwise_mean -> mean err
@@ -367,8 +367,8 @@ let flatten t =
   let batch_size = shape t |> List.hd_exn in
   view t ~size:[ batch_size; -1 ]
 
-let squeeze_last t = squeeze1 t ~dim:(-1)
-let scale t f = mul1 t (Scalar.float f)
+let squeeze_last t = squeeze_dim t ~dim:(-1)
+let scale t f = mul_scalar t (Scalar.float f)
 let eq_scalar = eq
 
 let eq t1 t2 =
@@ -376,7 +376,7 @@ let eq t1 t2 =
   then false
   else if Caml.( <> ) (shape t1) (shape t2)
   then false
-  else eq1 t1 t2 |> all |> to_int0_exn |> ( <> ) 0
+  else eq_tensor t1 t2 |> all |> to_int0_exn |> ( <> ) 0
 
 let to_list t =
   let size =

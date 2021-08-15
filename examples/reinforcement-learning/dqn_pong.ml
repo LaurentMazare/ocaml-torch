@@ -143,12 +143,12 @@ end = struct
              ~dim:1
              ~index:(Tensor.unsqueeze actions ~dim:1)
              ~sparse_grad:false
-        |> Tensor.squeeze1 ~dim:1
+        |> Tensor.squeeze_dim ~dim:1
       in
       let next_qvalues =
         Tensor.no_grad (fun () ->
             Layer.forward t.target_model next_states
-            |> Tensor.max2 ~dim:1 ~keepdim:false
+            |> Tensor.max_dim ~dim:1 ~keepdim:false
             |> fst)
       in
       let expected_qvalues = Tensor.(rewards + (f t.gamma * next_qvalues * continue)) in

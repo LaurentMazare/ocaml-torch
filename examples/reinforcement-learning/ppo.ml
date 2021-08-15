@@ -93,7 +93,7 @@ let train ~device =
       let dist_entropy =
         Tensor.(
           ~-(log_probs * probs)
-          |> sum1 ~dim:[ -1 ] ~keepdim:false ~dtype:(T Float)
+          |> sum_dim_intlist ~dim:[ -1 ] ~keepdim:false ~dtype:(T Float)
           |> mean)
       in
       let advantages = Tensor.( - ) (Tensor.to_device returns ~device) critic in

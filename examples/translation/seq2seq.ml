@@ -134,7 +134,7 @@ module Dec_attn : Decoder = struct
             ~dim:1
       in
       let attn_applied =
-        Tensor.bmm attn_weights ~mat2:enc_outputs |> Tensor.squeeze1 ~dim:1
+        Tensor.bmm attn_weights ~mat2:enc_outputs |> Tensor.squeeze_dim ~dim:1
       in
       let output =
         Tensor.cat [ embedded; attn_applied ] ~dim:1
