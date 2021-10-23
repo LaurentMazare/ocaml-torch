@@ -29,11 +29,16 @@ let excluded_functions =
     ; "_cummax_helper"
     ; "retain_grad"
     ; "_validate_sparse_coo_tensor_args"
+    ; "_validate_sparse_csr_tensor_args"
     ; "count_nonzero"
     ; "_assert_async"
     ; "gradient"
     ; "linalg_vector_norm"
     ; "linalg_vector_norm_out"
+    ; "linalg_matrix_norm"
+    ; "linalg_matrix_norm_out"
+    ; "histogram"
+    ; "histogram_out"
     ]
 
 let no_tensor_options =
@@ -139,7 +144,7 @@ module Func = struct
     | "at::device" -> Some Device
     | "at::scalar" | "const at::scalar &" -> Some Scalar
     | "at::scalartype" -> Some ScalarType
-    | "std::string" -> Some String
+    | "c10::string_view" -> Some String
     | _ -> None
 
   let c_typed_args_list t =
