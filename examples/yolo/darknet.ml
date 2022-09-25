@@ -107,8 +107,8 @@ let upsample ~index:_ ~prev_channels ~parameters:_ =
         Tensor.upsample_nearest2d
           xs
           ~output_size:[ h * 2; w * 2 ]
-          ~scales_h:2.
-          ~scales_w:2.)
+          ~scales_h:(Some 2.)
+          ~scales_w:(Some 2.))
     |> Layer.with_training
   in
   prev_channels, `layers [ layer ]

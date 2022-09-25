@@ -56,8 +56,8 @@ let norm_upscale_conv_block ~vs ~ksize ~padding ~input_dim dim =
       pixel_norm xs
       |> Tensor.upsample_nearest2d
            ~output_size:[ 2 * h; 2 * w ]
-           ~scales_h:2.0
-           ~scales_w:2.0
+           ~scales_h:(Some 2.0)
+           ~scales_w:(Some 2.0)
       |> Layer.forward conv
       |> Layer.forward wscale
       |> leaky_relu)
