@@ -77,7 +77,7 @@ let () =
     let files = Arg.(value & (pos_all file) [] & info [] ~docv:"FILE") in
     let doc = "list tensors in Npz/PyTorch files" in
     let man = [ `S "DESCRIPTION"; `P "List all the tensors in Npz and PyTorch files." ] in
-    Term.(const ls $ files), Term.info "ls" ~sdocs:"" ~doc ~man
+    Term.(const ls $ files), Cmd.info "ls" ~sdocs:"" ~doc ~man
   in
   let npz_to_pytorch_cmd =
     let npz_src =
@@ -93,7 +93,7 @@ let () =
     let doc = "convert a Npz file to PyTorch" in
     let man = [ `S "DESCRIPTION"; `P "Convert a Npz file to a PyTorch file" ] in
     ( Term.(const npz_to_pytorch $ npz_src $ pytorch_dst)
-    , Term.info "npz-to-pytorch" ~sdocs:"" ~doc ~man )
+    , Cmd.info "npz-to-pytorch" ~sdocs:"" ~doc ~man )
   in
   let image_to_tensor =
     let resize =
@@ -120,7 +120,7 @@ let () =
     let doc = "convert an image file to a PyTorch Tensor" in
     let man = [ `S "DESCRIPTION"; `P doc ] in
     ( Term.(const image_to_tensor $ image_src $ pytorch_dst $ resize)
-    , Term.info "image-to-tensor" ~sdocs:"" ~doc ~man )
+    , Cmd.info "image-to-tensor" ~sdocs:"" ~doc ~man )
   in
   let pytorch_to_npz_cmd =
     let pytorch_src =
@@ -138,12 +138,16 @@ let () =
     let doc = "convert a PyTorch file to Npz" in
     let man = [ `S "DESCRIPTION"; `P "Convert a PyTorch file to a Npz file" ] in
     ( Term.(const pytorch_to_npz $ pytorch_src $ npz_dst)
-    , Term.info "pytorch-to-npz" ~sdocs:"" ~doc ~man )
+    , Cmd.info "pytorch-to-npz" ~sdocs:"" ~doc ~man )
   in
-  let default_cmd =
+  let default_cmd = Term.(ret (const (`Help (`Pager, None)))) in
+  let info =
     let doc = "tools for Npz tools and PyTorch archives" in
-    ( Term.(ret (const (`Help (`Pager, None))))
-    , Term.info "tensor_tools" ~version:"0.0.1" ~sdocs:"" ~doc )
+    Cmd.info "tensor_tools" ~version:"0.0.1" ~sdocs:"" ~doc
   in
-  let cmds = [ ls_cmd; npz_to_pytorch_cmd; pytorch_to_npz_cmd; image_to_tensor ] in
-  Term.(exit @@ eval_choice default_cmd cmds)
+  let cmds =
+    [ ls_cmd; npz_to_pytorch_cmd; pytorch_to_npz_cmd; image_to_tensor ]
+    |> List.map ~f:(fun (cmd, info) -> Cmd.v info cmd)
+  in
+  let main_cmd = Cmd.group info ~default:default_cmd cmds in
+  Cmd.eval main_cmd |> Caml.exit
