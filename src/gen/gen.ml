@@ -199,6 +199,15 @@ module Func = struct
       | [] ->
         failwith [%string "Method calls should have at least one argument %{t.name}"])
 
+  let operator_name t =
+    match String.lowercase t.operator_name with
+    | "scatter_reduce" ->
+      (* scatter_reduce is both an operator name and also obtained from the
+         scatter operator when using the reduce overload. *)
+      "_scatter_reduce"
+    | "scatter_reduce_" -> "_scatter_reduce_"
+    | other -> other
+
   let stubs_signature t =
     let args =
       List.concat_map t.args ~f:(fun arg ->
@@ -463,6 +472,7 @@ let write_wrapper funcs filename =
               let caml_name = Func.caml_name exported_name in
               pm "let %s %s =" caml_name (Func.caml_args func);
               (match func.returns with
+              | `fixed 0 -> pm "  ()"
               | `fixed ntensors ->
                 pm "  let out__ = CArray.make t %d in" ntensors;
                 pm
@@ -492,6 +502,7 @@ let write_wrapper funcs filename =
                   pi "    %s%s ->" named_arg (Func.ml_arg_type arg));
               let returns =
                 match func.returns with
+                | `fixed 0 -> "unit"
                 | `fixed 1 -> "t"
                 | `fixed ntensors ->
                   List.init ntensors ~f:(fun _ -> "t") |> String.concat ~sep:" * "
@@ -524,7 +535,7 @@ let run ~yaml_filename ~cpp_filename ~stubs_filename ~wrapper_filename =
   printf "Generating code for %d functions.\n%!" (List.length funcs);
   (* Generate some unique names for overloaded functions. *)
   let funcs =
-    List.map funcs ~f:(fun func -> String.lowercase func.operator_name, func)
+    List.map funcs ~f:(fun func -> Func.operator_name func, func)
     |> Map.of_alist_multi (module String)
     |> Map.to_alist
     |> List.concat_map ~f:(fun (name, funcs) ->
@@ -541,7 +552,7 @@ let run ~yaml_filename ~cpp_filename ~stubs_filename ~wrapper_filename =
                  | 0 -> Int.compare (List.length f1.args) (List.length f2.args)
                  | cmp -> cmp)
              |> List.mapi ~f:(fun index (func : Func.t) ->
-                    let operator_name = String.lowercase func.operator_name in
+                    let operator_name = Func.operator_name func in
                     let overload_name = String.lowercase func.overload_name in
                     let name =
                       if String.is_empty overload_name
@@ -560,7 +571,7 @@ let run ~yaml_filename ~cpp_filename ~stubs_filename ~wrapper_filename =
 
 let () =
   run
-    ~yaml_filename:"data/Declarations.yaml"
+    ~yaml_filename:"third_party/pytorch/Declarations-v1.12.0.yaml"
     ~cpp_filename:"src/wrapper/torch_api_generated"
     ~stubs_filename:"src/stubs/torch_bindings_generated.ml"
     ~wrapper_filename:"src/wrapper/wrapper_generated"
