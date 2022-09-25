@@ -1734,7 +1734,14 @@ let _indices_copy_out ~out self =
   Gc.finalise C.Tensor.free t0;
   t0
 
-let _linalg_check_errors ~info ~api_name ~is_matrix = ()
+let _linalg_check_errors ~info ~api_name ~is_matrix =
+  let out__ = CArray.make t 0 in
+  stubs__linalg_check_errors
+    (CArray.start out__)
+    info
+    api_name
+    (if is_matrix then 1 else 0);
+  ()
 
 let _linalg_inv_out_helper ~out self ~infos_lu ~infos_getri =
   let out__ = CArray.make t 1 in
@@ -3810,9 +3817,38 @@ let _upsample_nearest_exact3d_out ~out self ~output_size ~scales_d ~scales_h ~sc
   Gc.finalise C.Tensor.free t0;
   t0
 
-let _validate_sparse_bsc_tensor_args ~ccol_indices ~row_indices ~values ~size = ()
-let _validate_sparse_bsr_tensor_args ~crow_indices ~col_indices ~values ~size = ()
-let _validate_sparse_csc_tensor_args ~ccol_indices ~row_indices ~values ~size = ()
+let _validate_sparse_bsc_tensor_args ~ccol_indices ~row_indices ~values ~size =
+  let out__ = CArray.make t 0 in
+  stubs__validate_sparse_bsc_tensor_args
+    (CArray.start out__)
+    ccol_indices
+    row_indices
+    values
+    (List.map Int64.of_int size |> CArray.of_list int64_t |> CArray.start)
+    (List.length size);
+  ()
+
+let _validate_sparse_bsr_tensor_args ~crow_indices ~col_indices ~values ~size =
+  let out__ = CArray.make t 0 in
+  stubs__validate_sparse_bsr_tensor_args
+    (CArray.start out__)
+    crow_indices
+    col_indices
+    values
+    (List.map Int64.of_int size |> CArray.of_list int64_t |> CArray.start)
+    (List.length size);
+  ()
+
+let _validate_sparse_csc_tensor_args ~ccol_indices ~row_indices ~values ~size =
+  let out__ = CArray.make t 0 in
+  stubs__validate_sparse_csc_tensor_args
+    (CArray.start out__)
+    ccol_indices
+    row_indices
+    values
+    (List.map Int64.of_int size |> CArray.of_list int64_t |> CArray.start)
+    (List.length size);
+  ()
 
 let _values self =
   let out__ = CArray.make t 1 in
@@ -19924,7 +19960,16 @@ let split self ~split_size ~dim =
 let split_copy self ~split_size ~dim =
   stubs_split_copy self (Int64.of_int split_size) (Int64.of_int dim) |> to_tensor_list
 
-let split_copy_tensor_out ~out self ~split_size ~dim = ()
+let split_copy_tensor_out ~out self ~split_size ~dim =
+  let out__ = CArray.make t 0 in
+  stubs_split_copy_tensor_out
+    (CArray.start out__)
+    (CArray.of_list t out |> CArray.start)
+    (List.length out)
+    self
+    (Int64.of_int split_size)
+    (Int64.of_int dim);
+  ()
 
 let split_sizes self ~split_size ~dim =
   stubs_split_sizes
@@ -19950,7 +19995,17 @@ let split_with_sizes_copy self ~split_sizes ~dim =
     (Int64.of_int dim)
   |> to_tensor_list
 
-let split_with_sizes_copy_out ~out self ~split_sizes ~dim = ()
+let split_with_sizes_copy_out ~out self ~split_sizes ~dim =
+  let out__ = CArray.make t 0 in
+  stubs_split_with_sizes_copy_out
+    (CArray.start out__)
+    (CArray.of_list t out |> CArray.start)
+    (List.length out)
+    self
+    (List.map Int64.of_int split_sizes |> CArray.of_list int64_t |> CArray.start)
+    (List.length split_sizes)
+    (Int64.of_int dim);
+  ()
 
 let sqrt self =
   let out__ = CArray.make t 1 in
@@ -21104,7 +21159,16 @@ let type_as self other =
 
 let unbind self ~dim = stubs_unbind self (Int64.of_int dim) |> to_tensor_list
 let unbind_copy self ~dim = stubs_unbind_copy self (Int64.of_int dim) |> to_tensor_list
-let unbind_copy_int_out ~out self ~dim = ()
+
+let unbind_copy_int_out ~out self ~dim =
+  let out__ = CArray.make t 0 in
+  stubs_unbind_copy_int_out
+    (CArray.start out__)
+    (CArray.of_list t out |> CArray.start)
+    (List.length out)
+    self
+    (Int64.of_int dim);
+  ()
 
 let unflatten self ~dim ~sizes =
   let out__ = CArray.make t 1 in

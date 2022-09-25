@@ -472,7 +472,6 @@ let write_wrapper funcs filename =
               let caml_name = Func.caml_name exported_name in
               pm "let %s %s =" caml_name (Func.caml_args func);
               (match func.returns with
-              | `fixed 0 -> pm "  ()"
               | `fixed ntensors ->
                 pm "  let out__ = CArray.make t %d in" ntensors;
                 pm
@@ -483,9 +482,13 @@ let write_wrapper funcs filename =
                   pm "  let t%d = CArray.get out__ %d in" i i;
                   pm "  Gc.finalise C.Tensor.free t%d;" i
                 done;
-                pm
-                  "  %s"
-                  (List.init ntensors ~f:(Printf.sprintf "t%d") |> String.concat ~sep:", ")
+                if ntensors = 0
+                then pm "  ()"
+                else
+                  pm
+                    "  %s"
+                    (List.init ntensors ~f:(Printf.sprintf "t%d")
+                    |> String.concat ~sep:", ")
               | `dynamic ->
                 pm
                   "  stubs_%s %s |> to_tensor_list"
