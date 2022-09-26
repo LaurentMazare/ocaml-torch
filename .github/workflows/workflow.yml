@@ -12,9 +12,9 @@ jobs:
         os:
           - macos-latest
           - ubuntu-latest
-        ocaml-version:
+        ocaml-compiler:
+          - 4.12.0
           - 4.11.0
-          - 4.10.1
 
     runs-on: ${{ matrix.os }}
 
@@ -22,10 +22,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Use OCaml ${{ matrix.ocaml-version }}
-        uses: avsm/setup-ocaml@v2
+      - name: Use OCaml ${{ matrix.ocaml-compiler }}
+        uses: ocaml/setup-ocaml@v2
         with:
-          ocaml-version: ${{ matrix.ocaml-version }}
+          ocaml-compiler: ${{ matrix.ocaml-compiler }}
 
       - run: opam pin add torch.dev . --no-action
 

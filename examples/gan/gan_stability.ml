@@ -16,7 +16,11 @@ let conv2d = Layer.conv2d_ ~stride:1
 
 let upsample xs =
   let _, _, x, y = Tensor.shape4_exn xs in
-  Tensor.upsample_nearest2d xs ~output_size:[ 2 * x; 2 * y ] ~scales_h:2.0 ~scales_w:2.0
+  Tensor.upsample_nearest2d
+    xs
+    ~output_size:[ 2 * x; 2 * y ]
+    ~scales_h:(Some 2.0)
+    ~scales_w:(Some 2.0)
 
 let avg_pool2d = Tensor.avg_pool2d ~ksize:(3, 3) ~stride:(2, 2) ~padding:(1, 1)
 

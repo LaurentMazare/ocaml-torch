@@ -39,6 +39,11 @@ let excluded_functions =
     ; "linalg_matrix_norm_out"
     ; "histogram"
     ; "histogram_out"
+      (* Deactivate normal_out, bernoulli_out as these result in some
+       ambiguous function calls. *)
+    ; "normal_out"
+    ; "bernoulli_out"
+    ; "nested_tensor"
     ]
 
 let no_tensor_options =
@@ -82,13 +87,17 @@ module Func = struct
   type arg_type =
     | Bool
     | Int64
+    | Int64Option
     | Double
+    | DoubleOption
     | Tensor
-    | TensorOption
+    | TensorOption (* Tensor.t option *)
     | IntList
+    | IntListOption
+    | DoubleList
     | TensorOptList
     | TensorList
-    | TensorOptions
+    | TensorOptions (* Tensor kind and device *)
     | Scalar
     | ScalarType
     | Device
@@ -104,10 +113,14 @@ module Func = struct
     match arg.arg_type with
     | Bool -> "bool"
     | Int64 -> if String.( = ) arg.arg_name "reduction" then "Reduction.t" else "int"
+    | Int64Option -> "int option"
     | Double -> "float"
+    | DoubleOption -> "float option"
     | Tensor -> "t"
     | TensorOption -> "t option"
     | IntList -> "int list"
+    | IntListOption -> "int list option"
+    | DoubleList -> "float list"
     | TensorList -> "t list"
     | TensorOptList -> "t option list"
     | TensorOptions -> "Kind.packed * Device.t"
@@ -126,23 +139,25 @@ module Func = struct
     ; operator_name : string
     ; overload_name : string
     ; args : arg list
-    ; returns : (* number of tensors that are returned *)
-        [ `fixed of int | `dynamic ]
+    ; returns :
+        (* number of tensors that are returned *)
+        [ `fixed of int | `dynamic | `nothing ]
     ; kind : [ `function_ | `method_ ]
     }
 
   let arg_type_of_string str ~is_nullable =
     match String.lowercase str with
     | "bool" -> Some Bool
-    | "int64_t" -> Some Int64
-    | "double" -> Some Double
+    | "int64_t" -> Some (if is_nullable then Int64Option else Int64)
+    | "double" -> Some (if is_nullable then DoubleOption else Double)
     | "at::tensor" -> Some (if is_nullable then TensorOption else Tensor)
     | "at::tensoroptions" -> Some TensorOptions
-    | "at::intarrayref" | "intlist" -> Some IntList
+    | "at::intarrayref" -> Some (if is_nullable then IntListOption else IntList)
+    | "at::arrayref<double>" -> Some DoubleList
     | "const c10::list<c10::optional<at::tensor>> &" -> Some TensorOptList
     | "at::tensorlist" -> Some TensorList
     | "at::device" -> Some Device
-    | "at::scalar" | "const at::scalar &" -> Some Scalar
+    | "const at::scalar &" | "at::scalar" -> Some Scalar
     | "at::scalartype" -> Some ScalarType
     | "c10::string_view" -> Some String
     | _ -> None
@@ -150,10 +165,14 @@ module Func = struct
   let c_typed_args_list t =
     List.map t.args ~f:(fun { arg_name; arg_type; _ } ->
         match arg_type with
-        | IntList -> [%string "int64_t *%{arg_name}_data, int %{arg_name}_len"]
+        | IntList | IntListOption ->
+          Printf.sprintf "int64_t *%s_data, int %s_len" arg_name arg_name
+        | DoubleList -> Printf.sprintf "double *%s_data, int %s_len" arg_name arg_name
         | TensorOptList | TensorList ->
-          [%string "tensor *%{arg_name}_data, int %{arg_name}_len"]
-        | TensorOptions -> [%string "int %{arg_name}_kind, int %{arg_name}_device"]
+          Printf.sprintf "tensor *%s_data, int %s_len" arg_name arg_name
+        | TensorOptions -> Printf.sprintf "int %s_kind, int %s_device" arg_name arg_name
+        | Int64Option -> Printf.sprintf "int64_t %s_v, int %s_null" arg_name arg_name
+        | DoubleOption -> Printf.sprintf "double %s_v, int %s_null" arg_name arg_name
         | otherwise ->
           let simple_type_cstring =
             match otherwise with
@@ -166,7 +185,14 @@ module Func = struct
             | Device -> "int"
             | Scalar -> "scalar"
             | String -> "char *"
-            | IntList | TensorOptList | TensorList | TensorOptions -> assert false
+            | Int64Option
+            | DoubleOption
+            | IntList
+            | IntListOption
+            | DoubleList
+            | TensorOptList
+            | TensorList
+            | TensorOptions -> assert false
           in
           Printf.sprintf "%s %s" simple_type_cstring arg_name)
     |> String.concat ~sep:", "
@@ -178,6 +204,13 @@ module Func = struct
         | TensorOption -> [%string "(%{arg_name} ? *%{arg_name} : torch::Tensor())"]
         | Bool -> "(bool)" ^ arg_name
         | IntList -> [%string "torch::IntArrayRef(%{arg_name}_data, %{arg_name}_len)"]
+        | IntListOption ->
+          [%string
+            "%{arg_name}_data == nullptr ? c10::nullopt : \
+             c10::optional<torch::IntArrayRef>(torch::IntArrayRef(%{arg_name}_data, \
+             %{arg_name}_len))"]
+        | DoubleList ->
+          [%string "at::ArrayRef<double>(%{arg_name}_data, %{arg_name}_len)"]
         | String -> [%string "std::string(%{arg_name})"]
         | TensorList -> [%string "of_carray_tensor(%{arg_name}_data, %{arg_name}_len)"]
         | TensorOptList ->
@@ -185,9 +218,15 @@ module Func = struct
         | TensorOptions ->
           [%string
             "at::device(device_of_int(%{arg_name}_device)).dtype(at::ScalarType(%{arg_name}_kind))"]
+        | Int64Option ->
+          [%string
+            "%{arg_name}_null ? c10::nullopt : c10::optional<int64_t>(%{arg_name}_v)"]
+        | DoubleOption ->
+          [%string
+            "%{arg_name}_null ? c10::nullopt : c10::optional<double>(%{arg_name}_v)"]
         | ScalarType -> [%string "torch::ScalarType(%{arg_name})"]
         | Device -> [%string "device_of_int(%{arg_name})"]
-        | _ -> arg_name)
+        | Int64 | Double -> arg_name)
     |> String.concat ~sep:", "
 
   let c_call t =
@@ -199,25 +238,38 @@ module Func = struct
       | [] ->
         failwith [%string "Method calls should have at least one argument %{t.name}"])
 
+  let operator_name t =
+    match String.lowercase t.operator_name with
+    | "scatter_reduce" ->
+      (* scatter_reduce is both an operator name and also obtained from the
+         scatter operator when using the reduce overload. *)
+      "_scatter_reduce"
+    | "scatter_reduce_" -> "_scatter_reduce_"
+    | other -> other
+
   let stubs_signature t =
     let args =
       List.concat_map t.args ~f:(fun arg ->
           match arg.arg_type with
           | Bool -> [ "int" ]
           | Int64 -> [ "int64_t" ]
+          | Int64Option -> [ "int64_t"; "int" ]
           | Double -> [ "double" ]
+          | DoubleOption -> [ "double"; "int" ]
           | Tensor -> [ "t" ]
           | TensorOption -> [ "t" ]
           | TensorOptions -> [ "int"; "int" ]
           | ScalarType -> [ "int" ]
           | Device -> [ "int" ]
-          | IntList -> [ "ptr int64_t"; "int" ]
+          | IntList | IntListOption -> [ "ptr int64_t"; "int" ]
+          | DoubleList -> [ "ptr double"; "int" ]
           | TensorOptList | TensorList -> [ "ptr t"; "int" ]
           | String -> [ "string" ]
           | Scalar -> [ "scalar" ])
       |> String.concat ~sep:" @-> "
     in
     match t.returns with
+    | `nothing -> [%string "%{args} @-> returning void"]
     | `fixed _ -> [%string "ptr t @-> %{args} @-> returning void"]
     | `dynamic -> [%string "%{args} @-> returning (ptr t)"]
 
@@ -239,6 +291,18 @@ module Func = struct
         | IntList ->
           [%string
             {|(List.map Int64.of_int %{name} |> CArray.of_list int64_t |> CArray.start) (List.length %{name})|}]
+        | IntListOption ->
+          [%string
+            {|(match %{name} with | None -> from_voidp int64_t null | Some v -> List.map Int64.of_int v |> CArray.of_list int64_t |> CArray.start) (match %{name} with | None -> -1 | Some v -> List.length v)|}]
+        | Int64Option ->
+          [%string
+            {| (match %{name} with | None -> Int64.zero | Some v -> Int64.of_int v) (match %{name} with | Some _ -> 1 | None -> 0) |}]
+        | DoubleOption ->
+          [%string
+            {| (Option.value %{name} ~default:0.0) (match %{name} with | Some _ -> 1 | None -> 0) |}]
+        | DoubleList ->
+          [%string
+            {|(%{name} |> CArray.of_list double |> CArray.start) (List.length %{name})|}]
         | TensorList ->
           [%string "(CArray.of_list t %{name} |> CArray.start) (List.length %{name})"]
         | TensorOptList ->
@@ -255,7 +319,7 @@ module Func = struct
           then "(Reduction.to_int reduction |> Int64.of_int)"
           else [%string "(Int64.of_int %{name})"]
         | TensorOption -> [%string "(match %{name} with | Some v -> v | None -> null)"]
-        | _ -> name)
+        | Double | String | Scalar | Tensor -> name)
     |> String.concat ~sep:" "
 end
 
@@ -287,7 +351,9 @@ let read_yaml filename =
           String.( = ) return_type "at::Tensor"
         in
         let returns = Map.find_exn map "returns" |> extract_list in
-        if List.for_all returns ~f:is_tensor
+        if List.is_empty returns
+        then Some `nothing
+        else if List.for_all returns ~f:is_tensor
         then Some (`fixed (List.length returns))
         else (
           match returns with
@@ -387,6 +453,14 @@ let write_cpp funcs filename =
                 pc "}";
                 pc "";
                 ph "tensor *atg_%s(%s);" exported_name c_typed_args_list
+              | `nothing ->
+                pc "void atg_%s(%s) {" exported_name c_typed_args_list;
+                pc "  PROTECT(";
+                pc "    %s;" (Func.c_call func);
+                pc "  )";
+                pc "}";
+                pc "";
+                ph "void atg_%s(%s);" exported_name c_typed_args_list
               | `fixed ntensors ->
                 pc "void atg_%s(tensor *out__, %s) {" exported_name c_typed_args_list;
                 pc "  PROTECT(";
@@ -463,6 +537,7 @@ let write_wrapper funcs filename =
               let caml_name = Func.caml_name exported_name in
               pm "let %s %s =" caml_name (Func.caml_args func);
               (match func.returns with
+              | `nothing -> pm "  stubs_%s %s" caml_name (Func.caml_binding_args func)
               | `fixed ntensors ->
                 pm "  let out__ = CArray.make t %d in" ntensors;
                 pm
@@ -492,6 +567,7 @@ let write_wrapper funcs filename =
                   pi "    %s%s ->" named_arg (Func.ml_arg_type arg));
               let returns =
                 match func.returns with
+                | `nothing -> "unit"
                 | `fixed 1 -> "t"
                 | `fixed ntensors ->
                   List.init ntensors ~f:(fun _ -> "t") |> String.concat ~sep:" * "
@@ -524,7 +600,7 @@ let run ~yaml_filename ~cpp_filename ~stubs_filename ~wrapper_filename =
   printf "Generating code for %d functions.\n%!" (List.length funcs);
   (* Generate some unique names for overloaded functions. *)
   let funcs =
-    List.map funcs ~f:(fun func -> String.lowercase func.operator_name, func)
+    List.map funcs ~f:(fun func -> Func.operator_name func, func)
     |> Map.of_alist_multi (module String)
     |> Map.to_alist
     |> List.concat_map ~f:(fun (name, funcs) ->
@@ -541,7 +617,7 @@ let run ~yaml_filename ~cpp_filename ~stubs_filename ~wrapper_filename =
                  | 0 -> Int.compare (List.length f1.args) (List.length f2.args)
                  | cmp -> cmp)
              |> List.mapi ~f:(fun index (func : Func.t) ->
-                    let operator_name = String.lowercase func.operator_name in
+                    let operator_name = Func.operator_name func in
                     let overload_name = String.lowercase func.overload_name in
                     let name =
                       if String.is_empty overload_name
@@ -560,7 +636,7 @@ let run ~yaml_filename ~cpp_filename ~stubs_filename ~wrapper_filename =
 
 let () =
   run
-    ~yaml_filename:"data/Declarations.yaml"
+    ~yaml_filename:"third_party/pytorch/Declarations-v1.12.0.yaml"
     ~cpp_filename:"src/wrapper/torch_api_generated"
     ~stubs_filename:"src/stubs/torch_bindings_generated.ml"
     ~wrapper_filename:"src/wrapper/wrapper_generated"

@@ -6,7 +6,7 @@ let%expect_test _ =
   let output = Module.forward model [ Tensor.f 42.; Tensor.f 1337. ] in
   Stdio.printf !"%{sexp:float}\n" (Tensor.to_float0_exn output);
   [%expect {|
-        1421
+        1463
       |}]
 
 let%expect_test _ =
