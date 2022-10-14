@@ -144,7 +144,7 @@ dune exec examples/pretrained/predict.exe path/to/resnet18.ot tiger.jpg
 ```
 
 Natural Language Processing models based on BERT can be found in the
-[ocaml-torch repo](https://github.com/LaurentMazare/ocaml-bert).
+[ocaml-bert repo](https://github.com/LaurentMazare/ocaml-bert).
 
 ## Alternative Installation Option
 
