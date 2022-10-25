@@ -166,3 +166,16 @@ let%expect_test _ =
     (1 5)
     (4 9)
     23 |}]
+
+let%expect_test _ =
+  let open Tensor in
+  let t = zeros [ 10; 2 ] in
+  Tensor.argmax t |> Tensor.print_shape;
+  Tensor.argmax t ~dim:0 |> Tensor.print_shape;
+  Tensor.argmax t ~dim:1 |> Tensor.print_shape;
+  Tensor.argmax t ~dim:(-1) |> Tensor.print_shape;
+  [%expect {|
+    <>
+    <2>
+    <10>
+    <10> |}]

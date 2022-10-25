@@ -296,10 +296,10 @@ module Func = struct
             {|(match %{name} with | None -> from_voidp int64_t null | Some v -> List.map Int64.of_int v |> CArray.of_list int64_t |> CArray.start) (match %{name} with | None -> -1 | Some v -> List.length v)|}]
         | Int64Option ->
           [%string
-            {| (match %{name} with | None -> Int64.zero | Some v -> Int64.of_int v) (match %{name} with | Some _ -> 1 | None -> 0) |}]
+            {| (match %{name} with | None -> Int64.zero | Some v -> Int64.of_int v) (match %{name} with | Some _ -> 0 | None -> 1) |}]
         | DoubleOption ->
           [%string
-            {| (Option.value %{name} ~default:0.0) (match %{name} with | Some _ -> 1 | None -> 0) |}]
+            {| (Option.value %{name} ~default:0.0) (match %{name} with | Some _ -> 0 | None -> 1) |}]
         | DoubleList ->
           [%string
             {|(%{name} |> CArray.of_list double |> CArray.start) (List.length %{name})|}]
