@@ -18,9 +18,7 @@ let sample ~lstm ~linear ~dataset ~device =
   let seq, _final_state =
     let zero_state = Layer.Lstm.zero_state lstm ~batch_size:1 in
     List.range 0 sampling_length
-    |> List.fold
-         ~init:([ 0 ], zero_state)
-         ~f:(fun (seq, state) _i ->
+    |> List.fold ~init:([ 0 ], zero_state) ~f:(fun (seq, state) _i ->
            Caml.Gc.full_major ();
            let prev_label = List.hd_exn seq in
            let prev_y = Tensor.zeros [ 1; labels ] ~device in
