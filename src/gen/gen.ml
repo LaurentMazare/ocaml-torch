@@ -44,6 +44,7 @@ let excluded_functions =
     ; "normal_out"
     ; "bernoulli_out"
     ; "nested_tensor"
+    ; "arange_out"
     ]
 
 let no_tensor_options =
@@ -58,7 +59,16 @@ let no_tensor_options =
     ; "randn_like"
     ]
 
-let excluded_prefixes = [ "thnn_"; "th_"; "_foreach"; "_amp_foreach"; "linalg_norm" ]
+let excluded_prefixes =
+  [ "thnn_"
+  ; "th_"
+  ; "_foreach"
+  ; "_amp_foreach"
+  ; "linalg_norm"
+  ; "_nested_tensor"
+  ; "_fused_adam"
+  ]
+
 let excluded_suffixes = [ "_forward"; "_forward_out" ]
 let yaml_error yaml ~msg = failwith [%string "%{msg}, %{Yaml.to_string_exn yaml}"]
 
@@ -155,7 +165,7 @@ module Func = struct
     | "at::intarrayref" -> Some (if is_nullable then IntListOption else IntList)
     | "at::arrayref<double>" -> Some DoubleList
     | "const c10::list<c10::optional<at::tensor>> &" -> Some TensorOptList
-    | "at::tensorlist" -> Some TensorList
+    | "const at::itensorlistref &" | "at::tensorlist" -> Some TensorList
     | "at::device" -> Some Device
     | "const at::scalar &" | "at::scalar" -> Some Scalar
     | "at::scalartype" -> Some ScalarType
@@ -636,7 +646,7 @@ let run ~yaml_filename ~cpp_filename ~stubs_filename ~wrapper_filename =
 
 let () =
   run
-    ~yaml_filename:"third_party/pytorch/Declarations-v1.12.0.yaml"
+    ~yaml_filename:"third_party/pytorch/Declarations-v1.13.0.yaml"
     ~cpp_filename:"src/wrapper/torch_api_generated"
     ~stubs_filename:"src/stubs/torch_bindings_generated.ml"
     ~wrapper_filename:"src/wrapper/wrapper_generated"

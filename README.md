@@ -7,11 +7,11 @@ differentiation.
 
 These bindings use the [PyTorch C++ API](https://pytorch.org/cppdocs/) and are
 mostly automatically generated. The current GitHub tip and the opam package v0.7
-corresponds to PyTorch **v1.12.0**.
+corresponds to PyTorch **v1.13.0**.
 
 On Linux note that you will need the PyTorch version using the cxx11 abi
-[cpu version](https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-1.12.0%2Bcpu.zip),
-[cuda 10.2 version](https://download.pytorch.org/libtorch/cu102/libtorch-cxx11-abi-shared-with-deps-1.12.0.zip).
+[cpu version](https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-1.13.0%2Bcpu.zip),
+[cuda 10.2 version](https://download.pytorch.org/libtorch/cu102/libtorch-cxx11-abi-shared-with-deps-1.13.0.zip).
 
 ## Opam Installation
 
@@ -152,8 +152,8 @@ This alternative way to install __ocaml-torch__ could be useful to run with GPU
 acceleration enabled.
 
 The libtorch library can be downloaded from the [PyTorch
-website](https://pytorch.org/resources) ([1.12.0 cpu
-version](https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-1.12.0+cpu.zip)).
+website](https://pytorch.org/resources) ([1.13.0 cpu
+version](https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-1.13.0+cpu.zip)).
 
 Download and extract the libtorch library then to build all the examples run:
 
