@@ -150,15 +150,15 @@ let%expect_test _ =
 let%expect_test _ =
   (* Element-wise squaring of a vector. *)
   let t = Tensor.of_float1 [| 1.; 2.; 3. |] in
-  let t = Tensor.einsum ~equation:"i, i -> i" [ t; t ] in
+  let t = Tensor.einsum ~equation:"i, i -> i" [ t; t ] ~path:None in
   Stdio.printf !"%{sexp:float array}\n" Tensor.(to_float1_exn t);
   (* Matrix transpose *)
   let t = Tensor.of_int2 [| [| 3; 1; 4 |]; [| 1; 5; 9 |] |] in
-  let t = Tensor.einsum ~equation:"ij -> ji" [ t ] in
+  let t = Tensor.einsum ~equation:"ij -> ji" [ t ] ~path:None in
   Tensor.to_list t
   |> List.iter ~f:(fun t -> Tensor.to_int1_exn t |> Stdio.printf !"%{sexp:int array}\n");
   (* Sum all elements *)
-  let t = Tensor.einsum ~equation:"ij -> " [ t ] in
+  let t = Tensor.einsum ~equation:"ij -> " [ t ] ~path:None in
   Stdio.printf !"%{sexp:float}\n" (Tensor.to_float0_exn t);
   [%expect {|
     (1 4 9)
