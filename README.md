@@ -11,7 +11,7 @@ corresponds to PyTorch **v1.13.0**.
 
 On Linux note that you will need the PyTorch version using the cxx11 abi
 [cpu version](https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-1.13.0%2Bcpu.zip),
-[cuda 10.2 version](https://download.pytorch.org/libtorch/cu102/libtorch-cxx11-abi-shared-with-deps-1.13.0.zip).
+[cuda 11.7 version](https://download.pytorch.org/libtorch/cu117/libtorch-cxx11-abi-shared-with-deps-1.13.0.zip).
 
 ## Opam Installation
 
