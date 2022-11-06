@@ -59,14 +59,20 @@ Alternatively you can first compile the code via `dune build example.exe` then r
 `_build/default/example.exe` (note that building the bytecode target `example.bc` may
 not work on macos).
 
-## Tutorials
+## Tutorials and Examples
 
 * [MNIST tutorial](https://github.com/LaurentMazare/ocaml-torch/tree/master/examples/mnist).
 * [Finetuning a ResNet-18 model](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/pretrained/).
 * [Generative Adversarial Networks](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/gan).
 * [Running some Python model](https://github.com/LaurentMazare/ocaml-torch/tree/master/examples/jit).
 
-## Examples
+Some more advanced applications from external repos:
+* An [OCaml port of mini-dalle](https://github.com/ArulselvanMadhavan/mini_dalle) by Arulselvan Madhavan.
+* Natural Language Processing models based on BERT can be found in the
+[ocaml-bert repo](https://github.com/LaurentMazare/ocaml-bert).
+
+
+## Sample Code
 
 Below is an example of a linear model trained on the MNIST dataset ([full
 code](https://github.com/LaurentMazare/ocaml-torch/blob/master/examples/mnist/linear.ml)).
@@ -142,9 +148,6 @@ Running the pre-trained models on some sample images can the easily be done via 
 ```bash
 dune exec examples/pretrained/predict.exe path/to/resnet18.ot tiger.jpg
 ```
-
-Natural Language Processing models based on BERT can be found in the
-[ocaml-bert repo](https://github.com/LaurentMazare/ocaml-bert).
 
 ## Alternative Installation Option
 
