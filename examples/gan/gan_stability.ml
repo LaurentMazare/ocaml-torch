@@ -141,7 +141,7 @@ let grad2 d_out x_in =
   in
   Tensor.(grad_dout * grad_dout)
   |> Tensor.view ~size:[ batch_size; -1 ]
-  |> Tensor.sum_dim_intlist ~dim:[ 1 ] ~keepdim:false ~dtype:(T Float)
+  |> Tensor.sum_dim_intlist ~dim:(Some [ 1 ]) ~keepdim:false ~dtype:(T Float)
 
 let () =
   let module Sys = Caml.Sys in
