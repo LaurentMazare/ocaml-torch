@@ -68,6 +68,8 @@ not work on macos).
 
 Some more advanced applications from external repos:
 * An [OCaml port of mini-dalle](https://github.com/ArulselvanMadhavan/mini_dalle) by Arulselvan Madhavan.
+* A clone of the [diffusers](https://github.com/huggingface/diffusers) library implementing
+  stable-diffusion 1.5: [diffusers-ocaml](https://github.com/ArulselvanMadhavan/diffusers-ocaml) by Arulselvan Madhavan.
 * Natural Language Processing models based on BERT can be found in the
 [ocaml-bert repo](https://github.com/LaurentMazare/ocaml-bert).
 
