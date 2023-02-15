@@ -121,6 +121,14 @@ let () =
         then torch_flags.libs
         else "-Wl,--no-as-needed" :: torch_flags.libs
       in
+      let macosx_flags_lib =
+        (* The '-Wl,-keep_dwarf_unwind' flag is useful for c++ exceptions to properly be converted to ocaml
+           exceptions.
+           https://github.com/LaurentMazare/ocaml-torch/issues/78 *)
+        match C.ocaml_config_var c "system" with
+        | Some "macosx" -> [ "-Wl,-keep_dwarf_unwind" ]
+        | _ -> []
+      in
       C.Flags.write_sexp
         "c_library_flags.sexp"
-        (torch_flags_lib @ conda_libs @ cuda_flags.libs))
+        (macosx_flags_lib @ torch_flags_lib @ conda_libs @ cuda_flags.libs))
