@@ -646,7 +646,7 @@ let run ~yaml_filename ~cpp_filename ~stubs_filename ~wrapper_filename =
 
 let () =
   run
-    ~yaml_filename:"third_party/pytorch/Declarations-v1.13.0.yaml"
+    ~yaml_filename:"third_party/pytorch/Declarations-v2.0.0.yaml"
     ~cpp_filename:"src/wrapper/torch_api_generated"
     ~stubs_filename:"src/stubs/torch_bindings_generated.ml"
     ~wrapper_filename:"src/wrapper/wrapper_generated"
