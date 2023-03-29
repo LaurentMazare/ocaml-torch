@@ -62,7 +62,13 @@ end
 module Optimizer : sig
   type t
 
-  val adam : learning_rate:float -> beta1:float -> beta2:float -> weight_decay:float -> eps:float -> t
+  val adam
+    :  learning_rate:float
+    -> beta1:float
+    -> beta2:float
+    -> weight_decay:float
+    -> eps:float
+    -> t
 
   val rmsprop
     :  learning_rate:float
@@ -95,6 +101,7 @@ module Serialize : sig
   val load_multi : names:string list -> filename:string -> Tensor.t list
   val load_multi_ : named_tensors:(string * Tensor.t) list -> filename:string -> unit
   val load_all : filename:string -> (string * Tensor.t) list
+  val load_all_pt : filename:string -> (string * Tensor.t) list
 end
 
 module Cuda : sig

@@ -136,6 +136,13 @@ module C (F : Cstubs.FOREIGN) = struct
         (string
         @-> static_funptr Ctypes.(string @-> t @-> returning void)
         @-> returning void)
+
+    let loadz_callback =
+      foreign
+        "at_loadz_callback"
+        (string
+        @-> static_funptr Ctypes.(string @-> t @-> returning void)
+        @-> returning void)
   end
 
   module Optimizer = struct
