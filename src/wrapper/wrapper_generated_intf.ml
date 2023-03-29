@@ -7552,18 +7552,6 @@ module type S = sig
     -> output_size:int list option
     -> t
 
-  val to_sparse : t -> blocksize:int list option -> dense_dim:int option -> t
-  val to_sparse_bsc : t -> blocksize:int list -> dense_dim:int option -> t
-  val to_sparse_bsc_out : out:t -> t -> blocksize:int list -> dense_dim:int option -> t
-  val to_sparse_bsr : t -> blocksize:int list -> dense_dim:int option -> t
-  val to_sparse_bsr_out : out:t -> t -> blocksize:int list -> dense_dim:int option -> t
-  val to_sparse_csc : t -> dense_dim:int option -> t
-  val to_sparse_csc_out : out:t -> t -> dense_dim:int option -> t
-  val to_sparse_csr : t -> dense_dim:int option -> t
-  val to_sparse_csr_out : out:t -> t -> dense_dim:int option -> t
-  val to_sparse_out : out:t -> t -> blocksize:int list option -> dense_dim:int option -> t
-  val to_sparse_sparse_dim : t -> sparse_dim:int -> t
-  val to_sparse_sparse_dim_out : out:t -> t -> sparse_dim:int -> t
   val topk : t -> k:int -> dim:int -> largest:bool -> sorted:bool -> t * t
 
   val topk_values

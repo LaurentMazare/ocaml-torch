@@ -45,6 +45,16 @@ let excluded_functions =
     ; "bernoulli_out"
     ; "nested_tensor"
     ; "arange_out"
+    ; "to_sparse_out"
+    ; "to_sparse_csr_out"
+    ; "to_sparse_csc_out"
+    ; "to_sparse_bsr_out"
+    ; "to_sparse_bsc_out"
+    ; "to_sparse"
+    ; "to_sparse_csr"
+    ; "to_sparse_csc"
+    ; "to_sparse_bsr"
+    ; "to_sparse_bsc"
     ]
 
 let no_tensor_options =
