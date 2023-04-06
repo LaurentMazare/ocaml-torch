@@ -2,6 +2,7 @@
 #include<torch/torch.h>
 #include<ATen/autocast_mode.h>
 #include<torch/script.h>
+#include<torch/csrc/jit/mobile/import_data.h>
 #include<stdexcept>
 #include<vector>
 #include<caml/fail.h>
@@ -282,6 +283,24 @@ void at_load_multi(tensor *tensors, char **tensor_names, int ntensors, char *fil
     // [read], no memory has to be freed.
     for (int i = 0; i < ntensors; ++i)
       tensors[i] = new torch::Tensor(ts[i]);
+  )
+}
+
+void at_loadz_callback(char *filename, void (*f)(char *, tensor)) {
+  PROTECT(
+    auto params = torch::jit::_load_parameters(filename);
+    for (const auto &p : params) {
+      f((char*)p.first.c_str(), new torch::Tensor(p.second));
+    }
+  )
+}
+
+void at_loadz_callback_with_device(char *filename, void (*f)(char *, tensor), int device_id) {
+  PROTECT(
+    auto params = torch::jit::_load_parameters(filename, device_of_int(device_id));
+    for (const auto &p : params) {
+      f((char*)p.first.c_str(), new torch::Tensor(p.second));
+    }
   )
 }
 

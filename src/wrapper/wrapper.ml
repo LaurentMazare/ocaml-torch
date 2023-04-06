@@ -293,7 +293,7 @@ module Serialize = struct
       (List.length named_tensors)
       filename
 
-  let load_all ~filename =
+  let load_all_ ~filename ~load_parameters =
     let all_tensors = ref [] in
     let callback =
       coerce
@@ -303,8 +303,13 @@ module Serialize = struct
           Gc.finalise Wrapper_generated.C.Tensor.free tensor;
           all_tensors := (unescape tensor_name, tensor) :: !all_tensors)
     in
-    load_callback filename callback;
+    if load_parameters
+    then loadz_callback filename callback
+    else load_callback filename callback;
     !all_tensors
+
+  let load_all ~filename = load_all_ ~filename ~load_parameters:false
+  let load_all_pt ~filename = load_all_ ~filename ~load_parameters:true
 end
 
 module Cuda = struct

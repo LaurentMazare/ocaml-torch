@@ -73,6 +73,8 @@ void at_load_multi(tensor *tensors, char **tensor_names, int ntensors, char *fil
 /* [at_load_multi_] takes as input an array of allocation [tensors]. */
 void at_load_multi_(tensor *tensors, char **tensor_names, int ntensors, char *filename);
 
+void at_loadz_callback(char *filename, void (*f)(char *, tensor));
+void at_loadz_callback_with_device(char *filename, void (*f)(char *, tensor), int device_id);
 void at_load_callback(char *filename, void (*f)(char *, tensor));
 
 void at_free(tensor);
