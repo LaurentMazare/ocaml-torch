@@ -191,6 +191,10 @@ module Tensor = struct
 
   let sum t = sum t ~dtype:(kind t)
   let mean t = mean t ~dtype:(kind t)
+
+  let to_raw_pointer t = t
+
+  let of_raw_pointer t = t
 end
 
 module Scalar = struct
