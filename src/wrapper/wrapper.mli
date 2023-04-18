@@ -11,7 +11,6 @@ end
 
 module Tensor : sig
   type t
-
   include Wrapper_generated_intf.S with type t := t and type 'a scalar := 'a Scalar.t
 
   val new_tensor : unit -> t
@@ -57,6 +56,10 @@ module Tensor : sig
   val copy_ : t -> src:t -> unit
   val max : t -> t -> t
   val min : t -> t -> t
+
+  (* Conversion functions for adding FFI interactions outside of libtorch *)
+  val to_raw_pointer : t -> unit Ctypes_static.ptr
+  val of_raw_pointer : unit Ctypes_static.ptr -> t
 end
 
 module Optimizer : sig
