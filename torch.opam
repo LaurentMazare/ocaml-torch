@@ -11,7 +11,7 @@ run-test: [["dune" "runtest" "-p" name "-j" jobs]]
 build: [["dune" "build" "-p" name "-j" jobs]]
 
 depends: [
-  "base" {>= "v0.14.0" & < "v0.15"}
+  "base" {>= "v0.15.0" & < "v0.16"}
   "cmdliner" {>= "1.1.1"}
   "ctypes" {>= "0.11"}
   "ctypes-foreign"
@@ -21,12 +21,14 @@ depends: [
   "npy"
   "ocaml" {>= "4.07"}
   "ocaml-compiler-libs"
-  "ppx_custom_printf" {>= "v0.14" & < "v0.15"}
-  "ppx_expect" {>= "v0.14" & < "v0.15"}
-  "ppx_sexp_conv" {>= "v0.14" & < "v0.15"}
-  "ppx_string" {>= "v0.14" & < "v0.15"}
-  "sexplib" {>= "v0.14" & < "v0.15"}
-  "stdio" {>= "v0.14" & < "v0.15"}
+  "ppx_custom_printf" {>= "v0.15" & < "v0.16"}
+  "ppx_expect" {>= "v0.15" & < "v0.16"}
+  "ppx_sexp_conv" {>= "v0.15" & < "v0.16"}
+  "ppx_string" {>= "v0.15" & < "v0.16"}
+  "sexplib" {>= "v0.15" & < "v0.16"}
+  "stdio" {>= "v0.15" & < "v0.16"}
+  "int_repr" {>= "v0.15.0" & < "v0.16"}
+  "yojson" {>= "2.0.0"}
 ]
 
 available: os = "linux" | os = "macos"
