@@ -11,6 +11,7 @@ module Module = Module
 (* [Nn] is an alias to [Layer] to keep coherence with the pytorch names. *)
 module Nn = Layer
 module Optimizer = Optimizer
+module Safetensors = Safetensors
 module Scalar = Scalar
 module Serialize = Serialize
 module Tensor = Tensor

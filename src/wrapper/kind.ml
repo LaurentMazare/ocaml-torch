@@ -27,6 +27,22 @@ let bool = Bool
 
 type packed = T : _ t -> packed
 
+let element_size_in_bytes : type a. a t -> int = function
+  | Uint8 -> 1
+  | Int8 -> 1
+  | Int16 -> 2
+  | Int -> 4
+  | Int64 -> 8
+  | Half -> 2
+  | Float -> 4
+  | Double -> 8
+  | ComplexHalf -> 4
+  | ComplexFloat -> 8
+  | ComplexDouble -> 16
+  | Bool -> 1
+
+let packed_element_size_in_bytes (T t) = element_size_in_bytes t
+
 (* Hardcoded, should match ScalarType.h *)
 let to_int : type a. a t -> int = function
   | Uint8 -> 0

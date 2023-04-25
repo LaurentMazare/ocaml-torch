@@ -11,12 +11,20 @@ end
 
 module Tensor : sig
   type t
+
   include Wrapper_generated_intf.S with type t := t and type 'a scalar := 'a Scalar.t
 
   val new_tensor : unit -> t
   val float_vec : ?kind:[ `double | `float | `half ] -> float list -> t
   val int_vec : ?kind:[ `int | `int16 | `int64 | `int8 | `uint8 ] -> int list -> t
   val of_bigarray : (_, _, Bigarray.c_layout) Bigarray.Genarray.t -> t
+
+  val of_bigarray_bytes
+    :  (int, Bigarray.int8_unsigned_elt, Bigarray.c_layout) Bigarray.Genarray.t
+    -> Kind.packed
+    -> shape:int list
+    -> t
+
   val copy_to_bigarray : t -> (_, _, Bigarray.c_layout) Bigarray.Genarray.t -> unit
   val shape : t -> int list
   val size : t -> int list

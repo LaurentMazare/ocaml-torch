@@ -1,4 +1,4 @@
 (library
   (name torch)
   (public_name torch)
-  (libraries base stdio torch_core))
+  (libraries base int_repr stdio torch_core yojson))

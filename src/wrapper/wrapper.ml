@@ -67,12 +67,28 @@ module Tensor = struct
       tensor_of_data
         (bigarray_start genarray ga |> to_voidp)
         (Array.to_list dims
-        |> List.map Int64.of_int
-        |> CArray.of_list int64_t
-        |> CArray.start)
+         |> List.map Int64.of_int
+         |> CArray.of_list int64_t
+         |> CArray.start)
         (Array.length dims)
         (Bigarray.kind_size_in_bytes kind)
         (Kind.packed_to_int tensor_kind)
+    in
+    Gc.finalise free t;
+    t
+
+  let of_bigarray_bytes
+    (ga : (_, _, Bigarray.c_layout) Bigarray.Genarray.t)
+    packed_kind
+    ~shape
+    =
+    let t =
+      tensor_of_data
+        (bigarray_start genarray ga |> to_voidp)
+        (List.map Int64.of_int shape |> CArray.of_list int64_t |> CArray.start)
+        (List.length shape)
+        (Kind.packed_element_size_in_bytes packed_kind)
+        (Kind.packed_to_int packed_kind)
     in
     Gc.finalise free t;
     t
@@ -191,9 +207,7 @@ module Tensor = struct
 
   let sum t = sum t ~dtype:(kind t)
   let mean t = mean t ~dtype:(kind t)
-
   let to_raw_pointer t = t
-
   let of_raw_pointer t = t
 end
 
@@ -254,15 +268,15 @@ module Serialize = struct
   let escape s =
     String.map
       (function
-        | '.' -> '|'
-        | c -> c)
+       | '.' -> '|'
+       | c -> c)
       s
 
   let unescape s =
     String.map
       (function
-        | '|' -> '.'
-        | c -> c)
+       | '|' -> '.'
+       | c -> c)
       s
 
   let load ~filename =
