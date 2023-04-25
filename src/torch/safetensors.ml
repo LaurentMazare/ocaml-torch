@@ -17,9 +17,9 @@ let read ?only filename =
   let only = Option.map only ~f:(Hash_set.of_list (module String)) in
   Stdio.In_channel.with_file filename ~binary:true ~f:(fun in_c ->
     let header_size =
-      match In_channel.really_input_string in_c 8 with
-      | None -> read_error "unexpected eof while reading header size"
-      | Some header_size -> header_size
+      match Caml.really_input_string in_c 8 with
+      | header_size -> header_size
+      | exception _ -> read_error "unexpected eof while reading header size"
     in
     let header_size =
       Int_repr.String.get_uint64_le header_size ~pos:0
@@ -27,9 +27,9 @@ let read ?only filename =
       |> Base.Int_conversions.int64_to_int_exn
     in
     let header =
-      match In_channel.really_input_string in_c header_size with
-      | None -> read_error "unexpected eof while reading header len:%d" header_size
-      | Some header -> header
+      match Caml.really_input_string in_c header_size with
+      | header -> header
+      | exception _ -> read_error "unexpected eof while reading header len:%d" header_size
     in
     let header =
       match Yojson.Safe.from_string header with
