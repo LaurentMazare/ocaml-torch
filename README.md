@@ -1,7 +1,6 @@
 > **Warning**
 > 
-> Development for this repo has moved to https://github.com/janestreet/torch
-> As of 2023-05-10, the version in the new repo only supports PyTorch 1.13.0 so you should continue using the old repo for PyTorch 2.0.0 support.
+> Development for this repo has moved to https://github.com/janestreet/torch .
 
 # ocaml-torch
 __ocaml-torch__ provides some ocaml bindings for the [PyTorch](https://pytorch.org) tensor library.
